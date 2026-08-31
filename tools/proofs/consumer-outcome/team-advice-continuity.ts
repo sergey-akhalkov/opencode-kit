@@ -253,7 +253,9 @@ export function teamAdviceContinuityPreflight(repoRoot: string, executable?: str
     const compaction = object(agents.compaction, "generated compaction agent");
     const prompt = typeof compaction.prompt === "string" ? compaction.prompt : "";
     const loaded = loadTeamAdviceContinuityFixture(repoRoot);
-    assert(FIELDS.every((field) => prompt.includes(field)), "generated compaction prompt is missing a Team Advice State field");
+    assert(["Original User Goal", "Goal Status", "Session Reflection", "Next-Session Action"].every((field) => prompt.includes(field)), "generated compaction prompt is missing current summary fields");
+    const mainAuthority = fs.readFileSync(path.join(repoRoot, "global", "AGENTS.md"), "utf8");
+    assert(FIELDS.every((field) => mainAuthority.includes(field)), "loaded main authority is missing a Team Advice State field");
     let cleanupObserverReady: boolean | null = null;
     let cleanupObserverEncoding: "empty-success" | "json" | null = null;
     let loadedConfig = false;

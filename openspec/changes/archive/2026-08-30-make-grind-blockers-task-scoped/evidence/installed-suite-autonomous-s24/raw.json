@@ -1,0 +1,192 @@
+{
+  "candidateId": "grind-task-scoped-population-autonomous-s24",
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "fixtureRemoved": true,
+    "livenessClosed": true,
+    "serverStopped": true
+  },
+  "configDigest": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+  "failure": "autonomous provider-free replay failed",
+  "installed": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "modelCatalog": {
+    "sha256": "ecb1f86a5307173cc339a45f9995465be1cd28343b219dbe718dea8273c73595"
+  },
+  "observations": [
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--mode",
+        "preflight",
+        "--capture-kind",
+        "candidate",
+        "--evidence-root",
+        "<evidence-root>\\preflight"
+      ],
+      "invocationDigest": "1847f7d5f7c23cc2e32a6c468ae33b7f70aa50ae4fc2ca86a3d5abef53459d7a",
+      "label": "preflight",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"accepted\":true,\"mode\":\"preflight\",\"modelCalls\":0,\"rejected\":5}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "capture",
+        "--scenario",
+        "autonomous",
+        "--candidate-id",
+        "grind-task-scoped-population-autonomous-s24-autonomous",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-autonomous",
+        "--server-url",
+        "http://127.0.0.1:52837"
+      ],
+      "invocationDigest": "3c8b38b783ad40d94cd37787746ae28d663d43c76175adb91ad9e4129dea6c7c",
+      "label": "capture-autonomous",
+      "signal": null,
+      "status": 1,
+      "stderr": "1447 |     if (scenarioCandidatePass(result) !== true) throw new Error(`Installed technical-blocker proof failed: ${JSON.stringify(result)}`);\n1448 |   } else if (mixedProtected) {\n1449 |     if (!mixedProtectedCandidatePass(result)) throw new Error(`Installed mixed-protected question proof failed: ${JSON.stringify(result)}`);\n1450 |   } else if (taskScoped) {\n1451 |     if (scenarioCandidatePass(result) !== true) throw new Error(`Installed ${args.scenario} proof failed: ${JSON.stringify(result)}`);\n1452 |   } else if (!autonomousCandidatePass(result)) throw new Error(`Installed autonomous question proof failed: ${JSON.stringify(result)}`);\n                                                                ^\nerror: Installed autonomous question proof failed: {\"candidateId\":\"grind-task-scoped-population-autonomous-s24-autonomous\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditMessageFacts\":[{\"errorPresent\":false,\"finish\":\"stop\",\"text\":\"{\\\"schemaVersion\\\":2,\\\"auditID\\\":\\\"audit_6a80dc78edc6\\\",\\\"rootSessionRef\\\":\\\"session_3ef342c879ba\\\",\\\"inspectedRevision\\\":\\\"3322738f7d2a399e5e4f5d3a51ff42713d9641dad6d3488426f77956742444e8\\\",\\\"frontierGeneration\\\":0,\\\"verdict\\\":\\\"continue\\\",\\\"goalSummary\\\":\\\"Answer the pending autonomous local-strategy question probe\\\",\\\"claimMatrix\\\":[],\\\"requirementMatrix\\\":[{\\\"requirementRef\\\":\\\"message_7e60257cca71\\\",\\\"status\\\":\\\"complete\\\",\\\"evidenceRefs\\\":[\\\"message_7e60257cca71\\\",\\\"question_ccb5fa11ded7\\\"]}],\\\"unresolved\\\":[],\\\"strategyAssessment\\\":{\\\"fingerprint\\\":\\\"question-probe/autonomous-local-strategy/recommended\\\",\\\"repeated\\\":false,\\\"prohibitedStrategies\\\":[],\\\"requiredRetryEvidence\\\":[]},\\\"runnableItemRefs\\\":[],\\\"selectedItemRef\\\":null,\\\"parkedDecisionRefs\\\":[],\\\"deferredGateRefs\\\":[],\\\"questionAction\\\":\\\"answer\\\",\\\"questionAnswers\\\":[[\\\"Recommended\\\"]],\\\"ownerBoundary\\\":null,\\\"waitKind\\\":null,\\\"resumeCondition\\\":null,\\\"evidenceRefs\\\":[\\\"message_7e60257cca71\\\",\\\"question_ccb5fa11ded7\\\",\\\"call_e5a58f6284ae\\\"],\\\"evidenceGaps\\\":[],\\\"confidence\\\":\\\"high\\\"}\",\"textDigest\":\"f4d68f4e6c12ff12b96a1137ce839db96b70bd5eac9c34caaad01135ad7446b7\"}],\"auditRefs\":[{\"auditRef\":\"audit_70d8f377806b\",\"childRef\":\"session_eb79fc2d81c7\",\"status\":\"error\"}],\"auditRoutes\":[\"xai/grok-4.6\"],\"auditStatuses\":[\"error\"],\"autonomousRefs\":0,\"claimCeilingReported\":false,\"cleanup\":\"pending\",\"continuationAuditCorrelated\":false,\"continuationAuditRef\":null,\"continuationCount\":0,\"continuationRevisionPresent\":false,\"continuationRevisionRef\":null,\"continuationSchemaVersionTwo\":false,\"deferredQuestionCount\":0,\"deferredSelectedItemRefs\":[],\"finalFrontierGeneration\":null,\"finalFrontierState\":null,\"finalRunnableItemRefs\":[],\"guardState\":\"error\",\"humanQuestionReplies\":0,\"inputDigest\":\"3f508e41ac6c9e679db04726dfd1e79cd9ef47038e9c67e7efe9263c103d69f8\",\"directoryRef\":\"directory_8c117acc35a3\",\"model\":\"xai/grok-4.6/high\",\"modelCallClasses\":{\"arbiter\":1,\"primary\":1},\"openCodeVersion\":\"1.18.25\",\"offeredLabels\":[\"Recommended\",\"Alternative\"],\"ownerRequiredLeaked\":false,\"pendingQuestionCalls\":1,\"pendingRefs\":0,\"probeEvents\":[\"tool:question\"],\"primaryRoutes\":[\"xai/grok-4.6\"],\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":1,\"questionStatus\":\"running\",\"finalQuestionStatus\":\"running\",\"rejectedQuestionInterventions\":0,\"rootRef\":\"session_3ef342c879ba\",\"safeLabel\":\"Recommended\",\"scenario\":\"autonomous\",\"selectedAnswer\":null,\"sourceHashes\":{\"global/AGENTS.md\":\"52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5\",\"global/agents/session-completion-arbiter.md\":\"d96e84d82f188f0781ee26263caf469b6c62e663e39e0936de0f8592c5f1655a\",\"global/opencode.json\":\"8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb\",\"global/opencode.local.instructions.md\":\"2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1\",\"global/extensions/session-completion-guard/controller.ts\":\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\",\"global/extensions/session-completion-guard/frontier.ts\":\"12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63\",\"global/extensions/session-completion-guard/status.ts\":\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\",\"global/extensions/session-completion-guard/types.ts\":\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\",\"global/extensions/session-completion-guard/verdict.ts\":\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\",\"tools/proofs/session-completion-guard-autonomous.ts\":\"1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9\"},\"terminalDisposition\":\"error\",\"toolOnlyQuestion\":[\"question\"]}\n      at <source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts:1452:58\n\nBun v1.4.0 (Windows x64)\n",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-population-autonomous-s24-autonomous\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditMessageFacts\":[{\"errorPresent\":false,\"finish\":\"stop\",\"text\":\"{\\\"schemaVersion\\\":2,\\\"auditID\\\":\\\"audit_6a80dc78edc6\\\",\\\"rootSessionRef\\\":\\\"session_3ef342c879ba\\\",\\\"inspectedRevision\\\":\\\"3322738f7d2a399e5e4f5d3a51ff42713d9641dad6d3488426f77956742444e8\\\",\\\"frontierGeneration\\\":0,\\\"verdict\\\":\\\"continue\\\",\\\"goalSummary\\\":\\\"Answer the pending autonomous local-strategy question probe\\\",\\\"claimMatrix\\\":[],\\\"requirementMatrix\\\":[{\\\"requirementRef\\\":\\\"message_7e60257cca71\\\",\\\"status\\\":\\\"complete\\\",\\\"evidenceRefs\\\":[\\\"message_7e60257cca71\\\",\\\"question_ccb5fa11ded7\\\"]}],\\\"unresolved\\\":[],\\\"strategyAssessment\\\":{\\\"fingerprint\\\":\\\"question-probe/autonomous-local-strategy/recommended\\\",\\\"repeated\\\":false,\\\"prohibitedStrategies\\\":[],\\\"requiredRetryEvidence\\\":[]},\\\"runnableItemRefs\\\":[],\\\"selectedItemRef\\\":null,\\\"parkedDecisionRefs\\\":[],\\\"deferredGateRefs\\\":[],\\\"questionAction\\\":\\\"answer\\\",\\\"questionAnswers\\\":[[\\\"Recommended\\\"]],\\\"ownerBoundary\\\":null,\\\"waitKind\\\":null,\\\"resumeCondition\\\":null,\\\"evidenceRefs\\\":[\\\"message_7e60257cca71\\\",\\\"question_ccb5fa11ded7\\\",\\\"call_e5a58f6284ae\\\"],\\\"evidenceGaps\\\":[],\\\"confidence\\\":\\\"high\\\"}\",\"textDigest\":\"f4d68f4e6c12ff12b96a1137ce839db96b70bd5eac9c34caaad01135ad7446b7\"}],\"auditRefs\":[{\"auditRef\":\"audit_70d8f377806b\",\"childRef\":\"session_eb79fc2d81c7\",\"status\":\"error\"}],\"auditRoutes\":[\"xai/grok-4.6\"],\"auditStatuses\":[\"error\"],\"autonomousRefs\":0,\"claimCeilingReported\":false,\"cleanup\":\"pending\",\"continuationAuditCorrelated\":false,\"continuationAuditRef\":null,\"continuationCount\":0,\"continuationRevisionPresent\":false,\"continuationRevisionRef\":null,\"continuationSchemaVersionTwo\":false,\"deferredQuestionCount\":0,\"deferredSelectedItemRefs\":[],\"finalFrontierGeneration\":null,\"finalFrontierState\":null,\"finalRunnableItemRefs\":[],\"guardState\":\"error\",\"humanQuestionReplies\":0,\"inputDigest\":\"3f508e41ac6c9e679db04726dfd1e79cd9ef47038e9c67e7efe9263c103d69f8\",\"directoryRef\":\"directory_8c117acc35a3\",\"model\":\"xai/grok-4.6/high\",\"modelCallClasses\":{\"arbiter\":1,\"primary\":1},\"openCodeVersion\":\"1.18.25\",\"offeredLabels\":[\"Recommended\",\"Alternative\"],\"ownerRequiredLeaked\":false,\"pendingQuestionCalls\":1,\"pendingRefs\":0,\"probeEvents\":[\"tool:question\"],\"primaryRoutes\":[\"xai/grok-4.6\"],\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":1,\"questionStatus\":\"running\",\"finalQuestionStatus\":\"running\",\"rejectedQuestionInterventions\":0,\"rootRef\":\"session_3ef342c879ba\",\"safeLabel\":\"Recommended\",\"scenario\":\"autonomous\",\"selectedAnswer\":null,\"sourceHashes\":{\"global/AGENTS.md\":\"52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5\",\"global/agents/session-completion-arbiter.md\":\"d96e84d82f188f0781ee26263caf469b6c62e663e39e0936de0f8592c5f1655a\",\"global/opencode.json\":\"8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb\",\"global/opencode.local.instructions.md\":\"2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1\",\"global/extensions/session-completion-guard/controller.ts\":\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\",\"global/extensions/session-completion-guard/frontier.ts\":\"12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63\",\"global/extensions/session-completion-guard/status.ts\":\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\",\"global/extensions/session-completion-guard/types.ts\":\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\",\"global/extensions/session-completion-guard/verdict.ts\":\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\",\"tools/proofs/session-completion-guard-autonomous.ts\":\"1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9\"},\"terminalDisposition\":\"error\",\"toolOnlyQuestion\":[\"question\"]}\n{\"cleanup\":\"complete\",\"livenessClosed\":true,\"pendingQuestionsRejected\":1,\"rootDeleted\":true}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "replay",
+        "--scenario",
+        "autonomous",
+        "--candidate-id",
+        "grind-task-scoped-population-autonomous-s24-autonomous",
+        "--input-root",
+        "<evidence-root>\\capture-autonomous",
+        "--evidence-root",
+        "<evidence-root>\\replay-autonomous"
+      ],
+      "invocationDigest": "20d69a8e2cc2a38dbffe2e85af4a2075be4bb1fbfda7b060c718e7aa0c35119e",
+      "label": "replay-autonomous",
+      "signal": null,
+      "status": 1,
+      "stderr": "",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-population-autonomous-s24-autonomous\",\"candidateOraclePass\":false,\"captureKind\":\"candidate\",\"cleanupComplete\":true,\"cleanupOraclePass\":true,\"evaluatorRecovered\":false,\"expectedPendingQuestionRejections\":null,\"failure\":\"Installed autonomous question proof failed: {\\\"candidateId\\\":\\\"grind-task-scoped-population-autonomous-s24-autonomous\\\",\\\"captureKind\\\":\\\"candidate\\\",\\\"assistantMarker\\\":false,\\\"auditMessageFacts\\\":[{\\\"errorPresent\\\":false,\\\"finish\\\":\\\"stop\\\",\\\"text\\\":\\\"{\\\\\\\"schemaVersion\\\\\\\":2,\\\\\\\"auditID\\\\\\\":\\\\\\\"audit_6a80dc78edc6\\\\\\\",\\\\\\\"rootSessionRef\\\\\\\":\\\\\\\"session_3ef342c879ba\\\\\\\",\\\\\\\"inspectedRevision\\\\\\\":\\\\\\\"3322738f7d2a399e5e4f5d3a51ff42713d9641dad6d3488426f77956742444e8\\\\\\\",\\\\\\\"frontierGeneration\\\\\\\":0,\\\\\\\"verdict\\\\\\\":\\\\\\\"continue\\\\\\\",\\\\\\\"goalSummary\\\\\\\":\\\\\\\"Answer the pending autonomous local-strategy question probe\\\\\\\",\\\\\\\"claimMatrix\\\\\\\":[],\\\\\\\"requirementMatrix\\\\\\\":[{\\\\\\\"requirementRef\\\\\\\":\\\\\\\"message_7e60257cca71\\\\\\\",\\\\\\\"status\\\\\\\":\\\\\\\"complete\\\\\\\",\\\\\\\"evidenceRefs\\\\\\\":[\\\\\\\"message_7e60257cca71\\\\\\\",\\\\\\\"question_ccb5fa11ded7\\\\\\\"]}],\\\\\\\"unresolved\\\\\\\":[],\\\\\\\"strategyAssessment\\\\\\\":{\\\\\\\"fingerprint\\\\\\\":\\\\\\\"question-probe/autonomous-local-strategy/recommended\\\\\\\",\\\\\\\"repeated\\\\\\\":false,\\\\\\\"prohibitedStrategies\\\\\\\":[],\\\\\\\"requiredRetryEvidence\\\\\\\":[]},\\\\\\\"runnableItemRefs\\\\\\\":[],\\\\\\\"selectedItemRef\\\\\\\":null,\\\\\\\"parkedDecisionRefs\\\\\\\":[],\\\\\\\"deferredGateRefs\\\\\\\":[],\\\\\\\"questionAction\\\\\\\":\\\\\\\"answer\\\\\\\",\\\\\\\"questionAnswers\\\\\\\":[[\\\\\\\"Recommended\\\\\\\"]],\\\\\\\"ownerBoundary\\\\\\\":null,\\\\\\\"waitKind\\\\\\\":null,\\\\\\\"resumeCondition\\\\\\\":null,\\\\\\\"evidenceRefs\\\\\\\":[\\\\\\\"message_7e60257cca71\\\\\\\",\\\\\\\"question_ccb5fa11ded7\\\\\\\",\\\\\\\"call_e5a58f6284ae\\\\\\\"],\\\\\\\"evidenceGaps\\\\\\\":[],\\\\\\\"confidence\\\\\\\":\\\\\\\"high\\\\\\\"}\\\",\\\"textDigest\\\":\\\"f4d68f4e6c12ff12b96a1137ce839db96b70bd5eac9c34caaad01135ad7446b7\\\"}],\\\"auditRefs\\\":[{\\\"auditRef\\\":\\\"audit_70d8f377806b\\\",\\\"childRef\\\":\\\"session_eb79fc2d81c7\\\",\\\"status\\\":\\\"error\\\"}],\\\"auditRoutes\\\":[\\\"xai/grok-4.6\\\"],\\\"auditStatuses\\\":[\\\"error\\\"],\\\"autonomousRefs\\\":0,\\\"claimCeilingReported\\\":false,\\\"cleanup\\\":\\\"pending\\\",\\\"continuationAuditCorrelated\\\":false,\\\"continuationAuditRef\\\":null,\\\"continuationCount\\\":0,\\\"continuationRevisionPresent\\\":false,\\\"continuationRevisionRef\\\":null,\\\"continuationSchemaVersionTwo\\\":false,\\\"deferredQuestionCount\\\":0,\\\"deferredSelectedItemRefs\\\":[],\\\"finalFrontierGeneration\\\":null,\\\"finalFrontierState\\\":null,\\\"finalRunnableItemRefs\\\":[],\\\"guardState\\\":\\\"error\\\",\\\"humanQuestionReplies\\\":0,\\\"inputDigest\\\":\\\"3f508e41ac6c9e679db04726dfd1e79cd9ef47038e9c67e7efe9263c103d69f8\\\",\\\"directoryRef\\\":\\\"directory_8c117acc35a3\\\",\\\"model\\\":\\\"xai/grok-4.6/high\\\",\\\"modelCallClasses\\\":{\\\"arbiter\\\":1,\\\"primary\\\":1},\\\"openCodeVersion\\\":\\\"1.18.25\\\",\\\"offeredLabels\\\":[\\\"Recommended\\\",\\\"Alternative\\\"],\\\"ownerRequiredLeaked\\\":false,\\\"pendingQuestionCalls\\\":1,\\\"pendingRefs\\\":0,\\\"probeEvents\\\":[\\\"tool:question\\\"],\\\"primaryRoutes\\\":[\\\"xai/grok-4.6\\\"],\\\"projectedAnswer\\\":null,\\\"projectedStatus\\\":null,\\\"questionCalls\\\":1,\\\"questionStatus\\\":\\\"running\\\",\\\"finalQuestionStatus\\\":\\\"running\\\",\\\"rejectedQuestionInterventions\\\":0,\\\"rootRef\\\":\\\"session_3ef342c879ba\\\",\\\"safeLabel\\\":\\\"Recommended\\\",\\\"scenario\\\":\\\"autonomous\\\",\\\"selectedAnswer\\\":null,\\\"sourceHashes\\\":{\\\"global/AGENTS.md\\\":\\\"52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5\\\",\\\"global/agents/session-completion-arbiter.md\\\":\\\"d96e84d82f188f0781ee26263caf469b6c62e663e39e0936de0f8592c5f1655a\\\",\\\"global/opencode.json\\\":\\\"8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb\\\",\\\"global/opencode.local.instructions.md\\\":\\\"2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1\\\",\\\"global/extensions/session-completion-guard/controller.ts\\\":\\\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\\\",\\\"global/extensions/session-completion-guard/frontier.ts\\\":\\\"12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63\\\",\\\"global/extensions/session-completion-guard/status.ts\\\":\\\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\\\",\\\"global/extensions/session-completion-guard/types.ts\\\":\\\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\\\",\\\"global/extensions/session-completion-guard/verdict.ts\\\":\\\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\\\",\\\"tools/proofs/session-completion-guard-autonomous.ts\\\":\\\"1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9\\\"},\\\"terminalDisposition\\\":\\\"error\\\",\\\"toolOnlyQuestion\\\":[\\\"question\\\"]}\",\"inputRaw\":\"raw.json\",\"inputRawBytes\":8848,\"livenessClosed\":true,\"mode\":\"replay\",\"modelCalls\":0,\"pendingQuestionsRejected\":1,\"replayComplete\":false,\"resultPresent\":true,\"schemaVersion\":1,\"terminalResult\":\"captured-failure-clean\"}\n"
+    }
+  ],
+  "processAfter": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "processBefore": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "proofProcess": {
+    "parentPid": 35704,
+    "pid": 45080,
+    "terminal": {
+      "signal": null,
+      "status": 1
+    },
+    "urlRef": "server_ccd33bba738f"
+  },
+  "resolvedRoutes": [
+    {
+      "agent": "build",
+      "hidden": false,
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    {
+      "agent": "session-completion-arbiter",
+      "hidden": true,
+      "model": "xai/grok-4.6",
+      "variant": "high"
+    }
+  ],
+  "schemaVersion": 1,
+  "serverLogs": {
+    "stderr": "timestamp=2026-08-30T14:53:02.531Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T14:53:02.536Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T14:53:02.537Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T14:53:04.695Z level=INFO run=ac6e3c1e message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\"\ntimestamp=2026-08-30T14:53:04.696Z level=INFO run=ac6e3c1e message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\"\ntimestamp=2026-08-30T14:53:04.710Z level=INFO run=ac6e3c1e message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\"\ntimestamp=2026-08-30T14:53:04.725Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T14:53:04.725Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T14:53:04.725Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T14:53:04.906Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\config\\\\opencode.json\"\ntimestamp=2026-08-30T14:53:04.939Z level=INFO run=ac6e3c1e message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-30T14:53:27.984Z level=INFO run=ac6e3c1e message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T14:53:27.986Z level=INFO run=ac6e3c1e message=\"all formatters are disabled\"\ntimestamp=2026-08-30T14:53:27.986Z level=INFO run=ac6e3c1e message=init\ntimestamp=2026-08-30T14:53:28.157Z level=INFO run=ac6e3c1e message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T14:53:28.161Z level=INFO run=ac6e3c1e message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T14:53:28.165Z level=INFO run=ac6e3c1e message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-30T14:53:28.515Z level=INFO run=ac6e3c1e message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\" workspaceID=undefined\ntimestamp=2026-08-30T14:53:30.778Z level=INFO run=ac6e3c1e message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-30T14:53:30.794Z level=INFO run=ac6e3c1e message=created id=ses_facd6b2d6ffeanlciD3ZuAtCLt slug=lucky-lagoon version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-6YeTwm/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788101610794 time.updated=1788101610794\ntimestamp=2026-08-30T14:53:30.924Z level=INFO run=ac6e3c1e message=loop session.id=ses_facd6b2d6ffeanlciD3ZuAtCLt step=0\ntimestamp=2026-08-30T14:53:31.017Z level=WARN run=ac6e3c1e message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-30T14:53:35.069Z level=INFO run=ac6e3c1e message=init count=1\ntimestamp=2026-08-30T14:53:35.136Z level=INFO run=ac6e3c1e message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T14:53:35.137Z level=INFO run=ac6e3c1e message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T14:53:35.353Z level=INFO run=ac6e3c1e message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\" workspaceID=undefined\ntimestamp=2026-08-30T14:53:35.394Z level=INFO run=ac6e3c1e message=process session.id=ses_facd6b2d6ffeanlciD3ZuAtCLt messageID=msg_053294db0001lI5I7TM7jbZ7e4\ntimestamp=2026-08-30T14:53:35.397Z level=INFO run=ac6e3c1e message=stream providerID=xai modelID=grok-4.6 session.id=ses_facd6b2d6ffeanlciD3ZuAtCLt small=false agent=build mode=primary\ntimestamp=2026-08-30T14:53:35.424Z level=INFO run=ac6e3c1e message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-30T14:53:46.479Z level=INFO run=ac6e3c1e message=asking id=que_053298a6f001VE05OaMUeOOCNq questions=1\ntimestamp=2026-08-30T14:53:47.331Z level=INFO run=ac6e3c1e message=created id=ses_facd6723cffeeGDekVlm7zgq69 slug=brave-island version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-6YeTwm\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-6YeTwm/project workspaceID=undefined parentID=ses_facd6b2d6ffeanlciD3ZuAtCLt title=\"Completion audit audit_6a80dc78edc6\" agent=session-completion-arbiter model.id=grok-4.6 model.providerID=xai model.variant=high metadata.completionGuard.schemaVersion=2 metadata.completionGuard.auditID=audit_6a80dc78edc6 metadata.completionGuard.rootSessionRef=session_3ef342c879ba metadata.completionGuard.inspectedRevision=3322738f7d2a399e5e4f5d3a51ff42713d9641dad6d3488426f77956742444e8 metadata.completionGuard.kind=question metadata.completionGuard.questionRef=question_ccb5fa11ded7 metadata.completionGuard.status=auditing metadata.completionGuard.attempt=1 permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788101627331 time.updated=1788101627331\ntimestamp=2026-08-30T14:53:47.420Z level=INFO run=ac6e3c1e message=loop session.id=ses_facd6723cffeeGDekVlm7zgq69 step=0\ntimestamp=2026-08-30T14:53:47.468Z level=INFO run=ac6e3c1e message=process session.id=ses_facd6723cffeeGDekVlm7zgq69 messageID=msg_053298e1e001d9DLuuG15jb547\ntimestamp=2026-08-30T14:53:47.469Z level=INFO run=ac6e3c1e message=stream providerID=xai modelID=grok-4.6 session.id=ses_facd6723cffeeGDekVlm7zgq69 small=false agent=session-completion-arbiter mode=subagent\ntimestamp=2026-08-30T14:53:47.471Z level=INFO run=ac6e3c1e message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-30T14:55:34.087Z level=INFO run=ac6e3c1e message=loop session.id=ses_facd6723cffeeGDekVlm7zgq69 step=1\ntimestamp=2026-08-30T14:55:34.088Z level=INFO run=ac6e3c1e message=\"exiting loop\" session.id=ses_facd6723cffeeGDekVlm7zgq69\ntimestamp=2026-08-30T14:55:34.133Z level=ERROR run=ac6e3c1e message=\"completion audit stopped\" attempt=1 attemptLimit=3 auditRef=audit_70d8f377806b elapsedMs=107562 error.name=Error error.message=\"Completion verdict requires current work frontier evidence\" error.stack=\"Error: Completion verdict requires current work frontier evidence\\n    at frontierAssessment (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\verdict.ts:117:15)\\n    at parseCompletionVerdict (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\verdict.ts:173:20)\\n    at runAudit (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\controller.ts:1183:23)\\n    at processTicksAndRejections (native:7:39)\" errorClass=input-state requestContributions=[] requestBytes=2928 rootRef=session_3ef342c879ba\ntimestamp=2026-08-30T14:55:34.371Z level=INFO run=ac6e3c1e message=rejected requestID=que_053298a6f001VE05OaMUeOOCNq\ntimestamp=2026-08-30T14:55:34.456Z level=INFO run=ac6e3c1e message=\"removing share\" sessionID=ses_facd6723cffeeGDekVlm7zgq69\ntimestamp=2026-08-30T14:55:34.491Z level=INFO run=ac6e3c1e message=\"removing share\" sessionID=ses_facd6b2d6ffeanlciD3ZuAtCLt\ntimestamp=2026-08-30T14:55:34.515Z level=WARN run=ac6e3c1e message=\"guard status persistence failed\" error.name=Error error.message=\"session.update guard status failed\" error.stack=\"Error: session.update guard status failed\\n    at dataOf (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\runtime-support.ts:147:23)\\n    at async persistConverged (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\status.ts:116:28)\\n    at processTicksAndRejections (native:7:39)\" error.cause.name=NotFoundError rootRef=session_3ef342c879ba\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD <redacted> not set; server is unsecured.\nopencode server listening on http://127.0.0.1:52837\n"
+  },
+  "sourceHashes": {
+    "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+    "global/agents/session-completion-arbiter.md": "d96e84d82f188f0781ee26263caf469b6c62e663e39e0936de0f8592c5f1655a",
+    "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+    "global/extensions/session-completion-guard/frontier.ts": "12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63",
+    "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+    "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+    "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+    "tools/proofs/session-completion-guard-autonomous.ts": "1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9"
+  }
+}

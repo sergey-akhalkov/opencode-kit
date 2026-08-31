@@ -124,14 +124,14 @@ The kit MAY preserve intentionally incomplete work through a distinct abandoned 
 - **THEN** the operation exits non-zero without moving the change into a complete archive
 - **AND** the diagnostic identifies the unchecked count.
 
-#### Scenario: Required dividend evidence is missing
-- **WHEN** a proposal declares the dividend required but its tagged task, checkbox, task digest, helper identity, consumer invocation, or evidence-index row is missing or stale
+#### Scenario: Required dividend completion is missing
+- **WHEN** a proposal declares the dividend required but its tagged task is absent or unchecked
 - **THEN** complete archive exits non-zero without moving the change
-- **AND** reports the exact dividend fact that is incomplete.
+- **AND** reports the exact task fact that is incomplete.
 
 #### Scenario: Exempt change has no automation task
 - **WHEN** a proposal contains a valid concrete automation exemption and every accepted product gate is green
-- **THEN** complete archive does not require an automation task or evidence row
+- **THEN** complete archive does not require an automation task
 - **AND** preserves the recorded exemption in the archived proposal.
 
 #### Scenario: Unpersisted admitted improvement blocks archive
@@ -147,7 +147,7 @@ The kit MAY preserve intentionally incomplete work through a distinct abandoned 
 ### Requirement: Operation gates run on the operation path
 Every repository-shipped propose, apply, and complete-archive entrypoint SHALL invoke its matching deterministic operation check. A registry operation without a shipped caller SHALL NOT be described as integrated. Failed, blocked, or unknown safety/completion checks SHALL stop the affected operation; warnings SHALL remain non-blocking only when they cannot represent false completion or a non-deferrable risk.
 
-Checks SHALL report only explicit facts available from their inputs and SHALL return `unknown` for unsupported evidence rather than inferring semantic quality. Propose SHALL validate the automation-dividend declaration shape. Apply and archive SHALL correlate a required declaration with exactly one tagged task and its available evidence state; complete archive SHALL require the current checked task and candidate-correlated evidence. No gate SHALL infer Material profile, recurrence, helper value, or exemption validity from unstructured prose.
+Checks SHALL report only explicit facts available from their inputs and SHALL return `unknown` for unsupported facts rather than inferring semantic quality. Propose SHALL validate the automation-dividend declaration shape. Apply and archive SHALL correlate a required declaration with exactly one tagged task; complete archive SHALL require that task to be checked. No gate SHALL infer Material profile, recurrence, helper value, or exemption validity from unstructured prose.
 
 #### Scenario: Apply executes its gate before mutation
 - **WHEN** an apply entrypoint is invoked for a change
@@ -164,9 +164,9 @@ Checks SHALL report only explicit facts available from their inputs and SHALL re
 - **THEN** the gate returns non-zero and identifies the declaration source
 - **AND** does not select required or exempt on the author's behalf.
 
-#### Scenario: Archive gate correlates required dividend evidence
-- **WHEN** archive checks a required dividend task against the current task digest, helper identity, candidate, and evidence-index row
-- **THEN** it passes only when every explicit correlation fact matches and the result is green
+#### Scenario: Archive gate correlates the required dividend task
+- **WHEN** archive checks a required dividend declaration and its tagged task
+- **THEN** it passes only when exactly one tagged task exists and is checked
 - **AND** leaves semantic usefulness and accepted product correctness to their owning reviewed declaration and product gates.
 
 ### Requirement: Active status comes from live OpenSpec evidence
@@ -226,30 +226,17 @@ Every active change SHALL publish a stable ownership manifest for modified capab
 - **THEN** the later change remains planning-only while the earlier owner is active
 - **AND** becomes mutation-eligible only after current state confirms the transfer condition
 
-### Requirement: Checked tasks have candidate-correlated evidence
+### Requirement: Checked tasks do not replace current proof
 
-Every checked behavior, proof, validation, manual, or external task SHALL have one versioned evidence-index row containing task ID, task text digest, candidate/environment identity, named entrypoint or manual gate, exact invocation/status, bounded artifact refs, cleanup, and result. A task whose evidence uses a weaker entrypoint/effect set than its text, references a stale candidate, is missing, or is red SHALL be reported incomplete regardless of checkbox state. Schema-v2 task rows MAY omit `candidateId` and `environmentId` only to inherit the required top-level index identities, MAY omit `requiredBoundary` only to inherit the same row's explicit `boundary`, and MAY omit `artifacts` only to represent an empty reference list. Readers SHALL materialize those inherited values before stale/envelope evaluation; explicit row values remain supported and any explicit mismatch remains stale or mismatched. Compact inheritance SHALL NOT infer task meaning, effects, completion, or identity from prose, filenames, or aggregate counts.
+A checked task SHALL report implementation progress only. Completion and qualification SHALL use the current selected strict validation, repository validation, actual entrypoint result, and required cleanup. OpenSpec SHALL NOT require or generate task evidence rows, evidence indexes, retained proof bundles, or replay lanes.
 
 #### Scenario: Desktop Restart task has only helper proof
-- **WHEN** a checked task names Desktop and tray Restart but evidence records only a direct helper invocation
-- **THEN** completion and qualification gates reject the task as proof-envelope mismatch
-- **AND** preserve the helper evidence as partial rather than deleting it
-
-#### Scenario: Task evidence matches current candidate
-- **WHEN** task digest, candidate, environment, named boundary, status, artifacts, and cleanup all match
-- **THEN** the checkbox may contribute to completion
-- **AND** later candidate mutation invalidates only dependent rows
-
-#### Scenario: Redundant task evidence uses compact inheritance
-- **WHEN** a schema-v2 index contains top-level candidate/environment identities and a task row omits its identical row identities and `requiredBoundary`
-- **THEN** the reader resolves the top-level identities and the row's explicit boundary and performs the same digest/currentness/effect checks as the expanded form
-
-#### Scenario: Explicit mismatches remain visible
-- **WHEN** a task row explicitly records a different candidate, environment, or required boundary from the current top-level/observed values
-- **THEN** the reader preserves the explicit value and reports the existing stale or envelope-mismatch result rather than inheriting over it
+- **WHEN** a checked task names Desktop and tray Restart but only a direct helper was exercised
+- **THEN** the current completion handoff reports the real boundary as unproved
+- **AND** no evidence file is created to make the checkbox appear sufficient
 
 ### Requirement: Completed and qualification states compose current OpenSpec facts
-A change SHALL NOT report complete, RC, qualification-pass, or archive-ready unless selected strict delta validation passes on the current bytes, required artifacts are current, all tasks are evidence-complete, active ownership is conflict-free, and applicable repository OpenSpec validation has no failure attributable to the candidate. Structural library validation alone SHALL NOT establish this state.
+A change SHALL NOT report complete, RC, qualification-pass, or archive-ready unless selected strict delta validation passes on the current bytes, required artifacts are current, all tasks are checked, the accepted outcome has current real-boundary proof, active ownership is conflict-free, and applicable repository OpenSpec validation has no failure attributable to the candidate. Structural library validation alone SHALL NOT establish this state.
 
 #### Scenario: Tasks are complete but delta is invalid
 - **WHEN** every checkbox is checked but selected strict validation fails
@@ -261,24 +248,15 @@ A change SHALL NOT report complete, RC, qualification-pass, or archive-ready unl
 - **THEN** the selected change may report its local facts
 - **AND** repository qualification/RC remains blocked with the unrelated change named
 
-### Requirement: Active evidence is indexed and bounded
-Every evidence-bearing active change SHALL maintain one stable `evidence-index.json` that classifies product, runner, evaluator, environment, raw bundle, replay, and terminal evidence by lane. Default active retention SHALL not exceed 64 files or 25 MiB. A proposal MAY declare a smaller limit or an explicit material exception with its own maximum, reason, cleanup/retention rule, and validation. Unindexed files, unknown size, or exceeded limits SHALL block new evidence capture and completion but SHALL NOT delete evidence automatically.
+### Requirement: Active changes retain no proof archive
 
-#### Scenario: Evidence tree exceeds default bounds
-- **WHEN** an active change has more than 64 retained evidence files or 25 MiB without a validated exception
-- **THEN** the gate blocks another capture and completion
-- **AND** reports indexed, unindexed, retained, and excess facts
+Active changes SHALL NOT create repository `evidence/` directories, `evidence-index.json`, raw/evaluation/replay bundles, or separate proof reports. Tests MAY use automatically cleaned temporary output. The handoff SHALL state only the current invocation, observed result, validation outcome, cleanup, and limitations needed to understand the result.
 
-#### Scenario: Evaluator failure has preserved raw data
-- **WHEN** raw capture is trustworthy and only evaluation fails
-- **THEN** the index routes replay over the preserved bundle
-- **AND** no duplicate live capture directory is created
-
-### Requirement: Spec Capsule carries proportional claim-evidence scope
+### Requirement: Spec Capsule carries proportional claim scope
 
 Every behavior-changing proposal SHALL add one `Claim And Evidence Scope` record or accepted project-native equivalent. For an exact-case Ordinary Small increment, the record MAY be one concise statement naming the exact claim and matching proof boundary. When a claim generalizes beyond exercised cases, composes evidence paths, substitutes behavior, depends on a real system, or asserts finite-population, partitioned-domain, compatibility, interchangeability, safety, or phase/milestone scope, the record SHALL identify the claim class, population, coverage basis, production and comparison paths, environment, real oracle, unresolved observations, and maximum claim.
 
-Triggered evidence-bearing changes SHALL store the structured claim records in the existing bounded evidence index and reference existing evidence lanes rather than duplicate hashes, raw facts, or semantic records. OpenSpec artifact instructions SHALL preserve one owner for the complete record and SHALL NOT require each task to repeat unchanged claim fields. A schema-v2 partition population MAY omit `materialClasses` only to inherit an exact copy of its explicit `members`; readers SHALL materialize that list before claim evaluation, while any explicit mismatch remains visible.
+Broad changes SHALL state the maximum supported claim directly in the proposal and final handoff. OpenSpec artifact instructions SHALL NOT create a claim ledger, evidence index, or retained review report.
 
 #### Scenario: Ordinary proposal remains concise
 - **WHEN** a behavior change makes one exact-case claim with one matching local real boundary and no broad trigger
@@ -294,15 +272,13 @@ Triggered evidence-bearing changes SHALL store the structured claim records in t
 - **WHEN** a schema-v2 partition population omits `materialClasses` while retaining its explicit ordered `members`
 - **THEN** the reader resolves material classes to the exact member list before completeness and mismatch evaluation
 
-### Requirement: Complete archive requires current claim-evidence closure
-The complete-archive path SHALL reject a triggered broad claim when its current structured claim record is absent, stale, references a weaker production path or environment, lacks required population or partition closure, omits the real oracle, has unresolved material observations, lacks the required independent challenge, or has disposition `blocked | unknown`. A `narrowed` disposition MAY support archive only when the accepted outcome itself names that narrower result or a current owner decision has explicitly changed the accepted product scope; archive output SHALL state the narrower ceiling.
-
-Operation helpers SHALL evaluate only explicit reviewed fields, evidence-index references, identities, counts, and terminal statuses. They SHALL return `unknown` for unsupported semantic closure and SHALL NOT infer equivalence, non-applicability, safety, compatibility, or claim class from prose, filenames, tests, or aggregate counts.
+### Requirement: Complete archive states the current claim ceiling
+The complete-archive path SHALL reject a broad completion claim when current real-boundary proof and project validation support only a narrower result. Archive output SHALL state that narrower ceiling. Operation helpers SHALL NOT infer equivalence, non-applicability, safety, compatibility, or completeness from prose, filenames, checkboxes, or aggregate counts, and SHALL NOT require a retained claim record.
 
 #### Scenario: All tasks pass but broad closure is missing
 - **WHEN** every task is checked and project validation is green but a triggered population or real-system claim lacks matching closure
-- **THEN** complete archive exits non-zero with the exact claim and evidence gap
-- **AND** narrower trustworthy task evidence remains preserved.
+- **THEN** complete archive exits non-zero with the exact unsupported claim
+- **AND** the current narrower observed result remains reportable.
 
 #### Scenario: Narrowed accepted result archives honestly
 - **WHEN** the current accepted outcome explicitly permits an exact narrower claim and its closure is supported while a broader future claim is excluded
@@ -513,3 +489,44 @@ SHALL NOT infer a no-trigger result from missing evidence.
 - **AND** main performs another deep review only for a materially distinct current trigger
   or when the changed evidence satisfies the prior receipt's retry condition; changed
   archive identity or other non-key operational metadata alone does not invalidate it.
+
+### Requirement: OpenSpec apply SHALL maintain a dependency-valid grind frontier
+For grind-enabled apply, current accepted tasks SHALL be reconciled into stable pending, running, complete, deferred, or blocked work items with explicit dependencies and scoped gate refs sufficient to identify the next dependency-valid task. A product decision SHALL park only its affected tasks. Apply SHALL continue every unblocked accepted task before presenting that decision and SHALL keep task, proof, and validation status honest.
+
+#### Scenario: Blocked task has an independent sibling
+- **WHEN** task 5.2 is blocked by a current product, access, process, capability, safety, or proof gate and task 5.3 has no dependency on task 5.2 or that gate
+- **THEN** apply keeps task 5.2 unchecked with its resume condition and starts task 5.3
+- **AND** does not ask whether to continue, check task 5.2, or claim the blocked evidence lane.
+
+#### Scenario: Artifact order is stricter than accepted dependencies
+- **WHEN** an agent-authored task order or stop-line serializes two tasks but current accepted semantics and evidence show that the later task is independent
+- **THEN** apply reconciles the planning controls and executes the independent task
+- **AND** preserves the prior artifact and attempt evidence without requesting process approval.
+
+#### Scenario: Product decision affects all pending tasks
+- **WHEN** every pending accepted task explicitly depends on one unresolved material product decision and no option-invariant task remains
+- **THEN** apply preserves one consolidated product-decision handoff and the exact affected task set
+- **AND** performs no decision-dependent implementation until a human answer updates the frontier.
+
+### Requirement: Complete archive reports Kaizen harvest independently
+The canonical agent-driven complete-archive workflow SHALL attempt a bounded Kaizen harvest checkpoint without adding that checkpoint, its reflection, or any derived improvement to the accepted task graph. The deterministic archive helper SHALL remain the owner of completion validation, official movement, post-archive validation, and `archived` status. Kaizen lifecycle state SHALL be reported separately and SHALL NOT waive, replace, repeat, roll back, or relabel any archive gate or result.
+
+#### Scenario: Archive and harvest both complete
+- **WHEN** deterministic complete archive returns `archived` and the separate harvest checkpoint closes as `captured` or `no-signal`
+- **THEN** handoff reports both states with their own evidence refs
+- **AND** no retrospective artifact or additional archive gate is introduced.
+
+#### Scenario: Harvest remains a repair gap
+- **WHEN** deterministic complete archive returns `archived` but an opened harvest checkpoint has no valid closure
+- **THEN** handoff reports archive success and the harvest repair gap separately
+- **AND** no repair-gap closure is written and later repair closes only the Kaizen checkpoint as `captured` or `no-signal` without repeating archive.
+
+#### Scenario: Archive fails after harvest checkpoint opens
+- **WHEN** a harvest checkpoint is open but deterministic complete archive does not return `archived`
+- **THEN** the checkpoint closes as `archive-failed` when its store remains available
+- **AND** handoff neither projects a repair gap nor claims archive success.
+
+#### Scenario: Kaizen capture is unavailable
+- **WHEN** the canonical archive workflow cannot open a Kaizen checkpoint
+- **THEN** existing complete-archive gates determine whether archive may proceed
+- **AND** handoff reports harvest `unavailable` without inventing a persisted repair gap.

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "changeId": "prefer-composable-capability-owners",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Loaded authority separates semantic ownership from physical source shape",
+        "Composable-capability behavior has structural and installed evidence"
+      ]
+    },
+    {
+      "capability": "library-reuse-discovery",
+      "requirements": [
+        "Extend means reshape the current owner",
+        "Established ecosystem evidence informs but does not decide selection"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Current independent capabilities receive direct proof before parent integration",
+        "Current-owner reshape may improve physical capability locality"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/principles-of-work.md",
+    "global/AGENTS.md",
+    "global/agents/implementation-worker.md",
+    "global/skills/change-ready-sdlc",
+    "global/skills/reuse-discovery",
+    "instructions/reusable-project-agent-instructions.md",
+    "templates/project/AGENTS.md",
+    "tools/contracts/engineering-quality.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/agent-tooling-ergonomics.ts",
+    "tools/proofs/lib/change-locality-scenarios.ts",
+    "tools/proofs/fixtures/capability-composition",
+    "tools/proofs/reuse-discovery.ts",
+    "tools/test-reuse-discovery.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "add-leaf-first-task-decomposition",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/skills/change-ready-sdlc" },
+        { "type": "write-root", "path": "instructions/reusable-project-agent-instructions.md" },
+        { "type": "write-root", "path": "templates/project/AGENTS.md" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" }
+      ],
+      "transferCondition": "add-leaf-first-task-decomposition is archived, every production and proof writer is terminal, current canonical specs, loaded source, role surfaces, contracts, and proof owners are reread, and exact overlapping owners are transferred before this change enables mutation"
+    }
+  ],
+  "transfers": []
+}

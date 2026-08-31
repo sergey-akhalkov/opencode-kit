@@ -1,0 +1,192 @@
+{
+  "candidateId": "opdc-configured-grind-r1",
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "fixtureRemoved": true,
+    "livenessClosed": true,
+    "serverStopped": true
+  },
+  "configDigest": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+  "failure": "delivery-checkpoint provider-free replay failed",
+  "installed": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "modelCatalog": {
+    "sha256": "9fbc3ff501bd951b39f4e27fe022bae63c3891384f56990e70a2f15449720ba7"
+  },
+  "observations": [
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--mode",
+        "preflight",
+        "--capture-kind",
+        "candidate",
+        "--evidence-root",
+        "<evidence-root>\\preflight"
+      ],
+      "invocationDigest": "56366234e42ffead4efbcff31a91ad423aed5368f5b61835bab7fcbe60b3c089",
+      "label": "preflight",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"accepted\":true,\"mode\":\"preflight\",\"modelCalls\":0,\"rejected\":5}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "openai",
+        "--model",
+        "gpt-5.6-sol",
+        "--variant",
+        "xhigh",
+        "--mode",
+        "capture",
+        "--scenario",
+        "delivery-checkpoint",
+        "--candidate-id",
+        "opdc-configured-grind-r1-delivery-checkpoint",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-delivery-checkpoint",
+        "--server-url",
+        "http://127.0.0.1:50519"
+      ],
+      "invocationDigest": "8baf1a22bfb04ac9a95cac49fca5d4be1706c555c28d91dd18e881188e2f0f29",
+      "label": "capture-delivery-checkpoint",
+      "signal": null,
+      "status": 1,
+      "stderr": "1768 |     proofResult.syntheticGuardMessages = syntheticGuardMessages;\n1769 |     if (args.captureKind === \"candidate\" && scenarioCandidatePass(proofResult) !== true) {\n1770 |       throw new Error(`Installed ${args.scenario} completion proof failed: ${JSON.stringify(proofResult)}`);\n1771 |     }\n1772 |   } else if (deliveryCheckpoint || technicalBlocker) {\n1773 |     if (scenarioCandidatePass(result) !== true) throw new Error(`Installed ${args.scenario} proof failed: ${JSON.stringify(result)}`);\n                                                                 ^\nerror: Installed delivery-checkpoint proof failed: {\"candidateId\":\"opdc-configured-grind-r1-delivery-checkpoint\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditMessageFacts\":[{\"errorPresent\":true,\"finish\":null,\"text\":\"\",\"textDigest\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},{\"errorPresent\":true,\"finish\":null,\"text\":\"\",\"textDigest\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},{\"errorPresent\":true,\"finish\":null,\"text\":\"\",\"textDigest\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}],\"auditRefs\":[{\"auditRef\":\"audit_f41d8a51e383\",\"childRef\":\"session_9b82db6b5bdb\",\"status\":\"error\"}],\"auditRoutes\":[\"xai/grok-4.6\"],\"auditStatuses\":[\"error\"],\"autonomousRefs\":0,\"checkpointOracleMarker\":true,\"checkpointSelectedMarker\":true,\"claimCeilingReported\":false,\"cleanup\":\"pending\",\"continuationAuditCorrelated\":false,\"continuationAuditRef\":null,\"continuationCount\":0,\"continuationRevisionPresent\":false,\"continuationRevisionRef\":null,\"continuationSchemaVersionTwo\":false,\"deferredQuestionCount\":0,\"deferredSelectedItemRefs\":[],\"effectCounts\":{\"external\":0,\"frontier\":3,\"protected\":0,\"question\":0},\"finalFrontierGeneration\":3,\"finalFrontierState\":\"runnable\",\"finalRunnableItemRefs\":[\"item_costly\"],\"frontierTrace\":[{\"callStatus\":\"completed\",\"expectedGeneration\":null,\"gateStatuses\":{},\"itemStatuses\":{}},{\"callStatus\":\"completed\",\"expectedGeneration\":null,\"gateStatuses\":{},\"itemStatuses\":{}},{\"callStatus\":\"completed\",\"expectedGeneration\":null,\"gateStatuses\":{},\"itemStatuses\":{}}],\"guardState\":\"error\",\"humanQuestionReplies\":0,\"inputDigest\":\"e55c3ff25b6318cd76bf19e8ee5d2eb69bf51523d0cdd750093fb9ee2eadfec0\",\"directoryRef\":\"directory_c8b3f3d20597\",\"model\":\"openai/gpt-5.6-sol/xhigh\",\"modelCallClasses\":{\"arbiter\":1,\"primary\":4},\"openCodeVersion\":\"1.18.25\",\"offeredLabels\":[],\"ownerRequiredLeaked\":false,\"pendingQuestionCalls\":0,\"pendingRefs\":0,\"probeEvents\":[\"tool:grind_frontier\",\"marker:delivery-checkpoint-sibling\",\"tool:grind_frontier\",\"marker:delivery-checkpoint-selected\",\"marker:delivery-checkpoint-oracle\",\"tool:grind_frontier\"],\"primaryRoutes\":[\"openai/gpt-5.6-sol\"],\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":0,\"questionStatus\":null,\"finalQuestionStatus\":null,\"rejectedQuestionInterventions\":0,\"rootRef\":\"session_f5880d997a1c\",\"safeLabel\":null,\"scenario\":\"delivery-checkpoint\",\"selectedAnswer\":null,\"sessionDeliveryAuditRefs\":1,\"sessionDeliverySyntheticMessages\":0,\"siblingMarker\":true,\"sourceHashes\":{\"global/AGENTS.md\":\"757d171a0ee2070c2b90de2b50217d6940a37ece4398930352e170e825a77c79\",\"global/agents/session-completion-arbiter.md\":\"e097a43f2c9d7fd640f108de1455c1d4d322ff52f75f3d8064f7482238b91bde\",\"global/opencode.json\":\"2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5\",\"global/opencode.local.instructions.md\":\"23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f\",\"global/extensions/session-completion-guard/controller.ts\":\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\",\"global/extensions/session-completion-guard/frontier.ts\":\"e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c\",\"global/extensions/session-completion-guard/status.ts\":\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\",\"global/extensions/session-completion-guard/types.ts\":\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\",\"global/extensions/session-completion-guard/verdict.ts\":\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\",\"tools/proofs/session-completion-guard-autonomous.ts\":\"17fea24bbe798eaea28595e1a38827bc2f5586a8930e08f858f223c9365cd1af\"},\"terminalDisposition\":\"error\",\"toolOnlyQuestion\":[\"grind_frontier\"]}\n      at <source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts:1773:59\n\nBun v1.4.0 (Windows x64)\n",
+      "stdout": "{\"candidateId\":\"opdc-configured-grind-r1-delivery-checkpoint\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditMessageFacts\":[{\"errorPresent\":true,\"finish\":null,\"text\":\"\",\"textDigest\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},{\"errorPresent\":true,\"finish\":null,\"text\":\"\",\"textDigest\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},{\"errorPresent\":true,\"finish\":null,\"text\":\"\",\"textDigest\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}],\"auditRefs\":[{\"auditRef\":\"audit_f41d8a51e383\",\"childRef\":\"session_9b82db6b5bdb\",\"status\":\"error\"}],\"auditRoutes\":[\"xai/grok-4.6\"],\"auditStatuses\":[\"error\"],\"autonomousRefs\":0,\"checkpointOracleMarker\":true,\"checkpointSelectedMarker\":true,\"claimCeilingReported\":false,\"cleanup\":\"pending\",\"continuationAuditCorrelated\":false,\"continuationAuditRef\":null,\"continuationCount\":0,\"continuationRevisionPresent\":false,\"continuationRevisionRef\":null,\"continuationSchemaVersionTwo\":false,\"deferredQuestionCount\":0,\"deferredSelectedItemRefs\":[],\"effectCounts\":{\"external\":0,\"frontier\":3,\"protected\":0,\"question\":0},\"finalFrontierGeneration\":3,\"finalFrontierState\":\"runnable\",\"finalRunnableItemRefs\":[\"item_costly\"],\"frontierTrace\":[{\"callStatus\":\"completed\",\"expectedGeneration\":null,\"gateStatuses\":{},\"itemStatuses\":{}},{\"callStatus\":\"completed\",\"expectedGeneration\":null,\"gateStatuses\":{},\"itemStatuses\":{}},{\"callStatus\":\"completed\",\"expectedGeneration\":null,\"gateStatuses\":{},\"itemStatuses\":{}}],\"guardState\":\"error\",\"humanQuestionReplies\":0,\"inputDigest\":\"e55c3ff25b6318cd76bf19e8ee5d2eb69bf51523d0cdd750093fb9ee2eadfec0\",\"directoryRef\":\"directory_c8b3f3d20597\",\"model\":\"openai/gpt-5.6-sol/xhigh\",\"modelCallClasses\":{\"arbiter\":1,\"primary\":4},\"openCodeVersion\":\"1.18.25\",\"offeredLabels\":[],\"ownerRequiredLeaked\":false,\"pendingQuestionCalls\":0,\"pendingRefs\":0,\"probeEvents\":[\"tool:grind_frontier\",\"marker:delivery-checkpoint-sibling\",\"tool:grind_frontier\",\"marker:delivery-checkpoint-selected\",\"marker:delivery-checkpoint-oracle\",\"tool:grind_frontier\"],\"primaryRoutes\":[\"openai/gpt-5.6-sol\"],\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":0,\"questionStatus\":null,\"finalQuestionStatus\":null,\"rejectedQuestionInterventions\":0,\"rootRef\":\"session_f5880d997a1c\",\"safeLabel\":null,\"scenario\":\"delivery-checkpoint\",\"selectedAnswer\":null,\"sessionDeliveryAuditRefs\":1,\"sessionDeliverySyntheticMessages\":0,\"siblingMarker\":true,\"sourceHashes\":{\"global/AGENTS.md\":\"757d171a0ee2070c2b90de2b50217d6940a37ece4398930352e170e825a77c79\",\"global/agents/session-completion-arbiter.md\":\"e097a43f2c9d7fd640f108de1455c1d4d322ff52f75f3d8064f7482238b91bde\",\"global/opencode.json\":\"2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5\",\"global/opencode.local.instructions.md\":\"23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f\",\"global/extensions/session-completion-guard/controller.ts\":\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\",\"global/extensions/session-completion-guard/frontier.ts\":\"e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c\",\"global/extensions/session-completion-guard/status.ts\":\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\",\"global/extensions/session-completion-guard/types.ts\":\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\",\"global/extensions/session-completion-guard/verdict.ts\":\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\",\"tools/proofs/session-completion-guard-autonomous.ts\":\"17fea24bbe798eaea28595e1a38827bc2f5586a8930e08f858f223c9365cd1af\"},\"terminalDisposition\":\"error\",\"toolOnlyQuestion\":[\"grind_frontier\"]}\n{\"cleanup\":\"complete\",\"livenessClosed\":true,\"pendingQuestionsRejected\":0,\"rootDeleted\":true}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "openai",
+        "--model",
+        "gpt-5.6-sol",
+        "--variant",
+        "xhigh",
+        "--mode",
+        "replay",
+        "--scenario",
+        "delivery-checkpoint",
+        "--candidate-id",
+        "opdc-configured-grind-r1-delivery-checkpoint",
+        "--input-root",
+        "<evidence-root>\\capture-delivery-checkpoint",
+        "--evidence-root",
+        "<evidence-root>\\replay-delivery-checkpoint"
+      ],
+      "invocationDigest": "97cb5e9da6f34e24b38391b1d48411ba1ed38761ae9618125b87e43708c146b6",
+      "label": "replay-delivery-checkpoint",
+      "signal": null,
+      "status": 1,
+      "stderr": "",
+      "stdout": "{\"candidateId\":\"opdc-configured-grind-r1-delivery-checkpoint\",\"candidateOraclePass\":false,\"captureKind\":\"candidate\",\"cleanupComplete\":true,\"cleanupOraclePass\":true,\"evaluatorRecovered\":false,\"expectedPendingQuestionRejections\":null,\"failure\":\"Installed delivery-checkpoint proof failed: {\\\"candidateId\\\":\\\"opdc-configured-grind-r1-delivery-checkpoint\\\",\\\"captureKind\\\":\\\"candidate\\\",\\\"assistantMarker\\\":false,\\\"auditMessageFacts\\\":[{\\\"errorPresent\\\":true,\\\"finish\\\":null,\\\"text\\\":\\\"\\\",\\\"textDigest\\\":\\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\"},{\\\"errorPresent\\\":true,\\\"finish\\\":null,\\\"text\\\":\\\"\\\",\\\"textDigest\\\":\\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\"},{\\\"errorPresent\\\":true,\\\"finish\\\":null,\\\"text\\\":\\\"\\\",\\\"textDigest\\\":\\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\"}],\\\"auditRefs\\\":[{\\\"auditRef\\\":\\\"audit_f41d8a51e383\\\",\\\"childRef\\\":\\\"session_9b82db6b5bdb\\\",\\\"status\\\":\\\"error\\\"}],\\\"auditRoutes\\\":[\\\"xai/grok-4.6\\\"],\\\"auditStatuses\\\":[\\\"error\\\"],\\\"autonomousRefs\\\":0,\\\"checkpointOracleMarker\\\":true,\\\"checkpointSelectedMarker\\\":true,\\\"claimCeilingReported\\\":false,\\\"cleanup\\\":\\\"pending\\\",\\\"continuationAuditCorrelated\\\":false,\\\"continuationAuditRef\\\":null,\\\"continuationCount\\\":0,\\\"continuationRevisionPresent\\\":false,\\\"continuationRevisionRef\\\":null,\\\"continuationSchemaVersionTwo\\\":false,\\\"deferredQuestionCount\\\":0,\\\"deferredSelectedItemRefs\\\":[],\\\"effectCounts\\\":{\\\"external\\\":0,\\\"frontier\\\":3,\\\"protected\\\":0,\\\"question\\\":0},\\\"finalFrontierGeneration\\\":3,\\\"finalFrontierState\\\":\\\"runnable\\\",\\\"finalRunnableItemRefs\\\":[\\\"item_costly\\\"],\\\"frontierTrace\\\":[{\\\"callStatus\\\":\\\"completed\\\",\\\"expectedGeneration\\\":null,\\\"gateStatuses\\\":{},\\\"itemStatuses\\\":{}},{\\\"callStatus\\\":\\\"completed\\\",\\\"expectedGeneration\\\":null,\\\"gateStatuses\\\":{},\\\"itemStatuses\\\":{}},{\\\"callStatus\\\":\\\"completed\\\",\\\"expectedGeneration\\\":null,\\\"gateStatuses\\\":{},\\\"itemStatuses\\\":{}}],\\\"guardState\\\":\\\"error\\\",\\\"humanQuestionReplies\\\":0,\\\"inputDigest\\\":\\\"e55c3ff25b6318cd76bf19e8ee5d2eb69bf51523d0cdd750093fb9ee2eadfec0\\\",\\\"directoryRef\\\":\\\"directory_c8b3f3d20597\\\",\\\"model\\\":\\\"openai/gpt-5.6-sol/xhigh\\\",\\\"modelCallClasses\\\":{\\\"arbiter\\\":1,\\\"primary\\\":4},\\\"openCodeVersion\\\":\\\"1.18.25\\\",\\\"offeredLabels\\\":[],\\\"ownerRequiredLeaked\\\":false,\\\"pendingQuestionCalls\\\":0,\\\"pendingRefs\\\":0,\\\"probeEvents\\\":[\\\"tool:grind_frontier\\\",\\\"marker:delivery-checkpoint-sibling\\\",\\\"tool:grind_frontier\\\",\\\"marker:delivery-checkpoint-selected\\\",\\\"marker:delivery-checkpoint-oracle\\\",\\\"tool:grind_frontier\\\"],\\\"primaryRoutes\\\":[\\\"openai/gpt-5.6-sol\\\"],\\\"projectedAnswer\\\":null,\\\"projectedStatus\\\":null,\\\"questionCalls\\\":0,\\\"questionStatus\\\":null,\\\"finalQuestionStatus\\\":null,\\\"rejectedQuestionInterventions\\\":0,\\\"rootRef\\\":\\\"session_f5880d997a1c\\\",\\\"safeLabel\\\":null,\\\"scenario\\\":\\\"delivery-checkpoint\\\",\\\"selectedAnswer\\\":null,\\\"sessionDeliveryAuditRefs\\\":1,\\\"sessionDeliverySyntheticMessages\\\":0,\\\"siblingMarker\\\":true,\\\"sourceHashes\\\":{\\\"global/AGENTS.md\\\":\\\"757d171a0ee2070c2b90de2b50217d6940a37ece4398930352e170e825a77c79\\\",\\\"global/agents/session-completion-arbiter.md\\\":\\\"e097a43f2c9d7fd640f108de1455c1d4d322ff52f75f3d8064f7482238b91bde\\\",\\\"global/opencode.json\\\":\\\"2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5\\\",\\\"global/opencode.local.instructions.md\\\":\\\"23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f\\\",\\\"global/extensions/session-completion-guard/controller.ts\\\":\\\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\\\",\\\"global/extensions/session-completion-guard/frontier.ts\\\":\\\"e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c\\\",\\\"global/extensions/session-completion-guard/status.ts\\\":\\\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\\\",\\\"global/extensions/session-completion-guard/types.ts\\\":\\\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\\\",\\\"global/extensions/session-completion-guard/verdict.ts\\\":\\\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\\\",\\\"tools/proofs/session-completion-guard-autonomous.ts\\\":\\\"17fea24bbe798eaea28595e1a38827bc2f5586a8930e08f858f223c9365cd1af\\\"},\\\"terminalDisposition\\\":\\\"error\\\",\\\"toolOnlyQuestion\\\":[\\\"grind_frontier\\\"]}\",\"inputRaw\":\"raw.json\",\"inputRawBytes\":8794,\"livenessClosed\":true,\"mode\":\"replay\",\"modelCalls\":0,\"pendingQuestionsRejected\":0,\"replayComplete\":false,\"resultPresent\":true,\"schemaVersion\":1,\"terminalResult\":\"captured-failure-clean\"}\n"
+    }
+  ],
+  "processAfter": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 32940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 32940,
+      "pid": 33200
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "processBefore": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 32940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 32940,
+      "pid": 33200
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "proofProcess": {
+    "parentPid": 40192,
+    "pid": 33160,
+    "terminal": {
+      "signal": null,
+      "status": 1
+    },
+    "urlRef": "server_b1cfc15cea7c"
+  },
+  "resolvedRoutes": [
+    {
+      "agent": "build",
+      "hidden": false,
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    {
+      "agent": "session-completion-arbiter",
+      "hidden": true,
+      "model": "xai/grok-4.6",
+      "variant": "high"
+    }
+  ],
+  "schemaVersion": 1,
+  "serverLogs": {
+    "stderr": "timestamp=2026-08-31T00:12:18.993Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-31T00:12:18.997Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-31T00:12:19.007Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-31T00:12:19.262Z level=INFO run=8cbcc346 message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\"\ntimestamp=2026-08-31T00:12:19.263Z level=INFO run=8cbcc346 message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\"\ntimestamp=2026-08-31T00:12:19.276Z level=INFO run=8cbcc346 message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\"\ntimestamp=2026-08-31T00:12:19.287Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-31T00:12:19.287Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-31T00:12:19.288Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-31T00:12:19.311Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\config\\\\opencode.json\"\ntimestamp=2026-08-31T00:12:19.489Z level=INFO run=8cbcc346 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-31T00:12:45.266Z level=INFO run=8cbcc346 message=\"all LSPs are disabled\"\ntimestamp=2026-08-31T00:12:45.268Z level=INFO run=8cbcc346 message=\"all formatters are disabled\"\ntimestamp=2026-08-31T00:12:45.268Z level=INFO run=8cbcc346 message=init\ntimestamp=2026-08-31T00:12:45.455Z level=INFO run=8cbcc346 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-31T00:12:45.457Z level=INFO run=8cbcc346 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-31T00:12:45.463Z level=INFO run=8cbcc346 message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-31T00:12:45.757Z level=INFO run=8cbcc346 message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\" workspaceID=undefined\ntimestamp=2026-08-31T00:12:48.199Z level=INFO run=8cbcc346 message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-31T00:12:48.213Z level=INFO run=8cbcc346 message=created id=ses_faad6a72affetB1adC3tJJbF0z slug=eager-sailor version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-KJl3pZ/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788135168213 time.updated=1788135168213\ntimestamp=2026-08-31T00:12:48.370Z level=INFO run=8cbcc346 message=loop session.id=ses_faad6a72affetB1adC3tJJbF0z step=0\ntimestamp=2026-08-31T00:12:48.555Z level=WARN run=8cbcc346 message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-31T00:12:54.794Z level=INFO run=8cbcc346 message=init count=1\ntimestamp=2026-08-31T00:12:54.958Z level=INFO run=8cbcc346 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-31T00:12:54.960Z level=INFO run=8cbcc346 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-31T00:12:55.163Z level=INFO run=8cbcc346 message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\" workspaceID=undefined\ntimestamp=2026-08-31T00:12:55.203Z level=INFO run=8cbcc346 message=process session.id=ses_faad6a72affetB1adC3tJJbF0z messageID=msg_055295976001whW4YTrHLqg0pp\ntimestamp=2026-08-31T00:12:55.205Z level=INFO run=8cbcc346 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_faad6a72affetB1adC3tJJbF0z small=false agent=build mode=primary\ntimestamp=2026-08-31T00:12:55.224Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-31T00:13:06.733Z level=INFO run=8cbcc346 message=loop session.id=ses_faad6a72affetB1adC3tJJbF0z step=1\ntimestamp=2026-08-31T00:13:06.784Z level=INFO run=8cbcc346 message=process session.id=ses_faad6a72affetB1adC3tJJbF0z messageID=msg_05529a12e001EWyT31QwQqf3RB\ntimestamp=2026-08-31T00:13:06.785Z level=INFO run=8cbcc346 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_faad6a72affetB1adC3tJJbF0z small=false agent=build mode=primary\ntimestamp=2026-08-31T00:13:06.788Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-31T00:13:14.357Z level=INFO run=8cbcc346 message=loop session.id=ses_faad6a72affetB1adC3tJJbF0z step=2\ntimestamp=2026-08-31T00:13:14.394Z level=INFO run=8cbcc346 message=process session.id=ses_faad6a72affetB1adC3tJJbF0z messageID=msg_05529bef7001q231P8P0yNRv7v\ntimestamp=2026-08-31T00:13:14.395Z level=INFO run=8cbcc346 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_faad6a72affetB1adC3tJJbF0z small=false agent=build mode=primary\ntimestamp=2026-08-31T00:13:14.405Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-31T00:13:26.133Z level=INFO run=8cbcc346 message=loop session.id=ses_faad6a72affetB1adC3tJJbF0z step=3\ntimestamp=2026-08-31T00:13:26.159Z level=INFO run=8cbcc346 message=process session.id=ses_faad6a72affetB1adC3tJJbF0z messageID=msg_05529ecf7001DOMVcI7NR47JuR\ntimestamp=2026-08-31T00:13:26.160Z level=INFO run=8cbcc346 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_faad6a72affetB1adC3tJJbF0z small=false agent=build mode=primary\ntimestamp=2026-08-31T00:13:26.164Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-31T00:13:29.969Z level=INFO run=8cbcc346 message=loop session.id=ses_faad6a72affetB1adC3tJJbF0z step=4\ntimestamp=2026-08-31T00:13:29.970Z level=INFO run=8cbcc346 message=\"exiting loop\" session.id=ses_faad6a72affetB1adC3tJJbF0z\ntimestamp=2026-08-31T00:13:30.821Z level=INFO run=8cbcc346 message=\"terminal certificate settle stage\" challengeRef=null rootRef=session_f5880d997a1c stage=validator-entered\ntimestamp=2026-08-31T00:13:30.830Z level=INFO run=8cbcc346 message=\"terminal certificate settle stage\" challengeRef=null rootRef=session_f5880d997a1c stage=validator-refresh-start\ntimestamp=2026-08-31T00:13:30.834Z level=INFO run=8cbcc346 message=\"terminal certificate settle stage\" challengeRef=null rootRef=session_f5880d997a1c stage=validator-refresh-complete\ntimestamp=2026-08-31T00:13:30.835Z level=INFO run=8cbcc346 message=\"terminal certificate settle stage\" challengeRef=null rootRef=session_f5880d997a1c stage=validator-fallback\ntimestamp=2026-08-31T00:13:31.528Z level=INFO run=8cbcc346 message=created id=ses_faad5fdf7ffeTWGJhg2rDFG3ik slug=gentle-circuit version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-KJl3pZ\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-KJl3pZ/project workspaceID=undefined parentID=ses_faad6a72affetB1adC3tJJbF0z title=\"Completion audit audit_7902495c5e01\" agent=session-completion-arbiter model.id=grok-4.6 model.providerID=xai model.variant=high metadata.completionGuard.schemaVersion=2 metadata.completionGuard.auditID=audit_7902495c5e01 metadata.completionGuard.rootSessionRef=session_f5880d997a1c metadata.completionGuard.inspectedRevision=7ce93b562dc0331466fd94e25f98f1bf630be2d9f1657ba12aac539de8931df3 metadata.completionGuard.kind=completion metadata.completionGuard.status=auditing metadata.completionGuard.attempt=1 permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788135211528 time.updated=1788135211528\ntimestamp=2026-08-31T00:13:31.595Z level=INFO run=8cbcc346 message=loop session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik step=0\ntimestamp=2026-08-31T00:13:31.642Z level=INFO run=8cbcc346 message=process session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik messageID=msg_0552a024d001bnmWHPic7tdaXx\ntimestamp=2026-08-31T00:13:31.643Z level=INFO run=8cbcc346 message=stream providerID=xai modelID=grok-4.6 session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik small=false agent=session-completion-arbiter mode=subagent\ntimestamp=2026-08-31T00:13:31.660Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-31T00:13:34.313Z level=ERROR run=8cbcc346 message=\"stream error\" providerID=xai modelID=grok-4.6 session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik small=false agent=session-completion-arbiter mode=subagent error.error=\"AI_APICallError: invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\"\ntimestamp=2026-08-31T00:13:34.318Z level=ERROR run=8cbcc346 message=process session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik messageID=msg_0552a024d001bnmWHPic7tdaXx error=\"invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\" stack=\"AI_APICallError: invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\\n    at <anonymous> (B:/~BUN/root/chunk-45hbm2q9.js:8:13985)\\n    at async <anonymous> (B:/~BUN/root/chunk-45hbm2q9.js:8:12500)\\n    at processTicksAndRejections (native:7:39)\"\ntimestamp=2026-08-31T00:13:34.356Z level=WARN run=8cbcc346 message=\"completion audit retry scheduled\" attempt=1 attemptLimit=3 auditRef=audit_f41d8a51e383 error.name=Error error.message=\"Completion arbiter returned an assistant error\" error.stack=\"Error: Completion arbiter returned an assistant error\\n    at runAudit (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\controller.ts:1179:27)\\n    at processTicksAndRejections (native:7:39)\" error.cause.name=APIError nextDelayMs=2000 rootRef=session_f5880d997a1c\ntimestamp=2026-08-31T00:13:37.155Z level=INFO run=8cbcc346 message=loop session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik step=0\ntimestamp=2026-08-31T00:13:37.196Z level=INFO run=8cbcc346 message=process session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik messageID=msg_0552a1805001mGiy7ZkH3s9JTm\ntimestamp=2026-08-31T00:13:37.198Z level=INFO run=8cbcc346 message=stream providerID=xai modelID=grok-4.6 session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik small=false agent=session-completion-arbiter mode=subagent\ntimestamp=2026-08-31T00:13:37.200Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-31T00:13:38.438Z level=ERROR run=8cbcc346 message=\"stream error\" providerID=xai modelID=grok-4.6 session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik small=false agent=session-completion-arbiter mode=subagent error.error=\"AI_APICallError: invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\"\ntimestamp=2026-08-31T00:13:38.439Z level=ERROR run=8cbcc346 message=process session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik messageID=msg_0552a1805001mGiy7ZkH3s9JTm error=\"invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\" stack=\"AI_APICallError: invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\\n    at <anonymous> (B:/~BUN/root/chunk-45hbm2q9.js:8:13985)\\n    at async <anonymous> (B:/~BUN/root/chunk-45hbm2q9.js:8:12500)\\n    at processTicksAndRejections (native:7:39)\"\ntimestamp=2026-08-31T00:13:38.465Z level=WARN run=8cbcc346 message=\"completion audit retry scheduled\" attempt=2 attemptLimit=3 auditRef=audit_f41d8a51e383 error.name=Error error.message=\"Completion arbiter returned an assistant error\" error.stack=\"Error: Completion arbiter returned an assistant error\\n    at runAudit (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\controller.ts:1179:27)\\n    at processTicksAndRejections (native:7:39)\" error.cause.name=APIError nextDelayMs=4000 rootRef=session_f5880d997a1c\ntimestamp=2026-08-31T00:13:43.236Z level=INFO run=8cbcc346 message=loop session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik step=0\ntimestamp=2026-08-31T00:13:43.279Z level=INFO run=8cbcc346 message=process session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik messageID=msg_0552a2fc6001MyAE3lxCH5g5Tf\ntimestamp=2026-08-31T00:13:43.279Z level=INFO run=8cbcc346 message=stream providerID=xai modelID=grok-4.6 session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik small=false agent=session-completion-arbiter mode=subagent\ntimestamp=2026-08-31T00:13:43.281Z level=INFO run=8cbcc346 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-31T00:13:44.696Z level=ERROR run=8cbcc346 message=\"stream error\" providerID=xai modelID=grok-4.6 session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik small=false agent=session-completion-arbiter mode=subagent error.error=\"AI_APICallError: invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\"\ntimestamp=2026-08-31T00:13:44.697Z level=ERROR run=8cbcc346 message=process session.id=ses_faad5fdf7ffeTWGJhg2rDFG3ik messageID=msg_0552a2fc6001MyAE3lxCH5g5Tf error=\"invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\" stack=\"AI_APICallError: invalid-argument: nuphus_browser_click: tool parameter root must be an object type (root schema is an anyOf/oneOf union with a non-object branch)\\n    at <anonymous> (B:/~BUN/root/chunk-45hbm2q9.js:8:13985)\\n    at async <anonymous> (B:/~BUN/root/chunk-45hbm2q9.js:8:12500)\\n    at processTicksAndRejections (native:7:39)\"\ntimestamp=2026-08-31T00:13:44.718Z level=ERROR run=8cbcc346 message=\"completion audit stopped\" attempt=3 attemptLimit=3 auditRef=audit_f41d8a51e383 elapsedMs=13869 error.name=Error error.message=\"Completion arbiter returned an assistant error\" error.stack=\"Error: Completion arbiter returned an assistant error\\n    at runAudit (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\controller.ts:1179:27)\\n    at processTicksAndRejections (native:7:39)\" error.cause.name=APIError errorClass=transient requestContributions=[] requestBytes=544 rootRef=session_f5880d997a1c\ntimestamp=2026-08-31T00:13:44.988Z level=INFO run=8cbcc346 message=\"removing share\" sessionID=ses_faad5fdf7ffeTWGJhg2rDFG3ik\ntimestamp=2026-08-31T00:13:45.010Z level=INFO run=8cbcc346 message=\"removing share\" sessionID=ses_faad6a72affetB1adC3tJJbF0z\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD <redacted> not set; server is unsecured.\nopencode server listening on http://127.0.0.1:50519\n"
+  },
+  "sourceHashes": {
+    "global/AGENTS.md": "757d171a0ee2070c2b90de2b50217d6940a37ece4398930352e170e825a77c79",
+    "global/agents/session-completion-arbiter.md": "e097a43f2c9d7fd640f108de1455c1d4d322ff52f75f3d8064f7482238b91bde",
+    "global/opencode.json": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "global/opencode.local.instructions.md": "23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f",
+    "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+    "global/extensions/session-completion-guard/frontier.ts": "e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c",
+    "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+    "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+    "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+    "tools/proofs/session-completion-guard-autonomous.ts": "17fea24bbe798eaea28595e1a38827bc2f5586a8930e08f858f223c9365cd1af"
+  }
+}

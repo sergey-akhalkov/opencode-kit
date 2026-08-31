@@ -124,44 +124,44 @@ Every capture SHALL write a create-new immutable bundle with schema version, can
 - **THEN** the bundle records cleanup as incomplete
 - **AND** no later scenario arm starts through the same unisolated ownership
 
-### Requirement: Replay and evaluation perform no live effects
-Replay and evaluation SHALL read only explicit bounded evidence roots, verify their schemas and hashes, and produce stable ordered results without creating OpenCode sessions, calling configured providers, executing project validation, contacting endpoints, or mutating baseline, candidate, scenario, or raw bundle files. Evaluator-only changes SHALL be proven by replaying preserved bundles rather than repeating configured-provider capture.
+### Requirement: Evaluation performs no live effects
+Evaluation SHALL use only explicit disposable test inputs and produce stable ordered results without creating OpenCode sessions, calling configured providers, executing project validation, or contacting endpoints. Temporary structured output SHALL be automatically cleaned and SHALL NOT become a repository evidence root, retained bundle, or mandatory handoff artifact.
 
-#### Scenario: Preserved bundle replays deterministically
-- **WHEN** the same valid baseline/candidate bundles and evaluator source are replayed twice
+#### Scenario: Disposable input evaluates deterministically
+- **WHEN** the same valid baseline/candidate test inputs and evaluator source are evaluated twice
 - **THEN** both evaluations have the same normalized result and digest
 - **AND** configured-provider and session call counts remain zero
 
-#### Scenario: Raw bundle was changed
-- **WHEN** a preserved file does not match its recorded hash or schema
-- **THEN** replay fails closed before evaluation
-- **AND** does not repair or rewrite the bundle
+#### Scenario: Test input is invalid
+- **WHEN** a supplied disposable input does not match its schema
+- **THEN** evaluation fails closed
+- **AND** does not repair or retain the input
 
-### Requirement: Project validation distinguishes capture from the gate
-The capability SHALL expose effect-free help and preflight, explicit baseline/candidate capture, provider-free replay, and provider-free current-candidate gate modes. Project-native tests and CI SHALL run schema, negative-oracle, deterministic replay, privacy, freshness, and cleanup fixtures without configured-provider calls. The current-candidate gate SHALL use the reviewed governed-source manifest: an unchanged accepted baseline MAY satisfy the gate, while changed governed sources SHALL require a matching evaluation with the explicitly selected expectation. Configured-provider capture SHALL remain a separately authorized maintainer operation and SHALL never run implicitly from CI, validation, install, bootstrap, or OpenSpec commands.
+### Requirement: Project validation is provider-free
+The capability SHALL expose effect-free help and preflight plus an explicit bounded baseline/candidate comparison. Project-native tests and CI SHALL run schema, negative-oracle, deterministic evaluator, privacy, and cleanup fixtures without configured-provider calls or retained captures. Configured-provider comparison SHALL remain a separately authorized maintainer operation and SHALL never run implicitly from CI, validation, install, bootstrap, or OpenSpec commands.
 
-#### Scenario: CI verifies evidence without provider access
-- **WHEN** project CI runs against current maintained evidence and unchanged governed sources
-- **THEN** replay and the current-candidate gate terminate without provider, credential, session, install, or remote effects
+#### Scenario: CI verifies evaluator behavior without provider access
+- **WHEN** project CI runs the maintained disposable fixtures
+- **THEN** evaluator checks terminate without provider, credential, session, install, retained output, or remote effects
 
-#### Scenario: Changed governed source has passing candidate evidence
-- **WHEN** governed source bytes changed and matching current-candidate evidence passes its explicit expectation
-- **THEN** the provider-free current-candidate gate passes
+#### Scenario: Changed governed source has a passing matched comparison
+- **WHEN** governed source bytes changed and a current matched comparison passes its explicit expectation
+- **THEN** that bounded comparison passes
 - **AND** reports the baseline, candidate, evaluator, environment, and scenario identities
 
 #### Scenario: Help has no effects
 - **WHEN** any maintained CLI is invoked with `--help` or `-h`
-- **THEN** it exits zero after printing modes, inputs, effects, evidence, and cleanup
+- **THEN** it exits zero after printing modes, inputs, effects, temporary output, and cleanup
 - **AND** creates no file, session, process, network request, or provider call
 
 ### Requirement: Focused decision-gap packs do not alter the maintained baseline
-The consumer-outcome regression capability SHALL allow a versioned focused decision-gap scenario pack to reuse the existing matched baseline/candidate source staging, installed OpenCode capture, environment correlation, hard outcome and safety gates, privacy bounds, cleanup, and provider-free replay. A focused pack SHALL declare its own scenarios, exact expected decisions, sample count, provider bound, evidence bound, and maximum claim and SHALL remain separate from the maintained general consumer baseline and friction expectation.
+The consumer-outcome regression capability SHALL allow a versioned focused decision-gap scenario pack to reuse the existing matched baseline/candidate source staging, installed OpenCode capture, environment correlation, hard outcome and safety gates, privacy bounds, cleanup, and provider-free evaluator. A focused pack SHALL declare its own scenarios, exact expected decisions, sample count, provider bound, temporary-output bound, and maximum claim and SHALL remain separate from the maintained general consumer comparison and friction expectation.
 
 Focused-pack tooling SHALL NOT promote, replace, or rewrite the accepted baseline, add its scenarios to the general productivity claim, infer semantic expectations, or run implicitly from CI. This increment's claim-evidence pack SHALL use only generic disposable projects and synthetic facts and SHALL cover representative-only overclaim rejection, complete finite-population scoping, unavailable-real-oracle blocking, and unaffected Ordinary Small exact-case completion.
 
 #### Scenario: Focused pack reuses matched capture safely
 - **WHEN** a reviewed focused pack and candidate request declare identical baseline/candidate environment controls and bounded generic scenarios
-- **THEN** capture and replay use the existing comparison and cleanup owners
+- **THEN** capture and evaluation use the existing comparison and cleanup owners
 - **AND** results are limited to the named decision gap rather than general workflow improvement.
 
 #### Scenario: Focused pack cannot replace the baseline
@@ -171,7 +171,7 @@ Focused-pack tooling SHALL NOT promote, replace, or rewrite the accepted baselin
 
 ### Requirement: A separate shift-left decision pack proves bounded sequencing behavior
 
-The consumer-outcome regression capability SHALL accept one versioned `shift-left` focused decision-gap pack that reuses the existing source staging, matched configured capture, environment correlation, hard outcome and safety gates, privacy bounds, cleanup, and provider-free replay owners. The pack SHALL remain separate from the maintained general scenarios and from every other focused pack, SHALL use generic disposable repositories and synthetic facts, and SHALL declare exactly two scenarios with one sample per baseline and candidate arm.
+The consumer-outcome regression capability SHALL accept one versioned `shift-left` focused decision-gap pack that reuses the existing source staging, matched configured capture, environment correlation, hard outcome and safety gates, privacy bounds, cleanup, and provider-free evaluator owners. The pack SHALL remain separate from the maintained general scenarios and from every other focused pack, SHALL use generic disposable repositories and synthetic facts, and SHALL declare exactly two scenarios with one sample per baseline and candidate arm.
 
 The first scenario SHALL require an already reachable safe real characterization to precede implementation that depends on its unknown result. The second scenario SHALL require selection of a lower real boundary that is sufficient for the accepted effect even when a higher protected rung is available. Each scenario SHALL produce an observable bounded plan decision whose current rung, selected next boundary, first action, deferred dependent work, protected-action disposition, and maximum claim are checked by reviewed deterministic oracles rather than inferred from prose.
 
@@ -201,12 +201,12 @@ The first scenario SHALL require an already reachable safe real characterization
 
 #### Scenario: Shift-left evidence cannot alter another pack or baseline
 
-- **WHEN** all shift-left scenarios pass configured capture and provider-free replay
+- **WHEN** all shift-left scenarios pass configured capture and provider-free evaluation
 - **THEN** the maintained general scenario manifest, accepted baseline pointer, friction expectation, and every other focused pack remain byte-unchanged
 - **AND** the result claims only the two captured decisions for the recorded model, source, prompt, fixture, and environment.
 
-#### Scenario: Evaluator-only correction reuses preserved evidence
+#### Scenario: Evaluator-only correction stays disposable
 
 - **WHEN** a shift-left evaluator or reporting defect is found after complete baseline or candidate capture
-- **THEN** the corrected evaluator replays the immutable affected bundles through the terminal verdict without another configured-provider request
-- **AND** a new live capture remains blocked until preserved-corpus replay is terminal or the exact missing raw observation is identified in advance.
+- **THEN** the corrected evaluator is verified against provider-free disposable fixtures without another configured-provider request
+- **AND** a new live comparison remains blocked until the correction is green or the exact missing observation is identified in advance.

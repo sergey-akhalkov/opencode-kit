@@ -369,7 +369,8 @@ function changeRef(value: unknown): string {
 
 function sanitize(value: unknown, field: string, maximumBytes: number, store: KaizenStore): string {
   const sanitized = sanitizeMemoryText(text(value, field, maximumBytes), store.canonicalRoot);
-  if (/(?:^|\s)[A-Za-z]:[\\/]|(?:^|\s)\/(?:Users|home|tmp)\//u.test(sanitized)) {
+  const pathCandidates = sanitized.replace(/(^|[^A-Za-z0-9_\/\\:])\/p:(?:[A-Za-z_][A-Za-z0-9_.-]*)?(?=$|[\s"'`),;\]}])/giu, "$1");
+  if (/(?:^|[^A-Za-z0-9_])[A-Za-z]:[\\/]|(?:^|[^A-Za-z0-9_\/\\:])\/\/[^/\s"'<>|]+\/|(?:^|[^A-Za-z0-9_\/\\])(?:\\\\[^\\/\s"'<>|]+[\\/]|\\(?!\\)[^\\/\r\n"'<>|]+[\\/]|\/(?!\/)[^\s"'<>|]+)|\bfile:\/\/[^\s"'<>|]+/iu.test(pathCandidates)) {
     throw new KaizenError("privacy", `${field} contains an absolute private path after redaction.`);
   }
   return sanitized;

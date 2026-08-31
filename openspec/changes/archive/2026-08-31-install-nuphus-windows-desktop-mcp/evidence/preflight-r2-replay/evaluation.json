@@ -1,0 +1,19 @@
+{
+  "candidateId": "nuphus-apply-r2-preflight",
+  "checks": {
+    "admin": true,
+    "candidateRecorded": true,
+    "cleanup": true,
+    "configParseClean": true,
+    "currentEnvelope": true,
+    "interactiveDesktop": true,
+    "noExistingOwner": true,
+    "noScreenContent": true,
+    "preimagesRecorded": true,
+    "privacySafe": true,
+    "schema": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-preflight",
+  "schemaVersion": 1
+}

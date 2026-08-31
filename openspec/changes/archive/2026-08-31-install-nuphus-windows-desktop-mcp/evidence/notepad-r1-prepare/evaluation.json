@@ -1,0 +1,16 @@
+{
+  "candidateId": "nuphus-notepad-r1-prepare",
+  "checks": {
+    "beforeImage": true,
+    "noFailure": true,
+    "noInput": true,
+    "ownedTarget": true,
+    "phaseBoundary": true,
+    "privacySafe": true,
+    "protocolCleanup": true,
+    "schema": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-notepad-prepare",
+  "schemaVersion": 1
+}

@@ -1,0 +1,229 @@
+{
+  "candidate": "kaizen-compaction-runtime-context-r1",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "compactionSignalPersisted": true,
+    "copiedPluginMatched": true,
+    "eventHasSessionOnlyIdentity": true,
+    "exactlyOneNewSummary": true,
+    "exactlyOneProviderCall": true,
+    "kaizenContextReachedProvider": true,
+    "noCaptureDiagnostic": true,
+    "noProviderCallBeforeSummarize": true,
+    "noTranscriptRetained": true,
+    "noWrongRootEvent": true,
+    "ordinaryPromptPreserved": true,
+    "pluginFactoryCompleted": true,
+    "rootEventObserved": true,
+    "rootSessionVerified": true,
+    "summaryAccepted": true,
+    "summaryBelongsToRoot": true,
+    "summaryHasIdentity": true,
+    "summaryTextMatchesProvider": true,
+    "zeroEgressTraps": true
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "eventStreamClosed": true,
+    "fixtureRemoved": true,
+    "providerClosed": true,
+    "serverStopped": true,
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "sessionDeleted": true
+  },
+  "copiedPlugin": {
+    "copied": {
+      "files": 18,
+      "sha256": "a2a5c39e0fa8b35fa1e351c7bf34d33a5318d532949794a90b0edf859b9f026e"
+    },
+    "source": {
+      "files": 18,
+      "sha256": "a2a5c39e0fa8b35fa1e351c7bf34d33a5318d532949794a90b0edf859b9f026e"
+    }
+  },
+  "diagnostics": {
+    "stderr": "timestamp=2026-08-30T19:38:08.724Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T19:38:08.728Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T19:38:08.729Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T19:38:08.939Z level=INFO run=29797330 message=\"creating instance\" directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-30T19:38:08.940Z level=INFO run=29797330 message=fromDirectory directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-30T19:38:09.220Z level=INFO run=29797330 message=bootstrapping directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-30T19:38:09.230Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T19:38:09.231Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T19:38:09.231Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T19:38:09.250Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-30T19:38:09.265Z level=INFO run=29797330 message=loading path=\"<root-1>\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-30T19:38:09.316Z level=INFO run=29797330 message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T19:38:09.318Z level=INFO run=29797330 message=\"all formatters are disabled\"\ntimestamp=2026-08-30T19:38:09.318Z level=INFO run=29797330 message=init\ntimestamp=2026-08-30T19:38:09.355Z level=INFO run=29797330 message=created id=ses_fabd219b4ffeFq7X670Wav6Zju slug=neon-knight version=1.18.25 projectID=global directory=\"<root-1>\\\\project\" path=\"\" workspaceID=undefined parentID=undefined title=kaizen-compaction-identity-r1 agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788118689355 time.updated=1788118689355\ntimestamp=2026-08-30T19:38:09.970Z level=INFO run=29797330 message=\"event connected\"\ntimestamp=2026-08-30T19:38:09.991Z level=INFO run=29797330 message=loop session.id=ses_fabd219b4ffeFq7X670Wav6Zju step=0\ntimestamp=2026-08-30T19:38:10.580Z level=INFO run=29797330 message=initialized\ntimestamp=2026-08-30T19:38:10.757Z level=INFO run=29797330 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\de2beef7853fa07901e51b057ca01114e0e252d2\"\ntimestamp=2026-08-30T19:38:10.758Z level=INFO run=29797330 message=process session.id=ses_fabd219b4ffeFq7X670Wav6Zju messageID=msg_0542de8ce0012J0tD0AOYvaORa\ntimestamp=2026-08-30T19:38:10.760Z level=INFO run=29797330 message=stream providerID=proof modelID=proof-model session.id=ses_fabd219b4ffeFq7X670Wav6Zju small=false agent=compaction mode=primary\ntimestamp=2026-08-30T19:38:10.767Z level=INFO run=29797330 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=proof llm.model=proof-model\ntimestamp=2026-08-30T19:38:10.995Z level=INFO run=29797330 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\de2beef7853fa07901e51b057ca01114e0e252d2\"\ntimestamp=2026-08-30T19:38:11.173Z level=INFO run=29797330 message=loop session.id=ses_fabd219b4ffeFq7X670Wav6Zju step=1\ntimestamp=2026-08-30T19:38:11.175Z level=INFO run=29797330 message=\"exiting loop\" session.id=ses_fabd219b4ffeFq7X670Wav6Zju\ntimestamp=2026-08-30T19:38:11.502Z level=INFO run=29797330 message=\"removing share\" sessionID=ses_fabd219b4ffeFq7X670Wav6Zju\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:51051\n"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "opencode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "pluginVersion": "1.18.15",
+    "sdkVersion": "1.18.15",
+    "sourceAssertions": {
+      "legacyCompactedSessionOnly": true,
+      "legacySummaryIdentity": true,
+      "v2CompactedSessionOnly": true,
+      "v2MessagesBeforeCursor": true
+    }
+  },
+  "error": null,
+  "event": {
+    "compacted": [
+      {
+        "id": "evt_0542ded63001Z9J3cYxe7U6krF",
+        "properties": {
+          "sessionID": "ses_fabd219b4ffeFq7X670Wav6Zju"
+        },
+        "type": "session.compacted"
+      }
+    ],
+    "wrongRootCount": 0
+  },
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/compaction-context-r5b",
+  "messages": {
+    "afterCount": 3,
+    "beforeCount": 1,
+    "newSummaries": [
+      {
+        "completed": 1788118691169,
+        "created": 1788118689998,
+        "id": "msg_0542de8ce0012J0tD0AOYvaORa",
+        "parentID": "msg_0542de8b80011ZIWi9XSi17mCi",
+        "sessionID": "ses_fabd219b4ffeFq7X670Wav6Zju",
+        "summary": true,
+        "textBytes": 998,
+        "textSha256": "c5cac7e0f92b61f9890296bc4143371a9a18765e3d2b4d6adb2f4c2ad53c6f35"
+      }
+    ],
+    "summariesAfter": [
+      {
+        "completed": 1788118691169,
+        "created": 1788118689998,
+        "id": "msg_0542de8ce0012J0tD0AOYvaORa",
+        "parentID": "msg_0542de8b80011ZIWi9XSi17mCi",
+        "sessionID": "ses_fabd219b4ffeFq7X670Wav6Zju",
+        "summary": true,
+        "textBytes": 998,
+        "textSha256": "c5cac7e0f92b61f9890296bc4143371a9a18765e3d2b4d6adb2f4c2ad53c6f35"
+      }
+    ],
+    "summariesBefore": []
+  },
+  "preflights": [
+    {
+      "phase": "plugin-only",
+      "providerRequestCount": 0,
+      "status": 0,
+      "stderr": "",
+      "stdoutBytes": 751,
+      "stdoutSha256": "bd063e11deda447ef1652b2cf5ccf61fd4da5c83082d23d904d6ac14bbad221e",
+      "timedOut": false,
+      "trace": [
+        {
+          "phase": "wrapper-module-enter"
+        },
+        {
+          "phase": "factory-enter"
+        },
+        {
+          "phase": "source-import-enter"
+        },
+        {
+          "phase": "source-import-exit"
+        },
+        {
+          "phase": "source-factory-enter"
+        },
+        {
+          "kaizenTools": [
+            "kaizen_checkpoint",
+            "kaizen_decision",
+            "kaizen_import_feedback",
+            "kaizen_report",
+            "kaizen_status"
+          ],
+          "phase": "source-factory-exit"
+        },
+        {
+          "phase": "factory-exit"
+        }
+      ],
+      "trappedEgress": 0
+    },
+    {
+      "phase": "provider-added",
+      "providerRequestCount": 0,
+      "status": 0,
+      "stderr": "",
+      "stdoutBytes": 1523,
+      "stdoutSha256": "99b41f2c58f29c043d152e7c8b6098ccf30392a860e0620596760b15f95767c4",
+      "timedOut": false,
+      "trace": [
+        {
+          "phase": "wrapper-module-enter"
+        },
+        {
+          "phase": "factory-enter"
+        },
+        {
+          "phase": "source-import-enter"
+        },
+        {
+          "phase": "source-import-exit"
+        },
+        {
+          "phase": "source-factory-enter"
+        },
+        {
+          "kaizenTools": [
+            "kaizen_checkpoint",
+            "kaizen_decision",
+            "kaizen_import_feedback",
+            "kaizen_report",
+            "kaizen_status"
+          ],
+          "phase": "source-factory-exit"
+        },
+        {
+          "phase": "factory-exit"
+        }
+      ],
+      "trappedEgress": 0
+    }
+  ],
+  "provider": {
+    "requests": [
+      {
+        "bytes": 2679,
+        "kaizenCompactionContext": true,
+        "ordinaryCompactionPrompt": true,
+        "sha256": "0acd9d7cc81518ea58692108f7f38b87dd66b032fbcc98234227783fd7b74606",
+        "stream": true,
+        "toolNames": []
+      }
+    ],
+    "trapped": 0
+  },
+  "schemaVersion": 1,
+  "stage": "terminal",
+  "status": "passed",
+  "store": {
+    "compactionSignals": [
+      {
+        "signalRef": "signal_e6e0cf963c389f32187f0e6a2636ac30",
+        "sources": [
+          "compaction"
+        ],
+        "status": "pending"
+      }
+    ],
+    "diagnostics": 0,
+    "files": [
+      {
+        "bytes": 1137,
+        "name": "signals/signal-0000.json",
+        "population": "signal",
+        "privacySafe": true,
+        "sha256": "7fa555b476ad79110707466618918d3b869b6f465842ac93982d187b5073d6f5"
+      }
+    ],
+    "signals": 1
+  }
+}

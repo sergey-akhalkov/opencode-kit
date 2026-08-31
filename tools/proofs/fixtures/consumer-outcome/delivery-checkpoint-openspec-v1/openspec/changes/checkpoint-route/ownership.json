@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "checkpoint-route",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "fixture-capability",
+      "requirements": ["All reports and the unchanged validation oracle remain preserved"]
+    }
+  ],
+  "writeRoots": ["fixture-output"],
+  "dependencies": [],
+  "transfers": []
+}

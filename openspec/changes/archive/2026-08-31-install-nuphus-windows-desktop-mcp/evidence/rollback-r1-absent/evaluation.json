@@ -1,0 +1,22 @@
+{
+  "candidateId": "nuphus-rollback-r1-absent",
+  "checks": {
+    "activeConfigBinding": true,
+    "cleanup": true,
+    "exactBaseUrl": true,
+    "isolated": true,
+    "managedUnchanged": true,
+    "modelsUnchanged": true,
+    "noFailure": true,
+    "noNuphusPackage": true,
+    "noNuphusProcess": true,
+    "noNuphusStatus": true,
+    "noProviderOrScreenEffect": true,
+    "overlay": true,
+    "privacySafe": true,
+    "schema": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-absent",
+  "schemaVersion": 1
+}

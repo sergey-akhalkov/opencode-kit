@@ -1,0 +1,114 @@
+{
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "livenessClosed": true,
+    "pendingQuestionsRejected": 0,
+    "rootDeleted": true
+  },
+  "failure": null,
+  "result": {
+    "candidateId": "candidate-working-tree-autonomous",
+    "captureKind": "candidate",
+    "assistantMarker": true,
+    "auditMessageFacts": [
+      {
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "{\n  \"schemaVersion\": 2,\n  \"auditID\": \"audit_a422a5d78ebf\",\n  \"rootSessionRef\": \"session_b687a137a68e\",\n  \"inspectedRevision\": \"238ab38e8e4e89b1a1473953776b8d43de1c2cce0bad0fde43ad2faeab3b97bf\",\n  \"frontierGeneration\": 1,\n  \"verdict\": \"allow_stop\",\n  \"goalSummary\": \"Answer the autonomous in-authority local strategy question and close the completed strategy probe.\",\n  \"claimMatrix\": [],\n  \"requirementMatrix\": [\n    {\n      \"requirementRef\": \"requirement_autonomous_strategy_probe\",\n      \"status\": \"complete\",\n      \"evidenceRefs\": [\"evidence_autonomous_strategy_ready\"]\n    }\n  ],\n  \"unresolved\": [],\n  \"strategyAssessment\": {\n    \"fingerprint\": \"requirement_autonomous_strategy_probe/autonomous-question/complete-frontier\",\n    \"repeated\": false,\n    \"prohibitedStrategies\": [],\n    \"requiredRetryEvidence\": []\n  },\n  \"runnableItemRefs\": [],\n  \"selectedItemRef\": null,\n  \"parkedDecisionRefs\": [],\n  \"deferredGateRefs\": [],\n  \"questionAction\": \"answer\",\n  \"questionAnswers\": [[\"Recommended\"]],\n  \"ownerBoundary\": null,\n  \"waitKind\": null,\n  \"resumeCondition\": null,\n  \"evidenceRefs\": [\"evidence_autonomous_strategy_ready\", \"message_f8f28e326c53\", \"call_03ecb46e2bcd\"],\n  \"evidenceGaps\": [],\n  \"confidence\": \"high\"\n}",
+        "textDigest": "61c5fc051183f5cb57aab2f834c32308506ee0d97c8809aa6f1b031bc17337aa"
+      },
+      {
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "{\"schemaVersion\":2,\"auditID\":\"audit_08e456b89e75\",\"rootSessionRef\":\"session_b687a137a68e\",\"inspectedRevision\":\"d9b9dd7c0660bb5c2b2f512332604ff8a067301969207e3ee33bedae42e92825\",\"frontierGeneration\":1,\"verdict\":\"allow_stop\",\"goalSummary\":\"Start the autonomous strategy question probe and record the selected safe local strategy.\",\"claimMatrix\":[],\"requirementMatrix\":[{\"requirementRef\":\"requirement_autonomous_strategy_probe\",\"status\":\"complete\",\"evidenceRefs\":[\"evidence_autonomous_strategy_ready\",\"call_03ecb46e2bcd\",\"tool_a8408a49d33b\",\"assistant_688110f2e732\"]}],\"unresolved\":[],\"strategyAssessment\":{\"fingerprint\":\"requirement_autonomous_strategy_probe/autonomous-question-probe/complete\",\"repeated\":false,\"prohibitedStrategies\":[],\"requiredRetryEvidence\":[]},\"runnableItemRefs\":[],\"selectedItemRef\":null,\"parkedDecisionRefs\":[],\"deferredGateRefs\":[],\"questionAction\":null,\"questionAnswers\":null,\"ownerBoundary\":null,\"waitKind\":null,\"resumeCondition\":null,\"evidenceRefs\":[\"message_f8f28e326c53\",\"evidence_autonomous_strategy_ready\",\"call_03ecb46e2bcd\",\"tool_a8408a49d33b\",\"assistant_688110f2e732\"],\"evidenceGaps\":[],\"confidence\":\"high\"}",
+        "textDigest": "3b3ca53bf462a67fea34bf557619dde16ecda2a7b1f355f459ef0ce47db1c461"
+      }
+    ],
+    "auditRefs": [
+      {
+        "auditRef": "audit_a471467da4b0",
+        "childRef": "session_7fb86aab96d4",
+        "status": "question-answered"
+      },
+      {
+        "auditRef": "audit_cf8728321840",
+        "childRef": "session_4949a6d47d2b",
+        "status": "passed"
+      }
+    ],
+    "auditRoutes": [
+      "xai/grok-4.6"
+    ],
+    "auditStatuses": [
+      "question-answered",
+      "passed"
+    ],
+    "autonomousRefs": 1,
+    "claimCeilingReported": false,
+    "cleanup": "pending",
+    "continuationAuditCorrelated": false,
+    "continuationAuditRef": null,
+    "continuationCount": 0,
+    "continuationRevisionPresent": false,
+    "continuationRevisionRef": null,
+    "continuationSchemaVersionTwo": false,
+    "deferredQuestionCount": 0,
+    "deferredSelectedItemRefs": [],
+    "finalFrontierGeneration": 1,
+    "finalFrontierState": "complete",
+    "finalRunnableItemRefs": [],
+    "guardState": "passed",
+    "humanQuestionReplies": 0,
+    "inputDigest": "a4a302f31d574c062ac7ee860f96edacee7b290d16063a569f0132aff55524eb",
+    "directoryRef": "directory_689c00764e76",
+    "model": "xai/grok-4.6/high",
+    "modelCallClasses": {
+      "arbiter": 2,
+      "primary": 3
+    },
+    "openCodeVersion": "1.18.25",
+    "offeredLabels": [
+      "Recommended",
+      "Alternative"
+    ],
+    "ownerRequiredLeaked": false,
+    "pendingQuestionCalls": 0,
+    "pendingRefs": 0,
+    "probeEvents": [
+      "tool:grind_frontier",
+      "tool:question"
+    ],
+    "primaryRoutes": [
+      "xai/grok-4.6"
+    ],
+    "projectedAnswer": "Recommended",
+    "projectedStatus": "answered",
+    "questionCalls": 1,
+    "questionStatus": "completed",
+    "finalQuestionStatus": "completed",
+    "rejectedQuestionInterventions": 0,
+    "rootRef": "session_b687a137a68e",
+    "safeLabel": "Recommended",
+    "scenario": "autonomous",
+    "selectedAnswer": "Recommended",
+    "sourceHashes": {
+      "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+      "global/agents/session-completion-arbiter.md": "17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748",
+      "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+      "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+      "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+      "global/extensions/session-completion-guard/frontier.ts": "e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c",
+      "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+      "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+      "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+      "tools/proofs/session-completion-guard-autonomous.ts": "214f8cc15767a27d0fdf9d93a9b7360680c66f8133a593b5a380304674178763"
+    },
+    "terminalDisposition": "passed",
+    "toolOnlyQuestion": [
+      "grind_frontier",
+      "question"
+    ]
+  },
+  "schemaVersion": 1
+}

@@ -332,26 +332,11 @@ function validateSessionCompletionArbiter(
   if (![true, "true"].includes(frontmatter.get("hidden") as true | "true")) {
     ctx.addError(`session-completion-arbiter must set hidden: true: ${file}`);
   }
-  const allowsAllPermissions = frontmatter.get("permission") === "allow";
+  if (frontmatter.get("permission.*") !== "deny") {
+    ctx.addError(`session-completion-arbiter must set permission wildcard to deny: ${file}`);
+  }
   if (frontmatter.get("steps") !== "6") {
     ctx.addError(`session-completion-arbiter must set steps: 6: ${file}`);
-  }
-  for (const permission of allowsAllPermissions ? [] : [
-    "bash",
-    "edit",
-    "task",
-    "question",
-    "skill",
-    "webfetch",
-    "websearch",
-    "todowrite",
-    "external_directory",
-    "lsp",
-    "doom_loop",
-  ]) {
-    if (frontmatter.get(`permission.${permission}`) !== "deny") {
-      ctx.addError(`session-completion-arbiter must set permission: allow: ${file}`);
-    }
   }
   for (const required of [
     "schemaVersion",

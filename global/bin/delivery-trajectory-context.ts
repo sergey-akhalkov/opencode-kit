@@ -98,7 +98,6 @@ export type DeliveryTrajectoryArchiveFact = {
     proposal: DeliveryTrajectoryFileFact & { support: "present" };
     tasks: DeliveryTrajectoryFileFact;
     history: DeliveryTrajectoryFileFact;
-    evidenceIndex: DeliveryTrajectoryFileFact;
   };
   linkage: {
     horizonId: string;
@@ -222,7 +221,6 @@ const ARCHIVE_FILES = {
   proposal: "proposal.md",
   tasks: "tasks.md",
   history: "history.md",
-  evidenceIndex: "evidence-index.json",
 } as const;
 
 function compareAscii(left: string, right: string): number {
@@ -695,11 +693,6 @@ function archiveFacts(
         proposal: presentFact(archive.proposal),
         tasks: optionalFileFact(state, filePath(ARCHIVE_FILES.tasks), `archives.${archive.archiveId}.tasks`),
         history: optionalFileFact(state, filePath(ARCHIVE_FILES.history), `archives.${archive.archiveId}.history`),
-        evidenceIndex: optionalFileFact(
-          state,
-          filePath(ARCHIVE_FILES.evidenceIndex),
-          `archives.${archive.archiveId}.evidenceIndex`,
-        ),
       },
       linkage: { horizonId, state: "linked" },
     };
@@ -850,7 +843,6 @@ export function formatDeliveryTrajectoryContextMarkdown(result: DeliveryTrajecto
       markdownFileRow("proposal", archive.files.proposal),
       markdownFileRow("tasks", archive.files.tasks),
       markdownFileRow("history", archive.files.history),
-      markdownFileRow("evidence-index", archive.files.evidenceIndex),
       "",
     );
   }

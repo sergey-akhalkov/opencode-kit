@@ -1,0 +1,30 @@
+{
+  "absence": {
+    "evidence": "evidence/rollback-r1-absent",
+    "offlineReplay": "evidence/final-absent-replay",
+    "providerCalls": 0,
+    "result": "passed"
+  },
+  "exactInstalledIdentities": {
+    "commandShimSha256": "822db35bd983769054cb48280a778bdf67ec6d2c1939f6dd5eb24a77d7468747",
+    "metaPackageJsonSha256": "66dec5772adf92bb338180f96b4626a1682de0aa37528a90cf5a8b503141eeb3",
+    "platformBinarySha256": "9a07112f17a964d9c0b1a54653af95559d7de33cce1cb3dffd60dfc4c85ccfb0",
+    "platformPackageJsonSha256": "5a514a1ff9e1e8844308975c09074b551a6a41bffad69ac41925248d52d2ceca",
+    "versions": [
+      "@nuphus/nuphus-mcp@0.2.2",
+      "@nuphus/nuphus-mcp-win32-x64@0.2.2"
+    ]
+  },
+  "preimages": {
+    "configSha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "instructionsSha256": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1"
+  },
+  "restore": {
+    "configEvidence": "evidence/restore-r2-config",
+    "configSha256": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "instructionsSha256": "2542b70c3af76fa24a9f0a99a8621b51b2c329cbf750bc3bc04c05e38d4795f1",
+    "loadedEvidence": "evidence/restore-r1-loaded",
+    "offlineReplay": "evidence/final-loaded-replay",
+    "result": "passed"
+  }
+}

@@ -40,6 +40,14 @@ import {
   verifyFixtureSeed,
 } from "./proofs/consumer-outcome/contracts.ts";
 import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, replayEvaluation } from "./proofs/consumer-outcome/evaluate.ts";
+import { loadDeliveryCheckpointConfiguredPack, loadDeliveryCheckpointPack, parseDeliveryCheckpointPack } from "./proofs/consumer-outcome/delivery-checkpoint.ts";
+import {
+  deliveryCheckpointContinuityPreflight,
+  evaluateDeliveryCheckpointContinuity,
+  loadDeliveryCheckpointContinuityFixture,
+  sealDeliveryCheckpointContinuityBundle,
+  type DeliveryCheckpointContinuityBundle,
+} from "./proofs/consumer-outcome/delivery-checkpoint-continuity.ts";
 import { loadDeliveryTrajectoryConfiguredPack, loadDeliveryTrajectoryPack, selectDeliveryTrajectoryConfiguredScenario } from "./proofs/consumer-outcome/delivery-trajectory.ts";
 import { evaluateTeamAdviceContinuity, loadTeamAdviceContinuityFixture, sealTeamAdviceContinuityBundle, teamAdviceContinuityPreflight, type TeamAdviceContinuityBundle, type TeamAdviceContinuitySample } from "./proofs/consumer-outcome/team-advice-continuity.ts";
 import { evaluateTeamAdvisingPack, loadTeamAdvisingPack, redactTeamBundlePrivacy, sanitizeTeamEvidenceText, sealTeamBundle, sealTeamSample, selectTeamAdvisingPack, type TeamBundle, type TeamSampleEvidence } from "./proofs/consumer-outcome/team-advising.ts";
@@ -260,6 +268,302 @@ function invokeCli(args: string[], cwd = root, environment: NodeJS.ProcessEnv = 
 
 const tests: TestCase[] = [
   {
+    name: "delivery-checkpoint pack materializes reviewed judgments provider-free and rejects red controls",
+    run() {
+      const directory = tempDir("delivery-checkpoint");
+      const evidenceRoot = path.join(directory, "materialized");
+      try {
+        const loaded = loadDeliveryCheckpointPack(root);
+        const sourceBefore = governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths).governedDigest;
+        assert(loaded.pack.claimId === "OPDC-001" && loaded.pack.scenarios.length === 12, "delivery-checkpoint population identity");
+        assert(loaded.pack.continuityControls.map((control) => control.id).join(",") === "shift-left-route-change,irreducible-current-route,population-reduction-owner-boundary,compaction-due-checkpoint", "delivery-checkpoint continuity control order");
+        const compactionControl = loaded.pack.continuityControls.find((control) => control.id === "compaction-due-checkpoint");
+        assert(compactionControl?.expectedObservation.compactionBlock?.fields.join(",") === "Checkpoint Ref,Evidence Refs,Selected Route,Preserved Outcome/Oracle/Population,Next Action,Next Oracle,Suppression Condition", "delivery-checkpoint compaction fields");
+        assert(loaded.pack.continuityControls.every((control) => control.expectedObservation.kaizenDependency === false), "delivery-checkpoint continuity must not depend on Kaizen");
+        assert(loaded.pack.scenarios.map((scenario) => scenario.id).join(",") === [
+          "similar-retry-stagnation",
+          "different-defect-late-discovery",
+          "coarse-invalidation-amplification",
+          "failed-costly-repetition",
+          "dominant-repeated-setup",
+          "advancing-long-work",
+          "single-cheap-failure",
+          "irreducible-cost",
+          "duplicate-suppression",
+          "independent-sibling-work",
+          "scope-proof-weakening",
+          "compaction-continuity",
+        ].join(","), "delivery-checkpoint scenario order");
+
+        const help = invokeCli(["--help"]);
+        const shortHelp = invokeCli(["-h"]);
+        assert(help.status === 0 && shortHelp.status === 0 && help.stdout === shortHelp.stdout, "delivery-checkpoint help must be effect-free and stable");
+        assert(help.stdout.includes("delivery-checkpoint freezes twelve reviewed OPDC-001 members") && help.stdout.includes("without semantic scoring"), "delivery-checkpoint help inventory");
+        const preflight = invokeCli(["--mode", "preflight", "--pack", "delivery-checkpoint", "--source-ref", "working-tree"]);
+        assert(preflight.status === 0, preflight.stderr || preflight.stdout);
+        const preflightOutput = JSON.parse(preflight.stdout) as Record<string, unknown>;
+        assert(preflightOutput.status === "ready" && preflightOutput.memberCount === 12, preflight.stdout);
+        assert(preflightOutput.modelCalls === 0 && preflightOutput.processCalls === 0 && preflightOutput.providerCalls === 0, "delivery-checkpoint preflight effects");
+
+        const materialized = invokeCli([
+          "--mode", "materialize",
+          "--pack", "delivery-checkpoint",
+          "--source-ref", "working-tree",
+          "--candidate-id", "opdc-provider-free-test",
+          "--evidence-root", evidenceRoot,
+        ]);
+        assert(materialized.status === 0, materialized.stderr || materialized.stdout);
+        const output = JSON.parse(materialized.stdout) as {
+          evaluation?: {
+            continuityRows?: Array<{ expected?: unknown; observed?: unknown; oracleMatched?: unknown }>;
+            costArithmetic?: Array<{ scenarioId?: unknown; totalCostUnits?: unknown }>;
+            rows?: Array<{ expected?: unknown; observed?: unknown; oracleMatched?: unknown }>;
+            status?: unknown;
+          };
+          liveCalls?: unknown;
+          pointerMutated?: unknown;
+          sourceDigest?: unknown;
+        };
+        assert(output.evaluation?.status === "passed" && output.evaluation.rows?.length === 24, materialized.stdout);
+        assert(output.evaluation.rows.filter((row) => row.expected === "pass" && row.observed === "passed" && row.oracleMatched === true).length === 12, "delivery-checkpoint green rows");
+        assert(output.evaluation.rows.filter((row) => row.expected === "fail" && row.observed === "failed" && row.oracleMatched === true).length === 12, "delivery-checkpoint deliberate red rows");
+        assert(output.evaluation.continuityRows?.filter((row) => row.expected === "pass" && row.observed === "passed" && row.oracleMatched === true).length === 4, "delivery-checkpoint continuity green rows");
+        assert(output.evaluation.continuityRows?.filter((row) => row.expected === "fail" && row.observed === "failed" && row.oracleMatched === true).length === 7, "delivery-checkpoint continuity deliberate red rows");
+        assert(output.evaluation.costArithmetic?.find((row) => row.scenarioId === "dominant-repeated-setup")?.totalCostUnits === 825, "delivery-checkpoint explicit cost arithmetic");
+        assert(output.liveCalls === 0 && output.pointerMutated === false && output.sourceDigest === sourceBefore, "delivery-checkpoint materialization effects and identity");
+        const bundlePath = path.join(evidenceRoot, "bundle.json");
+        const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8")) as Record<string, unknown>;
+        const effects = bundle.effects as Record<string, unknown>;
+        const cleanup = bundle.cleanup as Record<string, unknown>;
+        assert(effects.providerCalls === 0 && effects.networkCalls === 0 && effects.processCalls === 0 && effects.sourceWrites === 0 && effects.remoteEffects === 0, "delivery-checkpoint bundle effects");
+        assert(cleanup.status === "complete" && cleanup.terminal === true && cleanup.persistentTemporaryFiles === 0, "delivery-checkpoint cleanup");
+        assert(governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths).governedDigest === sourceBefore, "delivery-checkpoint materialization must not mutate governed source");
+
+        const replayArgs = ["--mode", "evaluate", "--pack", "delivery-checkpoint", "--baseline", bundlePath];
+        const replayA = invokeCli(replayArgs);
+        const replayB = invokeCli(replayArgs);
+        assert(replayA.status === 0 && replayB.status === 0, replayA.stderr || replayB.stderr || replayA.stdout || replayB.stdout);
+        assert(replayA.stdout === replayB.stdout, "delivery-checkpoint replay must be byte-stable");
+        const replayOutput = JSON.parse(replayA.stdout) as { evaluation?: { rows?: unknown[]; status?: unknown }; liveCalls?: unknown };
+        assert(replayOutput.evaluation?.status === "passed" && replayOutput.evaluation.rows?.length === 24 && replayOutput.liveCalls === 0, replayA.stdout);
+
+        const existingRoot = invokeCli([
+          "--mode", "materialize", "--pack", "delivery-checkpoint", "--source-ref", "working-tree",
+          "--candidate-id", "opdc-existing-root-test", "--evidence-root", evidenceRoot,
+        ]);
+        assert(existingRoot.status === 1 && existingRoot.stderr.includes("must be create-new"), existingRoot.stderr || existingRoot.stdout);
+        const stalePath = path.join(directory, "stale.json");
+        bundle.bundleDigest = "0".repeat(64);
+        fs.writeFileSync(stalePath, `${JSON.stringify(bundle)}\n`, "utf8");
+        const stale = invokeCli(["--mode", "evaluate", "--pack", "delivery-checkpoint", "--baseline", stalePath]);
+        assert(stale.status === 1 && stale.stderr.includes("bundle digest mismatch"), stale.stderr || stale.stdout);
+
+        const rawSeed = JSON.parse(fs.readFileSync(path.join(root, "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-r1.json"), "utf8")) as Record<string, unknown>;
+        const malformed = structuredClone(rawSeed);
+        delete malformed.claimId;
+        let malformedError: unknown;
+        try {
+          parseDeliveryCheckpointPack(malformed);
+        } catch (error) {
+          malformedError = error;
+        }
+        assert(malformedError instanceof ContractError, "delivery-checkpoint malformed seed must fail closed");
+        const overflow = structuredClone(rawSeed) as { scenarios: Array<{ reviewedJudgment: { costMeasurements: Array<Record<string, unknown>> } }> };
+        overflow.scenarios[0]!.reviewedJudgment.costMeasurements[0] = { id: "overflow", count: 1000000, unitCost: 2, expectedTotal: 2000000 };
+        let overflowError: unknown;
+        try {
+          parseDeliveryCheckpointPack(overflow);
+        } catch (error) {
+          overflowError = error;
+        }
+        assert(overflowError instanceof ContractError, "delivery-checkpoint cost overflow must fail closed");
+
+        const helperSource = fs.readFileSync(path.join(root, "tools/proofs/consumer-outcome/delivery-checkpoint.ts"), "utf8");
+        for (const forbidden of ["Date.now", "performance.now", "similarityScore", "dominanceThreshold", "qualityScore"]) {
+          assert(!helperSource.includes(forbidden), `delivery-checkpoint helper must not contain ${forbidden}`);
+        }
+        const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")) as { scripts?: Record<string, string> };
+        const proofReadme = fs.readFileSync(path.join(root, "tools/proofs/README.md"), "utf8");
+        assert(packageJson.scripts?.["proof:consumer-outcome"] === "node tools/proofs/consumer-outcome-regression.ts", "delivery-checkpoint proof inventory script");
+        assert(proofReadme.includes("consumer-outcome-regression.ts"), "delivery-checkpoint existing proof inventory readback");
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+    },
+  },
+  {
+    name: "delivery-checkpoint configured pack freezes one canary and two finite population repositories",
+    run() {
+      const directory = tempDir("delivery-checkpoint-configured");
+      try {
+        const loaded = loadDeliveryCheckpointConfiguredPack(root);
+        const scenario = loaded.pack.scenarios[0]!;
+        assert(loaded.pack.id === "delivery-checkpoint-configured-r1", "configured delivery-checkpoint pack identity");
+        assert(loaded.pack.runtimeProfile === "core" && loaded.pack.profile === "quality-independent", "configured delivery-checkpoint profile identity");
+        assert(loaded.pack.configuredProviderRequestBound === 1 && loaded.pack.scenarios.length === 3, "configured delivery-checkpoint request bound");
+        assert(scenario.id === "configured-different-late-failures" && scenario.shape === "ordinary-small", "configured delivery-checkpoint scenario identity");
+        assert("checkpointCount" in scenario.expectedResult && scenario.expectedResult.checkpointCount === 1 && scenario.expectedResult.costlyActionRepeatCount === 0, "configured delivery-checkpoint exact result");
+        assert("productQuestionCount" in scenario.expectedResult && scenario.expectedResult.productQuestionCount === 0 && scenario.expectedResult.protectedActionCount === 0, "configured delivery-checkpoint safety result");
+        const populationScenarios = loaded.pack.scenarios.slice(1);
+        const populationMemberIds = populationScenarios.flatMap((candidate) => (
+          "rows" in candidate.expectedResult ? candidate.expectedResult.rows.map((row) => row.memberId) : []
+        ));
+        assert(populationMemberIds.length === 12 && new Set(populationMemberIds).size === 12, "configured delivery-checkpoint finite population coverage");
+        assert(populationScenarios.map((candidate) => candidate.shape).join(",") === "ordinary-small,openspec-backed", "configured delivery-checkpoint unrelated repository classes");
+        assert(loaded.pack.maximumClaim.includes("twelve reviewed OPDC-001 members") && loaded.pack.maximumClaim.includes("exact member rows"), "configured delivery-checkpoint claim ceiling");
+        const fixtureRoot = path.join(directory, "fixture");
+        fs.cpSync(path.join(root, scenario.fixturePath), fixtureRoot, { recursive: true });
+        fs.writeFileSync(path.join(fixtureRoot, "checkpoint-result.json"), `${JSON.stringify({
+          schemaVersion: 1,
+          checkpointId: "late-validation-manifest-cache-r1",
+          checkpointStatus: "recorded",
+          triggerRef: "materially-different-failures-same-costly-late-boundary",
+          selectedRoute: "earlier-manifest-cache-canary",
+          nextOracle: "canary-result.json:passed",
+          outcomeRef: "twelve-reviewed-local-reports",
+          envelopeRef: "disposable-local-fixture",
+          oracleRef: "unchanged-twelve-report-late-validation",
+          populationRef: "twelve-report-population-r1",
+          nonDeferrableInvariants: ["no-population-reduction", "no-proof-weakening", "no-protected-action"],
+          checkpointCount: 1,
+          costlyActionRepeatCount: 0,
+          productQuestionCount: 0,
+          protectedActionCount: 0,
+          duplicateDisposition: "suppressed-unchanged-evidence",
+          events: [
+            "trigger-detected:different-failures-same-costly-late-boundary",
+            "checkpoint-recorded:late-validation-manifest-cache-r1",
+            "route-selected:earlier-manifest-cache-canary",
+            "scope-oracle-population:unchanged",
+            "costly-action-repeat-count:0",
+            "protected-boundary:unchanged",
+            "autonomous-continuation:canary",
+            "duplicate-suppressed:unchanged-evidence",
+            "cleanup-ready:proof-owned-fixture",
+          ],
+        })}\n`, "utf8");
+        const canary = spawnSync(process.execPath, ["scripts/run-canary.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(canary.status === 0 && canary.stdout.includes('"status":"passed"'), canary.stderr || canary.stdout);
+        const proof = spawnSync(process.execPath, ["scripts/check-result.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(proof.status === 0 && proof.stdout.includes('"eventCount":9') && proof.stdout.includes('"scopeOraclePopulation":"unchanged"'), proof.stderr || proof.stdout);
+        for (const [index, populationScenario] of populationScenarios.entries()) {
+          assert("rows" in populationScenario.expectedResult, "configured population scenario result kind");
+          const populationRoot = path.join(directory, `population-${index}`);
+          fs.cpSync(path.join(root, populationScenario.fixturePath), populationRoot, { recursive: true });
+          fs.writeFileSync(path.join(populationRoot, "population-result.json"), `${JSON.stringify(populationScenario.expectedResult)}\n`, "utf8");
+          const populationProof = spawnSync(process.execPath, ["scripts/check-result.ts"], { cwd: populationRoot, encoding: "utf8", timeout: 60_000 });
+          assert(populationProof.status === 0 && populationProof.stdout.includes(`"memberCount":${populationScenario.expectedResult.memberCount}`)
+            && populationProof.stdout.includes(`"repositoryClass":"${populationScenario.expectedResult.repositoryClass}"`), populationProof.stderr || populationProof.stdout);
+        }
+        const help = invokeCli(["--help"]);
+        assert(help.status === 0 && help.stdout.includes("configured ordinary/OpenSpec population lane permits one request") && help.stdout.includes("exact reviewed rows"), "configured delivery-checkpoint help inventory");
+        const missingLiveInputs = invokeCli([
+          "--mode", "preflight", "--pack", "delivery-checkpoint", "--source-ref", "working-tree", "--session-mode", "configured",
+        ]);
+        assert(missingLiveInputs.status === 1 && missingLiveInputs.stderr.includes("requires --opencode and --candidate-config-dir"), missingLiveInputs.stderr || missingLiveInputs.stdout);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+    },
+  },
+  {
+    name: "delivery-checkpoint OpenSpec compaction fixture and evaluator fail closed offline",
+    run() {
+      const directory = tempDir("delivery-checkpoint-continuity");
+      const fixtureRoot = path.join(directory, "fixture");
+      try {
+        const loaded = loadDeliveryCheckpointContinuityFixture(root);
+        const preflight = deliveryCheckpointContinuityPreflight({ repoRoot: root });
+        assert(preflight.status === "ready" && preflight.stateFieldsPresent === true, "delivery-checkpoint continuity offline preflight");
+        fs.cpSync(path.join(root, "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-openspec-v1"), fixtureRoot, { recursive: true });
+        const changeRoot = path.join(fixtureRoot, "openspec", "changes", "checkpoint-route");
+        const initialPlanning = Object.fromEntries(Object.keys(loaded.fixture.expectedPlanning).map((relative) => [relative, fs.readFileSync(path.join(changeRoot, relative), "utf8")]));
+        for (const [relative, contents] of Object.entries(loaded.fixture.expectedPlanning)) fs.writeFileSync(path.join(changeRoot, relative), contents, "utf8");
+        const beforeCompaction = spawnSync(process.execPath, ["scripts/check-before-compaction.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        const precompaction = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "precompaction-result.json"), "utf8")) as { nextAction: string; resumeToken: string };
+        fs.rmSync(path.join(fixtureRoot, "precompaction-result.json"));
+        const canary = spawnSync(process.execPath, ["scripts/complete-canary.ts", "--resume-token", precompaction.resumeToken], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        const final = spawnSync(process.execPath, ["scripts/check-final.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(beforeCompaction.status === 0 && canary.status === 0 && final.status === 0, beforeCompaction.stderr || canary.stderr || final.stderr);
+        const changedPaths = Object.keys(loaded.fixture.expectedPlanning).sort((a, b) => a.localeCompare(b));
+        const unchanged = loaded.fixture.unchangedPlanningPaths.map((relative) => ({ path: posixPath(relative), sha256: sha256(fs.readFileSync(path.join(changeRoot, relative))) }));
+        const before = [
+          ...unchanged,
+          ...changedPaths.map((relative) => ({ path: relative, sha256: sha256(initialPlanning[relative]!) })),
+        ].sort((a, b) => a.path.localeCompare(b.path));
+        const after = [
+          ...unchanged,
+          ...changedPaths.map((relative) => ({ path: relative, sha256: sha256(fs.readFileSync(path.join(changeRoot, relative))) })),
+        ].sort((a, b) => a.path.localeCompare(b.path));
+        const checkpoint = loaded.fixture.checkpoint;
+        const summary = [
+          "Delivery Checkpoint State",
+          `Selected Route: ${checkpoint.selectedRoute}`,
+          `Preserved Outcome/Oracle/Population: ${checkpoint.preservedOutcomeOraclePopulation}`,
+          `Next Action: ${precompaction.nextAction}`,
+          `Next Oracle: ${checkpoint.nextOracle}`,
+          `Suppression Condition: ${checkpoint.suppressionCondition}`,
+        ].join("\n");
+        const bundle = sealDeliveryCheckpointContinuityBundle({
+          candidateId: "offline-fixture",
+          captureErrorFacts: null,
+          cleanup: { complete: true, error: null, fixtureRemoved: true, processRemoved: true, sessionsRemoved: true },
+          environment: {
+            configDigest: "a".repeat(64),
+            installedOpenCode: { sha256: "b".repeat(64), version: "fixture" },
+            node: process.version,
+            platform: process.platform,
+            routes: { compaction: "fixture/model/default", main: "fixture/model/default" },
+          },
+          finalCommand: { status: 0, stderr: "", stdout: final.stdout },
+          fixtureDigest: loaded.digest,
+          id: loaded.fixture.id,
+          markers: {
+            canary: JSON.parse(fs.readFileSync(path.join(fixtureRoot, "canary-result.json"), "utf8")),
+            precompaction,
+          },
+          planning: { after, before, changedPaths, observed: { ...loaded.fixture.expectedPlanning } },
+          roundtrip: {
+            compactionContext: summary,
+            error: null,
+            mainResponse: summary,
+            providerRequestCount: 3,
+            reconstructionResponse: final.stdout.trim(),
+            sessionCleanup: { error: null, sessionsRemoved: true },
+            sessionRef: "fixture-session",
+            summarizeAccepted: true,
+            toolCalls: [
+              { name: "skill", status: "completed" },
+              { name: "read", status: "completed" },
+              { name: "apply_patch", status: "completed" },
+              { name: "bash", status: "completed" },
+            ],
+          },
+          schemaVersion: 1,
+          server: {
+            signal: null,
+            startup: { hostConfigLoaded: false, isolatedConfigLoaded: true, ripgrepDownloadRequested: false },
+            status: 0,
+            stderr: "",
+            stdout: "",
+          },
+          sourceIdentity: source("continuity-source"),
+          sourceUnchanged: true,
+        });
+        const green = evaluateDeliveryCheckpointContinuity(loaded.fixture, loaded.digest, bundle);
+        assert(green.status === "passed" && green.failures.length === 0 && green.modelCalls === 3, JSON.stringify(green));
+        const redInput = structuredClone(bundle) as DeliveryCheckpointContinuityBundle;
+        redInput.roundtrip.compactionContext = summary.replace(`Next Oracle: ${checkpoint.nextOracle}\n`, "");
+        const { bundleDigest: _bundleDigest, byteLength: _byteLength, ...redValue } = redInput;
+        const redBundle = sealDeliveryCheckpointContinuityBundle(redValue);
+        const red = evaluateDeliveryCheckpointContinuity(loaded.fixture, loaded.digest, redBundle);
+        assert(red.status === "failed" && red.failures.includes("missing-checkpoint-state:Next Oracle"), JSON.stringify(red));
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+    },
+  },
+  {
     name: "delivery-trajectory pack is provider-free, replay-stable, and fail-closed",
     run() {
       const directory = tempDir("delivery-trajectory");
@@ -318,7 +622,7 @@ const tests: TestCase[] = [
 
         const candidatePath = path.join(candidateRoot, "bundle.json");
         const replayArgs = [
-          "--mode", "replay",
+          "--mode", "evaluate",
           "--pack", "delivery-trajectory",
           "--source-ref", "working-tree",
           "--baseline", baselinePath,
@@ -334,19 +638,19 @@ const tests: TestCase[] = [
 
         const invalidPath = path.join(directory, "invalid.json");
         fs.writeFileSync(invalidPath, "not-json\n", "utf8");
-        const invalid = invokeCli(["--mode", "replay", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", invalidPath]);
+        const invalid = invokeCli(["--mode", "evaluate", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", invalidPath]);
         assert(invalid.status === 1 && invalid.stderr.includes("not valid JSON"), invalid.stderr || invalid.stdout);
 
         const stalePath = path.join(directory, "stale.json");
         const staleBundle = JSON.parse(fs.readFileSync(baselinePath, "utf8")) as Record<string, unknown>;
         staleBundle.bundleDigest = "0".repeat(64);
         fs.writeFileSync(stalePath, `${JSON.stringify(staleBundle)}\n`, "utf8");
-        const stale = invokeCli(["--mode", "replay", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", stalePath]);
+        const stale = invokeCli(["--mode", "evaluate", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", stalePath]);
         assert(stale.status === 1 && stale.stderr.includes("bundle digest mismatch"), stale.stderr || stale.stdout);
 
         const privatePath = path.join(directory, "private.json");
         fs.writeFileSync(privatePath, `${JSON.stringify({ path: String.raw`C:\Users\private-user\source` })}\n`, "utf8");
-        const privateReplay = invokeCli(["--mode", "replay", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", privatePath]);
+        const privateReplay = invokeCli(["--mode", "evaluate", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", privatePath]);
         assert(privateReplay.status === 1 && privateReplay.stderr.includes("contains a private path"), privateReplay.stderr || privateReplay.stdout);
 
         const configured = invokeCli(["--mode", "preflight", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--session-mode", "configured"]);
@@ -415,7 +719,7 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "team-advising continuity replay preserves exact state and changed-catalog invalidation",
+    name: "team-advising continuity evaluation preserves exact state and changed-catalog invalidation",
     run() {
       const directory = tempDir("team-advising-continuity");
       try {
@@ -472,13 +776,13 @@ const tests: TestCase[] = [
         assert(evaluateTeamAdviceContinuity(loaded.fixture, loaded.digest, bundle).status === "passed", "continuity direct evaluation");
         const bundlePath = path.join(directory, "bundle.json");
         fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
-        const replay = invokeCli(["--mode", "replay", "--pack", "team-advising", "--continuity", "--candidate", bundlePath]);
+        const replay = invokeCli(["--mode", "evaluate", "--pack", "team-advising", "--continuity", "--candidate", bundlePath]);
         assert(replay.status === 0, replay.stderr || replay.stdout);
         const output = JSON.parse(replay.stdout) as { evaluation?: { modelCalls?: unknown; status?: unknown }; liveCalls?: unknown };
         assert(output.evaluation?.status === "passed" && output.evaluation.modelCalls === 6 && output.liveCalls === 0, replay.stdout);
         bundle.bundleDigest = "stale";
         fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
-        const stale = invokeCli(["--mode", "replay", "--pack", "team-advising", "--continuity", "--candidate", bundlePath]);
+        const stale = invokeCli(["--mode", "evaluate", "--pack", "team-advising", "--continuity", "--candidate", bundlePath]);
         assert(stale.status === 1 && stale.stderr.includes("digest mismatch"), stale.stderr);
       } finally {
         fs.rmSync(directory, { force: true, recursive: true });
@@ -552,12 +856,12 @@ const tests: TestCase[] = [
         assert(legacyEvaluation.rows.some((row) => row.arm === "candidate" && row.failures.includes("forbidden-effect-oracle-missing")), "candidate replay must reject hardcoded safety absence without an oracle");
         const bundlePath = path.join(directory, "bundle.json");
         fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
-        const replay = invokeCli(["--mode", "replay", "--pack", "team-advising", "--baseline", bundlePath]);
+        const replay = invokeCli(["--mode", "evaluate", "--pack", "team-advising", "--baseline", bundlePath]);
         assert(replay.status === 0, replay.stderr || replay.stdout);
         const output = JSON.parse(replay.stdout) as { evaluation?: { status?: unknown }; liveCalls?: unknown };
         assert(output.evaluation?.status === "passed" && output.liveCalls === 0, replay.stdout);
         const subset = invokeCli([
-          "--mode", "replay",
+          "--mode", "evaluate",
           "--pack", "team-advising",
           "--baseline", bundlePath,
           "--scenarios", "trivial-owner-local-direct,non-trivial-single-domain-main-alone",
@@ -577,7 +881,7 @@ const tests: TestCase[] = [
         unsafe.bundleDigest = digestOf(unsafe);
         unsafe.byteLength = Buffer.byteLength(stableJson(unsafe), "utf8");
         fs.writeFileSync(bundlePath, `${JSON.stringify(unsafe, null, 2)}\n`, "utf8");
-        const unsafeReplay = invokeCli(["--mode", "replay", "--pack", "team-advising", "--baseline", bundlePath]);
+        const unsafeReplay = invokeCli(["--mode", "evaluate", "--pack", "team-advising", "--baseline", bundlePath]);
         assert(unsafeReplay.status === 1 && unsafeReplay.stdout.includes("privacy-unsafe"), unsafeReplay.stderr || unsafeReplay.stdout);
         const redacted = redactTeamBundlePrivacy(unsafe, loaded.digest, "privacy-redacted-baseline");
         const redactedEvaluation = evaluateTeamAdvisingPack(loaded.pack, loaded.digest, redacted);
@@ -586,7 +890,7 @@ const tests: TestCase[] = [
         assert(redactedEvaluation.status === "passed", JSON.stringify(redactedEvaluation));
         bundle.bundleDigest = "stale";
         fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
-        const stale = invokeCli(["--mode", "replay", "--pack", "team-advising", "--baseline", bundlePath]);
+        const stale = invokeCli(["--mode", "evaluate", "--pack", "team-advising", "--baseline", bundlePath]);
         assert(stale.status === 1 && stale.stderr.includes("digest mismatch"), stale.stderr);
       } finally {
         fs.rmSync(directory, { force: true, recursive: true });
@@ -727,6 +1031,40 @@ const tests: TestCase[] = [
       assert(result.cleanup.sessionsRemoved && result.cleanup.error == null, "summarized session must delete its session");
       assert(calls.join(",") === "create,prompt,summarize,messages,prompt,messages,delete", `unexpected summarized-session call order: ${calls.join(",")}`);
       assert(promptInputs.length === 2 && promptInputs.every((input) => !("model" in input) && !("variant" in input)), "configured agent prompts must not override their resolved route");
+    },
+  },
+  {
+    name: "summarized proof session aborts before compaction when the main response oracle is missing",
+    async run() {
+      const calls: string[] = [];
+      const message = { info: { agent: "build", finish: "stop", modelID: "gpt-5.6-sol", providerID: "openai", role: "assistant", summary: false }, parts: [{ text: "main response without checkpoint", type: "text" }] };
+      const client = {
+        session: {
+          abort: async () => { calls.push("abort"); return { data: true }; },
+          create: async () => { calls.push("create"); return { data: { id: "missing-main-oracle" } }; },
+          delete: async () => { calls.push("delete"); return { data: true }; },
+          messages: async () => { calls.push("messages"); return { data: [message] }; },
+          prompt: async () => { calls.push("prompt"); return { data: message }; },
+          summarize: async () => { calls.push("summarize"); return { data: true }; },
+        },
+      } as unknown as Parameters<typeof runSummarizedProofSession>[0]["client"];
+      const route: ProofRoute = { agent: "build", hidden: false, model: { modelID: "gpt-5.6-sol", providerID: "openai" }, variant: "xhigh" };
+      const result = await runSummarizedProofSession({
+        client,
+        compactionRoute: { ...route, agent: "compaction" },
+        directory: ".",
+        mainPrompt: "main",
+        mainResponseMustInclude: ["Checkpoint Ref: required"],
+        mainRoute: route,
+        reconstructionPrompt: "reconstruct",
+        timeoutMs: 1_000,
+        title: "missing-main-oracle-test",
+        tools: {},
+      });
+      assert(result.error?.stage === "main" && result.providerRequestCount === 1, JSON.stringify(result));
+      assert(!result.summarizeAccepted && result.reconstructionResponse === "", "failed main oracle must not reach compaction or reconstruction");
+      assert(calls.join(",") === "create,prompt,abort,delete", `missing main oracle must fail before summarize: ${calls.join(",")}`);
+      assert(result.cleanup.sessionsRemoved && result.cleanup.error == null, "failed main oracle must still delete its session");
     },
   },
   {
@@ -990,8 +1328,8 @@ const tests: TestCase[] = [
       assert(loaded.pack.manifest.scenarios.length === 1 && loaded.pack.manifest.sampleCount === 1, "status-scope must use one roundtrip sample per arm");
       assert(loaded.pack.statusScope?.memberOrder.join(",") === "known-resource-path-unknown,resource-unknown-negative-control,compaction-roundtrip-mixed-status", "status-scope member order");
       assert(fs.readFileSync(path.join(root, "global", "principles-of-work.md"), "utf8").includes("Scope status to subject/evidence."), "status-scope canonical principle marker");
-      assert(fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8").includes("routes/outcomes never clear it"), "status-scope compaction authority marker");
-      assert(fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8").includes("never clear it because another route/outcome works"), "status-scope Change-Ready marker");
+      assert(fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8").includes("Live-Attempt Gate: clear | blocked | unknown"), "status-scope compaction authority marker");
+      assert(fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8").includes("It never clears or waives safety"), "status-scope Change-Ready marker");
       const templateConfig = JSON.parse(fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8"));
       const activeConfig = JSON.parse(fs.readFileSync(path.join(root, "global", "opencode.json"), "utf8"));
       const promptMarker = "For mixed status, add `Status Scope` with exact subject/dimension/value";
@@ -1134,11 +1472,11 @@ const tests: TestCase[] = [
       fs.writeFileSync(candidatePath, `${stableJson(candidate)}\n`);
       fs.writeFileSync(lossyBaselinePath, `${stableJson(lossyBaseline)}\n`);
       try {
-        const baselineOnly = invokeCli(["--mode", "replay", "--pack", "status-scope", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
+        const baselineOnly = invokeCli(["--mode", "evaluate", "--pack", "status-scope", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
         assert(baselineOnly.status === 0, baselineOnly.stderr || baselineOnly.stdout);
         const baselinePayload = JSON.parse(baselineOnly.stdout) as Record<string, any>;
         assert(baselinePayload.liveCalls === 0 && baselinePayload.evaluation.evaluation.status === "baseline-established", JSON.stringify(baselinePayload));
-        const args = ["--mode", "replay", "--pack", "status-scope", "--baseline", baselinePath, "--candidate", candidatePath, "--expectation", "no-regression"];
+        const args = ["--mode", "evaluate", "--pack", "status-scope", "--baseline", baselinePath, "--candidate", candidatePath, "--expectation", "no-regression"];
         const first = invokeCli(args);
         const second = invokeCli(args);
         assert(first.status === 0 && second.status === 0, first.stderr || second.stderr || first.stdout || second.stdout);
@@ -1148,12 +1486,12 @@ const tests: TestCase[] = [
         assert(firstPayload.evaluation.digest === secondPayload.evaluation.digest, "status-scope terminal evaluation must be deterministic");
         assert(firstPayload.evaluation.evaluation.status === "passed-no-regression", JSON.stringify(firstPayload.evaluation));
         const resultPath = path.join(directory, "terminal-replay.json");
-        const improvement = invokeCli(["--mode", "replay", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement", "--result-path", resultPath]);
+        const improvement = invokeCli(["--mode", "evaluate", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement", "--result-path", resultPath]);
         assert(improvement.status === 0, improvement.stderr || improvement.stdout);
         const improvementPayload = JSON.parse(improvement.stdout) as Record<string, any>;
         assert(improvementPayload.liveCalls === 0 && improvementPayload.evaluation.evaluation.status === "passed-improvement", JSON.stringify(improvementPayload));
         assert(fs.readFileSync(resultPath, "utf8") === `${improvement.stdout.trim()}\n`, "result path must seal the emitted replay bytes");
-        const duplicate = invokeCli(["--mode", "replay", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement", "--result-path", resultPath]);
+        const duplicate = invokeCli(["--mode", "evaluate", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement", "--result-path", resultPath]);
         assert(duplicate.status === 1 && duplicate.stderr.includes("create-new path already exists"), "result path must fail closed on overwrite");
       } finally {
         fs.rmSync(directory, { force: true, recursive: true });
@@ -1321,12 +1659,12 @@ const tests: TestCase[] = [
       fs.writeFileSync(baselinePath, stableJson(baseline));
       fs.writeFileSync(candidatePath, stableJson(candidate));
       try {
-        const baselineOnly = invokeCli(["--mode", "replay", "--pack", "bounded-falsification", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
+        const baselineOnly = invokeCli(["--mode", "evaluate", "--pack", "bounded-falsification", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
         assert(baselineOnly.status === 0, baselineOnly.stderr || baselineOnly.stdout);
         const baselinePayload = JSON.parse(baselineOnly.stdout) as Record<string, any>;
         assert(baselinePayload.liveCalls === 0 && baselinePayload.evaluation.evaluation.status === "baseline-established", JSON.stringify(baselinePayload));
         assert(baselinePayload.evaluation.boundedFalsificationOracles.length === 12, "baseline replay must retain twelve unknown rows");
-        const args = ["--mode", "replay", "--pack", "bounded-falsification", "--baseline", baselinePath, "--candidate", candidatePath];
+        const args = ["--mode", "evaluate", "--pack", "bounded-falsification", "--baseline", baselinePath, "--candidate", candidatePath];
         const first = invokeCli(args);
         const second = invokeCli(args);
         assert(first.status === 0 && second.status === 0, first.stderr || second.stderr || first.stdout || second.stdout);
@@ -1484,12 +1822,12 @@ const tests: TestCase[] = [
       fs.writeFileSync(baselinePath, stableJson(baseline));
       fs.writeFileSync(candidatePath, stableJson(candidate));
       try {
-        const baselineOnly = invokeCli(["--mode", "replay", "--pack", "foundation-integrity", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
+        const baselineOnly = invokeCli(["--mode", "evaluate", "--pack", "foundation-integrity", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
         assert(baselineOnly.status === 0, baselineOnly.stderr || baselineOnly.stdout);
         const baselinePayload = JSON.parse(baselineOnly.stdout) as Record<string, any>;
         assert(baselinePayload.liveCalls === 0 && baselinePayload.evaluation.evaluation.status === "baseline-established", JSON.stringify(baselinePayload));
         assert(baselinePayload.evaluation.foundationIntegrityOracles.length === 7 && baselinePayload.evaluation.foundationIntegrityRows.length === 12, "baseline replay must retain seven scenarios and twelve unknown rows");
-        const args = ["--mode", "replay", "--pack", "foundation-integrity", "--baseline", baselinePath, "--candidate", candidatePath];
+        const args = ["--mode", "evaluate", "--pack", "foundation-integrity", "--baseline", baselinePath, "--candidate", candidatePath];
         const first = invokeCli(args);
         const second = invokeCli(args);
         assert(first.status === 0 && second.status === 0, first.stderr || second.stderr || first.stdout || second.stdout);
@@ -1525,13 +1863,6 @@ const tests: TestCase[] = [
       const gate = JSON.parse(preflight.stdout) as Record<string, any>;
       assert(gate.modelCalls === 0 && gate.invocationManifest.length === 24, "configured complexity preflight must remain provider-free and complete");
       assert(gate.configuredCapture.semanticClaimBeforeCapture === "unsupported", "configured complexity preflight must not claim an uncaptured outcome");
-
-      const claimIndexPath = resolveChangeFile("add-continuous-complexity-management", "evidence-index.json").path;
-      const claimIndex = JSON.parse(fs.readFileSync(claimIndexPath, "utf8")) as {
-        claims?: Array<{ claimId?: string; population?: { members?: string[] } }>;
-      };
-      const claimMembers = claimIndex.claims?.find((claim) => claim.claimId === "continuous-complexity-management-v1")?.population?.members ?? [];
-      assert(claimMembers.join(",") === loaded.pack.memberOrder.join(","), "fixture members must use the exact claim population identifiers");
 
       const diagnostic = loadDecisionGapPack(root, "complexity");
       assert(diagnostic.pack.manifest.scenarios.length === 1 && diagnostic.pack.manifest.scenarios[0]?.id === "useful-current-consumer-facade", "task-2.4 diagnostic pack must remain independently sealed");
@@ -1662,11 +1993,11 @@ const tests: TestCase[] = [
       fs.writeFileSync(baselinePath, stableJson(baseline));
       fs.writeFileSync(candidatePath, stableJson(candidate));
       try {
-        const baselineOnly = invokeCli(["--mode", "replay", "--pack", "complexity-configured", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
+        const baselineOnly = invokeCli(["--mode", "evaluate", "--pack", "complexity-configured", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
         assert(baselineOnly.status === 0, baselineOnly.stderr || baselineOnly.stdout);
         const baselinePayload = JSON.parse(baselineOnly.stdout) as Record<string, any>;
         assert(baselinePayload.liveCalls === 0 && baselinePayload.evaluation.evaluation.status === "baseline-established", JSON.stringify(baselinePayload));
-        const replayArgs = ["--mode", "replay", "--pack", "complexity-configured", "--baseline", baselinePath, "--candidate", candidatePath];
+        const replayArgs = ["--mode", "evaluate", "--pack", "complexity-configured", "--baseline", baselinePath, "--candidate", candidatePath];
         const firstReplay = invokeCli(replayArgs);
         const secondReplay = invokeCli(replayArgs);
         assert(firstReplay.status === 0 && secondReplay.status === 0, firstReplay.stderr || secondReplay.stderr || firstReplay.stdout || secondReplay.stdout);
@@ -1765,7 +2096,7 @@ const tests: TestCase[] = [
       assert(evaluated.complexityOracles?.length === 2 && evaluated.complexityOracles.every((row) => row.passed), "complexity reviewed oracles");
 
       const replayArgs = [
-        "--mode", "replay",
+        "--mode", "evaluate",
         "--pack", "complexity",
         "--baseline", path.join(baselineRoot, "bundle.json"),
         "--candidate", path.join(candidateRoot, "bundle.json"),
@@ -1863,11 +2194,11 @@ const tests: TestCase[] = [
       for (const output of [help.stdout, shortHelp.stdout]) {
         assert(output.includes("Inputs:"), output);
         assert(output.includes("Effects:"), output);
-        assert(output.includes("Evidence:"), output);
+        assert(output.includes("Diagnostics:"), output);
         assert(output.includes("Cleanup:"), output);
         assert(output.includes("baseline"), output);
         assert(output.includes("capture"), output);
-        assert(output.includes("replay"), output);
+        assert(!output.includes("--mode replay"), output);
         assert(output.includes("evaluate"), output);
         assert(output.includes("gate"), output);
       }
@@ -2095,7 +2426,7 @@ const tests: TestCase[] = [
       assert(evaluation.evaluation.status === "passed-no-regression", evaluation.evaluation.reasons.join(","));
       assert(evaluation.decisionOracles.length === 8 && evaluation.decisionOracles.every((row) => row.passed), "all explicit decision oracles must pass");
       const replay = invokeCli([
-        "--mode", "replay",
+        "--mode", "evaluate",
         "--pack", "claim-evidence",
         "--baseline", path.join(evidence, "bundle.json"),
         "--candidate", path.join(evidence, "bundle.json"),
@@ -2152,13 +2483,13 @@ const tests: TestCase[] = [
       assert([...baseline.samples, ...candidate.samples].every((row) => row.friction.configuredProviderRequestCount === 0), "harness capture must use zero configured-provider requests");
 
       const first = invokeCli([
-        "--mode", "replay",
+        "--mode", "evaluate",
         "--pack", "shift-left",
         "--baseline", path.join(baselineRoot, "bundle.json"),
         "--candidate", path.join(candidateRoot, "bundle.json"),
       ]);
       const second = invokeCli([
-        "--mode", "replay",
+        "--mode", "evaluate",
         "--pack", "shift-left",
         "--baseline", path.join(baselineRoot, "bundle.json"),
         "--candidate", path.join(candidateRoot, "bundle.json"),
@@ -2425,7 +2756,8 @@ const tests: TestCase[] = [
       assert(pkg.scripts.test.includes("tools/test-consumer-outcome.ts"), "test suite includes consumer outcome");
       const readme = fs.readFileSync(path.join(root, "tools/proofs/README.md"), "utf8");
       assert(readme.includes("`consumer-outcome-regression.ts`"), "proof inventory");
-      assert(readme.includes("never runs from CI"), "capture authorization");
+      assert(readme.includes("automatically cleaned temporary directory outside the repository"), "temporary-output contract");
+      assert(readme.includes("Do not create repository `evidence/` trees"), "no durable proof artifacts");
     },
   },
 ];

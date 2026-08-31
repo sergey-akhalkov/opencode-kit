@@ -1,0 +1,311 @@
+{
+  "candidateId": "grind-task-scoped-installed-suite-r1",
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "fixtureRemoved": true,
+    "livenessClosed": true,
+    "serverStopped": true
+  },
+  "configDigest": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+  "failure": null,
+  "installed": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "observations": [
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--mode",
+        "preflight",
+        "--capture-kind",
+        "candidate",
+        "--evidence-root",
+        "<evidence-root>\\preflight"
+      ],
+      "invocationDigest": "ed734f717ac482fe64d7d47f20d7c8cba5f87ac45ecd937dc5045c0a080cbd53",
+      "label": "preflight",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"accepted\":true,\"mode\":\"preflight\",\"modelCalls\":0,\"rejected\":5}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "capture",
+        "--scenario",
+        "task-scoped-product",
+        "--candidate-id",
+        "grind-task-scoped-installed-suite-r1-task-scoped-product",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-task-scoped-product",
+        "--server-url",
+        "http://127.0.0.1:60857"
+      ],
+      "invocationDigest": "6b3e398bf6904c109c0fd2b2b5e357965db28ccc7857f09a2051223c6d1b19ca",
+      "label": "capture-task-scoped-product",
+      "signal": null,
+      "status": 1,
+      "stderr": "156 |     const guard = record(metadata?.completionGuard);\n157 |     const state = guard?.state;\n158 |     if ([\"error\", \"owner-required\", \"passed\", \"paused\", \"product-decision-required\", \"user-paused\", \"waiting\"].includes(String(state))) return guard ?? {};\n159 |     await new Promise((resolve) => setTimeout(resolve, 250));\n160 |   }\n161 |   throw new Error(`Guard did not reach a terminal state within ${timeoutMs}ms`);\n                  ^\nerror: Guard did not reach a terminal state within 420000ms\n      at waitForTerminalGuard (<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts:161:13)\n\nBun v1.4.0 (Windows x64)\n",
+      "stdout": "{\"cleanup\":\"complete\",\"livenessClosed\":true,\"pendingQuestionsRejected\":0,\"rootDeleted\":true}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "replay",
+        "--scenario",
+        "task-scoped-product",
+        "--candidate-id",
+        "grind-task-scoped-installed-suite-r1-task-scoped-product",
+        "--input-root",
+        "<evidence-root>\\capture-task-scoped-product",
+        "--evidence-root",
+        "<evidence-root>\\replay-task-scoped-product"
+      ],
+      "invocationDigest": "abbb6014a35c13596787f5d3a2f36470170738104703db9b948632746bc4476e",
+      "label": "replay-task-scoped-product",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-installed-suite-r1-task-scoped-product\",\"candidateOraclePass\":null,\"captureKind\":\"candidate\",\"cleanupComplete\":true,\"cleanupOraclePass\":true,\"evaluatorRecovered\":false,\"expectedPendingQuestionRejections\":null,\"failure\":\"Guard did not reach a terminal state within 420000ms\",\"inputRaw\":\"raw.json\",\"inputRawBytes\":260,\"livenessClosed\":true,\"mode\":\"replay\",\"modelCalls\":0,\"pendingQuestionsRejected\":0,\"replayComplete\":true,\"resultPresent\":false,\"schemaVersion\":1,\"terminalResult\":\"captured-failure-clean\"}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "capture",
+        "--scenario",
+        "task-scoped-non-product",
+        "--candidate-id",
+        "grind-task-scoped-installed-suite-r1-task-scoped-non-product",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-task-scoped-non-product",
+        "--server-url",
+        "http://127.0.0.1:60857"
+      ],
+      "invocationDigest": "ed00140664406f0dffb7b1e18b3b4a507945308f52eead0ee56c30132402db26",
+      "label": "capture-task-scoped-non-product",
+      "signal": null,
+      "status": 1,
+      "stderr": "156 |     const guard = record(metadata?.completionGuard);\n157 |     const state = guard?.state;\n158 |     if ([\"error\", \"owner-required\", \"passed\", \"paused\", \"product-decision-required\", \"user-paused\", \"waiting\"].includes(String(state))) return guard ?? {};\n159 |     await new Promise((resolve) => setTimeout(resolve, 250));\n160 |   }\n161 |   throw new Error(`Guard did not reach a terminal state within ${timeoutMs}ms`);\n                  ^\nerror: Guard did not reach a terminal state within 420000ms\n      at waitForTerminalGuard (<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts:161:13)\n\nBun v1.4.0 (Windows x64)\n",
+      "stdout": "{\"cleanup\":\"complete\",\"livenessClosed\":true,\"pendingQuestionsRejected\":0,\"rootDeleted\":true}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "replay",
+        "--scenario",
+        "task-scoped-non-product",
+        "--candidate-id",
+        "grind-task-scoped-installed-suite-r1-task-scoped-non-product",
+        "--input-root",
+        "<evidence-root>\\capture-task-scoped-non-product",
+        "--evidence-root",
+        "<evidence-root>\\replay-task-scoped-non-product"
+      ],
+      "invocationDigest": "5b48adc136181503af6f9f3f7e8afa5ff960c8727056b2bc7b3844069aacc8ee",
+      "label": "replay-task-scoped-non-product",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-installed-suite-r1-task-scoped-non-product\",\"candidateOraclePass\":null,\"captureKind\":\"candidate\",\"cleanupComplete\":true,\"cleanupOraclePass\":true,\"evaluatorRecovered\":false,\"expectedPendingQuestionRejections\":null,\"failure\":\"Guard did not reach a terminal state within 420000ms\",\"inputRaw\":\"raw.json\",\"inputRawBytes\":260,\"livenessClosed\":true,\"mode\":\"replay\",\"modelCalls\":0,\"pendingQuestionsRejected\":0,\"replayComplete\":true,\"resultPresent\":false,\"schemaVersion\":1,\"terminalResult\":\"captured-failure-clean\"}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "capture",
+        "--scenario",
+        "technical-blocker",
+        "--candidate-id",
+        "grind-task-scoped-installed-suite-r1-technical-blocker",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-technical-blocker",
+        "--server-url",
+        "http://127.0.0.1:60857"
+      ],
+      "invocationDigest": "8973b023cb134da4ec4bb6985c5096d4be24062d364a560b1b420d95880fee07",
+      "label": "capture-technical-blocker",
+      "signal": null,
+      "status": 1,
+      "stderr": "309 | }\n310 | \n311 | export async function requestData<T>(request: Promise<unknown>, label: string): Promise<T> {\n312 |   const response = await request as { data?: T; error?: unknown };\n313 |   if (response.error != null) {\n314 |     const error = new Error(`${label} failed`) as Error & { cause?: unknown };\n                            ^\nerror: question probe prompt failed\n cause: {\n  name: \"UnknownError\",\n  data: [Object ...],\n},\n\n      at requestData (<source-root>\\tools\\proofs\\lib\\opencode-proof-client.ts:314:23)\n\nBun v1.4.0 (Windows x64)\n",
+      "stdout": "{\"cleanup\":\"complete\",\"livenessClosed\":true,\"pendingQuestionsRejected\":0,\"rootDeleted\":true}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "replay",
+        "--scenario",
+        "technical-blocker",
+        "--candidate-id",
+        "grind-task-scoped-installed-suite-r1-technical-blocker",
+        "--input-root",
+        "<evidence-root>\\capture-technical-blocker",
+        "--evidence-root",
+        "<evidence-root>\\replay-technical-blocker"
+      ],
+      "invocationDigest": "88f5266ed2316835f3eb3fbe59d55d08e955c9367acd9e1a3344b6c02b22733c",
+      "label": "replay-technical-blocker",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-installed-suite-r1-technical-blocker\",\"candidateOraclePass\":null,\"captureKind\":\"candidate\",\"cleanupComplete\":true,\"cleanupOraclePass\":true,\"evaluatorRecovered\":false,\"expectedPendingQuestionRejections\":null,\"failure\":\"question probe prompt failed\",\"inputRaw\":\"raw.json\",\"inputRawBytes\":236,\"livenessClosed\":true,\"mode\":\"replay\",\"modelCalls\":0,\"pendingQuestionsRejected\":0,\"replayComplete\":true,\"resultPresent\":false,\"schemaVersion\":1,\"terminalResult\":\"captured-failure-clean\"}\n"
+    }
+  ],
+  "processAfter": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "processBefore": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "proofProcess": {
+    "parentPid": 44160,
+    "pid": 43784,
+    "terminal": {
+      "signal": null,
+      "status": 1
+    },
+    "urlRef": "server_8162ba530261"
+  },
+  "schemaVersion": 1,
+  "serverLogs": {
+    "stderr": "timestamp=2026-08-30T11:24:41.367Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T11:24:41.371Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T11:24:41.371Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T11:24:41.877Z level=INFO run=0a07408f message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\project\"\ntimestamp=2026-08-30T11:24:41.880Z level=INFO run=0a07408f message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\project\"\ntimestamp=2026-08-30T11:24:41.905Z level=INFO run=0a07408f message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\project\"\ntimestamp=2026-08-30T11:24:41.922Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T11:24:41.923Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T11:24:41.923Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T11:24:41.999Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\config\\\\opencode.json\"\ntimestamp=2026-08-30T11:24:42.246Z level=INFO run=0a07408f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-30T11:25:15.906Z level=INFO run=0a07408f message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T11:25:15.909Z level=INFO run=0a07408f message=\"all formatters are disabled\"\ntimestamp=2026-08-30T11:25:15.909Z level=INFO run=0a07408f message=init\ntimestamp=2026-08-30T11:25:16.029Z level=INFO run=0a07408f message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-30T11:25:16.040Z level=INFO run=0a07408f message=created id=ses_fad955a77ffeuj6pwzkPVnhSZ8 slug=mighty-falcon version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-gJfGkz/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788089116040 time.updated=1788089116040\ntimestamp=2026-08-30T11:25:16.062Z level=INFO run=0a07408f message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-30T11:25:16.710Z level=ERROR run=0a07408f message=\"share subscriber failed\" type=message.updated cause=\"Cause([Fail(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:25:16.762Z level=INFO run=0a07408f message=loop session.id=ses_fad955a77ffeuj6pwzkPVnhSZ8 step=0\ntimestamp=2026-08-30T11:25:16.768Z level=ERROR run=0a07408f message=\"prompt_async failed\" sessionID=ses_fad955a77ffeuj6pwzkPVnhSZ8 cause=\"Cause([Die(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:25:17.791Z level=ERROR run=0a07408f message=\"share subscriber failed\" type=message.updated cause=\"Cause([Fail(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:25:17.801Z level=INFO run=0a07408f message=loop session.id=ses_fad955a77ffeuj6pwzkPVnhSZ8 step=0\ntimestamp=2026-08-30T11:25:17.805Z level=ERROR run=0a07408f message=\"prompt_async failed\" sessionID=ses_fad955a77ffeuj6pwzkPVnhSZ8 cause=\"Cause([Die(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:32:16.200Z level=INFO run=0a07408f message=\"removing share\" sessionID=ses_fad955a77ffeuj6pwzkPVnhSZ8\ntimestamp=2026-08-30T11:32:16.363Z level=INFO run=0a07408f message=created id=ses_fad8ef094ffeekkogGEeRslJVC slug=cosmic-forest version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-gJfGkz/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788089536363 time.updated=1788089536363\ntimestamp=2026-08-30T11:32:16.408Z level=ERROR run=0a07408f message=\"share subscriber failed\" type=message.updated cause=\"Cause([Fail(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:32:16.414Z level=INFO run=0a07408f message=loop session.id=ses_fad8ef094ffeekkogGEeRslJVC step=0\ntimestamp=2026-08-30T11:32:16.418Z level=ERROR run=0a07408f message=\"prompt_async failed\" sessionID=ses_fad8ef094ffeekkogGEeRslJVC cause=\"Cause([Die(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:32:17.284Z level=ERROR run=0a07408f message=\"share subscriber failed\" type=message.updated cause=\"Cause([Fail(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:32:17.288Z level=INFO run=0a07408f message=loop session.id=ses_fad8ef094ffeekkogGEeRslJVC step=0\ntimestamp=2026-08-30T11:32:17.289Z level=ERROR run=0a07408f message=\"prompt_async failed\" sessionID=ses_fad8ef094ffeekkogGEeRslJVC cause=\"Cause([Die(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:39:16.487Z level=INFO run=0a07408f message=\"removing share\" sessionID=ses_fad8ef094ffeekkogGEeRslJVC\ntimestamp=2026-08-30T11:39:16.639Z level=INFO run=0a07408f message=created id=ses_fad8886e0ffe13jm8wKv4lFq0o slug=brave-pixel version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-gJfGkz\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-gJfGkz/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788089956639 time.updated=1788089956639\ntimestamp=2026-08-30T11:39:16.684Z level=ERROR run=0a07408f message=\"share subscriber failed\" type=message.updated cause=\"Cause([Fail(ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?)])\"\ntimestamp=2026-08-30T11:39:16.691Z level=INFO run=0a07408f message=loop session.id=ses_fad8886e0ffe13jm8wKv4lFq0o step=0\ntimestamp=2026-08-30T11:39:16.693Z level=ERROR run=0a07408f message=failed ref=err_8eab91e9 error=\"ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?\" cause=\"ProviderModelNotFoundError: Model not found: xai/grok-4.6. Did you mean: grok-4.6?\\n    at <anonymous> (B:/~BUN/root/chunk-y8j4ckhr.js:439:95275)\\n    at SessionPrompt.getModel (B:/~BUN/root/chunk-mzwkkb61.js:1096:11500)\\n    at SessionPrompt.getModel (definition) (B:/~BUN/root/chunk-mzwkkb61.js:1096:908)\\n    at SessionPrompt.run (B:/~BUN/root/chunk-mzwkkb61.js:1096:15316)\\n    at SessionPrompt.run (definition) (B:/~BUN/root/chunk-mzwkkb61.js:1096:10498)\\n    at SessionRunState.ensureRunning (B:/~BUN/root/chunk-mzwkkb61.js:1096:15285)\\n    at SessionRunState.ensureRunning (definition) (B:/~BUN/root/chunk-mzwkkb61.js:2:8188)\\n    at SessionPrompt.loop (B:/~BUN/root/chunk-mzwkkb61.js:1096:10220)\\n    at SessionPrompt.loop (definition) (B:/~BUN/root/chunk-mzwkkb61.js:1096:15221)\\n    at SessionPrompt.prompt (B:/~BUN/root/chunk-fhexwbcj.js:4:13297)\\n    at SessionPrompt.prompt (definition) (B:/~BUN/root/chunk-mzwkkb61.js:1096:9838)\"\ntimestamp=2026-08-30T11:39:16.755Z level=INFO run=0a07408f message=\"removing share\" sessionID=ses_fad8886e0ffe13jm8wKv4lFq0o\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD <redacted> not set; server is unsecured.\nopencode server listening on http://127.0.0.1:60857\n"
+  },
+  "sourceHashes": {
+    "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+    "global/agents/session-completion-arbiter.md": "79afea97183c14e67308a4aa577acf61095a43a9f662bf41ddd14cb35829f179",
+    "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "global/extensions/session-completion-guard/controller.ts": "fbff649e6cb621fda608cf12ab6596e140502a20688ab8debc7b6d2078e0aa59",
+    "global/extensions/session-completion-guard/frontier.ts": "12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63",
+    "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+    "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+    "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+    "tools/proofs/session-completion-guard-autonomous.ts": "efefb0166de472a23ae7b3ec78d0ad75a02668d3e17afb0f3230ae18c72c36ba"
+  }
+}

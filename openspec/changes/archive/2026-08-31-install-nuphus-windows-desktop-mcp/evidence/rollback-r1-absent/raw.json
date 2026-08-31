@@ -1,0 +1,213 @@
+{
+  "active": {
+    "configSha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "instructionsSha256": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "model": "openai/gpt-5.6-sol",
+    "nuphus": null
+  },
+  "candidateId": "nuphus-rollback-r1-absent",
+  "cleanup": {
+    "fixture": "removed",
+    "server": "terminal",
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "session": "not-created"
+  },
+  "isolation": {
+    "credentialCopies": 2,
+    "rootsDistinct": true,
+    "testHomeConfigured": true,
+    "xdgDataConfigured": true
+  },
+  "logs": {
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderr": {
+      "bytes": 2184,
+      "sha256": "c2131242fbf837a7f69411f96b9006a725555435a70f9efef4d129e916116b47",
+      "tail": "timestamp=2026-08-30T22:33:26.540Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:26.544Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:26.544Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:28.687Z level=INFO run=525b5b22 message=\"creating instance\" directory=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:28.688Z level=INFO run=525b5b22 message=fromDirectory directory=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.007Z level=INFO run=525b5b22 message=bootstrapping directory=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.020Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.021Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.022Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.056Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.079Z level=INFO run=525b5b22 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:33:29.165Z level=INFO run=525b5b22 message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T22:33:29.167Z level=INFO run=525b5b22 message=\"all formatters are disabled\"\ntimestamp=2026-08-30T22:33:29.167Z level=INFO run=525b5b22 message=init\n"
+    },
+    "stdout": {
+      "bytes": 119,
+      "sha256": "cdb0cc9b58093d6cad279356ff69156172addfb15d63a07219dd37d8ee0aaa72",
+      "tail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on htt<redacted-path>\n"
+    }
+  },
+  "managedAfter": [],
+  "managedBefore": [],
+  "managedUnchanged": true,
+  "mcpStatuses": {
+    "codebase-memory-mcp": {
+      "errorSha256": null,
+      "status": "disabled"
+    },
+    "graphify-global": {
+      "errorSha256": null,
+      "status": "disabled"
+    },
+    "serena": {
+      "errorSha256": null,
+      "status": "disabled"
+    }
+  },
+  "mode": "absent",
+  "modelsAfter": {
+    "exists": true,
+    "files": [
+      {
+        "bytes": 4745517,
+        "relative": "ch_PP-OCRv4_det.onnx",
+        "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9"
+      },
+      {
+        "bytes": 10857958,
+        "relative": "ch_PP-OCRv4_rec.onnx",
+        "sha256": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b"
+      }
+    ],
+    "path": {
+      "basename": "models",
+      "pathSha256": "e12f7452bea9c35ba6c7160e72e632e4a57ed34ec80ae749db7be0376f8d64f2"
+    },
+    "selectedByEnvironment": false
+  },
+  "modelsBefore": {
+    "exists": true,
+    "files": [
+      {
+        "bytes": 4745517,
+        "relative": "ch_PP-OCRv4_det.onnx",
+        "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9"
+      },
+      {
+        "bytes": 10857958,
+        "relative": "ch_PP-OCRv4_rec.onnx",
+        "sha256": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b"
+      }
+    ],
+    "path": {
+      "basename": "models",
+      "pathSha256": "e12f7452bea9c35ba6c7160e72e632e4a57ed34ec80ae749db7be0376f8d64f2"
+    },
+    "selectedByEnvironment": false
+  },
+  "openCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "overlay": {
+    "mcp": {
+      "codebase-memory-mcp": {
+        "enabled": false
+      },
+      "graphify-global": {
+        "enabled": false
+      },
+      "serena": {
+        "enabled": false
+      }
+    }
+  },
+  "packages": {
+    "command": {
+      "found": false,
+      "kind": null,
+      "selected": {
+        "bytes": 0,
+        "exists": false,
+        "id": "command-shim",
+        "sha256": null
+      }
+    },
+    "meta": {
+      "packageJson": {
+        "bytes": 0,
+        "exists": false,
+        "id": "meta-package-json",
+        "sha256": null
+      },
+      "version": null
+    },
+    "npmRoot": {
+      "basename": "node_modules",
+      "pathSha256": "c847f8404edd6e5d5b13d82e4dbcc6689559a4343d025165cd964c7900d54052"
+    },
+    "platform": {
+      "binary": {
+        "bytes": 0,
+        "exists": false,
+        "id": "platform-binary",
+        "sha256": null
+      },
+      "layout": null,
+      "packageJson": {
+        "bytes": 0,
+        "exists": false,
+        "id": "platform-package-json",
+        "sha256": null
+      },
+      "version": null
+    },
+    "prefix": {
+      "basename": "node-v24.18.1-win-x64",
+      "pathSha256": "41f89564d6c42f0dbd0ab59206b1502b76bd629553828465d1d549135d87e88d"
+    }
+  },
+  "privacySafe": true,
+  "processTree": {
+    "confirmationRequested": false,
+    "nuphusCount": 0,
+    "rows": [
+      {
+        "createdAt": "2026-08-30T22:33:25.4565830Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 47192,
+        "pid": 9908,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:33:25.4627440Z",
+        "executableSha256": null,
+        "name": "conhost.exe",
+        "parentPid": 9908,
+        "pid": 32032,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:33:25.4763320Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 9908,
+        "pid": 48232,
+        "requestedConfirmation": false
+      }
+    ],
+    "siblingMcpCount": 0
+  },
+  "proofKind": "nuphus-desktop-absent",
+  "resolved": {
+    "mcpNames": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "serena"
+    ],
+    "nuphus": null,
+    "siblingStatuses": {
+      "codebase-memory-mcp": false,
+      "graphify-global": false,
+      "serena": false
+    }
+  },
+  "schemaVersion": 1,
+  "screenCaptureCount": 0,
+  "server": {
+    "baseUrl": "http://127.0.0.1:57711",
+    "pid": 9908
+  }
+}

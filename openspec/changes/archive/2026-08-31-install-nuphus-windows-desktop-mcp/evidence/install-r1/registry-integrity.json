@@ -1,0 +1,23 @@
+{
+  "auditSignaturesGlobal": {
+    "code": "EAUDITGLOBAL",
+    "result": "unsupported-by-npm"
+  },
+  "packages": {
+    "@nuphus/nuphus-mcp": {
+      "integrity": "sha512-C7ovXf62WKxTDMSufVDz4bzF2lXVA54qAWQhL7QPM2xSS1Hkk0qhmhiApoLuz/n4f37DcrKCF3hXdaVbfW78Hg==",
+      "registrySignatureKeyId": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+      "shasum": "b24d0bd7e2823c62ea854e09eed9bee9ad78be1f",
+      "version": "0.2.2"
+    },
+    "@nuphus/nuphus-mcp-win32-x64": {
+      "integrity": "sha512-s7lwtj3DyllNZuCFhg8cau8da21EfVSb06q0kJwJcbUDUqLWep/QgPrSGiB2jxSCYdLoDtfa1Ar8LFRvkNxTSg==",
+      "registrySignatureKeyId": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+      "shasum": "760391d7850b451945e21ca24205b7da6f207ac7",
+      "version": "0.2.2"
+    }
+  },
+  "registry": "https://registry.npmjs.org/",
+  "source": "npm view <exact-package>@0.2.2",
+  "verifiedImmediatelyBeforeInstall": true
+}

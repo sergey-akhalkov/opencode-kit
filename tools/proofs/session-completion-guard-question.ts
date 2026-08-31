@@ -290,7 +290,6 @@ async function runQuestionScenario(
     inspectedRevision: revision.revisionDigest,
     verdict: "allow_stop",
     goalSummary: `Question scenario ${name}`,
-    claimMatrix: [],
     requirementMatrix: [{
       requirementRef: `requirement_${name}`,
       status: "complete",
@@ -383,7 +382,6 @@ const autonomousVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "allow_stop",
   goalSummary: "Select the recommended reversible strategy",
-  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_autonomous_decision",
     status: "complete",
@@ -413,7 +411,6 @@ const ownerVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "owner_required",
   goalSummary: "A protected owner decision remains",
-  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_owner_decision",
     status: "owner_required",
@@ -462,7 +459,6 @@ const repeatedVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "continue",
   goalSummary: "Resolve the repeated technical blocker",
-  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_repeated_technical",
     status: "unresolved",
@@ -537,7 +533,6 @@ const distinctVerdict = parseCompletionVerdict({
   inspectedRevision: completedRevision.revisionDigest,
   verdict: "continue",
   goalSummary: "Resolve a different repeated technical blocker",
-  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_distinct_repeated_technical",
     status: "unresolved",
@@ -709,7 +704,6 @@ try {
     inspectedRevision: revision.revisionDigest,
     verdict: "allow_stop",
     goalSummary: "Reject an unoffered answer",
-    claimMatrix: [],
     requirementMatrix: [],
     unresolved: [],
     strategyAssessment: {
@@ -735,7 +729,6 @@ const continuationVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "continue",
   goalSummary: "Continue one bounded local action",
-  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_continuation",
     status: "unresolved",

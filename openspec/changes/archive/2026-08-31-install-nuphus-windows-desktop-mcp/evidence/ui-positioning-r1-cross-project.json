@@ -1,0 +1,52 @@
+{
+  "candidateId": "nuphus-ui-positioning-r3",
+  "command": "opencode debug config --pure | case-sensitive privacy-safe projection",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-nuphus-0.2.2",
+  "instruction": {
+    "nonVisualBoundary": true,
+    "sha256": "23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f",
+    "uiPositioning": true
+  },
+  "projects": [
+    {
+      "canonicalInstructionCount": 1,
+      "configDirSelected": true,
+      "id": "opencode-kit",
+      "nuphus": {
+        "command": ["nuphus-mcp"],
+        "enabled": true,
+        "environment": { "NUPHUS_MCP_CONFIRM_WRITE": "0" },
+        "timeout": 60000,
+        "type": "local"
+      },
+      "status": 0
+    },
+    {
+      "canonicalInstructionCount": 1,
+      "configDirSelected": true,
+      "id": "controller-gateway-service",
+      "nuphus": {
+        "command": ["nuphus-mcp"],
+        "enabled": true,
+        "environment": { "NUPHUS_MCP_CONFIRM_WRITE": "0" },
+        "timeout": 60000,
+        "type": "local"
+      },
+      "status": 0
+    },
+    {
+      "canonicalInstructionCount": 1,
+      "configDirSelected": true,
+      "id": "hmi-legacy",
+      "nuphus": {
+        "command": ["nuphus-mcp"],
+        "enabled": true,
+        "environment": { "NUPHUS_MCP_CONFIRM_WRITE": "0" },
+        "timeout": 60000,
+        "type": "local"
+      },
+      "status": 0
+    }
+  ],
+  "schemaVersion": 1
+}

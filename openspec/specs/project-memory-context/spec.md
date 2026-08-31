@@ -119,7 +119,7 @@ For each human message in an enabled primary root session, the capability SHALL 
 
 Before system transformation or compaction uses a cached selection, the capability SHALL re-read lifecycle state and revalidate freshness, evidence fingerprints, and current curated files for only the selected refs. It SHALL remove any newly invalidated, stale, mismatched, missing, or unsafe item and re-render within the total capsule budget. Newly added cards SHALL wait until the next human message selection.
 
-The root lookup SHALL use one local OpenCode `session.get` request with a one-second deadline and no retry. Missing session id, timeout, lookup failure, or hook-order state without a preceding selection SHALL produce one privacy-safe owning-boundary warning and no memory injection. The compaction hook SHALL append only the revalidated bounded capsule, privacy-safe card refs, and explicit truncation or warning state. It SHALL not create memory records, read raw session transcripts, replace the default compaction prompt, or schedule improvement work.
+The root lookup SHALL use one local OpenCode `session.get` request with a one-second deadline and no retry. Missing session id, timeout, lookup failure, or hook-order state without a preceding selection SHALL produce one privacy-safe owning-boundary warning and no memory injection. The project-memory compaction hook SHALL append only its revalidated bounded capsule, privacy-safe card refs, and explicit truncation or warning state. Other loaded plugins MAY append disjoint bounded context through normal hook composition. Project memory SHALL not create memory records, read raw session transcripts, replace the default compaction prompt, or schedule improvement work.
 
 #### Scenario: Primary root receives relevant memory
 
@@ -141,8 +141,8 @@ The root lookup SHALL use one local OpenCode `session.get` request with a one-se
 #### Scenario: Session compacts after recall
 
 - **WHEN** compaction starts after a bounded capsule was selected
-- **THEN** compaction context SHALL contain only that bounded advisory capsule and privacy-safe state
-- **AND** no candidate, transcript, mandatory task, or replacement compaction prompt SHALL be created.
+- **THEN** the project-memory contribution to compaction context SHALL contain only that bounded advisory capsule and privacy-safe state
+- **AND** another plugin MAY append disjoint bounded context without changing the capsule or replacing the compaction prompt.
 
 #### Scenario: Another process invalidates a selected card
 

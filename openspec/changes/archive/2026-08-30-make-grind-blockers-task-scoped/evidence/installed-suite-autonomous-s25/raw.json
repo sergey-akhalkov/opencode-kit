@@ -1,0 +1,192 @@
+{
+  "candidateId": "grind-task-scoped-population-autonomous-s25",
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "fixtureRemoved": true,
+    "livenessClosed": true,
+    "serverStopped": true
+  },
+  "configDigest": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+  "failure": "autonomous provider-free replay failed",
+  "installed": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "modelCatalog": {
+    "sha256": "ecb1f86a5307173cc339a45f9995465be1cd28343b219dbe718dea8273c73595"
+  },
+  "observations": [
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--mode",
+        "preflight",
+        "--capture-kind",
+        "candidate",
+        "--evidence-root",
+        "<evidence-root>\\preflight"
+      ],
+      "invocationDigest": "db683d1f299de1ce36252baaa96c080e8b8619e1ed36abe4b49dc769c332d87e",
+      "label": "preflight",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"accepted\":true,\"mode\":\"preflight\",\"modelCalls\":0,\"rejected\":5}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "capture",
+        "--scenario",
+        "autonomous",
+        "--candidate-id",
+        "grind-task-scoped-population-autonomous-s25-autonomous",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-autonomous",
+        "--server-url",
+        "http://127.0.0.1:50772"
+      ],
+      "invocationDigest": "abeca927872530f9e0c45be334201fd192cd3ab424a10d1c3d7c31ab21bfa2d7",
+      "label": "capture-autonomous",
+      "signal": null,
+      "status": 1,
+      "stderr": "1447 |     if (scenarioCandidatePass(result) !== true) throw new Error(`Installed technical-blocker proof failed: ${JSON.stringify(result)}`);\n1448 |   } else if (mixedProtected) {\n1449 |     if (!mixedProtectedCandidatePass(result)) throw new Error(`Installed mixed-protected question proof failed: ${JSON.stringify(result)}`);\n1450 |   } else if (taskScoped) {\n1451 |     if (scenarioCandidatePass(result) !== true) throw new Error(`Installed ${args.scenario} proof failed: ${JSON.stringify(result)}`);\n1452 |   } else if (!autonomousCandidatePass(result)) throw new Error(`Installed autonomous question proof failed: ${JSON.stringify(result)}`);\n                                                                ^\nerror: Installed autonomous question proof failed: {\"candidateId\":\"grind-task-scoped-population-autonomous-s25-autonomous\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditMessageFacts\":[{\"errorPresent\":false,\"finish\":\"stop\",\"text\":\"{\\\"schemaVersion\\\":2,\\\"auditID\\\":\\\"audit_61835029c800\\\",\\\"rootSessionRef\\\":\\\"session_a764d6cb70ef\\\",\\\"inspectedRevision\\\":\\\"09e4feb805c235121bda2b716d8ca2d516bfc1e05b3832355b852c0b0ea91362\\\",\\\"frontierGeneration\\\":0,\\\"verdict\\\":\\\"continue\\\",\\\"goalSummary\\\":\\\"Handle the pending safe-local-strategy question probe only after a controller-validated work frontier exists.\\\",\\\"claimMatrix\\\":[],\\\"requirementMatrix\\\":[{\\\"requirementRef\\\":\\\"message_a6430fe42a2e\\\",\\\"status\\\":\\\"unresolved\\\",\\\"evidenceRefs\\\":[\\\"question_97457eeeb00a\\\",\\\"call_a688826de3cb\\\",\\\"tool_5357f7fce9ac\\\"]}],\\\"unresolved\\\":[{\\\"requirementRef\\\":\\\"message_a6430fe42a2e\\\",\\\"evidenceGap\\\":\\\"workFrontier is absent with errorCode missing-frontier; no controller-validated frontierGeneration, runnableItemRefs, gates, or parked decisions were supplied to pair with the pending question.\\\",\\\"nextAction\\\":\\\"Reconcile and persist one controller-validated workFrontier for this parentless root, then re-evaluate the in-flight strategy question against that frontier.\\\",\\\"nextEvidence\\\":\\\"workFrontier.status is present with a controller-derived frontierGeneration and either a complete empty item set or exact non-empty runnableItemRefs.\\\",\\\"stopCondition\\\":\\\"Pending question answered against a complete frontier, continued against exact non-empty runnableItemRefs, or deferred using only supplied gate or parked-decision refs.\\\"}],\\\"strategyAssessment\\\":{\\\"fingerprint\\\":\\\"question-probe/missing-frontier/strategy-question\\\",\\\"repeated\\\":false,\\\"prohibitedStrategies\\\":[\\\"answer-or-allow_stop-without-workFrontier\\\",\\\"invent-frontier-item-gate-or-parked-decision-refs\\\"],\\\"requiredRetryEvidence\\\":[\\\"controller-validated workFrontier projection\\\"]},\\\"runnableItemRefs\\\":[],\\\"selectedItemRef\\\":null,\\\"parkedDecisionRefs\\\":[],\\\"deferredGateRefs\\\":[],\\\"questionAction\\\":null,\\\"questionAnswers\\\":null,\\\"ownerBoundary\\\":null,\\\"waitKind\\\":null,\\\"resumeCondition\\\":null,\\\"evidenceRefs\\\":[\\\"message_a6430fe42a2e\\\",\\\"question_97457eeeb00a\\\",\\\"call_a688826de3cb\\\",\\\"tool_5357f7fce9ac\\\"],\\\"evidenceGaps\\\":[\\\"workFrontier missing-frontier\\\"],\\\"confidence\\\":\\\"high\\\"}\",\"textDigest\":\"70eb770f7e278facc0b35d85d011364c9f85080cead68b42b699ed9ce67d8857\"}],\"auditRefs\":[{\"auditRef\":\"audit_076a84e2d1bc\",\"childRef\":\"session_46fb1fbeed96\",\"status\":\"error\"}],\"auditRoutes\":[\"xai/grok-4.6\"],\"auditStatuses\":[\"error\"],\"autonomousRefs\":0,\"claimCeilingReported\":false,\"cleanup\":\"pending\",\"continuationAuditCorrelated\":false,\"continuationAuditRef\":null,\"continuationCount\":0,\"continuationRevisionPresent\":false,\"continuationRevisionRef\":null,\"continuationSchemaVersionTwo\":false,\"deferredQuestionCount\":0,\"deferredSelectedItemRefs\":[],\"finalFrontierGeneration\":null,\"finalFrontierState\":null,\"finalRunnableItemRefs\":[],\"guardState\":\"error\",\"humanQuestionReplies\":0,\"inputDigest\":\"3f508e41ac6c9e679db04726dfd1e79cd9ef47038e9c67e7efe9263c103d69f8\",\"directoryRef\":\"directory_63d9ba2f1a97\",\"model\":\"xai/grok-4.6/high\",\"modelCallClasses\":{\"arbiter\":1,\"primary\":1},\"openCodeVersion\":\"1.18.25\",\"offeredLabels\":[\"Recommended\",\"Alternative\"],\"ownerRequiredLeaked\":false,\"pendingQuestionCalls\":1,\"pendingRefs\":0,\"probeEvents\":[\"tool:question\"],\"primaryRoutes\":[\"xai/grok-4.6\"],\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":1,\"questionStatus\":\"running\",\"finalQuestionStatus\":\"running\",\"rejectedQuestionInterventions\":0,\"rootRef\":\"session_a764d6cb70ef\",\"safeLabel\":\"Recommended\",\"scenario\":\"autonomous\",\"selectedAnswer\":null,\"sourceHashes\":{\"global/AGENTS.md\":\"52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5\",\"global/agents/session-completion-arbiter.md\":\"17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748\",\"global/opencode.json\":\"8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb\",\"global/opencode.local.instructions.md\":\"2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1\",\"global/extensions/session-completion-guard/controller.ts\":\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\",\"global/extensions/session-completion-guard/frontier.ts\":\"12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63\",\"global/extensions/session-completion-guard/status.ts\":\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\",\"global/extensions/session-completion-guard/types.ts\":\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\",\"global/extensions/session-completion-guard/verdict.ts\":\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\",\"tools/proofs/session-completion-guard-autonomous.ts\":\"1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9\"},\"terminalDisposition\":\"error\",\"toolOnlyQuestion\":[\"question\"]}\n      at <source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts:1452:58\n\nBun v1.4.0 (Windows x64)\n",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-population-autonomous-s25-autonomous\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditMessageFacts\":[{\"errorPresent\":false,\"finish\":\"stop\",\"text\":\"{\\\"schemaVersion\\\":2,\\\"auditID\\\":\\\"audit_61835029c800\\\",\\\"rootSessionRef\\\":\\\"session_a764d6cb70ef\\\",\\\"inspectedRevision\\\":\\\"09e4feb805c235121bda2b716d8ca2d516bfc1e05b3832355b852c0b0ea91362\\\",\\\"frontierGeneration\\\":0,\\\"verdict\\\":\\\"continue\\\",\\\"goalSummary\\\":\\\"Handle the pending safe-local-strategy question probe only after a controller-validated work frontier exists.\\\",\\\"claimMatrix\\\":[],\\\"requirementMatrix\\\":[{\\\"requirementRef\\\":\\\"message_a6430fe42a2e\\\",\\\"status\\\":\\\"unresolved\\\",\\\"evidenceRefs\\\":[\\\"question_97457eeeb00a\\\",\\\"call_a688826de3cb\\\",\\\"tool_5357f7fce9ac\\\"]}],\\\"unresolved\\\":[{\\\"requirementRef\\\":\\\"message_a6430fe42a2e\\\",\\\"evidenceGap\\\":\\\"workFrontier is absent with errorCode missing-frontier; no controller-validated frontierGeneration, runnableItemRefs, gates, or parked decisions were supplied to pair with the pending question.\\\",\\\"nextAction\\\":\\\"Reconcile and persist one controller-validated workFrontier for this parentless root, then re-evaluate the in-flight strategy question against that frontier.\\\",\\\"nextEvidence\\\":\\\"workFrontier.status is present with a controller-derived frontierGeneration and either a complete empty item set or exact non-empty runnableItemRefs.\\\",\\\"stopCondition\\\":\\\"Pending question answered against a complete frontier, continued against exact non-empty runnableItemRefs, or deferred using only supplied gate or parked-decision refs.\\\"}],\\\"strategyAssessment\\\":{\\\"fingerprint\\\":\\\"question-probe/missing-frontier/strategy-question\\\",\\\"repeated\\\":false,\\\"prohibitedStrategies\\\":[\\\"answer-or-allow_stop-without-workFrontier\\\",\\\"invent-frontier-item-gate-or-parked-decision-refs\\\"],\\\"requiredRetryEvidence\\\":[\\\"controller-validated workFrontier projection\\\"]},\\\"runnableItemRefs\\\":[],\\\"selectedItemRef\\\":null,\\\"parkedDecisionRefs\\\":[],\\\"deferredGateRefs\\\":[],\\\"questionAction\\\":null,\\\"questionAnswers\\\":null,\\\"ownerBoundary\\\":null,\\\"waitKind\\\":null,\\\"resumeCondition\\\":null,\\\"evidenceRefs\\\":[\\\"message_a6430fe42a2e\\\",\\\"question_97457eeeb00a\\\",\\\"call_a688826de3cb\\\",\\\"tool_5357f7fce9ac\\\"],\\\"evidenceGaps\\\":[\\\"workFrontier missing-frontier\\\"],\\\"confidence\\\":\\\"high\\\"}\",\"textDigest\":\"70eb770f7e278facc0b35d85d011364c9f85080cead68b42b699ed9ce67d8857\"}],\"auditRefs\":[{\"auditRef\":\"audit_076a84e2d1bc\",\"childRef\":\"session_46fb1fbeed96\",\"status\":\"error\"}],\"auditRoutes\":[\"xai/grok-4.6\"],\"auditStatuses\":[\"error\"],\"autonomousRefs\":0,\"claimCeilingReported\":false,\"cleanup\":\"pending\",\"continuationAuditCorrelated\":false,\"continuationAuditRef\":null,\"continuationCount\":0,\"continuationRevisionPresent\":false,\"continuationRevisionRef\":null,\"continuationSchemaVersionTwo\":false,\"deferredQuestionCount\":0,\"deferredSelectedItemRefs\":[],\"finalFrontierGeneration\":null,\"finalFrontierState\":null,\"finalRunnableItemRefs\":[],\"guardState\":\"error\",\"humanQuestionReplies\":0,\"inputDigest\":\"3f508e41ac6c9e679db04726dfd1e79cd9ef47038e9c67e7efe9263c103d69f8\",\"directoryRef\":\"directory_63d9ba2f1a97\",\"model\":\"xai/grok-4.6/high\",\"modelCallClasses\":{\"arbiter\":1,\"primary\":1},\"openCodeVersion\":\"1.18.25\",\"offeredLabels\":[\"Recommended\",\"Alternative\"],\"ownerRequiredLeaked\":false,\"pendingQuestionCalls\":1,\"pendingRefs\":0,\"probeEvents\":[\"tool:question\"],\"primaryRoutes\":[\"xai/grok-4.6\"],\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":1,\"questionStatus\":\"running\",\"finalQuestionStatus\":\"running\",\"rejectedQuestionInterventions\":0,\"rootRef\":\"session_a764d6cb70ef\",\"safeLabel\":\"Recommended\",\"scenario\":\"autonomous\",\"selectedAnswer\":null,\"sourceHashes\":{\"global/AGENTS.md\":\"52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5\",\"global/agents/session-completion-arbiter.md\":\"17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748\",\"global/opencode.json\":\"8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb\",\"global/opencode.local.instructions.md\":\"2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1\",\"global/extensions/session-completion-guard/controller.ts\":\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\",\"global/extensions/session-completion-guard/frontier.ts\":\"12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63\",\"global/extensions/session-completion-guard/status.ts\":\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\",\"global/extensions/session-completion-guard/types.ts\":\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\",\"global/extensions/session-completion-guard/verdict.ts\":\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\",\"tools/proofs/session-completion-guard-autonomous.ts\":\"1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9\"},\"terminalDisposition\":\"error\",\"toolOnlyQuestion\":[\"question\"]}\n{\"cleanup\":\"complete\",\"livenessClosed\":true,\"pendingQuestionsRejected\":1,\"rootDeleted\":true}\n"
+    },
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "replay",
+        "--scenario",
+        "autonomous",
+        "--candidate-id",
+        "grind-task-scoped-population-autonomous-s25-autonomous",
+        "--input-root",
+        "<evidence-root>\\capture-autonomous",
+        "--evidence-root",
+        "<evidence-root>\\replay-autonomous"
+      ],
+      "invocationDigest": "d84c19bc505d591b7c03315e7ef1b7c83ebad294bad502319995a72618ebb1a2",
+      "label": "replay-autonomous",
+      "signal": null,
+      "status": 1,
+      "stderr": "",
+      "stdout": "{\"candidateId\":\"grind-task-scoped-population-autonomous-s25-autonomous\",\"candidateOraclePass\":false,\"captureKind\":\"candidate\",\"cleanupComplete\":true,\"cleanupOraclePass\":true,\"evaluatorRecovered\":false,\"expectedPendingQuestionRejections\":null,\"failure\":\"Installed autonomous question proof failed: {\\\"candidateId\\\":\\\"grind-task-scoped-population-autonomous-s25-autonomous\\\",\\\"captureKind\\\":\\\"candidate\\\",\\\"assistantMarker\\\":false,\\\"auditMessageFacts\\\":[{\\\"errorPresent\\\":false,\\\"finish\\\":\\\"stop\\\",\\\"text\\\":\\\"{\\\\\\\"schemaVersion\\\\\\\":2,\\\\\\\"auditID\\\\\\\":\\\\\\\"audit_61835029c800\\\\\\\",\\\\\\\"rootSessionRef\\\\\\\":\\\\\\\"session_a764d6cb70ef\\\\\\\",\\\\\\\"inspectedRevision\\\\\\\":\\\\\\\"09e4feb805c235121bda2b716d8ca2d516bfc1e05b3832355b852c0b0ea91362\\\\\\\",\\\\\\\"frontierGeneration\\\\\\\":0,\\\\\\\"verdict\\\\\\\":\\\\\\\"continue\\\\\\\",\\\\\\\"goalSummary\\\\\\\":\\\\\\\"Handle the pending safe-local-strategy question probe only after a controller-validated work frontier exists.\\\\\\\",\\\\\\\"claimMatrix\\\\\\\":[],\\\\\\\"requirementMatrix\\\\\\\":[{\\\\\\\"requirementRef\\\\\\\":\\\\\\\"message_a6430fe42a2e\\\\\\\",\\\\\\\"status\\\\\\\":\\\\\\\"unresolved\\\\\\\",\\\\\\\"evidenceRefs\\\\\\\":[\\\\\\\"question_97457eeeb00a\\\\\\\",\\\\\\\"call_a688826de3cb\\\\\\\",\\\\\\\"tool_5357f7fce9ac\\\\\\\"]}],\\\\\\\"unresolved\\\\\\\":[{\\\\\\\"requirementRef\\\\\\\":\\\\\\\"message_a6430fe42a2e\\\\\\\",\\\\\\\"evidenceGap\\\\\\\":\\\\\\\"workFrontier is absent with errorCode missing-frontier; no controller-validated frontierGeneration, runnableItemRefs, gates, or parked decisions were supplied to pair with the pending question.\\\\\\\",\\\\\\\"nextAction\\\\\\\":\\\\\\\"Reconcile and persist one controller-validated workFrontier for this parentless root, then re-evaluate the in-flight strategy question against that frontier.\\\\\\\",\\\\\\\"nextEvidence\\\\\\\":\\\\\\\"workFrontier.status is present with a controller-derived frontierGeneration and either a complete empty item set or exact non-empty runnableItemRefs.\\\\\\\",\\\\\\\"stopCondition\\\\\\\":\\\\\\\"Pending question answered against a complete frontier, continued against exact non-empty runnableItemRefs, or deferred using only supplied gate or parked-decision refs.\\\\\\\"}],\\\\\\\"strategyAssessment\\\\\\\":{\\\\\\\"fingerprint\\\\\\\":\\\\\\\"question-probe/missing-frontier/strategy-question\\\\\\\",\\\\\\\"repeated\\\\\\\":false,\\\\\\\"prohibitedStrategies\\\\\\\":[\\\\\\\"answer-or-allow_stop-without-workFrontier\\\\\\\",\\\\\\\"invent-frontier-item-gate-or-parked-decision-refs\\\\\\\"],\\\\\\\"requiredRetryEvidence\\\\\\\":[\\\\\\\"controller-validated workFrontier projection\\\\\\\"]},\\\\\\\"runnableItemRefs\\\\\\\":[],\\\\\\\"selectedItemRef\\\\\\\":null,\\\\\\\"parkedDecisionRefs\\\\\\\":[],\\\\\\\"deferredGateRefs\\\\\\\":[],\\\\\\\"questionAction\\\\\\\":null,\\\\\\\"questionAnswers\\\\\\\":null,\\\\\\\"ownerBoundary\\\\\\\":null,\\\\\\\"waitKind\\\\\\\":null,\\\\\\\"resumeCondition\\\\\\\":null,\\\\\\\"evidenceRefs\\\\\\\":[\\\\\\\"message_a6430fe42a2e\\\\\\\",\\\\\\\"question_97457eeeb00a\\\\\\\",\\\\\\\"call_a688826de3cb\\\\\\\",\\\\\\\"tool_5357f7fce9ac\\\\\\\"],\\\\\\\"evidenceGaps\\\\\\\":[\\\\\\\"workFrontier missing-frontier\\\\\\\"],\\\\\\\"confidence\\\\\\\":\\\\\\\"high\\\\\\\"}\\\",\\\"textDigest\\\":\\\"70eb770f7e278facc0b35d85d011364c9f85080cead68b42b699ed9ce67d8857\\\"}],\\\"auditRefs\\\":[{\\\"auditRef\\\":\\\"audit_076a84e2d1bc\\\",\\\"childRef\\\":\\\"session_46fb1fbeed96\\\",\\\"status\\\":\\\"error\\\"}],\\\"auditRoutes\\\":[\\\"xai/grok-4.6\\\"],\\\"auditStatuses\\\":[\\\"error\\\"],\\\"autonomousRefs\\\":0,\\\"claimCeilingReported\\\":false,\\\"cleanup\\\":\\\"pending\\\",\\\"continuationAuditCorrelated\\\":false,\\\"continuationAuditRef\\\":null,\\\"continuationCount\\\":0,\\\"continuationRevisionPresent\\\":false,\\\"continuationRevisionRef\\\":null,\\\"continuationSchemaVersionTwo\\\":false,\\\"deferredQuestionCount\\\":0,\\\"deferredSelectedItemRefs\\\":[],\\\"finalFrontierGeneration\\\":null,\\\"finalFrontierState\\\":null,\\\"finalRunnableItemRefs\\\":[],\\\"guardState\\\":\\\"error\\\",\\\"humanQuestionReplies\\\":0,\\\"inputDigest\\\":\\\"3f508e41ac6c9e679db04726dfd1e79cd9ef47038e9c67e7efe9263c103d69f8\\\",\\\"directoryRef\\\":\\\"directory_63d9ba2f1a97\\\",\\\"model\\\":\\\"xai/grok-4.6/high\\\",\\\"modelCallClasses\\\":{\\\"arbiter\\\":1,\\\"primary\\\":1},\\\"openCodeVersion\\\":\\\"1.18.25\\\",\\\"offeredLabels\\\":[\\\"Recommended\\\",\\\"Alternative\\\"],\\\"ownerRequiredLeaked\\\":false,\\\"pendingQuestionCalls\\\":1,\\\"pendingRefs\\\":0,\\\"probeEvents\\\":[\\\"tool:question\\\"],\\\"primaryRoutes\\\":[\\\"xai/grok-4.6\\\"],\\\"projectedAnswer\\\":null,\\\"projectedStatus\\\":null,\\\"questionCalls\\\":1,\\\"questionStatus\\\":\\\"running\\\",\\\"finalQuestionStatus\\\":\\\"running\\\",\\\"rejectedQuestionInterventions\\\":0,\\\"rootRef\\\":\\\"session_a764d6cb70ef\\\",\\\"safeLabel\\\":\\\"Recommended\\\",\\\"scenario\\\":\\\"autonomous\\\",\\\"selectedAnswer\\\":null,\\\"sourceHashes\\\":{\\\"global/AGENTS.md\\\":\\\"52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5\\\",\\\"global/agents/session-completion-arbiter.md\\\":\\\"17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748\\\",\\\"global/opencode.json\\\":\\\"8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb\\\",\\\"global/opencode.local.instructions.md\\\":\\\"2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1\\\",\\\"global/extensions/session-completion-guard/controller.ts\\\":\\\"1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc\\\",\\\"global/extensions/session-completion-guard/frontier.ts\\\":\\\"12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63\\\",\\\"global/extensions/session-completion-guard/status.ts\\\":\\\"a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31\\\",\\\"global/extensions/session-completion-guard/types.ts\\\":\\\"edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7\\\",\\\"global/extensions/session-completion-guard/verdict.ts\\\":\\\"d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1\\\",\\\"tools/proofs/session-completion-guard-autonomous.ts\\\":\\\"1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9\\\"},\\\"terminalDisposition\\\":\\\"error\\\",\\\"toolOnlyQuestion\\\":[\\\"question\\\"]}\",\"inputRaw\":\"raw.json\",\"inputRawBytes\":10998,\"livenessClosed\":true,\"mode\":\"replay\",\"modelCalls\":0,\"pendingQuestionsRejected\":1,\"replayComplete\":false,\"resultPresent\":true,\"schemaVersion\":1,\"terminalResult\":\"captured-failure-clean\"}\n"
+    }
+  ],
+  "processAfter": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "processBefore": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "proofProcess": {
+    "parentPid": 45440,
+    "pid": 36172,
+    "terminal": {
+      "signal": null,
+      "status": 1
+    },
+    "urlRef": "server_12eff1091ac9"
+  },
+  "resolvedRoutes": [
+    {
+      "agent": "build",
+      "hidden": false,
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    {
+      "agent": "session-completion-arbiter",
+      "hidden": true,
+      "model": "xai/grok-4.6",
+      "variant": "high"
+    }
+  ],
+  "schemaVersion": 1,
+  "serverLogs": {
+    "stderr": "timestamp=2026-08-30T15:13:15.465Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T15:13:15.478Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T15:13:15.479Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T15:13:17.591Z level=INFO run=3b7fe613 message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\"\ntimestamp=2026-08-30T15:13:17.592Z level=INFO run=3b7fe613 message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\"\ntimestamp=2026-08-30T15:13:17.606Z level=INFO run=3b7fe613 message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\"\ntimestamp=2026-08-30T15:13:17.619Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T15:13:17.620Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T15:13:17.620Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T15:13:17.835Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\config\\\\opencode.json\"\ntimestamp=2026-08-30T15:13:17.872Z level=INFO run=3b7fe613 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-30T15:13:39.464Z level=INFO run=3b7fe613 message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T15:13:39.466Z level=INFO run=3b7fe613 message=\"all formatters are disabled\"\ntimestamp=2026-08-30T15:13:39.466Z level=INFO run=3b7fe613 message=init\ntimestamp=2026-08-30T15:13:39.603Z level=INFO run=3b7fe613 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T15:13:39.606Z level=INFO run=3b7fe613 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T15:13:39.611Z level=INFO run=3b7fe613 message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-30T15:13:39.882Z level=INFO run=3b7fe613 message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\" workspaceID=undefined\ntimestamp=2026-08-30T15:13:41.643Z level=INFO run=3b7fe613 message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-30T15:13:41.656Z level=INFO run=3b7fe613 message=created id=ses_facc438e7ffe0Pf2aFJCP4bzO4 slug=crisp-river version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-LiAk0A/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788102821656 time.updated=1788102821656\ntimestamp=2026-08-30T15:13:41.821Z level=INFO run=3b7fe613 message=loop session.id=ses_facc438e7ffe0Pf2aFJCP4bzO4 step=0\ntimestamp=2026-08-30T15:13:41.931Z level=WARN run=3b7fe613 message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-30T15:13:47.400Z level=INFO run=3b7fe613 message=init count=1\ntimestamp=2026-08-30T15:13:47.487Z level=INFO run=3b7fe613 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T15:13:47.488Z level=INFO run=3b7fe613 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T15:13:47.687Z level=INFO run=3b7fe613 message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\" workspaceID=undefined\ntimestamp=2026-08-30T15:13:47.737Z level=INFO run=3b7fe613 message=process session.id=ses_facc438e7ffe0Pf2aFJCP4bzO4 messageID=msg_0533bc7c1001VFkKslzD4fB4ju\ntimestamp=2026-08-30T15:13:47.741Z level=INFO run=3b7fe613 message=stream providerID=xai modelID=grok-4.6 session.id=ses_facc438e7ffe0Pf2aFJCP4bzO4 small=false agent=build mode=primary\ntimestamp=2026-08-30T15:13:47.765Z level=INFO run=3b7fe613 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-30T15:14:02.293Z level=INFO run=3b7fe613 message=asking id=que_0533c17b5001cxoH1CkOE33iAr questions=1\ntimestamp=2026-08-30T15:14:03.072Z level=INFO run=3b7fe613 message=created id=ses_facc3e53ffferYfP1eqKRaJLpo slug=playful-island version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-LiAk0A\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-LiAk0A/project workspaceID=undefined parentID=ses_facc438e7ffe0Pf2aFJCP4bzO4 title=\"Completion audit audit_61835029c800\" agent=session-completion-arbiter model.id=grok-4.6 model.providerID=xai model.variant=high metadata.completionGuard.schemaVersion=2 metadata.completionGuard.auditID=audit_61835029c800 metadata.completionGuard.rootSessionRef=session_a764d6cb70ef metadata.completionGuard.inspectedRevision=09e4feb805c235121bda2b716d8ca2d516bfc1e05b3832355b852c0b0ea91362 metadata.completionGuard.kind=question metadata.completionGuard.questionRef=question_97457eeeb00a metadata.completionGuard.status=auditing metadata.completionGuard.attempt=1 permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788102843072 time.updated=1788102843072\ntimestamp=2026-08-30T15:14:03.151Z level=INFO run=3b7fe613 message=loop session.id=ses_facc3e53ffferYfP1eqKRaJLpo step=0\ntimestamp=2026-08-30T15:14:03.193Z level=INFO run=3b7fe613 message=process session.id=ses_facc3e53ffferYfP1eqKRaJLpo messageID=msg_0533c1b11001l8yWyWrn21UivT\ntimestamp=2026-08-30T15:14:03.194Z level=INFO run=3b7fe613 message=stream providerID=xai modelID=grok-4.6 session.id=ses_facc3e53ffferYfP1eqKRaJLpo small=false agent=session-completion-arbiter mode=subagent\ntimestamp=2026-08-30T15:14:03.196Z level=INFO run=3b7fe613 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-30T15:15:52.718Z level=INFO run=3b7fe613 message=loop session.id=ses_facc3e53ffferYfP1eqKRaJLpo step=1\ntimestamp=2026-08-30T15:15:52.719Z level=INFO run=3b7fe613 message=\"exiting loop\" session.id=ses_facc3e53ffferYfP1eqKRaJLpo\ntimestamp=2026-08-30T15:15:52.758Z level=ERROR run=3b7fe613 message=\"completion audit stopped\" attempt=1 attemptLimit=3 auditRef=audit_076a84e2d1bc elapsedMs=110383 error.name=Error error.message=\"Completion verdict requires current work frontier evidence\" error.stack=\"Error: Completion verdict requires current work frontier evidence\\n    at frontierAssessment (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\verdict.ts:117:15)\\n    at parseCompletionVerdict (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\verdict.ts:173:20)\\n    at runAudit (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\controller.ts:1183:23)\\n    at processTicksAndRejections (native:7:39)\" errorClass=input-state requestContributions=[] requestBytes=2928 rootRef=session_a764d6cb70ef\ntimestamp=2026-08-30T15:15:52.958Z level=INFO run=3b7fe613 message=rejected requestID=que_0533c17b5001cxoH1CkOE33iAr\ntimestamp=2026-08-30T15:15:53.026Z level=INFO run=3b7fe613 message=\"removing share\" sessionID=ses_facc3e53ffferYfP1eqKRaJLpo\ntimestamp=2026-08-30T15:15:53.061Z level=INFO run=3b7fe613 message=\"removing share\" sessionID=ses_facc438e7ffe0Pf2aFJCP4bzO4\ntimestamp=2026-08-30T15:15:53.083Z level=WARN run=3b7fe613 message=\"guard status persistence failed\" error.name=Error error.message=\"session.update guard status failed\" error.stack=\"Error: session.update guard status failed\\n    at dataOf (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\runtime-support.ts:147:23)\\n    at async persistConverged (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\status.ts:116:28)\\n    at processTicksAndRejections (native:7:39)\" error.cause.name=NotFoundError rootRef=session_a764d6cb70ef\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD <redacted> not set; server is unsecured.\nopencode server listening on http://127.0.0.1:50772\n"
+  },
+  "sourceHashes": {
+    "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+    "global/agents/session-completion-arbiter.md": "17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748",
+    "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+    "global/extensions/session-completion-guard/frontier.ts": "12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63",
+    "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+    "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+    "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+    "tools/proofs/session-completion-guard-autonomous.ts": "1a9e38a432f75a136c435332f811db2a68a2ca538b80128086f64459b7c367b9"
+  }
+}

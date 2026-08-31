@@ -7,7 +7,6 @@ import { hashRef } from "../../plugin/session-delivery-context/redaction.ts";
 import type { RootInspection } from "./inspection.ts";
 import { questionRequestForArbiter } from "./question.ts";
 import type { AuditEpoch } from "./types.ts";
-import { readClaimEvidence, selectedClaimChangeIds } from "./claim-evidence.ts";
 
 export type ArbiterTodoMembership = "current" | "ever" | "open" | "unresolved";
 type DeliveryTodo = SessionDeliveryContextResult["todos"]["current"][number];
@@ -136,11 +135,10 @@ export function captureArbiterEvidence(
   rootSessionID: string,
   rootSessionRef: string,
   projectRoot?: string,
-  sessionMetadata?: unknown,
+  _sessionMetadata?: unknown,
   dbPaths?: string[],
 ): SessionDeliveryContextResult {
   const evidence = readSessionDeliveryContext({
-    claimEvidence: readClaimEvidence(projectRoot, selectedClaimChangeIds(sessionMetadata)),
     ...(dbPaths == null ? {} : { dbPaths, useDefaultPaths: false }),
     projectRoot,
     resolveRoot: true,

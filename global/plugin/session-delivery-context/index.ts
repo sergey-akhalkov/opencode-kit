@@ -337,8 +337,6 @@ function contextForRow(
     (todo) => todo.status == null || !CLOSED_TODO_STATUSES.has(todo.status),
   );
   const completion = readCompletionEvidence(db, schema, rawSessionId, warnings);
-  const claimEvidence = options.claimEvidence ?? { claims: [], complete: true, omissions: [], selection: "none" as const };
-  const userMessages = completion.humanMessages;
   const requirementSignals = detectRequirementSignals(completion.humanMessages);
   const provenance = questionProvenance(row);
   const workFrontier = workFrontierProjection(row);
@@ -443,7 +441,6 @@ function contextForRow(
     assistantEvidence: completion.assistantEvidence,
     auditRefs: completion.auditRefs,
     background: completion.background,
-    claimEvidence,
     descendants: completion.descendants,
     diffEvidence: completion.diffEvidence,
     generatedAt: options.generatedAt ?? new Date().toISOString(),
@@ -460,8 +457,6 @@ function contextForRow(
         assistantEvidence: completion.assistantEvidence.length,
         auditRefs: completion.auditRefs.length,
         background: completion.background.length,
-        claimEvidence: claimEvidence.claims.length,
-        claimOmissions: claimEvidence.omissions.length,
         currentTodos: boundedCurrentTodos.length,
         descendants: completion.descendants.length,
         diffEvidence: completion.diffEvidence.length,

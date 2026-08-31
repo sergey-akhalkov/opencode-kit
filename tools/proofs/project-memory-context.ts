@@ -65,26 +65,26 @@ type ServerHandle = {
 };
 
 const sourceRoot = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
+const temporaryOutputRoot = path.join(os.tmpdir(), `opencode-project-memory-proof-${process.pid}-${crypto.randomUUID()}`);
 const HELP = `Usage:
-  node tools/proofs/project-memory-context.ts --mode corpus --fixture <path> --evidence-dir <path>
-  node tools/proofs/project-memory-context.ts --mode boundary --evidence-dir <path>
-  node tools/proofs/project-memory-context.ts --mode <preflight|loaded> --opencode <path> --expected-version <version> --plugin-runtime <path> --ripgrep <path> --evidence-dir <path>
+  node tools/proofs/project-memory-context.ts --mode corpus --fixture <path>
+  node tools/proofs/project-memory-context.ts --mode boundary
+  node tools/proofs/project-memory-context.ts --mode <preflight|loaded> --opencode <path> --expected-version <version> --plugin-runtime <path> --ripgrep <path>
 
 Corpus mode materializes the reviewed PMC-001 seed through the production store,
 recall, renderer, tools, and hooks, then runs the focused provider-free process
 oracles. Loaded modes use a disposable Git project, copied session-env plugin,
-isolated OpenCode roots, and a loopback fake provider. Every mode writes redacted
-raw.json and evaluation.json under a create-new --evidence-dir.
+isolated OpenCode roots, and a loopback fake provider. Intermediate output is
+proof-owned and removed before exit.
 
-Inputs: --fixture is the reviewed repository-local corpus seed. --evidence-dir is
-a repository-local path that must not exist. Project and data inputs are always
-new runner-created temporary roots; existing project/data roots are not accepted.
+Inputs: --fixture is the reviewed repository-local corpus seed. Project, data, and
+output roots are always new runner-created temporary roots; existing roots are not accepted.
 
 Effects: creates only local temporary files and proof-owned processes; loaded mode
 also creates one local OpenCode database and loopback listener. No mode performs a
 remote call. Cleanup stops proof-owned processes/listeners and removes fixtures.
-Evidence: redacted raw.json plus evaluation.json with source/environment identity,
-observations, checks, and cleanup status. --help performs no writes, process
+Output: current-run stdout reports the result after source/environment, observations,
+checks, and cleanup are evaluated. --help performs no writes, process
 launches, or network access.
 `;
 
@@ -103,14 +103,15 @@ function parseArgs(argv: string[]): Options | null {
   }
   const opencode = values.get("--opencode");
   const expectedVersion = values.get("--expected-version");
-  const evidence = values.get("--evidence-dir");
   const mode = values.get("--mode");
   const pluginRuntime = values.get("--plugin-runtime");
   const ripgrep = values.get("--ripgrep");
   const fixture = values.get("--fixture");
-  if (evidence == null || mode == null) usageError("--mode and --evidence-dir are required.");
-  const evidenceDir = path.resolve(sourceRoot, evidence);
-  if (path.relative(sourceRoot, evidenceDir).startsWith("..")) usageError("--evidence-dir must stay inside the repository.");
+  if (mode == null) usageError("--mode is required.");
+  const allowed = new Set(["--mode", "--fixture", "--opencode", "--expected-version", "--plugin-runtime", "--ripgrep"]);
+  const unknown = [...values.keys()].find((key) => !allowed.has(key));
+  if (unknown != null) usageError(`Unknown option: ${unknown}.`);
+  const evidenceDir = path.join(temporaryOutputRoot, mode);
   if (mode === "corpus") {
     if (fixture == null) usageError("Corpus mode requires --fixture.");
     const fixturePath = path.resolve(sourceRoot, fixture);
@@ -1630,11 +1631,15 @@ async function main(options: LoadedOptions): Promise<void> {
   }
 }
 
-const options = parseArgs(process.argv.slice(2));
-if (options == null) {
-  process.stdout.write(HELP);
-} else {
-  if (options.mode === "boundary") await runBoundary(options);
-  else if (options.mode === "corpus") await runCorpus(options);
-  else await main(options);
+try {
+  const options = parseArgs(process.argv.slice(2));
+  if (options == null) {
+    process.stdout.write(HELP);
+  } else {
+    if (options.mode === "boundary") await runBoundary(options);
+    else if (options.mode === "corpus") await runCorpus(options);
+    else await main(options);
+  }
+} finally {
+  fs.rmSync(temporaryOutputRoot, { force: true, recursive: true });
 }

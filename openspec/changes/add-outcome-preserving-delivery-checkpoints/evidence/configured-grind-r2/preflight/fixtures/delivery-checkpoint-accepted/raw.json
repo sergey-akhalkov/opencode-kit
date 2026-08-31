@@ -1,0 +1,125 @@
+{
+  "cleanup": {
+    "complete": true,
+    "livenessClosed": true,
+    "rootDeleted": true
+  },
+  "failure": null,
+  "result": {
+    "assistantMarker": true,
+    "auditMessageFacts": [
+      {
+        "error": null,
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "continued",
+        "textDigest": "0dec6069d55174d6223c08b49a7cfc291aefc5cd366d7c8f7b0606325e92e6ea"
+      },
+      {
+        "error": null,
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "passed",
+        "textDigest": "284d1e8c4918248233df17642bbb940c001e1fa856c18aab86ba6dbe7813eb13"
+      }
+    ],
+    "auditRoutes": [
+      "reviewed/arbiter"
+    ],
+    "auditStatuses": [
+      "continued",
+      "passed"
+    ],
+    "checkpointOracleMarker": true,
+    "checkpointSelectedMarker": true,
+    "continuationAuditCorrelated": true,
+    "continuationCount": 1,
+    "continuationRevisionPresent": true,
+    "continuationSchemaVersionTwo": true,
+    "effectCounts": {
+      "external": 0,
+      "frontier": 4,
+      "protected": 0,
+      "question": 0
+    },
+    "finalFrontierGeneration": 4,
+    "finalFrontierState": "complete",
+    "finalRunnableItemRefs": [],
+    "frontierTrace": [
+      {
+        "callStatus": "completed",
+        "expectedGeneration": 0,
+        "gateStatuses": {
+          "gate_checkpoint": "process:open"
+        },
+        "itemStatuses": {
+          "item_checkpoint": "pending",
+          "item_costly": "pending",
+          "item_sibling": "pending"
+        }
+      },
+      {
+        "callStatus": "completed",
+        "expectedGeneration": 1,
+        "gateStatuses": {
+          "gate_checkpoint": "process:open"
+        },
+        "itemStatuses": {
+          "item_checkpoint": "pending",
+          "item_costly": "pending",
+          "item_sibling": "complete"
+        }
+      },
+      {
+        "callStatus": "completed",
+        "expectedGeneration": 2,
+        "gateStatuses": {
+          "gate_checkpoint": "process:satisfied"
+        },
+        "itemStatuses": {
+          "item_checkpoint": "complete",
+          "item_costly": "pending",
+          "item_sibling": "complete"
+        }
+      },
+      {
+        "callStatus": "completed",
+        "expectedGeneration": 3,
+        "gateStatuses": {
+          "gate_checkpoint": "process:satisfied"
+        },
+        "itemStatuses": {
+          "item_checkpoint": "complete",
+          "item_costly": "complete",
+          "item_sibling": "complete"
+        }
+      }
+    ],
+    "guardState": "passed",
+    "humanQuestionReplies": 0,
+    "ownerRequiredLeaked": false,
+    "primaryRoutes": [
+      "reviewed/primary"
+    ],
+    "probeEvents": [
+      "tool:grind_frontier",
+      "marker:delivery-checkpoint-sibling",
+      "tool:grind_frontier",
+      "marker:delivery-checkpoint-selected",
+      "marker:delivery-checkpoint-oracle",
+      "tool:grind_frontier",
+      "marker:delivery-checkpoint-costly-eligible",
+      "tool:grind_frontier"
+    ],
+    "questionCalls": 0,
+    "scenario": "delivery-checkpoint",
+    "sessionDeliveryAuditRefs": 2,
+    "sessionDeliverySyntheticMessages": 1,
+    "siblingMarker": true,
+    "terminalDisposition": "passed",
+    "toolOnlyQuestion": [
+      "grind_frontier"
+    ]
+  },
+  "schemaVersion": 1
+}

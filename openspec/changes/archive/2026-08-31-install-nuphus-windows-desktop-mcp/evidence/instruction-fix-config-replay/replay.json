@@ -1,0 +1,6 @@
+{
+  "candidateId": "instruction-fix-config-replay",
+  "inputRawSha256": "68c2535ccebbf913068d49f71f8da737a27259570bac7a47ff2d12d553feedfc",
+  "noLiveCalls": true,
+  "sourceCandidateId": "nuphus-instruction-fix-r1-config"
+}

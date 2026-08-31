@@ -1,0 +1,15 @@
+{
+  "candidateId": "nuphus-restore-r1-config",
+  "checks": {
+    "exactInsertions": true,
+    "officialReadback": true,
+    "privacySafe": true,
+    "protectedFiles": false,
+    "rollbackPreimages": true,
+    "schema": true,
+    "sourceReadback": true
+  },
+  "passed": false,
+  "proofKind": "nuphus-desktop-config",
+  "schemaVersion": 1
+}

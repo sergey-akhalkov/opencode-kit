@@ -1,0 +1,58 @@
+{
+  "cleanup": {
+    "complete": true,
+    "fixtureRemoved": true,
+    "livenessClosed": true,
+    "serverStopped": true
+  },
+  "configDigest": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+  "failure": "provider-free-preflight-failed",
+  "installed": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "observations": [
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--mode",
+        "preflight",
+        "--capture-kind",
+        "candidate",
+        "--evidence-root",
+        "<evidence-root>\\preflight"
+      ],
+      "invocationDigest": "aea80d294db080c5e3dfb857e72763e4e12e023da0f8b1749bc1e0eacf06899e",
+      "label": "preflight",
+      "signal": null,
+      "status": 1,
+      "stderr": "",
+      "stdout": "{\"accepted\":true,\"mode\":\"preflight\",\"modelCalls\":0,\"rejected\":5}\n"
+    }
+  ],
+  "processBefore": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "schemaVersion": 1
+}

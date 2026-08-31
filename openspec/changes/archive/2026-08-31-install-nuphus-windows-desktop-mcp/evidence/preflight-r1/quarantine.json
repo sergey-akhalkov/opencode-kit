@@ -1,0 +1,7 @@
+{
+  "candidateId": "nuphus-apply-r1-preflight",
+  "disposition": "discarded-before-share",
+  "failure": "The privacy evaluator correctly rejected absolute runtime-source locations in the first proof-runner projection.",
+  "liveEffects": "none",
+  "screenCaptureCount": 0
+}

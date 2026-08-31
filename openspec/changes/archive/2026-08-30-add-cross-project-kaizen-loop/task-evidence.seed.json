@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    {
+      "taskId": "1.2",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-loaded-compaction-identity",
+        "effects": ["loopback-model-call", "disposable-local-write", "create-new-evidence"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-loaded-compaction-identity",
+        "effects": ["loopback-model-call", "disposable-local-write", "create-new-evidence"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <installed-opencode> --evidence-dir <absolute-compaction-context-r5a-and-r5b>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:38:00.000Z"
+      },
+      "artifacts": [
+        "evidence/compaction-context-r5a/bundle.json",
+        "evidence/compaction-context-r5b/bundle.json",
+        "evidence/task-4-1-runtime-proof-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-store-boundary",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-store-boundary",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode store-boundary --evidence-dir <absolute-store-boundary-r9>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/store-boundary-r9/bundle.json",
+        "evidence/task-4-1-runtime-proof-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.4",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-loaded-tools",
+        "effects": ["loopback-model-call", "disposable-local-write", "create-new-evidence"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-loaded-tools",
+        "effects": ["loopback-model-call", "disposable-local-write", "create-new-evidence"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <installed-opencode> --evidence-dir <absolute-loaded-tools-r8>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:37:00.000Z"
+      },
+      "artifacts": [
+        "evidence/loaded-tools-r8/bundle.json",
+        "evidence/task-4-1-runtime-proof-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-compaction-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-compaction-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <absolute-population-r5>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/population-r5/bundle.json",
+        "evidence/compaction-context-r5a/bundle.json",
+        "evidence/compaction-context-r5b/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-archive-boundary",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-archive-boundary",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode archive-boundary --evidence-dir <absolute-archive-boundary-r7>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/archive-boundary-r7/bundle.json",
+        "evidence/population-r5/archive-boundary/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-complain-and-legacy-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-complain-and-legacy-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <absolute-population-r5>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/population-r5/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.4",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-status-and-triage-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-status-and-triage-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <absolute-population-r5>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/population-r5/bundle.json",
+        "evidence/triage-boundary-r6/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.5",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-root-contained-triage",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-root-contained-triage",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode triage-boundary --evidence-dir <absolute-triage-boundary-r6>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/triage-boundary-r6/bundle.json",
+        "evidence/population-r5/triage-boundary/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-maintained-population-runner",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-maintained-population-runner",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <absolute-population-r5>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/population-r5/bundle.json",
+        "evidence/candidate-composition-r17.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-safety-and-capacity-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-safety-and-capacity-population",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <absolute-population-r5>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/population-r5/bundle.json",
+        "evidence/store-boundary-r9/bundle.json",
+        "evidence/task-4-3-sdet-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-portability-and-profile-validation",
+        "effects": ["provider-free-test", "read-only-inspection"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-portability-and-profile-validation",
+        "effects": ["provider-free-test", "read-only-inspection"]
+      },
+      "invocation": {
+        "command": "npm run validate:strict",
+        "status": 0,
+        "recordedAt": "2026-08-30T20:24:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-5-validation-r1.md",
+        "evidence/candidate-composition-r17.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.4",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-documentation-validation",
+        "effects": ["provider-free-test", "read-only-inspection"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "r3-documentation-validation",
+        "effects": ["provider-free-test", "read-only-inspection"]
+      },
+      "invocation": {
+        "command": "npm run validate:strict",
+        "status": 0,
+        "recordedAt": "2026-08-30T20:24:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-5-validation-r1.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "kzn-r3-population-composition",
+        "effects": ["loopback-model-call", "disposable-local-write", "create-new-evidence"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "kzn-r3-population-composition",
+        "effects": ["loopback-model-call", "disposable-local-write", "create-new-evidence"]
+      },
+      "invocation": {
+        "command": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <absolute-population-r5>",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:40:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-1-runtime-proof-r1.md",
+        "evidence/candidate-composition-r17.json",
+        "evidence/loaded-tools-r8/bundle.json",
+        "evidence/compaction-context-r5a/bundle.json",
+        "evidence/compaction-context-r5b/bundle.json",
+        "evidence/store-boundary-r9/bundle.json",
+        "evidence/archive-boundary-r7/bundle.json",
+        "evidence/triage-boundary-r6/bundle.json",
+        "evidence/population-r5/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "result": "complete",
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "main-owned-regression-disposition",
+        "effects": ["provider-free-test", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "node tools/test-cross-project-kaizen.ts --json",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:32:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-2-regression-disposition-r1.md",
+        "evidence/task-4-3-sdet-r1.md",
+        "evidence/population-r5/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "result": "complete",
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-critical-sdet-r3",
+        "effects": ["provider-free-read", "disposable-local-write"]
+      },
+      "invocation": {
+        "command": "task sdet-quality-engineer ses_fabcc6944ffeEPxIwe3B8tXtIv",
+        "status": 0,
+        "recordedAt": "2026-08-30T19:44:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-3-sdet-r1.md",
+        "evidence/candidate-composition-r17.json",
+        "evidence/population-r5/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.4",
+      "result": "complete",
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-evidence-sufficiency-challenge",
+        "effects": ["read-only-review"]
+      },
+      "invocation": {
+        "command": "task evidence-sufficiency-reviewer ses_fabc0dcedffeZRVi1RoPaybaBv",
+        "status": 0,
+        "recordedAt": "2026-08-30T20:02:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-4-evidence-challenge-r1.md",
+        "evidence/candidate-composition-r17.json",
+        "evidence-index.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.5",
+      "result": "complete",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complete-project-validation-inventory",
+        "effects": ["provider-free-test", "read-only-inspection"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complete-project-validation-inventory",
+        "effects": ["provider-free-test", "read-only-inspection"]
+      },
+      "invocation": {
+        "command": "node --test --test-reporter=dot --test-concurrency=1 <package-test-inventory-in-five-batches>",
+        "status": 0,
+        "recordedAt": "2026-08-30T20:18:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-5-validation-r1.md",
+        "evidence/candidate-composition-r17.json",
+        "evidence-index.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    }
+  ]
+}

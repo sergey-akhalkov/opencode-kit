@@ -1,0 +1,19 @@
+{
+  "candidateId": "nuphus-perceive-r1",
+  "checks": {
+    "cleanup": true,
+    "fallbackRecorded": true,
+    "localCoordinates": true,
+    "modelInventory": true,
+    "noCloudVision": true,
+    "noFailure": true,
+    "ownedTarget": true,
+    "perceptionOutcome": true,
+    "privacySafe": true,
+    "schema": true,
+    "screenshotCaptured": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-perceive",
+  "schemaVersion": 1
+}

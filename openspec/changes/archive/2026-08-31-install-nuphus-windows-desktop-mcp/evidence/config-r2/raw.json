@@ -1,0 +1,73 @@
+{
+  "baseline": {
+    "candidateId": "nuphus-apply-r2-preflight",
+    "configSha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "instructionsSha256": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "rawSha256": "79040f58e4105071dab4de8568ca7869461a75b31a864762b5eba5edde2edfd9"
+  },
+  "candidateId": "nuphus-apply-r2-config",
+  "config": {
+    "currentSha256": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "insertionOccurrences": 1,
+    "nuphus": {
+      "command": [
+        "nuphus-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NUPHUS_MCP_CONFIRM_WRITE": "0"
+      },
+      "timeout": 60000,
+      "type": "local"
+    },
+    "parseErrorCount": 0,
+    "rollbackSha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "rollbackStrategy": "exact-block-removal"
+  },
+  "instructions": {
+    "currentSha256": "6d15e2938a496418ff9e5f2875471c2ebc17373f6ecdb65877474acb6f43c91f",
+    "insertionOccurrences": 1,
+    "rollbackSha256": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "rollbackStrategy": "exact-block-removal-and-restore-crlf"
+  },
+  "mode": "config",
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-config",
+  "protectedFiles": {
+    "currentInstaller": {
+      "bytes": 8090,
+      "exists": true,
+      "id": "tools/install-code-intelligence-mcps.ts",
+      "sha256": "c124bec3f78a3c5a1bf4e672c1cc976f32ab827e3fc7147f846b522f60259579"
+    },
+    "currentTemplate": {
+      "bytes": 7830,
+      "exists": true,
+      "id": "global/opencode.json.template",
+      "sha256": "12d82b80368062dba3127d841f43070a970aa45a6616ee1f050ca7674ff52b20"
+    },
+    "preflightInstallerSha256": "c124bec3f78a3c5a1bf4e672c1cc976f32ab827e3fc7147f846b522f60259579",
+    "preflightTemplateSha256": "12d82b80368062dba3127d841f43070a970aa45a6616ee1f050ca7674ff52b20"
+  },
+  "resolved": {
+    "mcpNames": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "nuphus",
+      "serena"
+    ],
+    "nuphus": {
+      "command": [
+        "nuphus-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NUPHUS_MCP_CONFIRM_WRITE": "0"
+      },
+      "timeout": 60000,
+      "type": "local"
+    },
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "schemaVersion": 1
+}

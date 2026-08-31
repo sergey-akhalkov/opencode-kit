@@ -9,14 +9,14 @@ Define proportional Change-Ready routing that prioritizes a minimal observable h
 
 The main session SHALL own and update implementation plans, task and path inventories, OpenSpec artifact text, candidate and revision labels, attempt counts, and process stop lines when evidence shows that the update is the smallest necessary route to the accepted outcome and it does not change the accepted outcome, operating envelope, non-deferrable invariants, material risk acceptance, or protected-boundary authority. Such an update SHALL NOT be classified as scope expansion merely because an earlier agent-authored artifact prohibited another attempt or declared a process stop.
 
-After a causal correction, satisfied retry condition, and current required offline replay, the main session SHALL record the change, update affected artifacts, invalidate only dependent evidence, and continue through the next authorized bounded attempt. It SHALL NOT ask the owner whether to expand the change, create a successor revision, raise an attempt count, or continue the process.
+After a causal correction and satisfied retry condition, the main session SHALL update affected artifacts, invalidate only dependent proof, and continue through the next authorized bounded attempt. It SHALL NOT ask the owner whether to expand the change, create a successor revision, raise an attempt count, or continue the process.
 
-Updating a process control SHALL NOT authorize the underlying external, physical, costly, destructive, irreversible, remote, credentialed, deployed, released, or otherwise protected action. That action SHALL retain its separate owner authority, `Live-Attempt Gate`, safety, identity, restoration, cleanup, and immutable-evidence prerequisites.
+Updating a process control SHALL NOT authorize the underlying external, physical, costly, destructive, irreversible, remote, credentialed, deployed, released, or otherwise protected action. That action SHALL retain its separate owner authority, `Live-Attempt Gate`, safety, identity, restoration, and cleanup prerequisites.
 
 #### Scenario: Corrected pre-boundary failure earns an autonomous successor
 
 - **WHEN** a bounded live attempt stops before the protected dependency because of a diagnosed local defect
-- **AND** the defect is corrected, preserved-corpus replay is terminal and green, the retry condition is satisfied, and existing authority already covers the underlying bounded action
+- **AND** the defect is corrected, the retry condition is satisfied through current diagnostics or a causally different safe probe, and existing authority already covers the underlying bounded action
 - **THEN** main updates the OpenSpec attempt limit and stop line, records the causal successor, and executes the next bounded attempt without an owner process-approval question
 - **AND** all underlying safety, restoration, cleanup, identity, and evidence gates remain enforced.
 
@@ -187,15 +187,17 @@ The roadmap SHALL optimize time-to-first-real-signal. When a harness, identity c
 
 ### Requirement: Unknown real behavior stops only dependent expansion
 
-When missing, unobservable, or mismatched real behavior can invalidate planned downstream behavior required by the still-current accepted outcome, the main session SHALL stop adding behavior in that dependency chain until characterization or equivalence evidence resolves the uncertainty. Independent work that does not rely on that uncertainty MAY continue.
+When missing, unobservable, or mismatched real behavior can invalidate planned downstream behavior required by the still-current accepted outcome, the main session SHALL stop adding behavior in that dependency chain until characterization or equivalence evidence resolves the uncertainty. Independent accepted work that does not rely on that uncertainty SHALL continue while it remains dependency-valid, authorized, and safe.
 
-When the unknown behavior or protected prerequisite belongs only to an agent-chosen path and the accepted outcome admits another safe real route, main SHALL keep the affected path and its Live-Attempt Gate blocked, autonomously reconcile planning controls, and continue through the goal-preserving route without representing it as proof of the blocked path. If the original accepted outcome itself requires owner authorization or unavailable external capability and no safe real substitute remains, main SHALL raise the decision at the first safe, decision-ready gate rather than defer it to final qualification.
+When the unknown behavior or protected prerequisite belongs only to an agent-chosen path and the accepted outcome admits another safe real route, main SHALL keep the affected path and its Live-Attempt Gate blocked, autonomously reconcile planning controls, and continue through the goal-preserving route without representing it as proof of the blocked path. When no runnable item remains, one exact material product decision with no accepted reversible default MAY be presented as `product_decision_required`; an unavailable external capability or exact protected action SHALL instead remain a non-product gate with an honest waiting state and resume condition.
+
+The product-decision/waiting distinction in this requirement applies to explicitly grind-enabled roots. Outside grind, the existing decision-ready owner handoff remains unchanged.
 
 #### Scenario: Emulator behavior relies on an uncharacterized state transition
 
 - **WHEN** the next emulator layer depends on a real-system state transition whose output, ordering, side effects, or recovery semantics are unknown
 - **THEN** dependent emulator expansion stops before that layer
-- **AND** independent parser, diagnostics, or harness work MAY continue when it does not assume the unknown transition.
+- **AND** independent parser, diagnostics, or harness work SHALL continue when it does not assume the unknown transition.
 
 #### Scenario: Blocked live path is not the root outcome
 
@@ -205,12 +207,12 @@ When the unknown behavior or protected prerequisite belongs only to an agent-cho
 
 #### Scenario: Every sufficient route requires the protected action
 
-- **WHEN** the original accepted outcome requires an effect that no safe real route can observe without an exact protected owner action
-- **THEN** main stops the affected outcome at the decision-ready owner boundary
-- **AND** no lower-fidelity support evidence, artifact rewrite, or process-control update substitutes for that action.
+- **WHEN** the original accepted outcome requires an effect that no safe real route can observe without an exact protected owner action and no independent accepted item remains runnable
+- **THEN** main preserves that action as a non-product gate and reports the exact waiting state and resume condition
+- **AND** it neither asks a product question, substitutes lower-fidelity evidence, rewrites artifacts to waive the action, nor executes it without authority.
 
 ### Requirement: Shift-left sequencing does not grant live authority
-The shift-left contract SHALL NOT authorize credentials, remote or shared-environment access, physical effects, destructive or irreversible action, deployment, installation, activation, release, publication, or owner-controlled cost. Existing protected-boundary decisions, fail-closed safety and identity guards, restoration and cleanup, immutable evidence, equivalence requirements, and blocked-live-attempt offline replay SHALL remain controlling.
+The shift-left contract SHALL NOT authorize credentials, remote or shared-environment access, physical effects, destructive or irreversible action, deployment, installation, activation, release, publication, or owner-controlled cost. Existing protected-boundary decisions, fail-closed safety and identity guards, restoration and cleanup, equivalence requirements, and blocked unchanged live attempts SHALL remain controlling.
 
 Early per-slice characterization, Runtime Proof, proof runners, capture/evaluator, restoration tooling, and post-proof focused regression tests SHALL remain main or production-author responsibilities. Fresh critical-only SDET SHALL remain independent and test-only when the risk-trigger requirement applies.
 
@@ -221,9 +223,9 @@ Early per-slice characterization, Runtime Proof, proof runners, capture/evaluato
 
 ### Requirement: Technical blockers receive bounded self-diagnosis before escalation
 
-Before main declares a technical or evidence blocker, treats a negative observation as product failure, repeats a governed attempt, or escalates an unresolved prerequisite to the owner, it SHALL perform one bounded self-diagnostic pass when the cause or ownership is not already proven. The pass SHALL preserve the accepted goal and envelope; classify the affected layer as Product Candidate, Proof Runner, Evaluator, Environment, Authority, or `unknown`; separate current observed facts from assumptions; inspect material contradictions; verify environment-dependent identities used by the blocker claim; state the narrowest supported claim ceiling; and select the smallest safe causally distinct probe that can falsify a live hypothesis.
+Before main declares a technical or evidence blocker, treats a negative observation as product failure, repeats a governed attempt, or escalates an unresolved prerequisite, it SHALL perform one bounded self-diagnostic pass when the cause or ownership is not already proven. The pass SHALL preserve the accepted goal and envelope; classify the affected layer as Product Candidate, Proof Runner, Evaluator, Environment, Authority, or `unknown`; separate current observed facts from assumptions; inspect material contradictions; verify environment-dependent identities used by the blocker claim; state the narrowest supported claim ceiling; and select the smallest safe causally distinct probe that can falsify a live hypothesis.
 
-An obvious evidenced local defect MAY proceed directly to its authorized correction. When the bounded pass cannot resolve a technical or uncertain failure chain, no unused safe route is known, and owner-only status remains unproven, main SHALL invoke at most one correctly briefed diagnosis-only `troubleshooter` for that failure chain and verify its route. Another equivalent pass or consultation SHALL require new decision-changing evidence or a causally distinct mechanism.
+An obvious evidenced local defect MAY proceed directly to its authorized correction. When the bounded pass cannot resolve a technical or uncertain failure chain, no unused safe route is known, and owner-only status remains unproven, main SHALL invoke at most one correctly briefed diagnosis-only `troubleshooter` for that failure chain and verify its route. Another equivalent pass or consultation SHALL require new decision-changing evidence or a causally distinct mechanism. In an explicitly grind-enabled root, a proven non-product protected action or unavailable capability SHALL remain a scoped gate: main SHALL continue every independent runnable item and then enter exact non-product waiting if the runnable frontier empties. It SHALL NOT convert that gate into `product_decision_required` or a user question. Outside grind, the existing decision-ready owner handoff remains unchanged.
 
 #### Scenario: Contradictory evidence points to the proof path
 - **WHEN** direct runtime facts show that an accepted operation occurred while an indirect mandatory observer reports no event and its canary also reports no event
@@ -237,8 +239,8 @@ An obvious evidenced local defect MAY proceed directly to its authorized correct
 
 #### Scenario: Owner-only action is already proven
 - **WHEN** the accepted outcome requires an exact protected action and evidence proves that no unused safe goal-preserving route can advance the dependency chain
-- **THEN** main preserves that action as the owner boundary and produces the existing self-contained handoff
-- **AND** it does not run diagnostic probes or invoke `troubleshooter` merely to reconfirm owner authority.
+- **THEN** a grind-enabled root preserves that action as a scoped non-product gate, completes every independent runnable item, and enters exact waiting only after the runnable frontier is empty
+- **AND** it neither asks a product question nor runs diagnostic probes or invokes `troubleshooter` merely to reconfirm the action boundary; outside grind, the existing self-contained owner handoff remains available.
 
 ### Requirement: Absence-based evidence is qualified before it supports a blocker
 
@@ -496,12 +498,12 @@ Owner-local fixes, data/config/generated/mechanical edits, and selected-API glue
 Every reported `Live-Attempt Gate: clear | blocked | unknown` SHALL name the exact governed invocation or proof path. A non-clear classification SHALL state its missing or failing gate evidence and SHALL state the operational consequence separately. The gate classification SHALL NOT imply resource availability, action authority, environment readiness, or accepted-outcome state; those facts SHALL be reported independently when material and SHALL remain `unknown` only when their own evidence is missing. A clear gate SHALL remain evidence about repeat eligibility for the named path and SHALL NOT grant authority for the underlying protected action.
 
 #### Scenario: Gate evidence is unknown while the resource is available
-- **WHEN** a controller, service, or other resource is known available and authorized but terminal replay evidence for one named live proof path is incomplete
+- **WHEN** a controller, service, or other resource is known available and authorized but the retry condition for one named live proof path is unresolved
 - **THEN** the report states `Live-Attempt Gate: unknown` for that path and separately preserves the known resource and authority facts
 - **AND** it states that another high-cost live attempt through only that path remains blocked until the named unlock condition is satisfied.
 
 #### Scenario: Resource availability and gate state are both unknown
-- **WHEN** current evidence establishes neither resource availability nor the replay state of the named live proof path
+- **WHEN** current facts establish neither resource availability nor the retry state of the named live proof path
 - **THEN** the report records both unknowns as separate facts with their respective missing evidence
 - **AND** it does not collapse them into one unsupported resource, path, authority, or outcome assertion.
 
@@ -511,7 +513,7 @@ Every reported `Live-Attempt Gate: clear | blocked | unknown` SHALL name the exa
 - **AND** it does not report the accepted outcome as blocked or ask the owner to restore an already known available resource.
 
 #### Scenario: Clear gate does not authorize the underlying action
-- **WHEN** preserved-corpus replay clears the Live-Attempt Gate for a named path but the underlying live action still requires separate authorization or safeguards
+- **WHEN** a causal correction or newly available required observation clears the Live-Attempt Gate for a named path but the underlying live action still requires separate authorization or safeguards
 - **THEN** the report states the clear path gate and the separate unresolved authority or safeguard state
 - **AND** no live action is performed or described as authorized solely because the gate is clear.
 
@@ -627,3 +629,21 @@ scenario and applicable validation before dependent expansion.
 - **WHEN** the focused workflow finds valid complexity outside the current outcome and non-deferrable invariants
 - **THEN** main records the bounded finding or separately proposed refactoring outcome
 - **AND** the finding does not become an implicit task, completion gate, or campaign severity upgrade.
+
+### Requirement: Independent accepted work SHALL continue under scoped blockers
+When a prerequisite, uncertainty, protected action, product decision, technical failure, unavailable capability, or Live-Attempt Gate blocks one dependency cone, main SHALL preserve that cone and its evidence ceiling while executing every dependency-valid accepted-scope item outside it. A blocker SHALL become global only when the still-current accepted outcome has no runnable independent item and the remaining decision is an exact material product choice; non-product prerequisites SHALL remain scoped gates or honest waiting states.
+
+#### Scenario: Live-attempt lane is blocked but implementation work remains
+- **WHEN** one proof lane has a blocked or unknown Live-Attempt Gate and an implementation, diagnostic, documentation, harness, or alternate-proof item does not depend on that lane
+- **THEN** main keeps the live lane blocked and completes the independent item
+- **AND** does not claim that independent evidence clears the Live-Attempt Gate.
+
+#### Scenario: Product semantics are unresolved for one component
+- **WHEN** a material product choice blocks one component and another accepted component is invariant across all current options
+- **THEN** main parks the decision for the affected component and continues the invariant component
+- **AND** asks the product question only when no dependency-valid accepted item remains.
+
+#### Scenario: No executable route exists
+- **WHEN** all incomplete accepted work depends on an unavailable technical, capability, safety, access, or external prerequisite and no product decision is required
+- **THEN** main reports the exact non-terminal waiting state and resume condition
+- **AND** does not relabel the prerequisite as a product blocker, waive it, repeat blindly, or claim completion.

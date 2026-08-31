@@ -1,0 +1,24 @@
+{
+  "candidateId": "nuphus-restore-r1-loaded",
+  "checks": {
+    "activeConfigBinding": true,
+    "cleanup": true,
+    "configuredProvider": true,
+    "connected": true,
+    "exactBaseUrl": true,
+    "isolated": true,
+    "managedUnchanged": true,
+    "noCaptureOrInput": true,
+    "noFailure": true,
+    "noSiblingMcp": true,
+    "overlay": true,
+    "privacySafe": true,
+    "processAttribution": true,
+    "schema": true,
+    "screenSizeResult": true,
+    "toolInventory": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-loaded",
+  "schemaVersion": 1
+}

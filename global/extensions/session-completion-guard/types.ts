@@ -153,17 +153,8 @@ export type OwnerBoundaryVerdict = {
   resumeCondition: string;
 };
 
-export type ClaimClosureVerdict = {
-  claimId: string;
-  closureState: "supported" | "narrowed" | "blocked" | "unknown" | "stale";
-  evidenceRefs: string[];
-  maximumSupportedClaim: string;
-  outcomeRef: string;
-};
-
 export type CompletionVerdict = {
   auditID: string;
-  claimMatrix?: ClaimClosureVerdict[];
   confidence: "high" | "low" | "medium";
   deferredGateRefs: string[];
   evidenceGaps: string[];

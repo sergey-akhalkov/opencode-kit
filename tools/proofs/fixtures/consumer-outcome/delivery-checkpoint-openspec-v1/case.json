@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-openspec-compaction-route",
+  "checkpoint": {
+    "checkpointRef": "route-checkpoint-r1",
+    "evidenceRefs": ["late-failure-manifest", "late-failure-cache"],
+    "selectedRoute": "manifest-cache-canary",
+    "preservedOutcomeOraclePopulation": "outcome-r1/oracle-r1/population-r1",
+    "nextActionPrefix": "node scripts/complete-canary.ts --resume-token ",
+    "nextOracle": "canary-result.json:passed",
+    "suppressionCondition": "same-outcome-lane-and-evidence-r1"
+  },
+  "expectedPlanning": {
+    "design.md": "## Accepted Facts\n\n- Outcome: produce every reviewed report.\n- Oracle: unchanged twelve-report validation.\n- Population: twelve-report-population-r1.\n\n## Current Route\n\n- Route: run `node scripts/complete-canary.ts` before the unchanged late validation.\n- Suppression identity: `route-checkpoint-r1`.\n- Next oracle: `canary-result.json:passed`.\n",
+    "tasks.md": "## 1. Preserve The Accepted Outcome\n\n- [ ] 1.1 Run `node scripts/complete-canary.ts` and observe `canary-result.json:passed`.\n- [ ] 1.2 After task 1.1, run the unchanged twelve-report late validation.\n",
+    "history.md": "# Strategy History\n\n## route-checkpoint-r1 - Replace repeated late setup with an earlier canary\n\n- **Objective:** Preserve all twelve reports and their unchanged late oracle.\n- **Approach:** Run the manifest/cache canary before repeating full setup.\n- **Evidence:** `late-failure-manifest`, `late-failure-cache`.\n- **Outcome:** Selected `manifest-cache-canary`; oracle not reached before compaction.\n- **Reason:** Two different defects repeatedly reached the same costly late boundary.\n- **Do Not Repeat:** Do not rerun the full late boundary before the canary.\n- **Evidence-Based Retry Condition:** Retry the full late boundary only after `canary-result.json:passed`.\n- **Suppression Identity:** `route-checkpoint-r1`.\n"
+  },
+  "unchangedPlanningPaths": [
+    "proposal.md",
+    "specs/fixture-capability/spec.md",
+    "ownership.json"
+  ]
+}

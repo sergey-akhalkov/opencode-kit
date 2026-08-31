@@ -1,0 +1,19 @@
+{
+  "candidateId": "opdc-configured-grind-r2",
+  "candidateOraclePass": true,
+  "captureKind": "candidate",
+  "captureReplayComplete": true,
+  "cleanupComplete": true,
+  "evaluatorRecovered": true,
+  "failure": "delivery-checkpoint provider-free replay failed",
+  "inputCapture": "capture-delivery-checkpoint/raw.json",
+  "inputRaw": "raw.json",
+  "inputRawBytes": 49058,
+  "mode": "replay",
+  "modelCalls": 0,
+  "observationsComplete": true,
+  "replayComplete": true,
+  "schemaVersion": 1,
+  "suiteFinalizationComplete": true,
+  "terminalResult": "captured-suite-clean-after-evaluator-replay"
+}

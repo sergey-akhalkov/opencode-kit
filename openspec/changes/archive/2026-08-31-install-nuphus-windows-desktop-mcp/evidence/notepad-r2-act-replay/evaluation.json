@@ -1,0 +1,16 @@
+{
+  "candidateId": "nuphus-notepad-r2-act",
+  "checks": {
+    "afterImage": true,
+    "exactInput": true,
+    "noFailure": true,
+    "phaseBoundary": true,
+    "privacySafe": true,
+    "protocolCleanup": true,
+    "schema": true,
+    "targetRevalidated": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-notepad-act",
+  "schemaVersion": 1
+}

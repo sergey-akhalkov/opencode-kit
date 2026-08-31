@@ -394,7 +394,6 @@ function installGlobalSource(globalSource: string): void {
     "bin/openspec-change/bounded-falsification.ts",
     "bin/openspec-change/claims.ts",
     "bin/openspec-change/delivery-horizon.ts",
-    "bin/openspec-change/evidence.ts",
     "bin/openspec-change/gate.ts",
     "bin/openspec-change/inventory.ts",
     "bin/openspec-change/manifest.ts",

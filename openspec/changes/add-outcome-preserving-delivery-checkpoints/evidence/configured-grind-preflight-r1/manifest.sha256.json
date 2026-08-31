@@ -1,0 +1,58 @@
+{
+  "files": [
+    {
+      "path": "fixtures/allow-stop/raw.json",
+      "sha256": "01875b2122ea75790c0a4c4078f6dec0c1f4aa30ae121b6fae7f2f616e319dd4"
+    },
+    {
+      "path": "fixtures/delivery-checkpoint-accepted/raw.json",
+      "sha256": "61507e1c7f0b049eee31d368d41824c016ce159ece4c2ba0cc45ac2d90c380b5"
+    },
+    {
+      "path": "fixtures/delivery-costly-before-checkpoint/raw.json",
+      "sha256": "155a471c72089cc691cf9f7bd9081bfbb72087c653e28afcfc78635adad394f3"
+    },
+    {
+      "path": "fixtures/delivery-missing-continuation/raw.json",
+      "sha256": "b69f52d6f4de2138ff6ab7a87e6c85920156d0fda2f01d2b07cea13625852489"
+    },
+    {
+      "path": "fixtures/delivery-missing-oracle/raw.json",
+      "sha256": "c6c038468dc6f4c934cc0204586db4688a1a154b69ad8b12edeb3115f58075ba"
+    },
+    {
+      "path": "fixtures/delivery-premature-gate-satisfaction/raw.json",
+      "sha256": "029206762a6c384ae285f1c08dfcdc8f654c73c3f9d3d946b51ef7376371d798"
+    },
+    {
+      "path": "fixtures/delivery-product-question/raw.json",
+      "sha256": "1aceb921554d701d33f6add634ba5047ef637b1bc02229dd2092f94c2bece844"
+    },
+    {
+      "path": "fixtures/leaked-ownership/raw.json",
+      "sha256": "8a8589e5866c4e2c9b10c6365b60929af8e838ce5afc65ce4c28ea2bf6606d14"
+    },
+    {
+      "path": "fixtures/no-continuation/raw.json",
+      "sha256": "43841b7f0b275b866fb229a58ccc0ae4c8bb8cb1c13a39d006ce7234e0780c10"
+    },
+    {
+      "path": "fixtures/owner-required/raw.json",
+      "sha256": "24668c22ce3ea7c9075a3ef71497dcb5d5f3875ff3d7db0b8ceb5c5b01621379"
+    },
+    {
+      "path": "fixtures/stale-continuation/raw.json",
+      "sha256": "44c3f02f519f6564eb11c7a95bb83c043dd8df61543bc39030f260d32af2e21f"
+    },
+    {
+      "path": "fixtures/technical-blocker-accepted/raw.json",
+      "sha256": "e8b727b0142dacede6c3be226f2f5258a4f359621b160e146826ae6d041767a8"
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "c25fcc50afb8cc52404d2c36be9de0d0735da863bd4e156c6b1f0083c086039c"
+    }
+  ],
+  "label": "preflight",
+  "schemaVersion": 1
+}

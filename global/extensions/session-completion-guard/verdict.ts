@@ -12,7 +12,6 @@ import { validateQuestionAnswers } from "./question.ts";
 const VERDICT_VALUES = new Set(["allow_stop", "continue", "product_decision_required", "user_paused", "waiting"]);
 const CONFIDENCE_VALUES = new Set(["high", "medium", "low"]);
 const REQUIREMENT_STATUS_VALUES = new Set(["complete", "deferred", "product_decision_required", "unresolved"]);
-const CLAIM_CLOSURE_VALUES = new Set(["supported", "narrowed", "blocked", "unknown", "stale"]);
 const QUESTION_ACTION_VALUES = new Set(["answer", "defer", "present-product-decision"]);
 const WAIT_KIND_VALUES = new Set(["budget", "capability", "external", "live-attempt", "process", "safety", "technical", "writer-liveness"]);
 
@@ -137,7 +136,6 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
   }
   exactKeys(input, [
     "auditID",
-    "claimMatrix",
     "confidence",
     "deferredGateRefs",
     "evidenceGaps",
@@ -218,64 +216,6 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
   }
   exactKeys(strategy, ["fingerprint", "prohibitedStrategies", "repeated", "requiredRetryEvidence"], "strategyAssessment");
   const verdict = input.verdict as CompletionVerdict["verdict"];
-  if (!Array.isArray(input.claimMatrix) || input.claimMatrix.length > 32) {
-    throw new Error("Invalid completion verdict field: claimMatrix");
-  }
-  const projected = new Map(
-    (epoch.completionEvidence?.claimEvidence?.claims ?? []).map((claim) => [claim.claimId, claim]),
-  );
-  const claimIds = new Set<string>();
-  const claimMatrix = input.claimMatrix.map((value, index) => {
-    const item = record(value);
-    if (item == null) throw new Error(`Invalid completion verdict field: claimMatrix[${index}]`);
-    exactKeys(
-      item,
-      ["claimId", "closureState", "evidenceRefs", "maximumSupportedClaim", "outcomeRef"],
-      `claimMatrix[${index}]`,
-    );
-    const claimId = requiredString(item.claimId, `claimMatrix[${index}].claimId`, 200);
-    const closureState = String(item.closureState ?? "");
-    if (!CLAIM_CLOSURE_VALUES.has(closureState)) {
-      throw new Error(`Invalid completion verdict field: claimMatrix[${index}].closureState`);
-    }
-    if (claimIds.has(claimId)) throw new Error(`Duplicate completion verdict claim: ${claimId}`);
-    claimIds.add(claimId);
-    const evidenceRefs = stringArray(item.evidenceRefs, `claimMatrix[${index}].evidenceRefs`, 64);
-    const maximumSupportedClaim = requiredString(
-      item.maximumSupportedClaim,
-      `claimMatrix[${index}].maximumSupportedClaim`,
-      1_000,
-    );
-    const outcomeRef = requiredString(item.outcomeRef, `claimMatrix[${index}].outcomeRef`, 200);
-    const source = projected.get(claimId);
-    if (
-      source == null ||
-      source.closureState !== closureState ||
-      source.maximumSupportedClaim !== maximumSupportedClaim ||
-      source.outcomeRef !== outcomeRef ||
-      JSON.stringify([...source.evidenceRefs].sort()) !== JSON.stringify([...evidenceRefs].sort())
-    ) {
-      throw new Error(`Completion verdict claimMatrix[${index}] does not match supplied claim evidence`);
-    }
-    return {
-      claimId,
-      closureState: closureState as NonNullable<CompletionVerdict["claimMatrix"]>[number]["closureState"],
-      evidenceRefs,
-      maximumSupportedClaim,
-      outcomeRef,
-    };
-  });
-  const claimEvidence = epoch.completionEvidence?.claimEvidence;
-  if (verdict === "allow_stop") {
-    if (claimMatrix.some((claim) => claim.closureState !== "supported")) {
-      throw new Error("An allow_stop verdict cannot accept unsupported claim closure");
-    }
-    if (claimEvidence?.selection === "explicit" && (
-      !claimEvidence.complete || claimMatrix.length !== claimEvidence.claims.length
-    )) {
-      throw new Error("An allow_stop verdict requires complete explicitly selected claim closure");
-    }
-  }
   const parsedOwnerBoundary = ownerBoundary(input.ownerBoundary);
   const runnableItemRefs = uniqueStringArray(input.runnableItemRefs, "runnableItemRefs", 16);
   if (!sameRefs(runnableItemRefs, frontier.runnableItemRefs)) {
@@ -413,7 +353,6 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
   }
   return {
     auditID,
-    claimMatrix,
     confidence: input.confidence as CompletionVerdict["confidence"],
     deferredGateRefs,
     evidenceGaps: uniqueStringArray(input.evidenceGaps, "evidenceGaps", 128),

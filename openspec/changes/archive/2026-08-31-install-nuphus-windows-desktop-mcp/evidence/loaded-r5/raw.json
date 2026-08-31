@@ -1,0 +1,238 @@
+{
+  "active": {
+    "configSha256": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "model": "openai/gpt-5.6-sol",
+    "nuphus": {
+      "command": [
+        "nuphus-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NUPHUS_MCP_CONFIRM_WRITE": "0"
+      },
+      "timeout": 60000,
+      "type": "local"
+    }
+  },
+  "candidateId": "nuphus-apply-r5-loaded",
+  "cleanup": {
+    "fixture": "removed",
+    "server": "terminal",
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "session": "deleted"
+  },
+  "isolation": {
+    "credentialCopies": 2,
+    "rootsDistinct": true,
+    "testHomeConfigured": true,
+    "xdgDataConfigured": true
+  },
+  "logs": {
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderr": {
+      "bytes": 6749,
+      "sha256": "93cacea4bfbe9f84821b8e4a81891df1207e8fe4566cbda3711307ccd80029ce",
+      "tail": "timestamp=2026-08-30T22:05:37.849Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:37.859Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:37.871Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.137Z level=INFO run=5b056ef3 message=\"creating instance\" directory=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.138Z level=INFO run=5b056ef3 message=fromDirectory directory=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.486Z level=INFO run=5b056ef3 message=bootstrapping directory=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.501Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.502Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.502Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.544Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.572Z level=INFO run=5b056ef3 message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:38.643Z level=INFO run=5b056ef3 message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T22:05:38.644Z level=INFO run=5b056ef3 message=\"all formatters are disabled\"\ntimestamp=2026-08-30T22:05:38.645Z level=INFO run=5b056ef3 message=init\ntimestamp=2026-08-30T22:05:38.906Z level=INFO run=5b056ef3 message=\"shell tool using shell\" shell=\"<redacted-path> Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-30T22:05:40.025Z level=INFO run=5b056ef3 message=created id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 slug=jolly-meadow version=1.18.25 projectID=global directory=\"<redacted-path>\" path=\"\" workspaceID=undefined parentID=undefined title=\"Nuphus screen-size proof\" agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788127540025 time.updated=1788127540025\ntimestamp=2026-08-30T22:05:40.670Z level=INFO run=5b056ef3 message=loop session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 step=0\ntimestamp=2026-08-30T22:05:41.305Z level=INFO run=5b056ef3 message=initialized\ntimestamp=2026-08-30T22:05:41.500Z level=INFO run=5b056ef3 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<redacted-path>\" git=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:41.510Z level=INFO run=5b056ef3 message=init count=35\ntimestamp=2026-08-30T22:05:41.873Z level=INFO run=5b056ef3 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T22:05:41.875Z level=INFO run=5b056ef3 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T22:05:42.667Z level=INFO run=5b056ef3 message=\"booting location services\" directory=\"<redacted-path>\" workspaceID=undefined\ntimestamp=2026-08-30T22:05:42.672Z level=INFO run=5b056ef3 message=process session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 messageID=msg_054b4f5c1001ml2vs5fcF6M175\ntimestamp=2026-08-30T22:05:42.674Z level=INFO run=5b056ef3 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 small=false agent=build mode=primary\ntimestamp=2026-08-30T22:05:42.686Z level=INFO run=5b056ef3 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-30T22:05:46.055Z level=INFO run=5b056ef3 message=evaluated permission=nuphus_desktop_screen_size pattern=* action.permission=nuphus_desktop_screen_size action.action=allow action.pattern=*\ntimestamp=2026-08-30T22:05:46.421Z level=INFO run=5b056ef3 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<redacted-path>\" git=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:46.603Z level=INFO run=5b056ef3 message=loop session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 step=1\ntimestamp=2026-08-30T22:05:46.776Z level=INFO run=5b056ef3 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<redacted-path>\" git=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:46.812Z level=INFO run=5b056ef3 message=process session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 messageID=msg_054b50cec001yH1Ub8bJDJD5fL\ntimestamp=2026-08-30T22:05:46.813Z level=INFO run=5b056ef3 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 small=false agent=build mode=primary\ntimestamp=2026-08-30T22:05:46.815Z level=INFO run=5b056ef3 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-30T22:05:49.312Z level=INFO run=5b056ef3 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<redacted-path>\" git=\"<redacted-path>\"\ntimestamp=2026-08-30T22:05:49.512Z level=INFO run=5b056ef3 message=loop session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6 step=2\ntimestamp=2026-08-30T22:05:49.513Z level=INFO run=5b056ef3 message=\"exiting loop\" session.id=ses_fab4b0cc6ffeVgXH9gcFCD0GT6\ntimestamp=2026-08-30T22:05:50.626Z level=INFO run=5b056ef3 message=\"removing share\" sessionID=ses_fab4b0cc6ffeVgXH9gcFCD0GT6\n"
+    },
+    "stdout": {
+      "bytes": 119,
+      "sha256": "3b6eea71e5e06c1a67dc13b870a45c8c736227672a29fb15dbf25cf3917c0a3e",
+      "tail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on htt<redacted-path>\n"
+    }
+  },
+  "managedAfter": [],
+  "managedBefore": [],
+  "managedUnchanged": true,
+  "mcpStatuses": {
+    "codebase-memory-mcp": {
+      "errorSha256": null,
+      "status": "disabled"
+    },
+    "graphify-global": {
+      "errorSha256": null,
+      "status": "disabled"
+    },
+    "nuphus": {
+      "errorSha256": null,
+      "status": "connected"
+    },
+    "serena": {
+      "errorSha256": null,
+      "status": "disabled"
+    }
+  },
+  "mode": "loaded",
+  "openCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "overlay": {
+    "mcp": {
+      "codebase-memory-mcp": {
+        "enabled": false
+      },
+      "graphify-global": {
+        "enabled": false
+      },
+      "serena": {
+        "enabled": false
+      }
+    }
+  },
+  "privacySafe": true,
+  "processTree": {
+    "confirmationRequested": false,
+    "nuphusCount": 1,
+    "rows": [
+      {
+        "createdAt": "2026-08-30T22:05:38.7060800Z",
+        "executableSha256": null,
+        "name": "cmd.exe",
+        "parentPid": 47256,
+        "pid": 11588,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:05:38.8124140Z",
+        "executableSha256": null,
+        "name": "nuphus-mcp.exe",
+        "parentPid": 45892,
+        "pid": 39064,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:05:36.6441920Z",
+        "executableSha256": null,
+        "name": "conhost.exe",
+        "parentPid": 46036,
+        "pid": 43700,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:05:38.7204310Z",
+        "executableSha256": null,
+        "name": "conhost.exe",
+        "parentPid": 11588,
+        "pid": 45764,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:05:38.7624200Z",
+        "executableSha256": null,
+        "name": "node.exe",
+        "parentPid": 11588,
+        "pid": 45892,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:05:36.6366420Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 36492,
+        "pid": 46036,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T22:05:36.6598170Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 46036,
+        "pid": 47256,
+        "requestedConfirmation": false
+      }
+    ],
+    "siblingMcpCount": 0
+  },
+  "prompt": {
+    "model": {
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai"
+    },
+    "screenTool": "nuphus_desktop_screen_size",
+    "text": "2520x1680",
+    "toolCalls": [],
+    "transcriptToolCalls": [
+      {
+        "dimensions": {
+          "height": 1680,
+          "width": 2520
+        },
+        "name": "nuphus_desktop_screen_size",
+        "outputBytes": 28,
+        "outputSha256": "6905829bc7ed6beab9ab0cc37c6cfd139932432747a0e52e6726cd90925f1e8a",
+        "status": "completed"
+      }
+    ]
+  },
+  "proofKind": "nuphus-desktop-loaded",
+  "resolved": {
+    "mcpNames": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "nuphus",
+      "serena"
+    ],
+    "nuphus": {
+      "command": [
+        "nuphus-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NUPHUS_MCP_CONFIRM_WRITE": "0"
+      },
+      "timeout": 60000,
+      "type": "local"
+    },
+    "siblingStatuses": {
+      "codebase-memory-mcp": false,
+      "graphify-global": false,
+      "serena": false
+    }
+  },
+  "schemaVersion": 1,
+  "screenCaptureCount": 0,
+  "server": {
+    "baseUrl": "http://127.0.0.1:61144",
+    "pid": 46036
+  },
+  "tools": {
+    "canonicalSource": "McpCatalog.toolName(clientName, toolName)",
+    "idsEndpoint": [
+      "apply_patch",
+      "bash",
+      "edit",
+      "glob",
+      "grep",
+      "invalid",
+      "question",
+      "read",
+      "skill",
+      "task",
+      "todowrite",
+      "webfetch",
+      "websearch",
+      "write"
+    ],
+    "listEndpoint": [
+      "apply_patch",
+      "bash",
+      "glob",
+      "grep",
+      "invalid",
+      "question",
+      "read",
+      "skill",
+      "task",
+      "todowrite",
+      "webfetch"
+    ],
+    "screenTool": "nuphus_desktop_screen_size"
+  }
+}

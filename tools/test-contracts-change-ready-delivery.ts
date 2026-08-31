@@ -307,6 +307,33 @@ const TASK_SEQUENCING_APPLY_SURFACES = [
   "global/skills/openspec-apply-change/SKILL.md",
 ] as const;
 
+const DELIVERY_CHECKPOINT_GLOBAL_MARKERS = [
+  "### Outcome-preserving delivery checkpoints",
+  "materially different failures repeatedly discovered at the same costly late boundary",
+  "repeated coarse invalidation of unchanged prerequisites",
+  "repetition of a failed costly action after only a local correction",
+  "The existing similar-attempt stagnation rule is the checkpoint for that pattern",
+  "an observed repeatable setup or validation cost combined with a declared remaining cardinality makes that cost the current dominant delivery constraint",
+  "Elapsed time alone, coarse task counts, one cheap failure, advancing long work, and irreducible required work do not trigger",
+  "before the next dependent costly action",
+  "original outcome, operating envelope, oracle, reviewed population, and non-deferrable invariants",
+  "continue independent accepted work",
+  "If a faster route changes accepted product behavior or proof scope, keep it at the existing owner boundary",
+  "otherwise do not ask the owner for a process choice",
+  "unchanged checkpoint identity",
+  "record `irreducible` or `unknown` with the limiting evidence",
+  "does not authorize the underlying action",
+  "stagnation, Change-Ready, behavioral-substitution, OpenSpec, grind-frontier, compaction, and Kaizen contracts",
+] as const;
+
+const DELIVERY_CHECKPOINT_FORBIDDEN_PHRASES = [
+  "elapsed time is sufficient",
+  "task count is sufficient",
+  "ask whether to optimize",
+  "skip proof to save time",
+  "checkpoint authorizes the action",
+] as const;
+
 const TASK_SEQUENCING_GLOBAL_MARKERS = [
   "Task order/batching, tool/reviewer choice, and cycle size are agent-owned",
   "Pending tasks remain required only while consistent with the current user-bounded outcome",
@@ -480,7 +507,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
       assertTokens(arbiter, [
         "hidden: true",
-        "permission: allow",
+        "permission:\n  \"*\": deny",
         "schemaVersion",
         "auditID",
         "rootSessionRef",
@@ -497,6 +524,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "Never convert synthetic text or guard rejection into a human requirement or answer",
       ], "Completion arbiter missing machine-verdict safeguard");
       assert(!arbiter.includes("session_delivery_context:"), "Completion arbiter must not register session_delivery_context tool permission.");
+      assert(!arbiter.includes("permission: allow"), "Completion arbiter must not expose provider tool schemas.");
     },
   },
   {
@@ -544,6 +572,99 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "question-free non-product waiting with its resume condition",
         '"maxCycles": 100',
       ], "Runtime template missing grind compaction delta or finite bounds");
+    },
+  },
+  {
+    name: "contracts: loaded delivery checkpoints preserve outcome and reject proxy triggers",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const reusable = fs.readFileSync(path.join(root, "instructions", "reusable-project-agent-instructions.md"), "utf8");
+      const projectTemplate = fs.readFileSync(path.join(root, "templates", "project", "AGENTS.md"), "utf8");
+      assertTokens(agents, DELIVERY_CHECKPOINT_GLOBAL_MARKERS, "global/AGENTS.md missing canonical delivery-checkpoint contract");
+      assertTokens(reusable, [
+        "active global outcome-preserving delivery-checkpoint contract",
+        "adds no trigger, timer, scorer, scheduler, or owner-question rule",
+      ], "Reusable project instructions must point to global delivery-checkpoint authority");
+      assertTokens(projectTemplate, [
+        "active global outcome-preserving delivery-checkpoint contract",
+        "adds no trigger, timer, scorer, scheduler, or owner-question rule",
+      ], "Project template must point to global delivery-checkpoint authority");
+      for (const phrase of DELIVERY_CHECKPOINT_FORBIDDEN_PHRASES) {
+        assert(!agents.includes(phrase), `global delivery-checkpoint authority contains forbidden proxy or weakening: ${phrase}`);
+      }
+
+      for (const marker of [
+        "materially different failures repeatedly discovered at the same costly late boundary",
+        "an observed repeatable setup or validation cost combined with a declared remaining cardinality makes that cost the current dominant delivery constraint",
+        "original outcome, operating envelope, oracle, reviewed population, and non-deferrable invariants",
+        "If a faster route changes accepted product behavior or proof scope, keep it at the existing owner boundary",
+        "otherwise do not ask the owner for a process choice",
+        "unchanged checkpoint identity",
+      ]) {
+        const weakened = agents.replaceAll(marker, "weakened delivery checkpoint wording");
+        assert(
+          weakened !== agents && missingTokens(weakened, DELIVERY_CHECKPOINT_GLOBAL_MARKERS).includes(marker),
+          `Removing delivery-checkpoint marker must fail closed: ${marker}`,
+        );
+      }
+    },
+  },
+  {
+    name: "contracts: OpenSpec and compaction preserve one unresolved delivery checkpoint",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+      const compactionMarkers = [
+        "`Delivery Checkpoint State`",
+        "`Checkpoint Ref`",
+        "`Evidence Refs`",
+        "`Selected Route`",
+        "`Preserved Outcome/Oracle/Population`",
+        "`Next Action`",
+        "`Next Oracle`",
+        "`Suppression Condition`",
+        "current dependency-closure work",
+        "optional Kaizen reflection",
+      ];
+      assertTokens(agents, compactionMarkers, "global authority missing delivery-checkpoint compaction state");
+      assertTokens(template, compactionMarkers, "managed compaction template missing delivery-checkpoint state");
+      assertTokens(apply, [
+        "Reconcile any current `Delivery Checkpoint State`",
+        "except when the same suppression identity is already carried by a due `Delivery Checkpoint State`",
+        "the suppression identity is absent from existing history",
+        "append one strategy-history entry",
+        "update only the affected design, task order, attempt/stop-line, and evidence controls",
+        "continue its `Next Action` with zero planning writes",
+        "create no proposal/design/spec/task/history churn solely to document reflection",
+        "A proposed outcome, proof, or population reduction stays at the existing owner boundary",
+        "optional Kaizen capture never authorizes, schedules, completes, or blocks the current checkpoint",
+        "Unchanged checkpoint identity and evidence reuse the existing entry and next action",
+      ], "OpenSpec apply missing delivery-checkpoint route continuity");
+      assertTokens(agents, [
+        "If the same suppression identity is already carried by a due `Delivery Checkpoint State`, omit the duplicate pending-history entry",
+        "`Next-Session Action` SHALL name the same `Next Action`",
+        "that `Next Action` SHALL be the first gate-closing offline step",
+      ], "global compaction authority does not resolve duplicate history or next-action precedence");
+      assertTokens(template, [
+        "If the same suppression identity is carried by a due `Delivery Checkpoint State`, omit the duplicate pending-history entry",
+        "make `Next-Session Action` name the same `Next Action`",
+        "that `Next Action` is the first gate-closing offline step",
+      ], "managed compaction template does not resolve duplicate history or next-action precedence");
+      const observedStateMarkers = [
+        "latest completed assistant actions",
+        "tool results",
+        "later observable evidence governs factual status, changed files, validation, and the checkpoint's evidenced state",
+        "never by itself clears or reclassifies `Live-Attempt Gate`",
+        "overrides the required first offline gate-closing `Next Action`",
+      ];
+      assertTokens(agents, observedStateMarkers, "global compaction authority may regress to an earlier unexecuted request state");
+      assertTokens(template, observedStateMarkers, "managed compaction template may regress to an earlier unexecuted request state");
+      for (const marker of ["`Checkpoint Ref`", "`Next Oracle`", "`Suppression Condition`", "current dependency-closure work"]) {
+        const weakened = agents.replaceAll(marker, "weakened compaction continuity");
+        assert(weakened !== agents && !weakened.includes(marker), `Delivery-checkpoint compaction mutation must remove ${marker}`);
+      }
+      assert(!apply.includes("Kaizen authorizes the current checkpoint"), "OpenSpec apply must keep Kaizen non-authorizing");
     },
   },
   {

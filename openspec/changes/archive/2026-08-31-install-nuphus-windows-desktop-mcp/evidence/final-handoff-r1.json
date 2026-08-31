@@ -1,0 +1,75 @@
+{
+  "activation": {
+    "activeCustomSourceRequired": true,
+    "normalUserOwnedOpenCodeRestarted": true,
+    "pathMustResolveGlobalCommand": true,
+    "restartRequired": false,
+    "verifiedProjects": ["opencode-kit", "controller-gateway-service", "hmi-legacy"]
+  },
+  "candidateId": "nuphus-desktop-ui-positioning-r3",
+  "claimCeiling": "Exact current Windows x64 workstation only: the owner-restarted current OpenCode session and new OpenCode processes using the active custom OPENCODE_CONFIG_DIR and current global Node command path resolve Nuphus 0.2.2 plus the canonical UI-development/debugging instruction. No claim is made for another config source, command path, host, version, or process that remained open across the configuration change.",
+  "cleanup": {
+    "managedListeners": [],
+    "nuphusOrNotepadProcesses": [],
+    "proofStateRootsPresent": [],
+    "temporaryNuphusPngs": []
+  },
+  "configuration": {
+    "configSha256": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "instructionSha256": "23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f",
+    "nuphus": {
+      "command": ["nuphus-mcp"],
+      "enabled": true,
+      "environment": { "NUPHUS_MCP_CONFIRM_WRITE": "0" },
+      "timeout": 60000,
+      "type": "local"
+    }
+  },
+  "effects": {
+    "cloudVisionConfiguredOrCalled": false,
+    "commitPushReleaseDeployment": false,
+    "localGlobalPackageInstall": true,
+    "localModelDownload": true,
+    "remoteStateMutation": false,
+    "registryAndModelNetworkReadsOccurred": true,
+    "userOwnedOpenCodeRestart": true
+  },
+  "knownNonCriticalLimitations": [
+    "Local OCR remains degraded because ch_PP-OCR_keys_v1.txt is absent; do not retry desktop_perceive unchanged. Screenshot-to-Read remains the proven fallback.",
+    "Icon perception is unavailable because the perception flow stopped at the incomplete OCR prerequisite.",
+    "The annotated upstream Git tag is unsigned and npm provenance is absent; recorded registry integrity does not establish source-to-binary reproducibility.",
+    "Nuphus inherits the elevated OpenCode token and can operate accessible windows; targeting and screenshot privacy safeguards remain mandatory."
+  ],
+  "models": {
+    "dictionaryPresent": false,
+    "iconModelPresent": false,
+    "ocrDetectionSha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9",
+    "ocrRecognitionSha256": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b"
+  },
+  "packages": {
+    "metaPackageJsonSha256": "66dec5772adf92bb338180f96b4626a1682de0aa37528a90cf5a8b503141eeb3",
+    "metaVersion": "0.2.2",
+    "platformBinarySha256": "9a07112f17a964d9c0b1a54653af95559d7de33cce1cb3dffd60dfc4c85ccfb0",
+    "platformPackageJsonSha256": "5a514a1ff9e1e8844308975c09074b551a6a41bffad69ac41925248d52d2ceca",
+    "platformVersion": "0.2.2"
+  },
+  "proof": {
+    "connectedLoadedStatus": "evidence/instruction-fix-r1-loaded",
+    "crossProjectPositioning": "evidence/ui-positioning-r1-cross-project.json",
+    "finalConfig": "evidence/ui-positioning-r3-config",
+    "instructionReview": "evidence/ui-positioning-r1-review.json",
+    "notepadVisibleEffect": "evidence/notepad-r2-visual/read-oracle.json",
+    "restartedCurrentSession": "evidence/restarted-session-r1.json",
+    "rollback": "evidence/rollback-r1-outcome.json"
+  },
+  "rollback": {
+    "absenceProofCommand": "npm run proof:nuphus-desktop -- --mode absent --candidate-id <new-id> --config-dir D:\\home\\sergey-akhalkov\\opencode-kit\\global --input-root D:\\home\\sergey-akhalkov\\opencode-kit\\openspec\\changes\\install-nuphus-windows-desktop-mcp\\evidence\\ui-positioning-r3-config --evidence-root <absolute-new-path>",
+    "configPreimageSha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "guard": "Before mutation, require exact current package/config/instruction identities and one exact Nuphus block in each local file; use the tested guardedRollback semantics and refuse drift.",
+    "instructionPreimageSha256": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "packageCommand": "npm uninstall --global @nuphus/nuphus-mcp @nuphus/nuphus-mcp-win32-x64",
+    "packageCommandConstraint": "Use unversioned package names only after exact 0.2.2 identity checks; version-qualified npm uninstall was a no-op on npm 11.16.0."
+  },
+  "schemaVersion": 1,
+  "screenshotPrivacyBoundary": "Capture only the identified window or explicit region to a proof-owned PNG, Read that file as model-provider input, never Read an unrelated full desktop, and remove the PNG after observation."
+}

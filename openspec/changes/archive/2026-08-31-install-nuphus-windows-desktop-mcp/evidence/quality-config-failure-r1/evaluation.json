@@ -1,0 +1,15 @@
+{
+  "candidateId": "quality-config-failure-r1",
+  "checks": {
+    "exactInsertions": false,
+    "officialReadback": false,
+    "privacySafe": false,
+    "protectedFiles": true,
+    "rollbackPreimages": true,
+    "schema": true,
+    "sourceReadback": false
+  },
+  "passed": false,
+  "proofKind": "nuphus-desktop-config",
+  "schemaVersion": 1
+}

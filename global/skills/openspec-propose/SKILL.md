@@ -101,7 +101,7 @@ When ready to implement, run /opsx-apply
 
 7. **Validate operation readiness**
 
-   If proposal.md contains `**Claim Class**`, first create one reviewed schema-valid development claim record in `<changeRoot>/evidence-index.json`; absent observations/oracle/challenge stay `unknown`/`missing` with empty refs and a non-supported disposition. Never invent evidence. Concise exact claims need no record.
+   If the proposal makes a broad claim, state its maximum supported scope directly and name the real observable proof that would support it. Do not create an evidence index, lane record, or retained proof report.
    Resolve the current project root and active kit global source explicitly. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-operation-gate.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`. Run the portable gate from the verified source; do not require a target-project package script.
    Run `node "<global-source>/bin/openspec-operation-gate.ts" --root "<project-root>" --operation propose --change "<name>"`, then `openspec validate "<name>" --strict`, then the same portable gate with `--operation apply`.
 

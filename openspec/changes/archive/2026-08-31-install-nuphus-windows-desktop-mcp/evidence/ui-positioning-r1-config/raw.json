@@ -1,0 +1,12 @@
+{
+  "candidateId": "nuphus-ui-positioning-r1-config",
+  "failure": {
+    "class": "Error",
+    "message": "Current files do not contain the exact Nuphus instruction block",
+    "stackSha256": "d9c18258d403186a29690cccedbd976f2523ca145b9295a0eae924c3d0b0b6e2"
+  },
+  "mode": "config",
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-config",
+  "schemaVersion": 1
+}

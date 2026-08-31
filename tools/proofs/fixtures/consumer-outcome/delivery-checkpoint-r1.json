@@ -1,0 +1,588 @@
+{
+  "schemaVersion": 1,
+  "id": "outcome-preserving-delivery-checkpoint-r1",
+  "claimId": "OPDC-001",
+  "maximumClaim": "provider-free structural proof for the twelve reviewed OPDC-001 scenarios and four OpenSpec/compaction continuity controls under the recorded seed and governed working-tree identity only; reviewed judgments remain fixture data and no configured behavior, semantic trigger quality, optimization benefit, cross-project reliability, or population-member support is established",
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/agents/session-completion-arbiter.md",
+    "global/extensions/session-completion-guard/frontier.ts",
+    "global/opencode.json.template",
+    "global/skills/openspec-apply-change/SKILL.md",
+    "openspec/specs/library-instruction-artifacts/spec.md",
+    "openspec/specs/library-spec-workflow-integrity/spec.md",
+    "openspec/specs/session-completion-guard/spec.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/delivery-checkpoint.ts",
+    "tools/proofs/session-completion-guard-frontier.ts",
+    "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-r1.json"
+  ],
+  "limits": {
+    "maxCostUnits": 1000000,
+    "maxEventsPerObservation": 16,
+    "maxMeasurementsPerScenario": 8,
+    "maxRedControlsPerScenario": 8,
+    "maxScenarios": 12
+  },
+  "continuityControls": [
+    {
+      "id": "shift-left-route-change",
+      "expectedObservation": {
+        "changedPaths": ["design.md", "history.md", "tasks.md"],
+        "compactionBlock": null,
+        "events": ["checkpoint-due", "route-changed", "history-appended", "controls-updated", "continue"],
+        "historyAppendCount": 1,
+        "kaizenDependency": false,
+        "ownerBoundaryRef": null,
+        "ownerQuestionCount": 0
+      },
+      "redControls": [
+        {
+          "id": "route-changed-without-history",
+          "expectedFailures": ["changed-paths", "history-append-count"],
+          "observation": {
+            "changedPaths": ["design.md", "tasks.md"],
+            "compactionBlock": null,
+            "events": ["checkpoint-due", "route-changed", "history-appended", "controls-updated", "continue"],
+            "historyAppendCount": 0,
+            "kaizenDependency": false,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "irreducible-current-route",
+      "expectedObservation": {
+        "changedPaths": [],
+        "compactionBlock": null,
+        "events": ["checkpoint-due", "irreducible-recorded", "current-route-continued"],
+        "historyAppendCount": 0,
+        "kaizenDependency": false,
+        "ownerBoundaryRef": null,
+        "ownerQuestionCount": 0
+      },
+      "redControls": [
+        {
+          "id": "irreducible-planning-churn",
+          "expectedFailures": ["changed-paths"],
+          "observation": {
+            "changedPaths": ["design.md"],
+            "compactionBlock": null,
+            "events": ["checkpoint-due", "irreducible-recorded", "current-route-continued"],
+            "historyAppendCount": 0,
+            "kaizenDependency": false,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "population-reduction-owner-boundary",
+      "expectedObservation": {
+        "changedPaths": ["tasks.md"],
+        "compactionBlock": null,
+        "events": ["checkpoint-due", "population-reduction-proposed", "owner-boundary-parked", "independent-work-continues"],
+        "historyAppendCount": 0,
+        "kaizenDependency": false,
+        "ownerBoundaryRef": "proof-population-reduction",
+        "ownerQuestionCount": 0
+      },
+      "redControls": [
+        {
+          "id": "population-reduction-applied",
+          "expectedFailures": ["changed-paths", "event-order", "owner-boundary"],
+          "observation": {
+            "changedPaths": ["design.md", "tasks.md"],
+            "compactionBlock": null,
+            "events": ["checkpoint-due", "population-reduction-applied", "independent-work-continues"],
+            "historyAppendCount": 0,
+            "kaizenDependency": false,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "compaction-due-checkpoint",
+      "expectedObservation": {
+        "changedPaths": [],
+        "compactionBlock": {
+          "heading": "Delivery Checkpoint State",
+          "fields": ["Checkpoint Ref", "Evidence Refs", "Selected Route", "Preserved Outcome/Oracle/Population", "Next Action", "Next Oracle", "Suppression Condition"]
+        },
+        "events": ["checkpoint-due", "checkpoint-state-preserved", "pending-strategy-history-suppressed", "live-gate-and-checkpoint-next-action-unified", "next-session-action-bound", "compaction", "same-checkpoint-resumed"],
+        "historyAppendCount": 0,
+        "kaizenDependency": false,
+        "ownerBoundaryRef": null,
+        "ownerQuestionCount": 0
+      },
+      "redControls": [
+        {
+          "id": "compaction-state-lost-to-kaizen",
+          "expectedFailures": ["compaction-block", "event-order", "kaizen-dependency"],
+          "observation": {
+            "changedPaths": [],
+            "compactionBlock": null,
+            "events": ["checkpoint-due", "compaction", "kaizen-reflection-scheduled"],
+            "historyAppendCount": 0,
+            "kaizenDependency": true,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        },
+        {
+          "id": "duplicate-history-on-resume",
+          "expectedFailures": ["event-order", "history-append-count"],
+          "observation": {
+            "changedPaths": [],
+            "compactionBlock": {
+              "heading": "Delivery Checkpoint State",
+              "fields": ["Checkpoint Ref", "Evidence Refs", "Selected Route", "Preserved Outcome/Oracle/Population", "Next Action", "Next Oracle", "Suppression Condition"]
+            },
+            "events": ["checkpoint-due", "checkpoint-state-preserved", "history-appended-again", "live-gate-and-checkpoint-next-action-unified", "next-session-action-bound", "compaction", "same-checkpoint-resumed"],
+            "historyAppendCount": 1,
+            "kaizenDependency": false,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        },
+        {
+          "id": "next-session-action-preempts-checkpoint",
+          "expectedFailures": ["event-order"],
+          "observation": {
+            "changedPaths": [],
+            "compactionBlock": {
+              "heading": "Delivery Checkpoint State",
+              "fields": ["Checkpoint Ref", "Evidence Refs", "Selected Route", "Preserved Outcome/Oracle/Population", "Next Action", "Next Oracle", "Suppression Condition"]
+            },
+            "events": ["checkpoint-due", "checkpoint-state-preserved", "pending-strategy-history-suppressed", "live-gate-and-checkpoint-next-action-unified", "next-session-action-preempted", "compaction", "same-checkpoint-resumed"],
+            "historyAppendCount": 0,
+            "kaizenDependency": false,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        },
+        {
+          "id": "live-gate-checkpoint-next-action-split",
+          "expectedFailures": ["event-order"],
+          "observation": {
+            "changedPaths": [],
+            "compactionBlock": {
+              "heading": "Delivery Checkpoint State",
+              "fields": ["Checkpoint Ref", "Evidence Refs", "Selected Route", "Preserved Outcome/Oracle/Population", "Next Action", "Next Oracle", "Suppression Condition"]
+            },
+            "events": ["checkpoint-due", "checkpoint-state-preserved", "pending-strategy-history-suppressed", "live-gate-and-checkpoint-next-action-split", "next-session-action-bound", "compaction", "same-checkpoint-resumed"],
+            "historyAppendCount": 0,
+            "kaizenDependency": false,
+            "ownerBoundaryRef": null,
+            "ownerQuestionCount": 0
+          }
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "similar-retry-stagnation",
+      "taskClass": "ordinary",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "similar-retries-without-progress",
+        "costMeasurements": [
+          { "id": "failed-attempt", "count": 2, "unitCost": 20, "expectedTotal": 40 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-a", "oracleRef": "oracle-a", "populationRef": "population-a" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "earlier-canary-a",
+        "scopeAction": "preserved",
+        "events": ["failure-one", "failure-two", "checkpoint", "earlier-canary"]
+      },
+      "redControls": [
+        {
+          "id": "omitted-checkpoint",
+          "expectedFailures": ["checkpoint-count"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-a", "oracleRef": "oracle-a", "populationRef": "population-a" },
+            "checkpointCount": 0,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "earlier-canary-a",
+            "scopeAction": "preserved",
+            "events": ["failure-one", "failure-two", "checkpoint", "earlier-canary"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "different-defect-late-discovery",
+      "taskClass": "ordinary",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "different-defects-at-costly-boundary",
+        "costMeasurements": [
+          { "id": "late-boundary", "count": 2, "unitCost": 120, "expectedTotal": 240 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-b", "oracleRef": "oracle-b", "populationRef": "population-b" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "earlier-contract-check",
+        "scopeAction": "preserved",
+        "events": ["defect-one", "defect-two", "checkpoint", "earlier-contract-check"]
+      },
+      "redControls": [
+        {
+          "id": "costly-action-before-checkpoint",
+          "expectedFailures": ["event-order"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-b", "oracleRef": "oracle-b", "populationRef": "population-b" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "earlier-contract-check",
+            "scopeAction": "preserved",
+            "events": ["defect-one", "defect-two", "late-boundary-three", "checkpoint"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "coarse-invalidation-amplification",
+      "taskClass": "openspec",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "coarse-evidence-invalidates-unrelated-work",
+        "costMeasurements": [
+          { "id": "revalidation", "count": 3, "unitCost": 75, "expectedTotal": 225 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-c", "oracleRef": "oracle-c", "populationRef": "population-c" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "split-evidence-lane",
+        "scopeAction": "preserved",
+        "events": ["invalidation-observed", "checkpoint", "split-evidence-lane"]
+      },
+      "redControls": [
+        {
+          "id": "population-narrowed",
+          "expectedFailures": ["population-ref"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-c", "oracleRef": "oracle-c", "populationRef": "population-c-reduced" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "split-evidence-lane",
+            "scopeAction": "preserved",
+            "events": ["invalidation-observed", "checkpoint", "split-evidence-lane"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "failed-costly-repetition",
+      "taskClass": "ordinary",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "costly-action-failed",
+        "costMeasurements": [
+          { "id": "costly-action", "count": 1, "unitCost": 300, "expectedTotal": 300 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-d", "oracleRef": "oracle-d", "populationRef": "population-d" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "offline-preflight",
+        "scopeAction": "preserved",
+        "events": ["costly-failure", "checkpoint", "offline-preflight"]
+      },
+      "redControls": [
+        {
+          "id": "unchanged-costly-retry",
+          "expectedFailures": ["next-boundary"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-d", "oracleRef": "oracle-d", "populationRef": "population-d" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "costly-action-again",
+            "scopeAction": "preserved",
+            "events": ["costly-failure", "checkpoint", "offline-preflight"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dominant-repeated-setup",
+      "taskClass": "openspec",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "reviewed-dominant-setup-cost",
+        "costMeasurements": [
+          { "id": "setup", "count": 3, "unitCost": 250, "expectedTotal": 750 },
+          { "id": "useful-work", "count": 3, "unitCost": 25, "expectedTotal": 75 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-e", "oracleRef": "oracle-e", "populationRef": "population-e" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "reusable-setup-boundary",
+        "scopeAction": "preserved",
+        "events": ["measurements-recorded", "checkpoint", "reusable-setup-boundary"]
+      },
+      "redControls": [
+        {
+          "id": "oracle-weakened",
+          "expectedFailures": ["oracle-ref"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-e", "oracleRef": "oracle-e-weaker", "populationRef": "population-e" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "reusable-setup-boundary",
+            "scopeAction": "preserved",
+            "events": ["measurements-recorded", "checkpoint", "reusable-setup-boundary"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "advancing-long-work",
+      "taskClass": "ordinary",
+      "reviewedJudgment": {
+        "disposition": "continue",
+        "reason": "long-work-is-advancing",
+        "costMeasurements": [
+          { "id": "advancing-step", "count": 8, "unitCost": 10, "expectedTotal": 80 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-f", "oracleRef": "oracle-f", "populationRef": "population-f" },
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "current-oracle",
+        "scopeAction": "preserved",
+        "events": ["progress-one", "progress-two", "continue-current-route"]
+      },
+      "redControls": [
+        {
+          "id": "unnecessary-checkpoint",
+          "expectedFailures": ["checkpoint-count"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-f", "oracleRef": "oracle-f", "populationRef": "population-f" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "current-oracle",
+            "scopeAction": "preserved",
+            "events": ["progress-one", "progress-two", "continue-current-route"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "single-cheap-failure",
+      "taskClass": "ordinary",
+      "reviewedJudgment": {
+        "disposition": "continue",
+        "reason": "single-cheap-local-failure",
+        "costMeasurements": [
+          { "id": "cheap-failure", "count": 1, "unitCost": 1, "expectedTotal": 1 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-g", "oracleRef": "oracle-g", "populationRef": "population-g" },
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "local-correction",
+        "scopeAction": "preserved",
+        "events": ["cheap-failure", "local-correction"]
+      },
+      "redControls": [
+        {
+          "id": "checkpoint-on-cheap-failure",
+          "expectedFailures": ["checkpoint-count"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-g", "oracleRef": "oracle-g", "populationRef": "population-g" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "local-correction",
+            "scopeAction": "preserved",
+            "events": ["cheap-failure", "local-correction"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "irreducible-cost",
+      "taskClass": "grind",
+      "reviewedJudgment": {
+        "disposition": "irreducible",
+        "reason": "reviewed-cost-is-irreducible",
+        "costMeasurements": [
+          { "id": "required-boundary", "count": 1, "unitCost": 500, "expectedTotal": 500 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-h", "oracleRef": "oracle-h", "populationRef": "population-h" },
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "required-boundary",
+        "scopeAction": "preserved",
+        "events": ["cost-recorded", "irreducible-recorded", "required-boundary"]
+      },
+      "redControls": [
+        {
+          "id": "process-question",
+          "expectedFailures": ["owner-question-count"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-h", "oracleRef": "oracle-h", "populationRef": "population-h" },
+            "checkpointCount": 0,
+            "ownerQuestionCount": 1,
+            "nextBoundaryRef": "required-boundary",
+            "scopeAction": "preserved",
+            "events": ["cost-recorded", "irreducible-recorded", "required-boundary"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "duplicate-suppression",
+      "taskClass": "openspec",
+      "reviewedJudgment": {
+        "disposition": "suppress-duplicate",
+        "reason": "unchanged-checkpoint-identity",
+        "costMeasurements": [
+          { "id": "prior-checkpoint", "count": 1, "unitCost": 40, "expectedTotal": 40 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-i", "oracleRef": "oracle-i", "populationRef": "population-i" },
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "prior-next-boundary",
+        "scopeAction": "preserved",
+        "events": ["same-evidence", "same-checkpoint-identity", "duplicate-suppressed"]
+      },
+      "redControls": [
+        {
+          "id": "duplicate-created",
+          "expectedFailures": ["checkpoint-count"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-i", "oracleRef": "oracle-i", "populationRef": "population-i" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "prior-next-boundary",
+            "scopeAction": "preserved",
+            "events": ["same-evidence", "same-checkpoint-identity", "duplicate-suppressed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "independent-sibling-work",
+      "taskClass": "grind",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "checkpoint-blocks-dependent-cone-only",
+        "costMeasurements": [
+          { "id": "dependent-cost", "count": 1, "unitCost": 200, "expectedTotal": 200 },
+          { "id": "sibling-cost", "count": 1, "unitCost": 5, "expectedTotal": 5 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-j", "oracleRef": "oracle-j", "populationRef": "population-j" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "bounded-checkpoint-j",
+        "scopeAction": "preserved",
+        "events": ["checkpoint-due", "sibling-complete", "checkpoint-applied", "dependent-eligible"]
+      },
+      "redControls": [
+        {
+          "id": "dependent-before-checkpoint",
+          "expectedFailures": ["event-order"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-j", "oracleRef": "oracle-j", "populationRef": "population-j" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "bounded-checkpoint-j",
+            "scopeAction": "preserved",
+            "events": ["checkpoint-due", "dependent-eligible", "checkpoint-applied", "sibling-complete"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scope-proof-weakening",
+      "taskClass": "openspec",
+      "reviewedJudgment": {
+        "disposition": "owner-boundary",
+        "reason": "route-requires-scope-or-proof-reduction",
+        "costMeasurements": [
+          { "id": "remaining-proof", "count": 1, "unitCost": 400, "expectedTotal": 400 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-k", "oracleRef": "oracle-k", "populationRef": "population-k" },
+        "checkpointCount": 0,
+        "ownerQuestionCount": 1,
+        "nextBoundaryRef": null,
+        "scopeAction": "parked-owner-boundary",
+        "events": ["weakening-route-rejected", "product-decision-parked"]
+      },
+      "redControls": [
+        {
+          "id": "scope-reduction-applied",
+          "expectedFailures": ["scope-action", "event-order"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-k", "oracleRef": "oracle-k", "populationRef": "population-k" },
+            "checkpointCount": 0,
+            "ownerQuestionCount": 1,
+            "nextBoundaryRef": null,
+            "scopeAction": "preserved",
+            "events": ["scope-reduction-applied", "product-decision-parked"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "compaction-continuity",
+      "taskClass": "openspec",
+      "reviewedJudgment": {
+        "disposition": "checkpoint",
+        "reason": "due-checkpoint-survives-compaction",
+        "costMeasurements": [
+          { "id": "next-costly-boundary", "count": 1, "unitCost": 180, "expectedTotal": 180 }
+        ]
+      },
+      "expectedObservation": {
+        "anchors": { "outcomeRef": "outcome-l", "oracleRef": "oracle-l", "populationRef": "population-l" },
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "checkpoint-oracle-l",
+        "scopeAction": "preserved",
+        "events": ["checkpoint-due", "checkpoint-persisted", "compaction", "same-checkpoint-resumed"]
+      },
+      "redControls": [
+        {
+          "id": "population-lost-after-compaction",
+          "expectedFailures": ["population-ref"],
+          "observation": {
+            "anchors": { "outcomeRef": "outcome-l", "oracleRef": "oracle-l", "populationRef": "population-l-lost" },
+            "checkpointCount": 1,
+            "ownerQuestionCount": 0,
+            "nextBoundaryRef": "checkpoint-oracle-l",
+            "scopeAction": "preserved",
+            "events": ["checkpoint-due", "checkpoint-persisted", "compaction", "same-checkpoint-resumed"]
+          }
+        }
+      ]
+    }
+  ]
+}

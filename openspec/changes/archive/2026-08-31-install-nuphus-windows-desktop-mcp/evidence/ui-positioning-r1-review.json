@@ -1,0 +1,14 @@
+{
+  "candidate": {
+    "configEvidence": "evidence/ui-positioning-r3-config",
+    "crossProjectEvidence": "evidence/ui-positioning-r1-cross-project.json",
+    "instructionsSha256": "23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f"
+  },
+  "effectiveModel": "xai/grok-4.6",
+  "practice": "instruction-artifact",
+  "result": "no-material-finding",
+  "reviewTaskRef": "ses_faae959baffeUe3TZ351JO9r91",
+  "schemaVersion": 1,
+  "scope": "explicit UI-development/debugging positioning, canonical ownership, cross-project loading, authority, privacy, and retained desktop safeguards",
+  "unresolvedActivation": "The user-owned OpenCode session has not been restarted and is not claimed to have loaded the new instruction text."
+}

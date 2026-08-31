@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { commandExitCode, formatArgv, runPortableCommand, type PortableCommandResult } from "./portable-process.ts";
-import { archiveEvidenceBlocker, resolveOwnershipEnforcement } from "./openspec-change/gate.ts";
+import { archiveOwnershipBlocker, resolveOwnershipEnforcement } from "./openspec-change/gate.ts";
 
 type Options = {
   root: string;
@@ -239,9 +239,9 @@ function run(options: Options): void {
   const selectedStore = storeArgs(options);
   const statusText = runCaptured(options.root, [options.openspec, "status", "--change", options.change, "--json", ...selectedStore], "OpenSpec status");
   assertCompleteStatus(parseJson<OpenSpecStatus>(statusText, "OpenSpec status"));
-  const evidenceBlocker = archiveEvidenceBlocker(options.root, options.change, resolveOwnershipEnforcement(options.root));
-  if (evidenceBlocker != null) {
-    throw new ArchiveFailure(`Complete archive blocked before official archive: ${evidenceBlocker}`);
+  const ownershipBlocker = archiveOwnershipBlocker(options.root, options.change, resolveOwnershipEnforcement(options.root));
+  if (ownershipBlocker != null) {
+    throw new ArchiveFailure(`Complete archive blocked before official archive: ${ownershipBlocker}`);
   }
 
   runCaptured(options.root, [options.openspec, "validate", options.change, "--strict", ...selectedStore], "Strict change validation");

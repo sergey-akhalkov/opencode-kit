@@ -1,0 +1,296 @@
+{
+  "candidate": {
+    "files": [
+      {
+        "bytes": 9699,
+        "exists": true,
+        "id": "active:opencode.json",
+        "sha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb"
+      },
+      {
+        "bytes": 5863,
+        "exists": true,
+        "id": "active:opencode.local.instructions.md",
+        "sha256": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1"
+      },
+      {
+        "bytes": 14836,
+        "exists": true,
+        "id": "global/bin/portable-process.ts",
+        "sha256": "53fbe318e14a1b2568f722314e66f473503c02d35d39d1e269c1b512ed50b49f"
+      },
+      {
+        "bytes": 7830,
+        "exists": true,
+        "id": "global/opencode.json.template",
+        "sha256": "12d82b80368062dba3127d841f43070a970aa45a6616ee1f050ca7674ff52b20"
+      },
+      {
+        "bytes": 16821,
+        "exists": true,
+        "id": "openspec/changes/install-nuphus-windows-desktop-mcp/design.md",
+        "sha256": "70293b0c9ae6d9e763f77b6aff864863cb6f1c7dd43b0aeea9a68d6d0b22ef84"
+      },
+      {
+        "bytes": 1789,
+        "exists": true,
+        "id": "openspec/changes/install-nuphus-windows-desktop-mcp/falsification-review.md",
+        "sha256": "cbad93065f745aff2daf6bcdae8d5c1f81202f663bf01cfb6c2946f2af8b35c5"
+      },
+      {
+        "bytes": 13581,
+        "exists": true,
+        "id": "openspec/changes/install-nuphus-windows-desktop-mcp/history.md",
+        "sha256": "5097518d68f035f709b0f2eaac10d947788144994296553e5e986f9767936ee5"
+      },
+      {
+        "bytes": 7833,
+        "exists": true,
+        "id": "openspec/changes/install-nuphus-windows-desktop-mcp/proposal.md",
+        "sha256": "9366fd2f8c7f682b2edcb4827a66f34905b44a0f2908501f20277e2acb304b32"
+      },
+      {
+        "bytes": 7784,
+        "exists": true,
+        "id": "openspec/changes/install-nuphus-windows-desktop-mcp/specs/local-opencode-workstation/spec.md",
+        "sha256": "23041b8b924364e644fcaecb0ccbfa6fd98f55545e718186e198f85c998310d9"
+      },
+      {
+        "bytes": 6259,
+        "exists": true,
+        "id": "openspec/changes/install-nuphus-windows-desktop-mcp/tasks.md",
+        "sha256": "f04df89f0bcb0dc2a4027c59b9d30e3398db8585f67aab0050e63425060082fc"
+      },
+      {
+        "bytes": 10580,
+        "exists": true,
+        "id": "package.json",
+        "sha256": "5466b7691969fd1d0792255176359a8dcde4eae91e8e4e2146f34c9b21377c76"
+      },
+      {
+        "bytes": 8090,
+        "exists": true,
+        "id": "tools/install-code-intelligence-mcps.ts",
+        "sha256": "c124bec3f78a3c5a1bf4e672c1cc976f32ab827e3fc7147f846b522f60259579"
+      },
+      {
+        "bytes": 32729,
+        "exists": true,
+        "id": "tools/proofs/lib/opencode-proof-client.ts",
+        "sha256": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78"
+      },
+      {
+        "bytes": 1856,
+        "exists": true,
+        "id": "tools/proofs/lib/proof-process-cleanup.ts",
+        "sha256": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d"
+      },
+      {
+        "bytes": 33289,
+        "exists": true,
+        "id": "tools/proofs/nuphus-desktop.ts",
+        "sha256": "666759a8887826d69232fee8e81218c886369fd94e5a626babd12d687fdf44d7"
+      },
+      {
+        "bytes": 68972,
+        "exists": true,
+        "id": "tools/proofs/README.md",
+        "sha256": "2309bbb9992fb4b7a1c26496767dce0922774268a722d1ace27719508a8ee9cb"
+      }
+    ],
+    "repository": {
+      "branch": "main",
+      "detached": false,
+      "head": "1ac04a5aaad9b5e01ccb5ea7806d490756bc5b73",
+      "pathCounts": {
+        "conflict": 0,
+        "staged": 0,
+        "unstaged": 129,
+        "untracked": 8
+      },
+      "snapshotSha256": "155bb25e4f08e2e7e2ac09558c73ff5319dfb0199ed9afbe335177f639206d81"
+    }
+  },
+  "candidateId": "nuphus-apply-r2-preflight",
+  "capture": {
+    "completedAt": "2026-08-30T21:30:51.055Z",
+    "screenCaptureCount": 0
+  },
+  "cleanup": {
+    "state": "not-needed",
+    "synchronousChildrenTerminal": true
+  },
+  "configs": {
+    "activeConfigDir": {
+      "basename": "global",
+      "matchesRepositoryGlobal": true,
+      "pathSha256": "eeee279e098e692ce610320450ecb2e44de9e469bbc979c251b6549f59358e49"
+    },
+    "candidates": [
+      {
+        "id": "active:opencode.json",
+        "mcpCount": 3,
+        "nuphusDefined": false,
+        "parseErrorCount": 0,
+        "sha256": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb"
+      },
+      {
+        "id": "host-default:opencode.jsonc",
+        "mcpCount": 0,
+        "nuphusDefined": false,
+        "parseErrorCount": 0,
+        "sha256": "4e901f9e457c8d52ab31f9fb4ea637a8c9104ebdbf23fe8b3600f35ad46d4a61"
+      },
+      {
+        "id": "project:0:opencode.json",
+        "mcpCount": 0,
+        "nuphusDefined": false,
+        "parseErrorCount": 0,
+        "sha256": "f73b670eaf15b247ecf044295e5fb4dbd65a865dfaea98b5d6c22c75bd819da9"
+      }
+    ],
+    "collisionCount": 1,
+    "inline": {
+      "mcpCount": 0,
+      "nuphusDefined": false,
+      "parseErrorCount": 0,
+      "present": false,
+      "sha256": null
+    },
+    "runtimeSources": [
+      {
+        "locationSha256": "d4a8be0673d2f4eaa9a82922f0970625da6f6a2d74e0b58148ed697c1ac5ff9d",
+        "name": "opencode.json",
+        "source": "custom"
+      },
+      {
+        "locationSha256": "330d13f32fe810b9084bc90fbc380a10e58774e6bf4573f82d858adf82828888",
+        "name": "opencode.json",
+        "source": "project"
+      },
+      {
+        "locationSha256": "b00448645b61d1a050fecbcf6c77a92e3658838bee2a28f0a39d7a8016d877c7",
+        "name": "opencode.jsonc",
+        "source": "host-default"
+      }
+    ]
+  },
+  "environment": {
+    "arch": "x64",
+    "nodeVersion": "v24.18.1",
+    "npmVersion": "11.16.0",
+    "opencodeVersion": "1.18.25",
+    "platform": "win32",
+    "relevantVariables": [
+      {
+        "name": "OPENCODE_CONFIG_DIR",
+        "present": true,
+        "valueSha256": "33b3daefdbc03ff9686f2fbf8372e7120938b1da11039622061c4b8cc4eeda3c"
+      }
+    ]
+  },
+  "host": {
+    "interactiveDesktop": true,
+    "isAdmin": true,
+    "managedListeners": [],
+    "osBuild": "26200",
+    "osVersion": "10.0.26200",
+    "relevantProcesses": [
+      {
+        "createdAt": "2026-08-30T11:19:34.7530220Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 31968,
+        "pid": 6072
+      },
+      {
+        "createdAt": "2026-08-30T11:19:34.7644310Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 6072,
+        "pid": 41604
+      },
+      {
+        "createdAt": "2026-08-30T18:29:38.3746400Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 40824,
+        "pid": 32940
+      },
+      {
+        "createdAt": "2026-08-30T18:29:38.3841560Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 32940,
+        "pid": 33200
+      }
+    ],
+    "sessionId": 1,
+    "userSidSha256": "b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d"
+  },
+  "mode": "preflight",
+  "models": {
+    "exists": false,
+    "files": [],
+    "path": {
+      "basename": "models",
+      "pathSha256": "e12f7452bea9c35ba6c7160e72e632e4a57ed34ec80ae749db7be0376f8d64f2"
+    },
+    "selectedByEnvironment": false
+  },
+  "packages": {
+    "command": {
+      "found": false,
+      "kind": null,
+      "selected": {
+        "bytes": 0,
+        "exists": false,
+        "id": "command-shim",
+        "sha256": null
+      }
+    },
+    "meta": {
+      "packageJson": {
+        "bytes": 0,
+        "exists": false,
+        "id": "meta-package-json",
+        "sha256": null
+      },
+      "version": null
+    },
+    "npmRoot": {
+      "basename": "node_modules",
+      "pathSha256": "c847f8404edd6e5d5b13d82e4dbcc6689559a4343d025165cd964c7900d54052"
+    },
+    "platform": {
+      "binary": {
+        "bytes": 0,
+        "exists": false,
+        "id": "platform-binary",
+        "sha256": null
+      },
+      "layout": null,
+      "packageJson": {
+        "bytes": 0,
+        "exists": false,
+        "id": "platform-package-json",
+        "sha256": null
+      },
+      "version": null
+    },
+    "prefix": {
+      "basename": "node-v24.18.1-win-x64",
+      "pathSha256": "41f89564d6c42f0dbd0ab59206b1502b76bd629553828465d1d549135d87e88d"
+    }
+  },
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-preflight",
+  "runner": {
+    "bytes": 33289,
+    "exists": true,
+    "id": "tools/proofs/nuphus-desktop.ts",
+    "sha256": "666759a8887826d69232fee8e81218c886369fd94e5a626babd12d687fdf44d7"
+  },
+  "schemaVersion": 1,
+  "unexpectedOwner": false
+}

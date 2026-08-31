@@ -1,0 +1,159 @@
+{
+  "candidateId": "grind-task-scoped-population-autonomous-s23",
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "fixtureRemoved": true,
+    "livenessClosed": true,
+    "serverStopped": true
+  },
+  "configDigest": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+  "failure": "autonomous capture did not preserve raw.json",
+  "installed": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "modelCatalog": {
+    "sha256": "ecb1f86a5307173cc339a45f9995465be1cd28343b219dbe718dea8273c73595"
+  },
+  "observations": [
+    {
+      "error": null,
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--mode",
+        "preflight",
+        "--capture-kind",
+        "candidate",
+        "--evidence-root",
+        "<evidence-root>\\preflight"
+      ],
+      "invocationDigest": "9526f16085bab663868715149c7ae4358d08102193dcd48ae4e25ba8c6ced54d",
+      "label": "preflight",
+      "signal": null,
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"accepted\":true,\"mode\":\"preflight\",\"modelCalls\":0,\"rejected\":5}\n"
+    },
+    {
+      "error": "spawnSync C:\\Users\\noilw\\.bun\\bin\\bun.exe ETIMEDOUT",
+      "invocation": [
+        "<opencode-dir>\\bun.exe",
+        "<source-root>\\tools\\proofs\\session-completion-guard-autonomous.ts",
+        "--capture-kind",
+        "candidate",
+        "--agent",
+        "build",
+        "--provider",
+        "xai",
+        "--model",
+        "grok-4.6",
+        "--variant",
+        "high",
+        "--mode",
+        "capture",
+        "--scenario",
+        "autonomous",
+        "--candidate-id",
+        "grind-task-scoped-population-autonomous-s23-autonomous",
+        "--directory",
+        "<fixture-root>\\project",
+        "--evidence-root",
+        "<evidence-root>\\capture-autonomous",
+        "--server-url",
+        "http://127.0.0.1:52243"
+      ],
+      "invocationDigest": "78a7b1d281c57a95d433aa70282dfce51627e617cb7b90eb9147ecbe540b71db",
+      "label": "capture-autonomous",
+      "signal": "SIGTERM",
+      "status": null,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "processAfter": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "processBefore": [
+    {
+      "name": "opencode.exe",
+      "parentPid": 31968,
+      "pid": 6072
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 34940,
+      "pid": 19972
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 40824,
+      "pid": 34940
+    },
+    {
+      "name": "opencode.exe",
+      "parentPid": 6072,
+      "pid": 41604
+    }
+  ],
+  "proofProcess": {
+    "parentPid": 42856,
+    "pid": 46424,
+    "terminal": {
+      "signal": null,
+      "status": 1
+    },
+    "urlRef": "server_464babd53031"
+  },
+  "resolvedRoutes": [
+    {
+      "agent": "build",
+      "hidden": false,
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    {
+      "agent": "session-completion-arbiter",
+      "hidden": true,
+      "model": "xai/grok-4.6",
+      "variant": "high"
+    }
+  ],
+  "schemaVersion": 1,
+  "serverLogs": {
+    "stderr": "timestamp=2026-08-30T14:40:14.224Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T14:40:14.236Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T14:40:14.237Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T14:40:14.440Z level=INFO run=ecf6e89b message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\"\ntimestamp=2026-08-30T14:40:14.441Z level=INFO run=ecf6e89b message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\"\ntimestamp=2026-08-30T14:40:14.458Z level=INFO run=ecf6e89b message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\"\ntimestamp=2026-08-30T14:40:14.469Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-30T14:40:14.469Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-30T14:40:14.469Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-30T14:40:14.490Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\config\\\\opencode.json\"\ntimestamp=2026-08-30T14:40:14.670Z level=INFO run=ecf6e89b message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-30T14:40:38.590Z level=INFO run=ecf6e89b message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T14:40:38.592Z level=INFO run=ecf6e89b message=\"all formatters are disabled\"\ntimestamp=2026-08-30T14:40:38.592Z level=INFO run=ecf6e89b message=init\ntimestamp=2026-08-30T14:40:38.769Z level=INFO run=ecf6e89b message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T14:40:38.775Z level=INFO run=ecf6e89b message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T14:40:38.781Z level=INFO run=ecf6e89b message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-30T14:40:38.905Z level=INFO run=ecf6e89b message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\" workspaceID=undefined\ntimestamp=2026-08-30T14:40:42.355Z level=INFO run=ecf6e89b message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-30T14:40:42.427Z level=INFO run=ecf6e89b message=created id=ses_face26c44ffeMNEBW8ksdaeJvh slug=curious-otter version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-IaVBsS/project workspaceID=undefined parentID=undefined title=\"grind autonomous question proof\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=true metadata.completionGuard.state=running permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788100842427 time.updated=1788100842427\ntimestamp=2026-08-30T14:40:42.600Z level=INFO run=ecf6e89b message=loop session.id=ses_face26c44ffeMNEBW8ksdaeJvh step=0\ntimestamp=2026-08-30T14:40:42.700Z level=WARN run=ecf6e89b message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-30T14:40:47.875Z level=INFO run=ecf6e89b message=init count=1\ntimestamp=2026-08-30T14:40:47.955Z level=INFO run=ecf6e89b message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-30T14:40:47.957Z level=INFO run=ecf6e89b message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-30T14:40:48.165Z level=INFO run=ecf6e89b message=\"booting location services\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\" workspaceID=undefined\ntimestamp=2026-08-30T14:40:48.202Z level=INFO run=ecf6e89b message=process session.id=ses_face26c44ffeMNEBW8ksdaeJvh messageID=msg_0531d946d001fWakKlZgAXWaWK\ntimestamp=2026-08-30T14:40:48.205Z level=INFO run=ecf6e89b message=stream providerID=xai modelID=grok-4.6 session.id=ses_face26c44ffeMNEBW8ksdaeJvh small=false agent=build mode=primary\ntimestamp=2026-08-30T14:40:48.230Z level=INFO run=ecf6e89b message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-30T14:41:00.602Z level=INFO run=ecf6e89b message=asking id=que_0531ddaba001VFiiNW29vRGbU3 questions=1\ntimestamp=2026-08-30T14:41:01.620Z level=INFO run=ecf6e89b message=created id=ses_face2214bffez23YQ3gT5XhDbo slug=sunny-tiger version=1.18.25 projectID=global directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-task-scoped-suite-IaVBsS\\\\project\" path=Users/noilw/AppData/Local/Temp/guard-task-scoped-suite-IaVBsS/project workspaceID=undefined parentID=ses_face26c44ffeMNEBW8ksdaeJvh title=\"Completion audit audit_28de4494ee15\" agent=session-completion-arbiter model.id=grok-4.6 model.providerID=xai model.variant=high metadata.completionGuard.schemaVersion=2 metadata.completionGuard.auditID=audit_28de4494ee15 metadata.completionGuard.rootSessionRef=session_0ab78a6f104f metadata.completionGuard.inspectedRevision=86743ce771ac88e8290e8e5b7f88795470436ae32b05519e545a270b8851843b metadata.completionGuard.kind=question metadata.completionGuard.questionRef=question_6fc3116dd261 metadata.completionGuard.status=auditing metadata.completionGuard.attempt=1 permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1788100861620 time.updated=1788100861620\ntimestamp=2026-08-30T14:41:01.730Z level=INFO run=ecf6e89b message=loop session.id=ses_face2214bffez23YQ3gT5XhDbo step=0\ntimestamp=2026-08-30T14:41:01.783Z level=INFO run=ecf6e89b message=process session.id=ses_face2214bffez23YQ3gT5XhDbo messageID=msg_0531ddf24001X81WM9x8c3yA6g\ntimestamp=2026-08-30T14:41:01.784Z level=INFO run=ecf6e89b message=stream providerID=xai modelID=grok-4.6 session.id=ses_face2214bffez23YQ3gT5XhDbo small=false agent=session-completion-arbiter mode=subagent\ntimestamp=2026-08-30T14:41:01.786Z level=INFO run=ecf6e89b message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=xai llm.model=grok-4.6\ntimestamp=2026-08-30T14:42:38.826Z level=INFO run=ecf6e89b message=loop session.id=ses_face2214bffez23YQ3gT5XhDbo step=1\ntimestamp=2026-08-30T14:42:38.828Z level=INFO run=ecf6e89b message=\"exiting loop\" session.id=ses_face2214bffez23YQ3gT5XhDbo\ntimestamp=2026-08-30T14:42:38.871Z level=ERROR run=ecf6e89b message=\"completion audit stopped\" attempt=1 attemptLimit=3 auditRef=audit_02ac7ccc06e9 elapsedMs=98179 error.name=Error error.message=\"Completion verdict requires current work frontier evidence\" error.stack=\"Error: Completion verdict requires current work frontier evidence\\n    at frontierAssessment (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\verdict.ts:117:15)\\n    at parseCompletionVerdict (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\verdict.ts:173:20)\\n    at runAudit (D:\\\\home\\\\sergey-akhalkov\\\\opencode-kit\\\\global\\\\extensions\\\\session-completion-guard\\\\controller.ts:1183:23)\\n    at processTicksAndRejections (native:7:39)\" errorClass=input-state requestContributions=[] requestBytes=2986 rootRef=session_0ab78a6f104f\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD <redacted> not set; server is unsecured.\nopencode server listening on http://127.0.0.1:52243\n"
+  },
+  "sourceHashes": {
+    "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+    "global/agents/session-completion-arbiter.md": "d96e84d82f188f0781ee26263caf469b6c62e663e39e0936de0f8592c5f1655a",
+    "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+    "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+    "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+    "global/extensions/session-completion-guard/frontier.ts": "12fce4f50c82013c8d8ae967401418990f14d53f67497c5adf1458a711281f63",
+    "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+    "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+    "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+    "tools/proofs/session-completion-guard-autonomous.ts": "1b87a6dcea328bf93c3bd03587e2b580890282649d44770dad37b11d4b31a72a"
+  }
+}

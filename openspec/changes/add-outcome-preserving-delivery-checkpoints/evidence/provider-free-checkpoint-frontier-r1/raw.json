@@ -1,0 +1,982 @@
+{
+  "candidateId": "opdc-grind-checkpoint-frontier-r1",
+  "canonicalSeedDigest": "a4b48f0791a0df2e27778b146d788b989656f84f8521c3959f1344b1a27a62f9",
+  "claimId": "GRIND-TSB-001",
+  "cleanup": "complete",
+  "effects": {
+    "installedWrites": 0,
+    "networkRequests": 0,
+    "providerCalls": 0,
+    "remoteEffects": 0,
+    "sourceWrites": 0
+  },
+  "environmentId": "provider-free-node-24.18.1-frontier-r1",
+  "fixtureDigest": "e461d9674d1497390bdab717cc0c335d3cbb34977778eef7fcdc39a82b042b27",
+  "mode": "materialize",
+  "observations": [
+    {
+      "frontierState": "product-decision",
+      "id": "all-product-blocked",
+      "openGateRefs": [
+        "gate_product"
+      ],
+      "parkedDecisionRefs": [
+        "decision_product"
+      ],
+      "reason": "ok",
+      "runnableItemRefs": [],
+      "serverGeneration": 5,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "bounded-field-bytes",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "limit-resumeCondition",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "bounded-reference-count",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "limit-requirementRefs",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "complete",
+      "id": "complete",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [],
+      "serverGeneration": 9,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "cyclic",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "dependency-cycle",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "delivery-checkpoint-due",
+      "openGateRefs": [
+        "gate_checkpoint"
+      ],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_checkpoint",
+        "item_sibling"
+      ],
+      "serverGeneration": 10,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "delivery-checkpoint-irreducible",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_costly"
+      ],
+      "serverGeneration": 11,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "delivery-checkpoint-scope-reduction",
+      "openGateRefs": [
+        "gate_checkpoint",
+        "gate_scope_reduction"
+      ],
+      "parkedDecisionRefs": [
+        "decision_scope_reduction"
+      ],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_checkpoint"
+      ],
+      "serverGeneration": 12,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "malformed",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "invalid-item-status",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "frontier-reconciling",
+      "id": "migration",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "missing-frontier",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "reconcile"
+    },
+    {
+      "frontierState": "waiting",
+      "id": "non-product-waiting",
+      "openGateRefs": [
+        "gate_technical"
+      ],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [],
+      "serverGeneration": 6,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "partial-product-block",
+      "openGateRefs": [
+        "gate_product"
+      ],
+      "parkedDecisionRefs": [
+        "decision_product"
+      ],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_independent"
+      ],
+      "serverGeneration": 3,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "stale-generation",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "stale-generation",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    }
+  ],
+  "schemaVersion": 1,
+  "seed": {
+    "claimId": "GRIND-TSB-001",
+    "limits": {
+      "maxDecisions": 8,
+      "maxDependencies": 64,
+      "maxFrontierBytes": 32768,
+      "maxGates": 16,
+      "maxItems": 16,
+      "maxRefsPerField": 4,
+      "maxStringBytes": 256
+    },
+    "scenarios": [
+      {
+        "context": {
+          "currentGeneration": 4,
+          "latestHumanRef": "human_all_product",
+          "rootSessionRef": "session_all_product",
+          "taskStateDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "expected": {
+          "frontierState": "product-decision",
+          "openGateRefs": [
+            "gate_product"
+          ],
+          "parkedDecisionRefs": [
+            "decision_product"
+          ],
+          "reason": "ok",
+          "runnableItemRefs": [],
+          "serverGeneration": 5,
+          "status": "accepted"
+        },
+        "id": "all-product-blocked",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 4,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_product"
+              ],
+              "evidenceRefs": [
+                "evidence_product_options"
+              ],
+              "id": "gate_product",
+              "kind": "product-decision",
+              "resumeCondition": "The owner selects one product outcome.",
+              "status": "open"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_product_pending"
+              ],
+              "gateRefs": [
+                "gate_product"
+              ],
+              "id": "item_product",
+              "requirementRefs": [
+                "requirement_product"
+              ],
+              "status": "blocked"
+            }
+          ],
+          "parkedDecisions": [
+            {
+              "affectedItemRefs": [
+                "item_product"
+              ],
+              "decisionPoint": "Select the accepted product outcome.",
+              "evidenceRefs": [
+                "evidence_product_options"
+              ],
+              "id": "decision_product",
+              "optionInvariantItemRefs": [],
+              "questionRef": "question_product"
+            }
+          ],
+          "progressFingerprint": "progress_all_product"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 0,
+          "latestHumanRef": "human_bound_bytes",
+          "rootSessionRef": "session_bound_bytes",
+          "taskStateDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "expected": {
+          "frontierState": "rejected",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "limit-resumeCondition",
+          "runnableItemRefs": [],
+          "serverGeneration": null,
+          "status": "rejected"
+        },
+        "id": "bounded-field-bytes",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 0,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_bound_bytes"
+              ],
+              "evidenceRefs": [],
+              "id": "gate_bound_bytes",
+              "kind": "technical",
+              "resumeCondition": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "status": "open"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [],
+              "gateRefs": [
+                "gate_bound_bytes"
+              ],
+              "id": "item_bound_bytes",
+              "requirementRefs": [
+                "requirement_bound_bytes"
+              ],
+              "status": "blocked"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_bound_bytes"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 0,
+          "latestHumanRef": "human_bound_refs",
+          "rootSessionRef": "session_bound_refs",
+          "taskStateDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        "expected": {
+          "frontierState": "rejected",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "limit-requirementRefs",
+          "runnableItemRefs": [],
+          "serverGeneration": null,
+          "status": "rejected"
+        },
+        "id": "bounded-reference-count",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 0,
+          "gates": [],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [],
+              "gateRefs": [],
+              "id": "item_bound_refs",
+              "requirementRefs": [
+                "requirement_1",
+                "requirement_2",
+                "requirement_3",
+                "requirement_4",
+                "requirement_5"
+              ],
+              "status": "pending"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_bound_refs"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 8,
+          "latestHumanRef": "human_complete",
+          "rootSessionRef": "session_complete",
+          "taskStateDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        },
+        "expected": {
+          "frontierState": "complete",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "ok",
+          "runnableItemRefs": [],
+          "serverGeneration": 9,
+          "status": "accepted"
+        },
+        "id": "complete",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 8,
+          "gates": [],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_complete"
+              ],
+              "gateRefs": [],
+              "id": "item_complete",
+              "requirementRefs": [
+                "requirement_complete"
+              ],
+              "status": "complete"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_complete"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 0,
+          "latestHumanRef": "human_cycle",
+          "rootSessionRef": "session_cycle",
+          "taskStateDigest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        },
+        "expected": {
+          "frontierState": "rejected",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "dependency-cycle",
+          "runnableItemRefs": [],
+          "serverGeneration": null,
+          "status": "rejected"
+        },
+        "id": "cyclic",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 0,
+          "gates": [],
+          "items": [
+            {
+              "dependsOn": [
+                "item_cycle_b"
+              ],
+              "evidenceRefs": [],
+              "gateRefs": [],
+              "id": "item_cycle_a",
+              "requirementRefs": [
+                "requirement_cycle_a"
+              ],
+              "status": "pending"
+            },
+            {
+              "dependsOn": [
+                "item_cycle_a"
+              ],
+              "evidenceRefs": [],
+              "gateRefs": [],
+              "id": "item_cycle_b",
+              "requirementRefs": [
+                "requirement_cycle_b"
+              ],
+              "status": "pending"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_cycle"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 9,
+          "latestHumanRef": "human_checkpoint_due",
+          "rootSessionRef": "session_checkpoint_due",
+          "taskStateDigest": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
+        "expected": {
+          "frontierState": "runnable",
+          "openGateRefs": [
+            "gate_checkpoint"
+          ],
+          "parkedDecisionRefs": [],
+          "reason": "ok",
+          "runnableItemRefs": [
+            "item_checkpoint",
+            "item_sibling"
+          ],
+          "serverGeneration": 10,
+          "status": "accepted"
+        },
+        "id": "delivery-checkpoint-due",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 9,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_costly"
+              ],
+              "evidenceRefs": [
+                "evidence_checkpoint_due"
+              ],
+              "id": "gate_checkpoint",
+              "kind": "process",
+              "resumeCondition": "The delivery checkpoint reaches its selected oracle or records irreducible evidence.",
+              "status": "open"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_checkpoint_due"
+              ],
+              "gateRefs": [],
+              "id": "item_checkpoint",
+              "requirementRefs": [
+                "requirement_checkpoint_process"
+              ],
+              "status": "pending"
+            },
+            {
+              "dependsOn": [
+                "item_checkpoint"
+              ],
+              "evidenceRefs": [],
+              "gateRefs": [
+                "gate_checkpoint"
+              ],
+              "id": "item_costly",
+              "requirementRefs": [
+                "requirement_costly_action"
+              ],
+              "status": "pending"
+            },
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_sibling_ready"
+              ],
+              "gateRefs": [],
+              "id": "item_sibling",
+              "requirementRefs": [
+                "requirement_independent_sibling"
+              ],
+              "status": "pending"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_checkpoint_due"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 10,
+          "latestHumanRef": "human_checkpoint_irreducible",
+          "rootSessionRef": "session_checkpoint_irreducible",
+          "taskStateDigest": "6666666666666666666666666666666666666666666666666666666666666666"
+        },
+        "expected": {
+          "frontierState": "runnable",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "ok",
+          "runnableItemRefs": [
+            "item_costly"
+          ],
+          "serverGeneration": 11,
+          "status": "accepted"
+        },
+        "id": "delivery-checkpoint-irreducible",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 10,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_costly"
+              ],
+              "evidenceRefs": [
+                "evidence_checkpoint_irreducible"
+              ],
+              "id": "gate_checkpoint",
+              "kind": "process",
+              "resumeCondition": "Irreducible evidence releases the unchanged original route.",
+              "status": "satisfied"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_checkpoint_irreducible"
+              ],
+              "gateRefs": [],
+              "id": "item_checkpoint",
+              "requirementRefs": [
+                "requirement_checkpoint_process"
+              ],
+              "status": "complete"
+            },
+            {
+              "dependsOn": [
+                "item_checkpoint"
+              ],
+              "evidenceRefs": [
+                "evidence_original_route_preserved"
+              ],
+              "gateRefs": [
+                "gate_checkpoint"
+              ],
+              "id": "item_costly",
+              "requirementRefs": [
+                "requirement_costly_action"
+              ],
+              "status": "pending"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_checkpoint_irreducible"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 11,
+          "latestHumanRef": "human_checkpoint_scope_reduction",
+          "rootSessionRef": "session_checkpoint_scope_reduction",
+          "taskStateDigest": "7777777777777777777777777777777777777777777777777777777777777777"
+        },
+        "expected": {
+          "frontierState": "runnable",
+          "openGateRefs": [
+            "gate_checkpoint",
+            "gate_scope_reduction"
+          ],
+          "parkedDecisionRefs": [
+            "decision_scope_reduction"
+          ],
+          "reason": "ok",
+          "runnableItemRefs": [
+            "item_checkpoint"
+          ],
+          "serverGeneration": 12,
+          "status": "accepted"
+        },
+        "id": "delivery-checkpoint-scope-reduction",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 11,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_costly"
+              ],
+              "evidenceRefs": [
+                "evidence_checkpoint_due"
+              ],
+              "id": "gate_checkpoint",
+              "kind": "process",
+              "resumeCondition": "The delivery checkpoint reaches its selected oracle.",
+              "status": "open"
+            },
+            {
+              "affectedItemRefs": [
+                "item_scope_reduction"
+              ],
+              "evidenceRefs": [
+                "evidence_scope_reduction_proposed"
+              ],
+              "id": "gate_scope_reduction",
+              "kind": "product-decision",
+              "resumeCondition": "The owner accepts or rejects the proposed proof-population reduction.",
+              "status": "open"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_checkpoint_due"
+              ],
+              "gateRefs": [],
+              "id": "item_checkpoint",
+              "requirementRefs": [
+                "requirement_checkpoint_process"
+              ],
+              "status": "pending"
+            },
+            {
+              "dependsOn": [
+                "item_checkpoint"
+              ],
+              "evidenceRefs": [],
+              "gateRefs": [
+                "gate_checkpoint"
+              ],
+              "id": "item_costly",
+              "requirementRefs": [
+                "requirement_costly_action"
+              ],
+              "status": "pending"
+            },
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_scope_reduction_proposed"
+              ],
+              "gateRefs": [
+                "gate_scope_reduction"
+              ],
+              "id": "item_scope_reduction",
+              "requirementRefs": [
+                "requirement_preserve_proof_population"
+              ],
+              "status": "blocked"
+            }
+          ],
+          "parkedDecisions": [
+            {
+              "affectedItemRefs": [
+                "item_scope_reduction"
+              ],
+              "decisionPoint": "Decide the proof-population reduction only after runnable checkpoint work drains.",
+              "evidenceRefs": [
+                "evidence_scope_reduction_proposed"
+              ],
+              "id": "decision_scope_reduction",
+              "optionInvariantItemRefs": [
+                "item_checkpoint"
+              ],
+              "questionRef": "question_scope_reduction"
+            }
+          ],
+          "progressFingerprint": "progress_checkpoint_scope_reduction"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 0,
+          "latestHumanRef": "human_malformed",
+          "rootSessionRef": "session_malformed",
+          "taskStateDigest": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "expected": {
+          "frontierState": "rejected",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "invalid-item-status",
+          "runnableItemRefs": [],
+          "serverGeneration": null,
+          "status": "rejected"
+        },
+        "id": "malformed",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 0,
+          "gates": [],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [],
+              "gateRefs": [],
+              "id": "item_malformed",
+              "requirementRefs": [
+                "requirement_malformed"
+              ],
+              "status": "queued"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_malformed"
+        },
+        "persisted": null
+      },
+      {
+        "context": null,
+        "expected": {
+          "frontierState": "frontier-reconciling",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "missing-frontier",
+          "runnableItemRefs": [],
+          "serverGeneration": null,
+          "status": "reconcile"
+        },
+        "id": "migration",
+        "input": null,
+        "persisted": {
+          "metadataSchemaVersion": 1,
+          "workFrontier": null
+        }
+      },
+      {
+        "context": {
+          "currentGeneration": 5,
+          "latestHumanRef": "human_waiting",
+          "rootSessionRef": "session_waiting",
+          "taskStateDigest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "expected": {
+          "frontierState": "waiting",
+          "openGateRefs": [
+            "gate_technical"
+          ],
+          "parkedDecisionRefs": [],
+          "reason": "ok",
+          "runnableItemRefs": [],
+          "serverGeneration": 6,
+          "status": "accepted"
+        },
+        "id": "non-product-waiting",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 5,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_waiting"
+              ],
+              "evidenceRefs": [
+                "evidence_technical_failure"
+              ],
+              "id": "gate_technical",
+              "kind": "technical",
+              "resumeCondition": "A causally distinct technical recovery becomes available.",
+              "status": "open"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_technical_failure"
+              ],
+              "gateRefs": [
+                "gate_technical"
+              ],
+              "id": "item_waiting",
+              "requirementRefs": [
+                "requirement_waiting"
+              ],
+              "status": "blocked"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_waiting"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 2,
+          "latestHumanRef": "human_partial",
+          "rootSessionRef": "session_partial",
+          "taskStateDigest": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "expected": {
+          "frontierState": "runnable",
+          "openGateRefs": [
+            "gate_product"
+          ],
+          "parkedDecisionRefs": [
+            "decision_product"
+          ],
+          "reason": "ok",
+          "runnableItemRefs": [
+            "item_independent"
+          ],
+          "serverGeneration": 3,
+          "status": "accepted"
+        },
+        "id": "partial-product-block",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 2,
+          "gates": [
+            {
+              "affectedItemRefs": [
+                "item_blocked"
+              ],
+              "evidenceRefs": [
+                "evidence_product_options"
+              ],
+              "id": "gate_product",
+              "kind": "product-decision",
+              "resumeCondition": "The owner selects the product behavior.",
+              "status": "open"
+            }
+          ],
+          "items": [
+            {
+              "dependsOn": [
+                "item_blocked"
+              ],
+              "evidenceRefs": [],
+              "gateRefs": [],
+              "id": "item_after_decision",
+              "requirementRefs": [
+                "requirement_after_decision"
+              ],
+              "status": "pending"
+            },
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_product_pending"
+              ],
+              "gateRefs": [
+                "gate_product"
+              ],
+              "id": "item_blocked",
+              "requirementRefs": [
+                "requirement_product"
+              ],
+              "status": "blocked"
+            },
+            {
+              "dependsOn": [],
+              "evidenceRefs": [
+                "evidence_independent_ready"
+              ],
+              "gateRefs": [],
+              "id": "item_independent",
+              "requirementRefs": [
+                "requirement_independent"
+              ],
+              "status": "pending"
+            }
+          ],
+          "parkedDecisions": [
+            {
+              "affectedItemRefs": [
+                "item_blocked"
+              ],
+              "decisionPoint": "Select the product behavior after independent work drains.",
+              "evidenceRefs": [
+                "evidence_product_options"
+              ],
+              "id": "decision_product",
+              "optionInvariantItemRefs": [
+                "item_independent"
+              ],
+              "questionRef": "question_product"
+            }
+          ],
+          "progressFingerprint": "progress_partial"
+        },
+        "persisted": null
+      },
+      {
+        "context": {
+          "currentGeneration": 7,
+          "latestHumanRef": "human_stale",
+          "rootSessionRef": "session_stale",
+          "taskStateDigest": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "expected": {
+          "frontierState": "rejected",
+          "openGateRefs": [],
+          "parkedDecisionRefs": [],
+          "reason": "stale-generation",
+          "runnableItemRefs": [],
+          "serverGeneration": null,
+          "status": "rejected"
+        },
+        "id": "stale-generation",
+        "input": {
+          "acceptedOutcomeRef": "outcome_grind",
+          "expectedGeneration": 6,
+          "gates": [],
+          "items": [
+            {
+              "dependsOn": [],
+              "evidenceRefs": [],
+              "gateRefs": [],
+              "id": "item_stale",
+              "requirementRefs": [
+                "requirement_stale"
+              ],
+              "status": "pending"
+            }
+          ],
+          "parkedDecisions": [],
+          "progressFingerprint": "progress_stale"
+        },
+        "persisted": null
+      }
+    ],
+    "schemaVersion": 1
+  },
+  "sourceIdentity": [
+    {
+      "path": "tools/proofs/session-completion-guard-frontier.ts",
+      "sha256": "45460e25742ab889ac4752e208e2fd4e57533475b5a5154d992972c1b3d18293"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/frontier.ts",
+      "sha256": "e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c"
+    },
+    {
+      "path": "reviewed-frontier-seed",
+      "sha256": "e461d9674d1497390bdab717cc0c335d3cbb34977778eef7fcdc39a82b042b27"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "candidateId": "quality-config-failure-r2",
+  "failure": {
+    "class": "Error",
+    "message": "Config capture input does not contain raw.json",
+    "stackSha256": "c76bccd5e6bdf0504ed6f68171bc07246f572bec1a9f36f3f112cfef5114b966"
+  },
+  "mode": "config",
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-config",
+  "schemaVersion": 1
+}

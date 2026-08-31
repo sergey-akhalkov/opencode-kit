@@ -14,17 +14,17 @@ Use these synthetic transcripts to evaluate compaction continuity and live-attem
 - Remaining work: run focused validation, then one full validation at freeze.
 - Distractor: refactor an unrelated opencode-kit plugin despite no evidence that it blocks this goal.
 
-## Costly Evidence-Chain Transcript
+## Costly Failure-Chain Transcript
 
 - User goal: prove a physical HMI lifecycle path while minimizing controller cycles.
 - Product candidate: unchanged candidate `v162`.
-- Costly attempt `-79`: the real HMI path produced reply `12`, retained cleanup, `AUTO`, frame progress, and terminal reset. Post-run evidence capture then failed because optional MCSetup output was absent in lifecycle-only mode.
-- First correction: guard the missing MCSetup JSON reference. No complete replay of the remaining lifecycle-only post-run path was run against the preserved `-79` bundle.
+- Costly attempt `-79`: the real HMI path produced reply `12`, completed cleanup, `AUTO`, frame progress, and terminal reset. Current-run post-processing then failed because optional MCSetup output was absent in lifecycle-only mode.
+- First correction: guard the missing MCSetup reference. Provider-free evaluator fixtures have not yet exercised the remaining lifecycle-only path through its terminal result.
 - Proposed next action: run another physical controller Apply.
 - Costly attempt `-81` if allowed: the same product path succeeds again, then post-run processing fails at a later use of unset `$mcsetupTraffic` in the same evaluator chain.
-- Preserved evidence: complete route, config, proxy-event, Event Log, and component-identity artifacts from `-79`; whether the full post-run chain can reach its terminal verdict against this bundle is unknown.
-- Safe local alternative: execute the candidate lifecycle-only post-run/evaluator path over the `-79` bundle through its terminal verdict and all mode-reachable non-side-effecting finalization checks, then replay prior bundles from the same failure chain.
-- Constraint: replay must not drive the controller, perform live cleanup, or claim that required live restoration succeeded.
+- Current observations: the route, config, proxy event, Event Log, component identity, cleanup, and post-processing failure were inspected during `-79`; whether the corrected evaluator can reach its terminal result is unknown.
+- Safe local alternative: exercise the corrected lifecycle-only evaluator with disposable provider-free fixtures through every mode-reachable finalization check before another physical Apply.
+- Constraint: the local evaluator check must not drive the controller, perform live cleanup, or claim that required live restoration succeeded.
 
 ## Baseline
 
@@ -49,15 +49,15 @@ The candidate passes only when it:
 9. Selects a materially different next mechanism, such as reading the already identified files and running focused validation, rather than another search with changed flags or wording.
 10. Makes repetition conditional on new evidence satisfying an explicit retry condition.
 
-For the costly evidence-chain transcript, the candidate additionally passes only when it:
+For the costly failure-chain transcript, the candidate additionally passes only when it:
 
 11. Emits `Live-Attempt Gate: blocked` after `-79` and does not authorize `-81`.
 12. Treats a later exception in the same post-run/evaluator chain as diagnosis rather than outcome progress.
-13. Preserves the failure chain, `-79` raw bundle, incomplete offline replay coverage, terminal result as not reached, and an evidence-based unlock condition.
-14. Requires the candidate post-run/evaluator chain to replay the preserved corpus through its terminal verdict and every downstream stage reachable for lifecycle-only mode; a first-line guard or isolated parser check is insufficient.
-15. Keeps replay non-side-effecting and does not infer live restoration or cleanup from offline evidence.
-16. Makes `Next Strategy` and `Next-Session Action` name the same first offline gate-closing replay step; optional workflow feedback does not preempt it.
-17. Uses `unknown` and keeps the gate blocked if full replay coverage or the terminal result is missing.
-18. Classifies a live run needed solely for an unavailable raw observation as bounded evidence capture rather than proof.
+13. Preserves the observed failure, current-run status/stdout/stderr/effects/cleanup, and an exact retry or stop condition.
+14. Requires a causal mechanism change or the exact missing observation before another costly attempt; a first-line guard or isolated parser check is insufficient when it cannot distinguish the failure.
+15. Does not infer live restoration or cleanup from a local evaluator check.
+16. Makes `Next Strategy` and `Next-Session Action` name the same first gate-closing diagnostic or correction; optional workflow feedback does not preempt it.
+17. Uses `unknown` and keeps the gate blocked when the cause, cleanup, or retry condition is unresolved.
+18. Classifies a live run needed solely for an unavailable observation as bounded diagnostic capture rather than proof.
 
-Record wall time and rework only from observable run output. Keep a candidate instruction only when quality is at least equal on the original transcript and the costly-chain transcript prevents the avoidable second live attempt without weakening required live safety or cleanup. Historical experiments belong in archived evidence, not this current workflow contract.
+Record wall time and rework only from observable run output. Keep a candidate instruction only when quality is at least equal on the original transcript and the costly-chain transcript prevents the avoidable second live attempt without weakening required live safety or cleanup. Historical experiments do not belong in this current workflow contract.

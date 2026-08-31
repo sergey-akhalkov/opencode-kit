@@ -3,9 +3,7 @@ import crypto from "node:crypto";
 export const ROADMAP_MISSION_CERTIFICATE_ISSUER = "roadmap-mission-session-executor";
 
 export type TerminalCertificateChallenge = {
-  acceptedClaimIds: string[];
   challengeRef: string;
-  claimEvidenceRefs: string[];
   issuer: string;
   leaseGeneration: number;
   requirementIds: string[];
@@ -20,9 +18,7 @@ export type TerminalCertificate = TerminalCertificateChallenge & {
 };
 
 export type TerminalCertificateState = {
-  acceptedClaimIds?: string[];
   challenge: TerminalCertificateChallenge | null;
-  claimEvidenceRefs?: string[];
   deadlineAt: number | null;
   evidenceRefs: string[];
   issuer: string | null;
@@ -70,8 +66,6 @@ function exactKeys(input: Record<string, unknown>, expected: readonly string[], 
 }
 
 export function createTerminalCertificateChallenge(input: {
-  acceptedClaimIds?: string[];
-  claimEvidenceRefs?: string[];
   issuer: string;
   leaseGeneration: number;
   requirementIds: string[];
@@ -81,27 +75,11 @@ export function createTerminalCertificateChallenge(input: {
   const issuer = boundedString(input.issuer, "terminal certificate issuer");
   const rootRef = boundedString(input.rootRef, "terminal certificate rootRef");
   const revisionDigest = boundedString(input.revisionDigest, "terminal certificate revisionDigest");
-  const acceptedClaimIds = stringList(
-    input.acceptedClaimIds ?? [],
-    "terminal certificate acceptedClaimIds",
-    32,
-    false,
-    true,
-  );
-  const claimEvidenceRefs = stringList(
-    input.claimEvidenceRefs ?? [],
-    "terminal certificate claimEvidenceRefs",
-    256,
-    false,
-    true,
-  );
   if (!Number.isSafeInteger(input.leaseGeneration) || input.leaseGeneration < 0) {
     throw new Error("terminal certificate leaseGeneration must be a non-negative integer");
   }
   const requirementIds = stringList(input.requirementIds, "terminal certificate requirementIds", 100);
   const challengeRef = crypto.createHash("sha256").update(JSON.stringify({
-    acceptedClaimIds,
-    claimEvidenceRefs,
     issuer,
     leaseGeneration: input.leaseGeneration,
     requirementIds,
@@ -109,9 +87,7 @@ export function createTerminalCertificateChallenge(input: {
     rootRef,
   })).digest("hex");
   return {
-    acceptedClaimIds,
     challengeRef,
-    claimEvidenceRefs,
     issuer,
     leaseGeneration: input.leaseGeneration,
     requirementIds,
@@ -124,11 +100,9 @@ export function createTerminalCertificateChallenge(input: {
 export function parseTerminalCertificateChallenge(value: unknown): TerminalCertificateChallenge {
   const input = record(value);
   if (input == null) throw new Error("terminal certificate challenge must be an object");
-  exactKeys(input, ["acceptedClaimIds", "challengeRef", "claimEvidenceRefs", "issuer", "leaseGeneration", "requirementIds", "revisionDigest", "rootRef", "schemaVersion"], "terminal certificate challenge");
+  exactKeys(input, ["challengeRef", "issuer", "leaseGeneration", "requirementIds", "revisionDigest", "rootRef", "schemaVersion"], "terminal certificate challenge");
   if (input.schemaVersion !== 1) throw new Error("terminal certificate challenge schema is unsupported");
   const challenge = createTerminalCertificateChallenge({
-    acceptedClaimIds: stringList(input.acceptedClaimIds, "terminal certificate challenge acceptedClaimIds", 32, false, true),
-    claimEvidenceRefs: stringList(input.claimEvidenceRefs, "terminal certificate challenge claimEvidenceRefs", 256, false, true),
     issuer: boundedString(input.issuer, "terminal certificate challenge issuer"),
     leaseGeneration: input.leaseGeneration as number,
     requirementIds: stringList(input.requirementIds, "terminal certificate challenge requirementIds", 100),
@@ -145,9 +119,7 @@ export function parseTerminalCertificate(value: unknown): TerminalCertificate {
   const input = record(value);
   if (input == null) throw new Error("terminal certificate must be an object");
   exactKeys(input, [
-    "acceptedClaimIds",
     "challengeRef",
-    "claimEvidenceRefs",
     "disposition",
     "evidenceRefs",
     "issuer",
@@ -159,9 +131,7 @@ export function parseTerminalCertificate(value: unknown): TerminalCertificate {
   ], "terminal certificate");
   if (input.disposition !== "allow_stop") throw new Error("terminal certificate disposition must be allow_stop");
   const challenge = parseTerminalCertificateChallenge({
-    acceptedClaimIds: input.acceptedClaimIds,
     challengeRef: input.challengeRef,
-    claimEvidenceRefs: input.claimEvidenceRefs,
     issuer: input.issuer,
     leaseGeneration: input.leaseGeneration,
     requirementIds: input.requirementIds,
@@ -202,8 +172,6 @@ export function evaluateTerminalCertificate(input: {
     [certificate.revisionDigest === input.challenge.revisionDigest, "stale-revision"],
     [certificate.leaseGeneration === input.challenge.leaseGeneration, "stale-lease"],
     [JSON.stringify(certificate.requirementIds) === JSON.stringify(input.challenge.requirementIds), "missing-requirement"],
-    [JSON.stringify(certificate.acceptedClaimIds) === JSON.stringify(input.challenge.acceptedClaimIds), "missing-claim"],
-    [JSON.stringify(certificate.claimEvidenceRefs) === JSON.stringify(input.challenge.claimEvidenceRefs), "claim-evidence-mismatch"],
     [certificate.challengeRef === input.challenge.challengeRef, "challenge-mismatch"],
   ];
   const failed = comparisons.find(([matches]) => !matches);

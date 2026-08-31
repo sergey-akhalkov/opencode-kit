@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:message_1b28663f9144
+- **Reviewed Request Ref**: event:message_1b28663f9144
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:install-nuphus-planning-r2
+- **Reviewed Candidate Ref**: candidate:install-nuphus-planning-r2
+- **Decision Surface**: full-authority boundary, package/config source selection, screenshot visibility through OpenCode, wrong-window input, proof ownership and cleanup, restart activation, supply-chain identity, unnecessary portable-kit expansion, and sufficiency of the real observable oracle.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fab85cc8fffet939YIMXRLcjTc
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: IR-001
+- **Main Dispositions**: IR-001=confirmed
+- **Correction Ref**: correction:install-nuphus-planning-r2-proof-server-attribution
+- **Invalidated Surfaces**: unqualified-proof-process-identity, managed-listener-non-interference, active-config-attribution, sibling-mcp-proof-isolation, rollback-absence-process-identity
+- **Terminal Reason**: corrected-candidate-rereview-no-material-finding
+- **Terminal State**: closed
+- **Unresolved Evidence**: live-package-installation, live-mcp-protocol, config-overlay-composition, live-opencode-loading, screenshot-to-read, proof-owned-notepad-effect, local-model-bootstrap, rollback-rehearsal

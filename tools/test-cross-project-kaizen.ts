@@ -394,6 +394,90 @@ test("compaction envelope accepts exactly zero to three signals", () => {
   assert.throws(() => parseKaizenEnvelope(`${KAIZEN_ENVELOPE_OPEN}${JSON.stringify({ schemaVersion: 1, signal: null, extra: true })}${KAIZEN_ENVELOPE_CLOSE}`), /unsupported keys/u);
 });
 
+test("compaction hook appends one strict Kaizen contract without replacing the prompt", async () => {
+  const item = fixture();
+  try {
+    const hooks = createKaizenPluginHooks({
+      directory: item.projectA,
+      project: { worktree: item.projectA },
+      client: { session: {
+        async get() { return { data: { id: "session_compaction_context", directory: item.projectA } }; },
+        async messages() { return { data: [] }; },
+      } },
+    }, item.environment) as Record<string, unknown>;
+    const compacting = hooks["experimental.session.compacting"] as (input: unknown, output: { context: string[]; prompt?: string }) => Promise<void>;
+    assert.equal(typeof compacting, "function");
+    const output = { context: ["existing compaction context"], prompt: "keep the configured prompt" };
+    await compacting({ sessionID: "session_compaction_context" }, output);
+    assert.equal(output.prompt, "keep the configured prompt");
+    assert.equal(output.context[0], "existing compaction context");
+    assert.equal(output.context.length, 2);
+    const contract = output.context[1] ?? "";
+    assert.equal(contract.split(KAIZEN_ENVELOPE_OPEN).length - 1, 1);
+    assert.equal(contract.split(KAIZEN_ENVELOPE_CLOSE).length - 1, 1);
+    assert.match(contract, /"schemaVersion":1,"signals":\[\]/u);
+    assert.match(contract, /kind, summary, observedEvidence, impact, likelyCause, doNotRepeat, scopeHint, evidenceRefs/u);
+    assert.match(contract, /signals: \[\]/u);
+    assert.equal(contract.includes("```"), false);
+  } finally {
+    fs.rmSync(item.root, { recursive: true, force: true });
+  }
+});
+
+test("compaction capture accepts MSBuild property switches without weakening path rejection", async () => {
+  const item = fixture();
+  try {
+    const sessionID = "session_kaizen_msbuild_switch";
+    const signals: KaizenSignalInput[] = [
+      {
+        kind: "process-gap",
+        summary: "Delphi 2010 documented Rebuild reads EnvOptions.proj Win32LibraryPath, not HKCU Library Search Path",
+        observedEvidence: "Registry already listed TMS/Alpha/Raize; msbuild dcc32 -U still only RC5 until EnvOptions.proj was edited",
+        impact: "False install completion caused extra Rebuild cycles.",
+        likelyCause: "Assumed the BDS registry was the MSBuild unit-path owner.",
+        doNotRepeat: "Read EnvOptions.proj before changing the registry search path.",
+        scopeHint: "current-project",
+        evidenceRefs: ["AGENTS.md", "cnc_m.dproj"],
+      },
+      {
+        kind: "tooling-gap",
+        summary: "MSBuild 2.0 splits semicolon /p:DCC_UnitSearchPath as another switch (MSB1006)",
+        observedEvidence: "The licensed cnc_m Rebuild failed immediately with MSB1006.",
+        impact: "The intended one-shot path override was blocked.",
+        likelyCause: "MSBuild 2.0 property parsing conflicts with Delphi semicolon unit paths.",
+        doNotRepeat: "Do not pass semicolon-delimited Delphi unit paths via /p: to this MSBuild 2.0.",
+        scopeHint: "current-project",
+        evidenceRefs: ["cnc_m.dproj"],
+      },
+    ];
+    const hooks = createKaizenPluginHooks({
+      directory: item.projectA,
+      project: { worktree: item.projectA },
+      client: { session: {
+        async get() { return { data: { id: sessionID, directory: item.projectA } }; },
+        async messages() {
+          return { data: [{ info: { id: "message_summary_msbuild_switch", role: "assistant", sessionID, summary: true, time: { created: 1 } }, parts: [{ type: "text", text: envelope(signals) }] }] };
+        },
+      } },
+    }, item.environment) as Record<string, unknown>;
+    const warnings: string[] = [];
+    const previous = console.warn;
+    console.warn = (...args: unknown[]) => { warnings.push(args.join(" ")); };
+    try {
+      await (hooks.event as (input: unknown) => Promise<void>)({ event: { id: "event_msbuild_switch", type: "session.compacted", properties: { sessionID } } });
+    } finally {
+      console.warn = previous;
+    }
+    const status = await feature(item.projectA, item.environment).status();
+    assert.equal(status.counts.signals, 2);
+    assert.equal(status.counts.diagnostics, 0);
+    assert.equal(status.signals.every((signal) => signal.sources.includes("compaction")), true);
+    assert.deepEqual(warnings, []);
+  } finally {
+    fs.rmSync(item.root, { recursive: true, force: true });
+  }
+});
+
 test("legacy feedback parser accepts only the maintained bounded entry format", () => {
   const parsed = parseLegacyFeedbackEntry(legacyFeedback, "docs/feedbacks/main-agent.md");
   assert.equal(parsed.feedbackId, "FB-2026-08-29-stale-open-fixture");
@@ -583,12 +667,36 @@ test("synthetic credentials and private paths are absent from bounded status out
   try {
     const credential = "sk-proj-abcdefghijklmnopqrstuvwxyz";
     const environment = { ...item.environment, OPENCODE_KAIZEN_PROPOSAL_OWNER_ROOT: item.projectA };
-    await feature(item.projectA, environment).capture({
+    const current = feature(item.projectA, environment);
+    for (const [sourceEventRef, observedEvidence] of [
+      ["explicit:privacy-delimited-drive", "notes=D:\\private\\other\\secrets.env"],
+      ["explicit:privacy-drive-switch-segment", "notes=C:/p:Users"],
+      ["explicit:privacy-delimited-posix", "notes=/private/other/secrets.env"],
+      ["explicit:privacy-delimited-unc", "notes=\\\\private-host\\share\\secrets.env"],
+      ["explicit:privacy-delimited-forward-unc", "notes=//private-host/share/secrets.env"],
+      ["explicit:privacy-json-forward-unc", "{\"path\":\"//private-host/share/secrets.env\"}"],
+      ["explicit:privacy-backtick-drive", "`D:\\private\\other\\secrets.env`"],
+      ["explicit:privacy-colon-backslash-unc", "notes:\\\\private-host\\share\\secrets.env"],
+      ["explicit:privacy-rooted-backslash", "notes=/p:Foo \\Users\\synthetic-user\\secrets.env"],
+      ["explicit:privacy-rooted-backslash-space", "notes=/p:Foo \\Program Files\\Vendor\\secrets.env"],
+      ["explicit:privacy-file-uri", "notes=file:///private/other/secrets.env"],
+    ]) {
+      await assert.rejects(
+        current.capture({ ...fixedSignal, observedEvidence }, "explicit", captureContext(sourceEventRef)),
+        hasCode("privacy"),
+      );
+    }
+    await current.capture({
+      ...fixedSignal,
+      summary: "Public documentation URL remains valid evidence",
+      observedEvidence: "See https://example.invalid/home/guide for the synthetic public reference.",
+    }, "explicit", captureContext("explicit:privacy-url-control"));
+    await current.capture({
       ...fixedSignal,
       summary: `api_key=${credential} root=${item.projectA}`,
       observedEvidence: `home=${os.homedir()} token=${credential}`,
     }, "explicit", captureContext("explicit:privacy-output"));
-    const stored = await feature(item.projectA, environment).status();
+    const stored = await current.status();
     const storedText = JSON.stringify(stored);
     assert.equal(storedText.includes(credential), false);
     assert.equal(storedText.includes(item.projectA), false);

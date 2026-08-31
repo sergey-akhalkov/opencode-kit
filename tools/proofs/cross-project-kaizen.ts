@@ -6,7 +6,6 @@ import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
-  configuredProofServerEnvironment,
   installedOpenCodeIdentity,
   proofClient,
   proofErrorFacts,
@@ -32,12 +31,14 @@ import {
 type Options = {
   evidenceDir: string | null;
   help: boolean;
-  mode: "preflight" | "capture-compaction-identity" | "store-boundary" | "archive-boundary" | "triage-boundary" | "population" | "loaded-tools" | "loaded-tools-preflight" | "replay-loaded-tools";
+  mode: "preflight" | "capture-compaction-identity" | "store-boundary" | "archive-boundary" | "triage-boundary" | "population" | "loaded-tools" | "loaded-tools-preflight";
   opencode: string | null;
 };
 
 type ProviderRequest = {
   bytes: number;
+  kaizenCompactionContext?: boolean;
+  ordinaryCompactionPrompt?: boolean;
   sha256: string;
   stream: boolean;
   toolNames: string[];
@@ -51,7 +52,7 @@ type ProviderHandle = {
 };
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const evidenceRoot = path.join(sourceRoot, "openspec", "changes", "add-cross-project-kaizen-loop", "evidence");
+const evidenceRoot = path.join(os.tmpdir(), `opencode-kaizen-proof-${process.pid}-${crypto.randomUUID()}`);
 const acceptedStoreEnvelope = {
   lifecycleBytes: 4 * 1024,
   lifecycleLimit: 8_000,
@@ -59,6 +60,17 @@ const acceptedStoreEnvelope = {
   signalLimit: 2_000,
 };
 const seedText = "KZN_COMPACTION_IDENTITY_SEED_R1";
+const ordinaryCompactionPrompt = "Preserve this ordinary compaction prompt sentinel, then produce the requested summary.";
+const compactionSignal = {
+  kind: "tooling-gap",
+  summary: "Loaded compaction needs the Kaizen output contract",
+  observedEvidence: "Pinned OpenCode received the plugin-owned compaction context and persisted this bounded synthetic signal.",
+  impact: "Without the context contract, ordinary compaction produces a missing-envelope diagnostic.",
+  likelyCause: "Post-compaction capture was enabled before its model-facing output contract.",
+  doNotRepeat: "Do not enable capture without composing its append-only compaction context.",
+  scopeHint: "opencode-kit",
+  evidenceRefs: ["tools/proofs/cross-project-kaizen.ts"],
+} as const;
 const summaryText = [
   "Original User Goal",
   "- Preserve one synthetic Kaizen compaction identity.",
@@ -72,6 +84,8 @@ const summaryText = [
   "- Concrete Evidence: one root compaction.",
   "- Likely Cause And Uncertainty: synthetic fixture only.",
   "- Do Not Repeat: no extra summarization call.",
+  "",
+  `<kaizen_signal>${JSON.stringify({ schemaVersion: 1, signals: [compactionSignal] })}</kaizen_signal>`,
 ].join("\n");
 const loadedSignal = {
   kind: "tooling-gap",
@@ -88,29 +102,29 @@ function usage(): string {
   return [
     "Usage:",
     "  node tools/proofs/cross-project-kaizen.ts --mode preflight --opencode <absolute-path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <absolute-path> --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode store-boundary --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode archive-boundary --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode triage-boundary --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <absolute-path> --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <absolute-path> --evidence-dir <path>",
-    "  node tools/proofs/cross-project-kaizen.ts --mode replay-loaded-tools --evidence-dir <existing-path>",
+    "  node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <absolute-path>",
+    "  node tools/proofs/cross-project-kaizen.ts --mode store-boundary",
+    "  node tools/proofs/cross-project-kaizen.ts --mode archive-boundary",
+    "  node tools/proofs/cross-project-kaizen.ts --mode triage-boundary",
+    "  node tools/proofs/cross-project-kaizen.ts --mode population",
+    "  node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <absolute-path>",
+    "  node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <absolute-path>",
     "",
-    "Compaction identity mode uses one disposable Git root, isolated OpenCode state,",
-    "one loopback model call, one event subscription, one message readback, and terminal",
-    "session/server/provider/root cleanup. Store mode uses two consumer Git roots, one",
+    "Compaction identity mode loads the copied production plugin in one disposable Git root",
+    "with isolated OpenCode state, verifies ordinary prompt plus Kaizen context in one loopback",
+    "model call, reads back one persisted signal, and performs terminal session/server/provider/root",
+    "cleanup. Store mode uses two consumer Git roots, one",
     "disabled control, one isolated data root, zero network/provider calls, immutable",
-    "record readback, clean-worktree checks, and terminal root cleanup. Both modes retain",
-    "identities and digests only; transcript and summary text are not persisted. Loaded-tools",
+    "record readback, clean-worktree checks, and terminal root cleanup. Intermediate output",
+    "is proof-owned and removed before exit. Loaded-tools",
     "mode copies the production plugin, loads it through pinned OpenCode, uses one loopback",
     "prompt to execute report then status, and retains only bounded refs, tool facts, hashes,",
     "diagnostics, effects, and cleanup. Archive mode drives the canonical helper in five",
     "disposable roots, uses no provider, preserves only bounded state, and removes every root.",
     "Triage mode proves owner-root detail containment and one strictly valid disposable proposal",
     "from a consumer-origin signal with no provider, source-project write, or retained fixture.",
-    "Population mode strictly reads the reviewed 25-member seed, runs focused production tests",
-    "plus fresh archive/triage boundaries, and retains exact member-to-driver observations.",
+    "Population mode strictly reads the reviewed 25-member seed and runs focused production tests",
+    "plus fresh archive/triage boundaries.",
   ].join("\n");
 }
 
@@ -121,17 +135,18 @@ function parseArgs(argv: string[]): Options {
     if (arg === "--help" || arg === "-h") options.help = true;
     else if (arg === "--mode") {
       const value = argv[++index];
-      if (value !== "preflight" && value !== "capture-compaction-identity" && value !== "store-boundary" && value !== "archive-boundary" && value !== "triage-boundary" && value !== "population" && value !== "loaded-tools" && value !== "loaded-tools-preflight" && value !== "replay-loaded-tools") throw new Error(`Invalid --mode: ${value ?? "missing"}`);
+      if (value !== "preflight" && value !== "capture-compaction-identity" && value !== "store-boundary" && value !== "archive-boundary" && value !== "triage-boundary" && value !== "population" && value !== "loaded-tools" && value !== "loaded-tools-preflight") throw new Error(`Invalid --mode: ${value ?? "missing"}`);
       options.mode = value;
     } else if (arg === "--opencode") options.opencode = argv[++index] ?? null;
-    else if (arg === "--evidence-dir") options.evidenceDir = argv[++index] ?? null;
     else throw new Error(`Unknown option: ${arg}`);
   }
   if (options.help) return options;
-  if (options.mode !== "store-boundary" && options.mode !== "archive-boundary" && options.mode !== "triage-boundary" && options.mode !== "population" && options.mode !== "replay-loaded-tools" && (options.opencode == null || !path.isAbsolute(options.opencode))) throw new Error("--opencode must be an absolute path");
-  if (options.mode !== "preflight" && options.evidenceDir == null) throw new Error(`${options.mode} requires --evidence-dir`);
-  if (options.mode === "preflight" && options.evidenceDir != null) throw new Error("Preflight mode does not write evidence");
-  if ((options.mode === "store-boundary" || options.mode === "archive-boundary" || options.mode === "triage-boundary" || options.mode === "population" || options.mode === "replay-loaded-tools") && options.opencode != null) throw new Error(`${options.mode} does not use --opencode`);
+  if (options.mode !== "store-boundary" && options.mode !== "archive-boundary" && options.mode !== "triage-boundary" && options.mode !== "population" && (options.opencode == null || !path.isAbsolute(options.opencode))) throw new Error("--opencode must be an absolute path");
+  if ((options.mode === "store-boundary" || options.mode === "archive-boundary" || options.mode === "triage-boundary" || options.mode === "population") && options.opencode != null) throw new Error(`${options.mode} does not use --opencode`);
+  if (options.mode !== "preflight") {
+    fs.mkdirSync(evidenceRoot, { recursive: true });
+    options.evidenceDir = path.join(evidenceRoot, options.mode);
+  }
   return options;
 }
 
@@ -231,7 +246,14 @@ function startProvider(): Promise<ProviderHandle> {
         const fn = row.function != null && typeof row.function === "object" ? row.function as Record<string, unknown> : null;
         return typeof fn?.name === "string" ? [fn.name] : [];
       }).sort();
-      captured.push({ bytes, sha256: sha256(body), stream, toolNames });
+      captured.push({
+        bytes,
+        kaizenCompactionContext: body.includes("Kaizen compaction output contract (mandatory)"),
+        ordinaryCompactionPrompt: body.includes(ordinaryCompactionPrompt),
+        sha256: sha256(body),
+        stream,
+        toolNames,
+      });
       response.writeHead(200, { "content-type": stream ? "text/event-stream" : "application/json" });
       response.end(completion(summaryText, stream));
     });
@@ -370,6 +392,12 @@ function config(providerUrl: string, plugin?: string): Record<string, unknown> {
       kaizen_checkpoint: "allow",
     },
     ...(plugin == null ? {} : { plugin: [plugin] }),
+    agent: {
+      compaction: {
+        model: "proof/proof-model",
+        prompt: ordinaryCompactionPrompt,
+      },
+    },
     provider: {
       proof: {
         npm: "@ai-sdk/openai-compatible",
@@ -452,10 +480,12 @@ function redact(text: string, roots: string[]): string {
     const escaped = JSON.stringify(root).slice(1, -1);
     for (const form of new Set([root, slash, escaped])) result = result.replaceAll(form, `<root-${index + 1}>`);
   }
-  for (const value of Object.values(loadedSignal)) {
-    if (typeof value === "string") {
-      result = result.replaceAll(value, "<synthetic-kaizen-signal>");
-      result = result.replaceAll(JSON.stringify(value).slice(1, -1), "<synthetic-kaizen-signal>");
+  for (const signal of [loadedSignal, compactionSignal]) {
+    for (const value of Object.values(signal)) {
+      if (typeof value === "string") {
+        result = result.replaceAll(value, "<synthetic-kaizen-signal>");
+        result = result.replaceAll(JSON.stringify(value).slice(1, -1), "<synthetic-kaizen-signal>");
+      }
     }
   }
   return result
@@ -470,15 +500,18 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
   const requestedEvidenceDir = path.resolve(options.evidenceDir!);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
   if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) {
-    throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
+    throw new Error("Temporary output must stay inside the proof-owned root");
   }
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
 
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-compaction-"));
   const projectRoot = path.join(fixtureRoot, "project");
   const configDir = path.join(fixtureRoot, "config");
+  const dataRoot = path.join(fixtureRoot, "data");
   const runtimeRoot = path.join(fixtureRoot, "runtime");
+  const copiedPlugin = path.join(configDir, "runtime", "plugin");
+  const traceFile = path.join(configDir, "runtime", "plugin-trace.jsonl");
   fs.mkdirSync(projectRoot, { recursive: true });
   const git = spawnSync("git", ["init", "--quiet", projectRoot], { encoding: "utf8", shell: false, windowsHide: true });
   if (git.status !== 0) throw new Error(`Disposable git init failed: ${git.stderr.trim()}`);
@@ -502,13 +535,16 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
   const bundle: Record<string, unknown> = {
     schemaVersion: 1,
     status: "failed",
-    candidate: "cross-project-kaizen-loop-runtime-api-gate-r1",
+    candidate: "kaizen-compaction-runtime-context-r1",
     environment: identity,
-    invocation: "node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/compaction-identity-r1",
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <installed-opencode>",
     stage: "setup",
     provider: null,
+    copiedPlugin: null,
     event: null,
     messages: null,
+    preflights: [],
+    store: null,
     checks: null,
     cleanup,
     diagnostics: null,
@@ -518,18 +554,26 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
   try {
     provider = await startProvider();
     bundle.stage = "server-start";
-    const configured = config(provider.url);
+    fs.mkdirSync(path.dirname(copiedPlugin), { recursive: true });
+    fs.cpSync(path.join(sourceRoot, "global", "plugin"), copiedPlugin, { recursive: true });
+    const sourcePluginIdentity = directoryIdentity(path.join(sourceRoot, "global", "plugin"));
+    const copiedPluginIdentity = directoryIdentity(copiedPlugin);
+    if (JSON.stringify(sourcePluginIdentity) !== JSON.stringify(copiedPluginIdentity)) throw new Error("Copied plugin identity does not match source");
+    bundle.copiedPlugin = { copied: copiedPluginIdentity, source: sourcePluginIdentity };
+    const plugin = writeTracedKaizenPlugin(configDir, copiedPlugin, traceFile);
     seedProofConfigDependencies(configDir, path.join(sourceRoot, "global"));
-    const environment = configuredProofServerEnvironment(process.env, configDir, runtimeRoot, configured);
-    environment.ALL_PROXY = provider.url;
-    environment.HTTP_PROXY = provider.url;
-    environment.HTTPS_PROXY = provider.url;
-    environment.NO_PROXY = "127.0.0.1,localhost";
-    environment.HOME = path.join(runtimeRoot, "home");
-    environment.USERPROFILE = environment.HOME;
-    environment.XDG_DATA_HOME = path.join(runtimeRoot, "data");
+    const configHome = path.join(runtimeRoot, "config-home", "opencode");
+    seedProofConfigDependencies(configHome, path.join(sourceRoot, "global"));
+    const configFile = path.join(configDir, "opencode.json");
+    const environment = loadedEnvironment(configDir, runtimeRoot, dataRoot, provider.url);
+    delete environment.OPENCODE_KAIZEN;
+    delete environment.OPENCODE_PROJECT_MEMORY;
     for (const key of ["ANTHROPIC_API_KEY", "AZURE_OPENAI_API_KEY", "GOOGLE_GENERATIVE_AI_API_KEY", "OPENAI_API_KEY", "XAI_API_KEY"]) delete environment[key];
     fs.mkdirSync(path.dirname(environment.OPENCODE_DB!), { recursive: true });
+    bundle.stage = "config-preflight";
+    bundle.preflights = await runLoadedConfigPreflights({ configFile, environment, opencode: options.opencode!, plugin, projectRoot, provider, traceFile, roots: [fixtureRoot, sourceRoot, os.homedir()] });
+    fs.writeFileSync(traceFile, "", "utf8");
+    bundle.stage = "server-start";
     proofServer = await startProofServer(options.opencode!, projectRoot, environment);
     const client = proofClient(proofServer.url, projectRoot, environment);
 
@@ -590,14 +634,32 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
     const newSummaries = summariesAfter.filter((row) => typeof row.id === "string" && !beforeIds.has(row.id));
     const rootEvents = compactedEvents.filter((event) => sessionIDOfEvent(event) === sessionID);
     const wrongRootEvents = compactedEvents.filter((event) => sessionIDOfEvent(event) !== sessionID);
+    const copiedStore = await import(`${pathToFileURL(path.join(copiedPlugin, "kaizen", "store.ts")).href}?compaction=${Date.now()}`) as typeof import("../../global/plugin/kaizen/store.ts");
+    const store = copiedStore.resolveKaizenStore({ worktree: projectRoot, environment: { OPENCODE_DATA_DIR: dataRoot } });
+    if (store == null) throw new Error("Copied Kaizen store did not resolve for compaction proof");
+    let inbox = await copiedStore.readKaizenInbox(store);
+    const storeDeadline = Date.now() + 5_000;
+    while (inbox.counts.signals === 0 && inbox.counts.diagnostics === 0 && Date.now() < storeDeadline) {
+      await new Promise((resolve) => setTimeout(resolve, 25));
+      inbox = await copiedStore.readKaizenInbox(store);
+    }
+    const compactionRecords = inbox.signals.filter((signal) => signal.sources.includes("compaction"));
+    const providerRequests = provider.requests();
+    const trace = traceRows(traceFile);
     const checks = {
       activeConfigUnchanged: sha256(fs.readFileSync(activeConfig)) === activeConfigBefore,
+      compactionSignalPersisted: compactionRecords.length === 1 && compactionRecords[0]?.summary === compactionSignal.summary,
+      copiedPluginMatched: JSON.stringify(sourcePluginIdentity) === JSON.stringify(copiedPluginIdentity),
       eventHasSessionOnlyIdentity: rootEvents.length === 1 && Object.keys((rootEvents[0]?.properties ?? {}) as object).sort().join(",") === "sessionID",
       exactlyOneNewSummary: newSummaries.length === 1,
-      exactlyOneProviderCall: provider.requests().length === 1,
+      exactlyOneProviderCall: providerRequests.length === 1,
+      kaizenContextReachedProvider: providerRequests.length === 1 && providerRequests[0]?.kaizenCompactionContext === true,
+      noCaptureDiagnostic: inbox.counts.diagnostics === 0,
       noProviderCallBeforeSummarize: true,
       noTranscriptRetained: true,
       noWrongRootEvent: wrongRootEvents.length === 0,
+      ordinaryPromptPreserved: providerRequests.length === 1 && providerRequests[0]?.ordinaryCompactionPrompt === true,
+      pluginFactoryCompleted: trace.some((row) => row.phase === "factory-exit"),
       rootEventObserved: rootEvents.length === 1,
       rootSessionVerified: session.parentID == null,
       summaryAccepted: summarizeAccepted === true,
@@ -606,7 +668,7 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
       summaryTextMatchesProvider: newSummaries.length === 1 && newSummaries[0]?.textSha256 === sha256(summaryText),
       zeroEgressTraps: provider.trapped() === 0,
     };
-    bundle.provider = { requests: provider.requests(), trapped: provider.trapped() };
+    bundle.provider = { requests: providerRequests, trapped: provider.trapped() };
     bundle.event = { compacted: rootEvents, wrongRootCount: wrongRootEvents.length };
     bundle.messages = {
       beforeCount: before.length,
@@ -614,6 +676,12 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
       summariesBefore,
       summariesAfter,
       newSummaries,
+    };
+    bundle.store = {
+      compactionSignals: compactionRecords.map((signal) => ({ signalRef: signal.signalRef, sources: signal.sources, status: signal.status })),
+      diagnostics: inbox.counts.diagnostics,
+      files: storeFileFacts(store.storeRoot, fixtureRoot),
+      signals: inbox.counts.signals,
     };
     bundle.checks = checks;
     if (Object.values(checks).some((value) => !value)) throw new Error(`Kaizen compaction identity checks failed: ${JSON.stringify(checks)}`);
@@ -669,7 +737,7 @@ async function capture(options: Options, identity: Record<string, unknown>): Pro
     if (requiredCleanup.some((key) => cleanup[key] !== true)) bundle.status = "failed";
     bundle.stage = "terminal";
     const serialized = redact(stableJson(bundle), [fixtureRoot, sourceRoot, os.homedir()]);
-    for (const forbidden of [fixtureRoot, sourceRoot, os.homedir(), seedText, summaryText]) {
+    for (const forbidden of [fixtureRoot, sourceRoot, os.homedir(), seedText, summaryText, ordinaryCompactionPrompt]) {
       if (serialized.includes(forbidden) || serialized.includes(forbidden.replaceAll("\\", "/"))) throw new Error("Retained Kaizen evidence contains forbidden private or transcript text");
     }
     fs.writeFileSync(path.join(requestedEvidenceDir, "bundle.json"), serialized, { encoding: "utf8", flag: "wx" });
@@ -725,9 +793,9 @@ async function storeBoundary(options: Options): Promise<void> {
   const evidenceName = path.basename(requestedEvidenceDir);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
   if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) {
-    throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
+    throw new Error("Temporary output must stay inside the proof-owned root");
   }
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
 
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-store-"));
@@ -741,7 +809,7 @@ async function storeBoundary(options: Options): Promise<void> {
     schemaVersion: 1,
     candidate: `cross-project-kaizen-loop-${evidenceName}`,
     environment: { node: process.version, platform: process.platform, providerCalls: 0, networkRequests: 0 },
-    invocation: `node tools/proofs/cross-project-kaizen.ts --mode store-boundary --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/${evidenceName}`,
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode store-boundary",
     status: "failed",
     checks: null,
     effects: null,
@@ -897,8 +965,8 @@ async function triageBoundary(options: Options): Promise<void> {
   const requestedEvidenceDir = path.resolve(options.evidenceDir!);
   const evidenceName = path.basename(requestedEvidenceDir);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
-  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("Temporary output must stay inside the proof-owned root");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
 
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-triage-"));
@@ -912,7 +980,7 @@ async function triageBoundary(options: Options): Promise<void> {
     schemaVersion: 1,
     candidate: `cross-project-kaizen-loop-${evidenceName}`,
     environment: { node: process.version, platform: process.platform, providerCalls: 0, networkRequests: 0 },
-    invocation: `node tools/proofs/cross-project-kaizen.ts --mode triage-boundary --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/${evidenceName}`,
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode triage-boundary",
     status: "failed",
     checks: null,
     effects: null,
@@ -1095,12 +1163,11 @@ async function populationBoundary(options: Options): Promise<void> {
   const requestedEvidenceDir = path.resolve(options.evidenceDir!);
   const evidenceName = path.basename(requestedEvidenceDir);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
-  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("Temporary output must stay inside the proof-owned root");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
 
   const seedFile = path.join(sourceRoot, "tools", "proofs", "fixtures", "cross-project-kaizen", "population-v1.json");
-  const indexFile = path.join(sourceRoot, "openspec", "changes", "add-cross-project-kaizen-loop", "evidence-index.json");
   const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-population-"));
   const sourceFiles = [
     "global/bin/openspec-archive.ts",
@@ -1124,7 +1191,7 @@ async function populationBoundary(options: Options): Promise<void> {
     schemaVersion: 1,
     candidate: `cross-project-kaizen-loop-${evidenceName}`,
     environment: { node: process.version, platform: process.platform, providerCalls: 0, networkRequests: 0 },
-    invocation: `node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/${evidenceName}`,
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode population",
     status: "failed",
     checks: null,
     seed: null,
@@ -1139,11 +1206,6 @@ async function populationBoundary(options: Options): Promise<void> {
     const readbackFile = path.join(temporaryRoot, "population-readback.json");
     fs.writeFileSync(readbackFile, normalizedSeed, { encoding: "utf8", flag: "wx" });
     const readback = readPopulationSeed(readbackFile);
-    const evidenceIndex = readJson(indexFile);
-    const claims = Array.isArray(evidenceIndex.claims) ? evidenceIndex.claims as Array<Record<string, unknown>> : [];
-    const claim = claims.find((item) => item.claimId === "KZN-001");
-    const population = claim?.population != null && typeof claim.population === "object" ? claim.population as Record<string, unknown> : null;
-    const claimMembers = Array.isArray(population?.members) ? population.members as unknown[] : [];
     const seedIds = seed.scenarios.map((scenario) => scenario.id);
 
     const focusedStartedAt = Date.now();
@@ -1199,7 +1261,6 @@ async function populationBoundary(options: Options): Promise<void> {
       activeConfigUnchanged: sha256(fs.readFileSync(activeConfig)) === activeConfigBefore,
       allMembersSupported: observations.length === 25 && observations.every((observation) => observation.status === "supported"),
       archiveBoundaryPassed: archiveBundle.status === "passed" && archiveOutput.length === 1,
-      claimPopulationMatched: population?.id === seed.populationId && JSON.stringify(claimMembers) === JSON.stringify(seedIds),
       focusedTestsPassed: focusedResult.status === "passed" && passedTests.size >= 24,
       loadedModesExposed: usage().includes("--mode loaded-tools") && usage().includes("--mode archive-boundary"),
       providerFree: true,
@@ -1262,8 +1323,8 @@ async function archiveBoundary(options: Options): Promise<void> {
   const requestedEvidenceDir = path.resolve(options.evidenceDir!);
   const evidenceName = path.basename(requestedEvidenceDir);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
-  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("Temporary output must stay inside the proof-owned root");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
 
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-archive-"));
@@ -1273,7 +1334,7 @@ async function archiveBoundary(options: Options): Promise<void> {
   const bundle: Record<string, unknown> = {
     schemaVersion: 1,
     candidate: `cross-project-kaizen-loop-${evidenceName}`,
-    invocation: `node tools/proofs/cross-project-kaizen.ts --mode archive-boundary --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/${evidenceName}`,
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode archive-boundary",
     environment: { node: process.version, platform: process.platform, providerCalls: 0 },
     sourceDigests: Object.fromEntries([
       "global/bin/openspec-archive.ts",
@@ -1612,8 +1673,8 @@ async function runLoadedConfigPreflights(input: {
 async function loadedToolsPreflight(options: Options, identity: Record<string, unknown>): Promise<void> {
   const requestedEvidenceDir = path.resolve(options.evidenceDir!);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
-  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) throw new Error("Temporary output must stay inside the proof-owned root");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
   const evidenceName = path.basename(requestedEvidenceDir);
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-loaded-preflight-"));
@@ -1631,7 +1692,7 @@ async function loadedToolsPreflight(options: Options, identity: Record<string, u
     schemaVersion: 1,
     candidate: `cross-project-kaizen-loop-${evidenceName}`,
     environment: identity,
-    invocation: `node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/${evidenceName}`,
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <installed-opencode>",
     status: "failed",
     copiedPlugin: null,
     pluginRuntime: null,
@@ -1702,9 +1763,9 @@ async function loadedToolsBoundary(options: Options, identity: Record<string, un
   const evidenceName = path.basename(requestedEvidenceDir);
   const relativeEvidence = path.relative(evidenceRoot, requestedEvidenceDir);
   if (relativeEvidence === "" || relativeEvidence.startsWith("..") || path.isAbsolute(relativeEvidence)) {
-    throw new Error("--evidence-dir must be a new child of the Kaizen change evidence directory");
+    throw new Error("Temporary output must stay inside the proof-owned root");
   }
-  if (fs.existsSync(requestedEvidenceDir)) throw new Error("--evidence-dir already exists");
+  if (fs.existsSync(requestedEvidenceDir)) throw new Error("Temporary output already exists");
   fs.mkdirSync(requestedEvidenceDir);
 
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-kaizen-loaded-tools-"));
@@ -1730,7 +1791,7 @@ async function loadedToolsBoundary(options: Options, identity: Record<string, un
     schemaVersion: 1,
     candidate: `cross-project-kaizen-loop-${evidenceName}`,
     environment: identity,
-    invocation: `node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/${evidenceName}`,
+    invocation: "node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <installed-opencode>",
     status: "failed",
     stage: "setup",
     checks: null,
@@ -1918,59 +1979,10 @@ async function loadedToolsBoundary(options: Options, identity: Record<string, un
   }
 }
 
-function replayLoadedTools(options: Options): void {
-  const inputDir = path.resolve(options.evidenceDir!);
-  const relative = path.relative(evidenceRoot, inputDir);
-  if (relative === "" || relative.startsWith("..") || path.isAbsolute(relative)) throw new Error("Replay input must be a child of the Kaizen evidence directory");
-  const bundleFile = path.join(inputDir, "bundle.json");
-  const stat = fs.lstatSync(bundleFile);
-  if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 1024 * 1024) throw new Error("Replay bundle must be one bounded regular file");
-  const bundle = JSON.parse(fs.readFileSync(bundleFile, "utf8")) as Record<string, unknown>;
-  const errors = Array.isArray(bundle.error) ? bundle.error : [];
-  const messages = errors.flatMap((error) => error != null && typeof error === "object" && typeof (error as Record<string, unknown>).message === "string"
-    ? [(error as Record<string, unknown>).message as string]
-    : []);
-  const cleanup = bundle.cleanup != null && typeof bundle.cleanup === "object" ? bundle.cleanup as Record<string, unknown> : {};
-  const checks = bundle.checks != null && typeof bundle.checks === "object" ? bundle.checks as Record<string, unknown> : {};
-  const startupFailure = messages.some((message) => message.includes("proof server") || message.includes("ready within"));
-  const failedChecks = Object.entries(checks).filter(([, value]) => value !== true).map(([name]) => name).sort();
-  const oracleFailure = (bundle.tools != null || bundle.store != null)
-    && failedChecks.length === 2
-    && failedChecks[0] === "privacySafe"
-    && failedChecks[1] === "statusPayloadFree";
-  console.log(stableJson({
-    schemaVersion: 1,
-    mode: "replay-loaded-tools",
-    writes: false,
-    input: path.relative(sourceRoot, bundleFile).replaceAll("\\", "/"),
-    candidate: bundle.candidate ?? null,
-    terminalReplay: bundle.status === "passed" ? "passed" : "failed",
-    classification: startupFailure && bundle.tools == null && bundle.store == null
-      ? "proof-runner-or-environment-startup"
-      : oracleFailure ? "proof-runner-oracle" : "unknown",
-    productCandidateReached: bundle.tools != null || bundle.store != null,
-    providerReached: bundle.provider != null,
-    cleanupObserved: {
-      activeConfigUnchanged: cleanup.activeConfigUnchanged ?? null,
-      fixtureRemoved: cleanup.fixtureRemoved ?? null,
-      providerClosed: cleanup.providerClosed ?? null,
-      serverStopped: cleanup.serverStopped ?? null,
-      sessionDeleted: cleanup.sessionDeleted ?? null,
-    },
-    unlockCondition: oracleFailure
-      ? "retained projection identifies an overbroad scopeHint privacy oracle; correct the oracle to forbid only roots and signal text, validate offline, and use one new bounded capture"
-      : "startup diagnostics and terminal state retained; causally different config-file loading; no proof-owned process remains",
-  }).trim());
-}
-
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) {
     console.log(usage());
-    return;
-  }
-  if (options.mode === "replay-loaded-tools") {
-    replayLoadedTools(options);
     return;
   }
   if (options.mode === "store-boundary") {
@@ -2008,4 +2020,6 @@ async function main(): Promise<void> {
 main().catch((error) => {
   console.error(error instanceof Error ? error.stack ?? error.message : String(error));
   process.exitCode = 1;
+}).finally(() => {
+  fs.rmSync(evidenceRoot, { force: true, recursive: true });
 });

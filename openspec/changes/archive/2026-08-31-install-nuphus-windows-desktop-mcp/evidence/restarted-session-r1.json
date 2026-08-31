@@ -1,0 +1,21 @@
+{
+  "candidateId": "nuphus-desktop-ui-positioning-r3",
+  "currentSession": {
+    "instructionSha256": "23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f",
+    "nuphusTool": "nuphus_desktop_screen_size",
+    "result": {
+      "height": 1680,
+      "width": 2520
+    },
+    "toolAvailable": true
+  },
+  "effects": {
+    "desktopInput": false,
+    "processMutation": false,
+    "screenCapture": false
+  },
+  "observedAt": "2026-08-31T07:22:37.4773978Z",
+  "ownerReportedOpenCodeRestart": true,
+  "result": "loaded-and-responsive",
+  "schemaVersion": 1
+}

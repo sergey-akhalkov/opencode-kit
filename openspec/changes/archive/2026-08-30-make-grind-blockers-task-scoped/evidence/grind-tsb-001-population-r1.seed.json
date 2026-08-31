@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "removeLaneNames": ["installed-population-r1", "installed-autonomous-s27"],
+  "claim": {
+    "claimId": "GRIND-TSB-001",
+    "candidateId": "grind-task-scoped-population-r2",
+    "environmentId": "windows-opencode-1.18.25-grind-population-r2",
+    "disposition": "narrowed",
+    "statement": "Across the exact 20-member reviewed population, task-scoped grind discipline is supported only at the recorded mixed-fidelity installed R2, provider-free controller/ledger, and named historical component boundaries; this is not a uniform installed-population or stable/global claim.",
+    "paths": {
+      "baseline": null,
+      "candidate": "installed-r2-provider-free-composition-historical-components",
+      "production": "mixed-fidelity-exact-member-observations"
+    },
+    "evidenceRefs": [
+      "grind-population-r1",
+      "grind-population-r2-review",
+      "installed-population-r2",
+      "installed-autonomous-r2",
+      "task-2-1-frontier-production-summary-r1",
+      "task-2-2-verdict-v2-r1",
+      "task-2-3-question-deferral-r1",
+      "task-3-2-roadmap-campaign-r1"
+    ],
+    "externalEffects": {
+      "configuredModelCalls": 23,
+      "configuredScope": "four synthetic captures in disposable installed proof roots",
+      "providerFreeModelCalls": 0,
+      "targetProjectEffects": 0,
+      "protectedEffects": 0,
+      "remoteEffects": 0,
+      "installOrActivationEffects": 0,
+      "cleanup": "complete"
+    },
+    "independentChallenge": {
+      "required": true,
+      "status": "complete",
+      "evidenceRefs": ["grind-population-r2-review"]
+    },
+    "maximumSupportedClaim": "At OpenCode 1.18.25 and installed R2 frontier digest e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c, the 20 canonical IDs are exact and supported only at mixed fidelity: installed R2 session oracles for product, credential/safety, technical, autonomous, premature-question, and completed-outcome paths; provider-free roadmap/campaign controller-ledger oracles for blocked-proof and sibling composition; and named historical component candidates for stale/cyclic/malformed/restart/budget/interruption/capability controls. This excludes uniform installed coverage, installed roadmap/campaign composition, unreviewed populations, protected-effect authority, and global/stable behavior.",
+    "narrowingAccepted": true,
+    "observationBoundary": "mixed-fidelity-r2-installed-provider-free-historical-component",
+    "realOracle": {
+      "required": true,
+      "status": "observed",
+      "evidenceRefs": ["installed-population-r2", "installed-autonomous-r2", "grind-population-r1"]
+    },
+    "reviewedPopulation": {
+      "id": "grind-task-scoped-scenarios-v1",
+      "size": 20,
+      "memberIds": [
+        "circular-process-stop-line",
+        "partial-product-decision",
+        "all-remaining-product-decision",
+        "missing-credential-capability",
+        "technical-blocker",
+        "safety-protected-gate",
+        "blocked-proof-lane-independent-route",
+        "premature-pending-product-question",
+        "premature-pending-non-product-question",
+        "autonomous-offered-label-question",
+        "stale-frontier",
+        "cyclic-frontier",
+        "malformed-frontier",
+        "unchanged-failed-strategy",
+        "execution-epoch-exhaustion",
+        "explicit-interruption",
+        "roadmap-independent-sibling",
+        "campaign-independent-sibling",
+        "restart-legacy-reconciliation",
+        "completed-outcome"
+      ],
+      "supportedMemberIds": [
+        "circular-process-stop-line",
+        "partial-product-decision",
+        "all-remaining-product-decision",
+        "missing-credential-capability",
+        "technical-blocker",
+        "safety-protected-gate",
+        "blocked-proof-lane-independent-route",
+        "premature-pending-product-question",
+        "premature-pending-non-product-question",
+        "autonomous-offered-label-question",
+        "stale-frontier",
+        "cyclic-frontier",
+        "malformed-frontier",
+        "unchanged-failed-strategy",
+        "execution-epoch-exhaustion",
+        "explicit-interruption",
+        "roadmap-independent-sibling",
+        "campaign-independent-sibling",
+        "restart-legacy-reconciliation",
+        "completed-outcome"
+      ]
+    },
+    "unresolvedObservations": [],
+    "unknowns": []
+  },
+  "observations": [
+    { "memberId": "circular-process-stop-line", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "grind-population-r1"] },
+    { "memberId": "partial-product-decision", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "grind-population-r1"] },
+    { "memberId": "all-remaining-product-decision", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "grind-population-r1"] },
+    { "memberId": "missing-credential-capability", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "task-2-2-verdict-v2-r1", "grind-population-r1"] },
+    { "memberId": "technical-blocker", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "task-2-2-verdict-v2-r1", "grind-population-r1"] },
+    { "memberId": "safety-protected-gate", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "task-2-3-question-deferral-r1", "grind-population-r1"] },
+    { "memberId": "blocked-proof-lane-independent-route", "status": "supported", "terminal": true, "evidenceRefs": ["task-3-2-roadmap-campaign-r1", "grind-population-r1"] },
+    { "memberId": "premature-pending-product-question", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "task-2-3-question-deferral-r1", "grind-population-r1"] },
+    { "memberId": "premature-pending-non-product-question", "status": "supported", "terminal": true, "evidenceRefs": ["installed-population-r2", "task-2-3-question-deferral-r1", "grind-population-r1"] },
+    { "memberId": "autonomous-offered-label-question", "status": "supported", "terminal": true, "evidenceRefs": ["installed-autonomous-r2", "grind-population-r1"] },
+    { "memberId": "stale-frontier", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-1-frontier-production-summary-r1", "grind-population-r1"] },
+    { "memberId": "cyclic-frontier", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-1-frontier-production-summary-r1", "grind-population-r1"] },
+    { "memberId": "malformed-frontier", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-1-frontier-production-summary-r1", "grind-population-r1"] },
+    { "memberId": "unchanged-failed-strategy", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-2-verdict-v2-r1", "grind-population-r1"] },
+    { "memberId": "execution-epoch-exhaustion", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-2-verdict-v2-r1", "grind-population-r1"] },
+    { "memberId": "explicit-interruption", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-2-verdict-v2-r1", "grind-population-r1"] },
+    { "memberId": "roadmap-independent-sibling", "status": "supported", "terminal": true, "evidenceRefs": ["task-3-2-roadmap-campaign-r1", "grind-population-r1"] },
+    { "memberId": "campaign-independent-sibling", "status": "supported", "terminal": true, "evidenceRefs": ["task-3-2-roadmap-campaign-r1", "grind-population-r1"] },
+    { "memberId": "restart-legacy-reconciliation", "status": "supported", "terminal": true, "evidenceRefs": ["task-2-1-frontier-production-summary-r1", "grind-population-r1"] },
+    { "memberId": "completed-outcome", "status": "supported", "terminal": true, "evidenceRefs": ["installed-autonomous-r2", "grind-population-r1"] }
+  ],
+  "lanes": [
+    {
+      "name": "grind-population-r1",
+      "kind": "terminal",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "task-4-2-population-map-r1.md" },
+        { "path": "task-4-2-population-r1.md" },
+        { "path": "task-4-2-evidence-sufficiency-r1.md" },
+        { "path": "grind-tsb-001-population-r1.seed.json" },
+        { "path": "task-5-1-critical-sdet-r2.md" },
+        { "path": "task-5-3-validation-r2.md" }
+      ]
+    },
+    {
+      "name": "installed-population-r2",
+      "kind": "raw-bundle",
+      "pathPrefix": "evidence/installed-population-r2",
+      "files": [
+        { "path": "raw.json" },
+        { "path": "capture-task-scoped-product/raw.json" },
+        { "path": "replay-task-scoped-product/evaluation.json" },
+        { "path": "capture-task-scoped-non-product/raw.json" },
+        { "path": "replay-task-scoped-non-product/evaluation.json" },
+        { "path": "capture-technical-blocker/raw.json" },
+        { "path": "replay-technical-blocker/evaluation.json" }
+      ]
+    },
+    {
+      "name": "grind-population-r2-review",
+      "kind": "terminal",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "task-4-2-evidence-sufficiency-r2.md" }
+      ]
+    },
+    {
+      "name": "task-evidence-seed-r2",
+      "kind": "terminal",
+      "files": [
+        { "path": "task-evidence.seed.json" }
+      ]
+    },
+    {
+      "name": "installed-suite-r1-first-causal",
+      "kind": "raw-bundle",
+      "pathPrefix": "evidence/installed-suite-r1",
+      "files": [
+        { "path": "raw.json" },
+        { "path": "replay-task-scoped-product/evaluation.json" },
+        { "path": "replay-task-scoped-non-product/evaluation.json" },
+        { "path": "replay-technical-blocker/evaluation.json" }
+      ]
+    },
+    {
+      "name": "installed-autonomous-causal-chain",
+      "kind": "raw-bundle",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "installed-suite-autonomous-s23/raw.json" },
+        { "path": "installed-suite-autonomous-s24/raw.json" },
+        { "path": "installed-suite-autonomous-s24/capture-autonomous/raw.json" },
+        { "path": "installed-suite-autonomous-s24/replay-autonomous/evaluation.json" },
+        { "path": "installed-suite-autonomous-s25/raw.json" },
+        { "path": "installed-suite-autonomous-s25/capture-autonomous/raw.json" },
+        { "path": "installed-suite-autonomous-s25/replay-autonomous/evaluation.json" },
+        { "path": "installed-suite-autonomous-s26/raw.json" },
+        { "path": "installed-suite-autonomous-s26/preflight/preflight.json" }
+      ]
+    },
+    {
+      "name": "installed-autonomous-r2",
+      "kind": "raw-bundle",
+      "pathPrefix": "evidence/installed-autonomous-r2",
+      "files": [
+        { "path": "raw.json" },
+        { "path": "capture-autonomous/raw.json" },
+        { "path": "replay-autonomous/evaluation.json" }
+      ]
+    }
+  ]
+}

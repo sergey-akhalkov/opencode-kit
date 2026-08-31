@@ -643,9 +643,12 @@ async function requestWithTimeout<T>(
 }
 
 export async function runSummarizedProofSession(input: {
+  afterSummary?: (evidence: Readonly<SummarizedProofEvidence>) => Promise<void> | void;
+  beforeSummary?: (evidence: Readonly<SummarizedProofEvidence>) => Promise<void> | void;
   client: OpencodeClient;
   compactionRoute: ProofRoute;
   directory: string;
+  mainResponseMustInclude?: string[];
   mainPrompt: string;
   mainRoute: ProofRoute;
   reconstructionPrompt: string;
@@ -687,6 +690,10 @@ export async function runSummarizedProofSession(input: {
       timeoutMs,
     );
     evidence.mainResponse = messageText(main);
+    for (const marker of input.mainResponseMustInclude ?? []) {
+      if (!evidence.mainResponse.includes(marker)) throw new Error(`Main response is missing the pre-summary marker: ${marker}`);
+    }
+    await input.beforeSummary?.(evidence);
     stage = "summarize";
     evidence.providerRequestCount += 1;
     evidence.summarizeAccepted = await requestWithTimeout<boolean>(
@@ -709,6 +716,7 @@ export async function runSummarizedProofSession(input: {
     evidence.messages = messageProjection(compacted);
     evidence.compactionContext = evidence.messages.assistant.filter((message) => message.summary).at(-1)?.text ?? "";
     if (!evidence.summarizeAccepted || evidence.compactionContext.trim() === "") throw new Error("Compaction summary was not retained by the session");
+    await input.afterSummary?.(evidence);
     stage = "reconstruction";
     evidence.providerRequestCount += 1;
     const reconstruction = await requestWithTimeout<Record<string, unknown>>(

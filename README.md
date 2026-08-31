@@ -213,13 +213,7 @@ Project validation qualification accepts either complete concrete `opencode-dev-
 
 `doctor` and `opencode:sources` compare the committed `agent.compaction.prompt` template with the active machine-local managed copy. They emit only stable SHA-256 values and semantic marker IDs, classify the field as `same`, `different`, `missing`, or `unknown`, and name the explicit synchronization/restart boundary. They never print prompt bodies, provider options, credentials, or mutate the active copy.
 
-Evidence-heavy OpenSpec changes may keep a bounded `evidence-index.json` with named lanes, candidate identity, first causal failure, successor-unlock evidence, current terminal bundle, terminal status, and retry condition. Resolve one lane before reading raw bundles:
-
-```sh
-node tools/evidence-index.ts --index <change-root>/evidence-index.json --lane <lane-name>
-```
-
-The resolver reads bounded index metadata and verifies only the selected lane's referenced regular files. Its output excludes retry text and bundle content; a missing reference fails only that selected lane.
+OpenSpec completion is demonstrated through the actual entry point and project-native validation. Do not create repository `evidence/` directories, `evidence-index.json`, raw/replay bundles, or separate proof reports. Temporary test output must be automatically cleaned and is not part of the handoff.
 
 Before broad AI work in a target repository, gather a compact deterministic map:
 
@@ -533,7 +527,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 Project plugin behavior:
 
-- `global/extensions/specialist-catalog.ts` registers the advisor-only `specialist_catalog` tool when explicitly listed by a materialized profile. It projects privacy-safe parent-root agent/skill availability and is not auto-discovered from source presence.
+- `global/extensions/specialist-catalog.ts` registers the advisor-only `specialist_catalog` tool when explicitly listed by the active config, including generated profiles and a preserved unprofiled `global/opencode.json`. It projects privacy-safe parent-root agent/skill availability and is not auto-discovered from source presence. `npm run install:global -- --check` fails when the active kit config does not load it exactly once.
 - `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for manual diagnostics and exposes the same redacted projection imported by the automatic completion guard, including `todowrite` history and requirement signals reconstructed from transcript parts. It also injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. The plugin is loaded explicitly from the kit config; the context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
 
 ### Opt-In Session Completion Guard

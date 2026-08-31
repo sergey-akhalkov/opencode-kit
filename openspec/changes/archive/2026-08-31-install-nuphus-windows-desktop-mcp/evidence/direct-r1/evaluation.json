@@ -1,0 +1,19 @@
+{
+  "candidateId": "nuphus-apply-r1-direct",
+  "checks": {
+    "cleanup": true,
+    "currentPlatform": true,
+    "fullAuthority": true,
+    "noCloudVision": true,
+    "packageVersions": true,
+    "privacySafe": true,
+    "protocol": true,
+    "schema": true,
+    "screen": true,
+    "screenshot": true,
+    "toolInventory": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-direct",
+  "schemaVersion": 1
+}

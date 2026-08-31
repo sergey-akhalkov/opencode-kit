@@ -4,9 +4,8 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { automationDividendTasks, parseAutomationDividend } from "./openspec-change/automation-dividend.ts";
 import { inspectBoundedFalsificationReview, parseBoundedFalsificationDeclaration } from "./openspec-change/bounded-falsification.ts";
-import { inspectEvidenceDocument, taskTextDigest } from "./openspec-change/evidence.ts";
 import { loadDeliveryHorizon, parseDeliveryHorizonDeclaration } from "./openspec-change/delivery-horizon.ts";
-import { ownershipEvidenceGateChecks } from "./openspec-change/gate.ts";
+import { ownershipGateChecks } from "./openspec-change/gate.ts";
 
 export { formatBoundedFalsificationReview, inspectBoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
 export type { BoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
@@ -250,37 +249,7 @@ function dividendChecks(root: string, operation: string, changeId: string | unde
     checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, tasksSource, "Required automation dividend task is unchecked."));
     return checks;
   }
-  const evidencePath = changePath(root, changeId, "evidence-index.json");
-  if (!fs.existsSync(evidencePath)) {
-    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence-index row is missing."));
-    return checks;
-  }
-  let parsedIndex: unknown;
-  try {
-    parsedIndex = JSON.parse(fs.readFileSync(evidencePath, "utf8"));
-  } catch {
-    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence-index is not readable JSON."));
-    return checks;
-  }
-  const index = inspectEvidenceDocument(parsedIndex);
-  if (!index.ok) {
-    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence-index is invalid."));
-    return checks;
-  }
-  const digest = taskTextDigest(dividend.text);
-  const row = index.value.tasks.find((item) => item.taskTextDigest === digest);
-  if (row == null) {
-    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend task digest is not in the evidence index."));
-    return checks;
-  }
-  const stale = row.result !== "complete"
-    || row.candidateId !== index.value.candidateId
-    || row.environmentId !== index.value.environmentId
-    || row.invocation == null
-    || row.invocation.command.trim() === "";
-  checks.push(stale
-    ? check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence row is incomplete or stale.")
-    : check("archive:automation-dividend", "OpenSpec automation dividend archive", "passed", false, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence row is current and complete."));
+  checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "passed", false, tasksSource, "Required automation dividend task is checked."));
   return checks;
 }
 
@@ -380,7 +349,7 @@ function operationChecks(root: string, operation: string, changeId: string | und
     ...deliveryHorizonChecks(root, operation, changeId),
     ...dividendChecks(root, operation, changeId),
     ...falsificationChecks(root, operation, changeId),
-    ...ownershipEvidenceGateChecks({ root, operation, changeId, enforcement }),
+    ...ownershipGateChecks({ root, operation, changeId, enforcement }),
   ];
 }
 

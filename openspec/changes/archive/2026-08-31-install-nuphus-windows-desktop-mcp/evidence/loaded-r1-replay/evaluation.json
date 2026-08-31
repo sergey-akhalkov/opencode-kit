@@ -1,0 +1,24 @@
+{
+  "candidateId": "nuphus-apply-r1-loaded",
+  "checks": {
+    "activeConfigBinding": true,
+    "cleanup": false,
+    "configuredProvider": false,
+    "connected": true,
+    "exactBaseUrl": true,
+    "isolated": true,
+    "managedUnchanged": true,
+    "noCaptureOrInput": false,
+    "noFailure": false,
+    "noSiblingMcp": false,
+    "overlay": true,
+    "privacySafe": true,
+    "processAttribution": false,
+    "schema": true,
+    "screenSizeResult": false,
+    "toolInventory": false
+  },
+  "passed": false,
+  "proofKind": "nuphus-desktop-loaded",
+  "schemaVersion": 1
+}

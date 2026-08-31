@@ -61,10 +61,6 @@ import {
   evaluateTerminalCertificate,
   ROADMAP_MISSION_CERTIFICATE_ISSUER,
 } from "../global/extensions/session-completion-guard/terminal-certificate.ts";
-import {
-  readClaimEvidence,
-  terminalClaimBindings,
-} from "../global/extensions/session-completion-guard/claim-evidence.ts";
 import { executionEpochDisposition } from "../global/extensions/session-completion-guard/strategy.ts";
 
 const RUNAUDIT_DISABLE_ORACLE_FLAG = "--oracle-runaudit-disable-race";
@@ -268,6 +264,83 @@ function partialProductFrontierFixture(
       questionRef: "question_product",
     }],
     progressFingerprint: "progress_partial_product",
+  }, {
+    basisHumanRef: basis.humanRef,
+    currentGeneration: 0,
+    taskStateDigest: basis.todoDigest,
+  });
+  return { assessment, errorCode: null, status: "present" };
+}
+
+function processWaitingFrontierFixture(
+  basis: { humanRef: string; todoDigest: string } = { humanRef: "human_1", todoDigest: "a".repeat(64) },
+): SessionDeliveryContextResult["workFrontier"] {
+  const assessment = materializeWorkFrontier({
+    acceptedOutcomeRef: "outcome_fixture",
+    expectedGeneration: 0,
+    gates: [{
+      affectedItemRefs: ["item_costly"],
+      evidenceRefs: ["evidence_checkpoint_due"],
+      id: "gate_checkpoint",
+      kind: "process",
+      resumeCondition: "The delivery checkpoint reaches its selected oracle or records irreducible evidence.",
+      status: "open",
+    }],
+    items: [{
+      dependsOn: [],
+      evidenceRefs: ["evidence_checkpoint_due"],
+      gateRefs: ["gate_checkpoint"],
+      id: "item_costly",
+      requirementRefs: ["requirement_costly"],
+      status: "blocked",
+    }],
+    parkedDecisions: [],
+    progressFingerprint: "progress_checkpoint_waiting",
+  }, {
+    basisHumanRef: basis.humanRef,
+    currentGeneration: 0,
+    taskStateDigest: basis.todoDigest,
+  });
+  return { assessment, errorCode: null, status: "present" };
+}
+
+function completeItemsWithOpenGateFrontierFixture(
+  kind: "safety" | "product-decision",
+  basis: { humanRef: string; todoDigest: string } = { humanRef: "human_1", todoDigest: "a".repeat(64) },
+): SessionDeliveryContextResult["workFrontier"] {
+  const gate = {
+    affectedItemRefs: ["item_complete"],
+    evidenceRefs: kind === "safety" ? ["evidence_safety"] : ["evidence_product"],
+    id: kind === "safety" ? "gate_safety" : "gate_product",
+    kind,
+    resumeCondition: kind === "safety"
+      ? "The protected action becomes authorized."
+      : "The owner selects the product outcome.",
+    status: "open" as const,
+  };
+  const assessment = materializeWorkFrontier({
+    acceptedOutcomeRef: "outcome_fixture",
+    expectedGeneration: 0,
+    gates: [gate],
+    items: [{
+      dependsOn: [],
+      evidenceRefs: ["evidence_complete"],
+      gateRefs: [gate.id],
+      id: "item_complete",
+      requirementRefs: ["requirement_fixture"],
+      status: "complete",
+    }],
+    parkedDecisions: kind === "product-decision"
+      ? [{
+          affectedItemRefs: ["item_complete"],
+          decisionPoint: "Select the product outcome.",
+          evidenceRefs: ["evidence_product"],
+          id: "decision_product",
+          optionInvariantItemRefs: [],
+          questionRef: "question_product",
+        }]
+      : [],
+    progressFingerprint: `progress_complete_open_${kind.replace("-", "_")}`,
   }, {
     basisHumanRef: basis.humanRef,
     currentGeneration: 0,
@@ -540,7 +613,6 @@ async function runRouteSettle(options: {
 function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVerdict {
   return {
     auditID: "audit_fixture_1",
-    claimMatrix: [],
     confidence: "high",
     deferredGateRefs: [],
     evidenceGaps: [],
@@ -589,7 +661,6 @@ function completionEvidenceFixture(
     assistantEvidence: [],
     auditRefs: [],
     background: [],
-    claimEvidence: { claims: [], complete: true, omissions: [], selection: "none" },
     descendants: [],
     diffEvidence: [],
     generatedAt: "1970-01-01T00:00:00.000Z",
@@ -619,85 +690,6 @@ function completionEvidenceFixture(
     warnings: [],
     workFrontier: { assessment: null, errorCode: "missing-frontier", status: "absent" },
     ...overrides,
-  };
-}
-
-function claimRecord(input: {
-  candidateId?: string;
-  claimId: string;
-  disposition?: "blocked" | "supported";
-  members?: string[];
-}): Record<string, unknown> {
-  const candidateId = input.candidateId ?? "candidate-current";
-  const members = input.members ?? ["member-1"];
-  const broad = members.length > 1;
-  const disposition = input.disposition ?? "supported";
-  const observedMembers = disposition === "supported" ? members : members.slice(0, 1);
-  return {
-    candidateId,
-    claimClass: broad ? "finite-population" : "exact-case",
-    claimId: input.claimId,
-    coverageBasis: broad ? "finite-population" : "exact-case",
-    disposition,
-    environmentId: "environment-current",
-    evidenceRefs: ["product"],
-    independentChallenge: broad
-      ? { evidenceRefs: [], required: true, status: "missing" }
-      : { evidenceRefs: [], required: false, status: "not-required" },
-    materialExclusions: [],
-    maximumSupportedClaim: broad ? `Only ${members[0]} is supported.` : `Exact ${members[0]} only.`,
-    narrowingAccepted: false,
-    observationBoundary: "result-boundary",
-    observations: observedMembers.map((memberId) => ({
-      candidateId,
-      environmentId: "environment-current",
-      evidenceRefs: ["product"],
-      memberId,
-      observationBoundary: "result-boundary",
-      paths: { baseline: null, candidate: null, production: "production-path" },
-      status: "supported",
-      terminal: true,
-      unresolvedObservations: [],
-    })),
-    outcomeRef: `outcome:${input.claimId}`,
-    paths: { baseline: null, candidate: null, production: "production-path" },
-    population: {
-      id: `population-${input.claimId.toLowerCase()}`,
-      materialClasses: [],
-      members,
-      partitionRule: null,
-      residualSpace: null,
-    },
-    realOracle: { evidenceRefs: [], required: false, status: "not-required" },
-    statement: `Claim ${input.claimId}`,
-    unknowns: [],
-  };
-}
-
-function writeClaimIndex(root: string, changeId: string, claims: Record<string, unknown>[]): void {
-  const changeRoot = path.join(root, "openspec", "changes", changeId);
-  fs.mkdirSync(changeRoot, { recursive: true });
-  fs.writeFileSync(path.join(changeRoot, "evidence-index.json"), JSON.stringify({
-    candidateId: "candidate-current",
-    changeId,
-    claims,
-    environmentId: "environment-current",
-    lanes: [{ files: [], kind: "terminal", name: "product" }],
-    retention: { exception: null, maxBytes: 25 * 1024 * 1024, maxFiles: 64 },
-    schemaVersion: 2,
-    tasks: [],
-  }));
-}
-
-function claimMatrixRow(
-  claim: ReturnType<typeof readClaimEvidence>["claims"][number],
-): NonNullable<CompletionVerdict["claimMatrix"]>[number] {
-  return {
-    claimId: claim.claimId,
-    closureState: claim.closureState,
-    evidenceRefs: claim.evidenceRefs,
-    maximumSupportedClaim: claim.maximumSupportedClaim,
-    outcomeRef: claim.outcomeRef,
   };
 }
 
@@ -921,194 +913,6 @@ const tests: TestCase[] = [
         "Completion evidence conflict",
         "Same-ref semantic disagreement must fail closed.",
       );
-    },
-  },
-  {
-    name: "critical: claim projection preserves closure and reports stale malformed oversized and truncated sources",
-    run: () => {
-      const root = fs.mkdtempSync(path.join(os.tmpdir(), "completion-claim-projection-"));
-      try {
-        writeClaimIndex(root, "supported", [claimRecord({ claimId: "CLAIM-EXACT" })]);
-        writeClaimIndex(root, "stale", [claimRecord({ candidateId: "candidate-stale", claimId: "CLAIM-STALE" })]);
-        const malformedRoot = path.join(root, "openspec", "changes", "malformed");
-        fs.mkdirSync(malformedRoot, { recursive: true });
-        fs.writeFileSync(path.join(malformedRoot, "evidence-index.json"), "{ malformed");
-        const oversizedRoot = path.join(root, "openspec", "changes", "oversized");
-        fs.mkdirSync(oversizedRoot, { recursive: true });
-        fs.writeFileSync(path.join(oversizedRoot, "evidence-index.json"), "X".repeat(65_537));
-
-        const supported = readClaimEvidence(root, ["supported"]);
-        assert(supported.complete, `Supported exact projection must be complete: ${JSON.stringify(supported)}`);
-        assert(supported.claims[0]?.closureState === "supported", "Exact matching claim must project as supported.");
-        const stale = readClaimEvidence(root, ["stale"]);
-        assert(stale.claims[0]?.closureState === "stale", "Stale candidate identity must remain explicit.");
-        const malformed = readClaimEvidence(root, ["malformed"]);
-        assert(
-          !malformed.complete && malformed.omissions[0]?.code === "evidence-index-malformed",
-          "Malformed selected closure must become an explicit omission.",
-        );
-        const oversized = readClaimEvidence(root, ["oversized"]);
-        assert(
-          !oversized.complete && oversized.omissions[0]?.code === "evidence-index-oversized",
-          "Oversized selected closure must become an explicit omission.",
-        );
-
-        writeClaimIndex(root, "many-a", Array.from({ length: 17 }, (_, index) =>
-          claimRecord({ claimId: `CLAIM-A-${String(index).padStart(2, "0")}` })
-        ));
-        writeClaimIndex(root, "many-b", Array.from({ length: 17 }, (_, index) =>
-          claimRecord({ claimId: `CLAIM-B-${String(index).padStart(2, "0")}` })
-        ));
-        const truncated = readClaimEvidence(root, ["many-a", "many-b"]);
-        assert(truncated.claims.length === 32, "Claim projection must retain its bounded record limit.");
-        assert(
-          !truncated.complete && truncated.omissions.some((entry) => entry.code === "claim-limit" && entry.omitted === 2),
-          "Truncated claim projection must report the exact omitted count.",
-        );
-        const currentEpoch = epoch({
-          completionEvidence: completionEvidenceFixture({ claimEvidence: truncated }),
-        });
-        const request = buildArbiterAuditRequest(
-          currentEpoch,
-          {
-            context: { assistantEvidence: [], background: [], humanMessages: [] },
-            journal: { digest: "journal", relativePath: "history.md", source: "openspec_history" },
-            revision: currentEpoch.inspected,
-          } as never,
-          currentEpoch.completionEvidence!,
-        );
-        assert(
-          request.includes('"claimEvidence"') && request.includes('"claim-limit"'),
-          "Bounded arbiter request must retain claim records and omission metadata together.",
-        );
-        let overflow: unknown = null;
-        try {
-          requireBoundedRequest(request, 1_024);
-        } catch (error) {
-          overflow = error;
-        }
-        assert(overflow instanceof AuditRequestOverflowError, "Irreducible claim overflow must fail before another required field is dropped.");
-        assert(
-          overflow.contributions.some((entry) => entry.surface === "completionEvidence" && entry.bytes > 1_024),
-          "Overflow diagnostics must identify the dominant structural surface.",
-        );
-        assert(
-          overflow.contributions.every((entry) => Object.keys(entry).sort().join(",") === "bytes,surface"),
-          "Overflow diagnostics must remain content-free.",
-        );
-      } finally {
-        fs.rmSync(root, { force: true, recursive: true });
-      }
-    },
-  },
-  {
-    name: "critical: claim verdicts preserve supplied ceilings and cannot stop on unsupported explicit closure",
-    run: () => {
-      const root = fs.mkdtempSync(path.join(os.tmpdir(), "completion-claim-verdict-"));
-      try {
-        writeClaimIndex(root, "blocked", [claimRecord({
-          claimId: "CLAIM-BROAD",
-          disposition: "blocked",
-          members: ["member-1", "member-2"],
-        })]);
-        writeClaimIndex(root, "supported", [claimRecord({ claimId: "CLAIM-EXACT" })]);
-        const blockedProjection = readClaimEvidence(root, ["blocked"]);
-        const blockedEpoch = epoch({
-          completionEvidence: completionEvidenceFixture({
-            claimEvidence: blockedProjection,
-            workFrontier: frontierProjectionFixture(),
-          }),
-        });
-        const blockedRow = claimMatrixRow(blockedProjection.claims[0]);
-        assert(
-          terminalClaimBindings(blockedProjection).reason === "claim-closure-incomplete",
-          "Blocked broad claim must force terminal certificates through model arbitration.",
-        );
-        const continued = parseCompletionVerdict(validVerdict({ claimMatrix: [blockedRow] }), blockedEpoch);
-        assert(continued.verdict === "continue", "Representative-only broad claim must remain continuable.");
-        assertThrows(
-          () => parseCompletionVerdict(validVerdict({
-            claimMatrix: [blockedRow],
-            runnableItemRefs: [],
-            selectedItemRef: null,
-            requirementMatrix: [{ evidenceRefs: [], requirementRef: "req_1", status: "complete" }],
-            unresolved: [],
-            verdict: "allow_stop",
-          }), epoch({
-            completionEvidence: completionEvidenceFixture({
-              claimEvidence: blockedProjection,
-              workFrontier: frontierProjectionFixture("complete"),
-            }),
-          })),
-          "unsupported claim closure",
-          "Blocked broad claim must not become allow_stop.",
-        );
-        assertThrows(
-          () => parseCompletionVerdict(validVerdict({
-            claimMatrix: [{ ...blockedRow, maximumSupportedClaim: "All members are supported." }],
-          }), blockedEpoch),
-          "does not match supplied claim evidence",
-          "Arbiter claim text must not widen the supplied ceiling.",
-        );
-
-        const supportedProjection = readClaimEvidence(root, ["supported"]);
-        const supportedEpoch = epoch({
-          completionEvidence: completionEvidenceFixture({
-            claimEvidence: supportedProjection,
-            workFrontier: frontierProjectionFixture("complete"),
-          }),
-        });
-        const supportedBindings = terminalClaimBindings(supportedProjection);
-        assert(
-          supportedBindings.reason == null && supportedBindings.acceptedClaimIds[0] === "CLAIM-EXACT",
-          "Supported explicit claims must bind deterministic certificate identities.",
-        );
-        const stopped = parseCompletionVerdict(validVerdict({
-          claimMatrix: [claimMatrixRow(supportedProjection.claims[0])],
-          requirementMatrix: [{ evidenceRefs: ["product"], requirementRef: "req_1", status: "complete" }],
-          runnableItemRefs: [],
-          selectedItemRef: null,
-          unresolved: [],
-          verdict: "allow_stop",
-        }), supportedEpoch);
-        assert(stopped.verdict === "allow_stop", "Supported exact claim may stop.");
-
-        const incompleteEpoch = epoch({
-          completionEvidence: {
-            ...completionEvidenceFixture({ workFrontier: frontierProjectionFixture("complete") }),
-            claimEvidence: {
-              ...supportedProjection,
-              complete: false,
-              omissions: [{ changeRef: null, code: "claim-limit", detail: "truncated", omitted: 1 }],
-            },
-          },
-        });
-        assertThrows(
-          () => parseCompletionVerdict(validVerdict({
-            claimMatrix: [claimMatrixRow(supportedProjection.claims[0])],
-            requirementMatrix: [{ evidenceRefs: ["product"], requirementRef: "req_1", status: "complete" }],
-            runnableItemRefs: [],
-            selectedItemRef: null,
-            unresolved: [],
-            verdict: "allow_stop",
-          }), incompleteEpoch),
-          "complete explicitly selected claim closure",
-          "Truncated explicit closure must fail closed.",
-        );
-        assert(
-          terminalClaimBindings(incompleteEpoch.completionEvidence!.claimEvidence).reason === "claim-closure-omitted",
-          "Truncated closure must not enter deterministic certificate acceptance.",
-        );
-        const missingMatrix = validVerdict();
-        delete (missingMatrix as { claimMatrix?: unknown }).claimMatrix;
-        assertThrows(
-          () => parseCompletionVerdict(missingMatrix, epoch()),
-          "claimMatrix",
-          "Arbiter verdict must always carry the structured claim matrix.",
-        );
-      } finally {
-        fs.rmSync(root, { force: true, recursive: true });
-      }
     },
   },
   {
@@ -1367,6 +1171,37 @@ const tests: TestCase[] = [
         waitKind: "technical",
       }), waitingQuestionEpoch);
       assert(deferredWaiting.questionAction === "defer", "An empty non-product question frontier must accept exact deferral controls.");
+      const processEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: processWaitingFrontierFixture() }),
+      });
+      const processWaiting = parseCompletionVerdict(validVerdict({
+        deferredGateRefs: ["gate_checkpoint"],
+        resumeCondition: "The delivery checkpoint reaches its selected oracle or records irreducible evidence.",
+        runnableItemRefs: [],
+        selectedItemRef: null,
+        verdict: "waiting",
+        waitKind: "process",
+      }), processEpoch);
+      assert(processWaiting.verdict === "waiting" && processWaiting.waitKind === "process", "A drained delivery checkpoint must remain question-free process waiting.");
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          ownerBoundary: {
+            affectedItemRefs: ["item_costly"],
+            consequences: ["The process route changes."],
+            decision: "Select whether the checkpoint runs.",
+            evidenceRefs: ["evidence_checkpoint_due"],
+            resumeCondition: "The owner selects a process route.",
+          },
+          parkedDecisionRefs: ["decision_checkpoint"],
+          questionAction: "present-product-decision",
+          requirementMatrix: [{ evidenceRefs: ["evidence_checkpoint_due"], requirementRef: "r", status: "product_decision_required" }],
+          runnableItemRefs: [],
+          selectedItemRef: null,
+          verdict: "product_decision_required",
+        }), processEpoch),
+        "invented parked decision ref",
+        "A delivery-checkpoint process gate must not become a product decision.",
+      );
       const paused = parseCompletionVerdict(validVerdict({
         selectedItemRef: null,
         verdict: "user_paused",
@@ -1376,6 +1211,46 @@ const tests: TestCase[] = [
       assert(executionEpochDisposition({ continuationCycles: 1, maxCycles: 2, repeated: false }) === "continue", "An available epoch budget must continue.");
       assert(executionEpochDisposition({ continuationCycles: 2, maxCycles: 2, repeated: false }) === "rollover", "New progress at exhaustion must roll over the execution epoch.");
       assert(executionEpochDisposition({ continuationCycles: 2, maxCycles: 2, repeated: true }) === "wait-budget", "Repeated exhausted work must wait without inventing owner scope.");
+    },
+  },
+  {
+    name: "critical: complete item status cannot allow_stop while open safety or parked product gates remain",
+    run: () => {
+      const allowStop = {
+        requirementMatrix: [{ evidenceRefs: ["evidence_complete"], requirementRef: "r", status: "complete" as const }],
+        runnableItemRefs: [] as string[],
+        selectedItemRef: null,
+        unresolved: [] as CompletionVerdict["unresolved"],
+        verdict: "allow_stop" as const,
+      };
+      const safetyEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({
+          workFrontier: completeItemsWithOpenGateFrontierFixture("safety"),
+        }),
+      });
+      assert(
+        safetyEpoch.completionEvidence?.workFrontier.assessment?.openGateRefs.join(",") === "gate_safety",
+        "Open safety gate must remain visible on a complete-item frontier.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict(allowStop), safetyEpoch),
+        "",
+        "Open safety gate must reject allow_stop even when every item is marked complete.",
+      );
+      const productEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({
+          workFrontier: completeItemsWithOpenGateFrontierFixture("product-decision"),
+        }),
+      });
+      assert(
+        productEpoch.completionEvidence?.workFrontier.assessment?.parkedDecisionRefs.join(",") === "decision_product",
+        "Parked product decision must remain visible on a complete-item frontier.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict(allowStop), productEpoch),
+        "",
+        "Unresolved parked product decision must reject allow_stop even when every item is marked complete.",
+      );
     },
   },
   {
@@ -1492,11 +1367,9 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "critical: terminal certificates reject forged stale incomplete and question-pending claims",
+    name: "critical: terminal certificates reject forged stale requirement and question-pending state",
     run: () => {
       const challenge = createTerminalCertificateChallenge({
-        acceptedClaimIds: ["CLAIM-EXACT"],
-        claimEvidenceRefs: ["claim-evidence"],
         issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
         leaseGeneration: 7,
         requirementIds: ["1.1", "1.2"],
@@ -1505,8 +1378,6 @@ const tests: TestCase[] = [
       });
       const certificate = (overrides: Partial<typeof challenge> = {}, evidenceRefs = ["evidence/terminal.json"]) => {
         const bound = createTerminalCertificateChallenge({
-          acceptedClaimIds: overrides.acceptedClaimIds ?? challenge.acceptedClaimIds,
-          claimEvidenceRefs: overrides.claimEvidenceRefs ?? challenge.claimEvidenceRefs,
           issuer: overrides.issuer ?? challenge.issuer,
           leaseGeneration: overrides.leaseGeneration ?? challenge.leaseGeneration,
           requirementIds: overrides.requirementIds ?? challenge.requirementIds,
@@ -1534,8 +1405,6 @@ const tests: TestCase[] = [
       rejected(evaluate(certificate({ revisionDigest: "revision_stale" })), "stale-revision", "Stale revision must be rejected without deterministic pass.");
       rejected(evaluate(certificate({ leaseGeneration: 6 })), "stale-lease", "Stale lease must be rejected without deterministic pass.");
       rejected(evaluate(certificate({ requirementIds: ["1.1"] })), "missing-requirement", "Missing requirement must be rejected without deterministic pass.");
-      rejected(evaluate(certificate({ acceptedClaimIds: [] })), "missing-claim", "Missing accepted claim must be rejected without deterministic pass.");
-      rejected(evaluate(certificate({ claimEvidenceRefs: [] })), "claim-evidence-mismatch", "Mismatched claim evidence must be rejected without deterministic pass.");
       rejected(evaluate(certificate(), [], false), "unknown-issuer", "Unknown issuer must be rejected without deterministic pass.");
       rejected(evaluate(certificate(), [ROADMAP_MISSION_CERTIFICATE_ISSUER], true), "pending-question", "Pending question must reject terminal completion without deterministic pass.");
       malformed(evaluate(certificate({}, ["../private.json"])), "Unsafe evidence reference must be rejected without deterministic pass.");
@@ -2414,6 +2283,8 @@ const tests: TestCase[] = [
       const rejectSnapshots = new Map<string, Record<string, unknown>>();
       const rejectEntered = new Set<string>();
       const promptCalls: string[] = [];
+      let guardPendingAtPrompt = false;
+      let readGuardPending = (_sessionID: string): boolean => false;
       let releaseRaceReject!: () => void;
       const raceRejectGate = new Promise<void>((resolve) => {
         releaseRaceReject = resolve;
@@ -2435,6 +2306,7 @@ const tests: TestCase[] = [
           get: async ({ sessionID }: { sessionID: string }) => ({ data: roots.get(sessionID) }),
           promptAsync: async ({ sessionID }: { sessionID: string }) => {
             promptCalls.push(sessionID);
+            guardPendingAtPrompt = readGuardPending(sessionID);
             return { data: true };
           },
           status: async () => ({
@@ -2462,6 +2334,7 @@ const tests: TestCase[] = [
         roots: Map<string, RootState>;
       };
       const probe = controller as unknown as ControllerProbe;
+      readGuardPending = (sessionID) => probe.roots.get(sessionID)?.guardTurnPending === true;
       probe.currentInspection = async () => ({
         context: { background: [] },
         journal: { relativePath: "history.md" },
@@ -2562,8 +2435,21 @@ const tests: TestCase[] = [
       statuses.set("session_continue", "idle");
       await probe.onEvent({ properties: { sessionID: "session_continue" }, type: "session.idle" });
       assert(promptCalls.join(",") === "session_continue", "Only post-rejection idle may inject the selected continuation.");
+      assert(guardPendingAtPrompt, "Continuation dispatch must set the guard-turn latch before promptAsync can emit assistant events.");
+      assert(continued.state.questions.get(continued.requestID)?.state === "guard-answered", "Confirmed deferral must stop intercepting later completion-idle events.");
       assert(continued.state.pendingQuestionDeferralProvenance.size === 0, "Confirmed deferral must clear pending provenance.");
       assert(continued.state.deferredQuestionProvenance.size === 1, "Confirmed deferral provenance must remain persisted.");
+      continued.state.controlTurnPending = true;
+      continued.state.guardTurnPending = true;
+      await probe.onEvent({
+        properties: {
+          info: { id: "assistant_continue_complete", role: "assistant" },
+          sessionID: "session_continue",
+        },
+        type: "message.updated",
+      });
+      assert(!continued.state.controlTurnPending, "Completed command assistant turn must clear the control-turn latch.");
+      assert(!continued.state.guardTurnPending, "Completed command assistant turn must permit the next idle completion audit.");
 
       const waiting = makeDeferral("waiting", "waiting");
       await probe.applyQuestionVerdict(waiting.state, waiting.auditEpoch, waiting.verdict);
@@ -2754,7 +2640,6 @@ const tests: TestCase[] = [
               const allowStop = {
                 schemaVersion: 2,
                 auditID: "audit_retry_amplify_1",
-                claimMatrix: [],
                 deferredGateRefs: [],
                 rootSessionRef: rootRef,
                 frontierGeneration: 1,
@@ -4110,7 +3995,16 @@ const tests: TestCase[] = [
         const materialEvaluation = JSON.parse(fs.readFileSync(path.join(materialized, "evaluation.json"), "utf8")) as Record<string, unknown>;
         const materialRaw = JSON.parse(fs.readFileSync(path.join(materialized, "raw.json"), "utf8")) as Record<string, unknown>;
         assert(materialEvaluation.status === "passed", "Frontier materialization must pass.");
-        assert(materialEvaluation.scenarioCount === 10, "Frontier seed must exercise ten reviewed scenarios.");
+        assert(materialEvaluation.scenarioCount === 14, "Frontier seed must exercise fourteen reviewed scenarios.");
+        const observations = materialEvaluation.observations as Array<Record<string, unknown>>;
+        const due = observations.find((item) => item.id === "delivery-checkpoint-due");
+        const irreducible = observations.find((item) => item.id === "delivery-checkpoint-irreducible");
+        const omitted = observations.find((item) => item.id === "delivery-checkpoint-omitted");
+        const scopeReduction = observations.find((item) => item.id === "delivery-checkpoint-scope-reduction");
+        assert(JSON.stringify(due?.runnableItemRefs) === JSON.stringify(["item_checkpoint", "item_sibling"]) && JSON.stringify(due?.openGateRefs) === JSON.stringify(["gate_checkpoint"]), "Due checkpoint must block only its costly dependent while preserving the sibling.");
+        assert(JSON.stringify(irreducible?.runnableItemRefs) === JSON.stringify(["item_costly"]) && JSON.stringify(irreducible?.parkedDecisionRefs) === JSON.stringify([]), "Irreducible checkpoint evidence must release the original route without owner scope.");
+        assert(omitted?.status === "reconcile" && omitted?.frontierState === "frontier-reconciling" && omitted?.reason === "missing-frontier", "An omitted delivery checkpoint frontier must reconcile instead of silently advancing costly work.");
+        assert(JSON.stringify(scopeReduction?.runnableItemRefs) === JSON.stringify(["item_checkpoint"]) && JSON.stringify(scopeReduction?.parkedDecisionRefs) === JSON.stringify(["decision_scope_reduction"]), "Proof-scope reduction must stay separately parked while the checkpoint remains runnable.");
         assert((materialRaw.effects as Record<string, unknown>).providerCalls === 0 && (materialRaw.effects as Record<string, unknown>).networkRequests === 0, "Frontier materialization must remain provider and network free.");
 
         const replayed = path.join(tempRoot, "replayed");

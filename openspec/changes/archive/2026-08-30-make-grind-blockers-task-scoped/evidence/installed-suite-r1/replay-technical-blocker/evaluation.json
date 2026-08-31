@@ -1,0 +1,20 @@
+{
+  "candidateId": "grind-task-scoped-installed-suite-r1-technical-blocker",
+  "candidateOraclePass": null,
+  "captureKind": "candidate",
+  "cleanupComplete": true,
+  "cleanupOraclePass": true,
+  "evaluatorRecovered": false,
+  "expectedPendingQuestionRejections": null,
+  "failure": "question probe prompt failed",
+  "inputRaw": "raw.json",
+  "inputRawBytes": 236,
+  "livenessClosed": true,
+  "mode": "replay",
+  "modelCalls": 0,
+  "pendingQuestionsRejected": 0,
+  "replayComplete": true,
+  "resultPresent": false,
+  "schemaVersion": 1,
+  "terminalResult": "captured-failure-clean"
+}

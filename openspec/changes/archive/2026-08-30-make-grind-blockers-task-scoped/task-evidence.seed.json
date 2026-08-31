@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "refreshTasks": [
+    {
+      "taskId": "1.1",
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root . --mode ownership",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    },
+    {
+      "taskId": "1.2",
+      "invocation": {
+        "command": "npm run test:focused:session-completion-guard",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    },
+    {
+      "taskId": "2.1",
+      "invocation": {
+        "command": "npm run test:focused:session-completion-guard",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    },
+    {
+      "taskId": "2.2",
+      "invocation": {
+        "command": "npm run test:focused:session-completion-guard",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    },
+    {
+      "taskId": "2.3",
+      "invocation": {
+        "command": "npm run test:focused:session-completion-guard",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    },
+    {
+      "taskId": "3.1",
+      "invocation": {
+        "command": "npm run test:focused:contracts",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    },
+    {
+      "taskId": "3.2",
+      "invocation": {
+        "command": "npm run test:focused:work-campaign",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "4.1",
+      "result": "complete",
+      "candidateId": "grind-task-scoped-population-r2",
+      "environmentId": "windows-opencode-1.18.25-grind-population-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-session-completion-guard-suite",
+        "effects": ["configured-inference", "local-disposable", "provider-free-replay"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-session-completion-guard-suite",
+        "effects": ["configured-inference", "local-disposable", "provider-free-replay"]
+      },
+      "invocation": {
+        "command": "npm run proof:guard-question-runtime -- --mode suite --evidence-root <installed-population-r2>; provider-free replay and cleanup readback",
+        "status": 0,
+        "recordedAt": "2026-08-30T16:48:00Z"
+      },
+      "artifacts": [
+        "evidence/task-4-1-installed-suite-r1.md",
+        "evidence/installed-population-r2/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "result": "complete",
+      "candidateId": "grind-task-scoped-population-r2",
+      "environmentId": "windows-opencode-1.18.25-grind-population-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reviewed-claim-population-merge",
+        "effects": ["provider-free-read", "openspec-record-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reviewed-claim-population-merge",
+        "effects": ["provider-free-read", "openspec-record-write"]
+      },
+      "invocation": {
+        "command": "node tools/evidence-index.ts --index openspec/changes/make-grind-blockers-task-scoped/evidence-index.json --merge-claim-population openspec/changes/make-grind-blockers-task-scoped/evidence/grind-tsb-001-population-r1.seed.json",
+        "status": 0,
+        "recordedAt": "2026-08-30T16:57:00Z"
+      },
+      "artifacts": [
+        "evidence/task-4-2-population-map-r1.md",
+        "evidence/task-4-2-population-r1.md",
+        "evidence/task-4-2-evidence-sufficiency-r1.md",
+        "evidence/task-4-2-evidence-sufficiency-r2.md",
+        "evidence/grind-tsb-001-population-r1.seed.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "result": "complete",
+      "candidateId": "grind-task-scoped-population-r2",
+      "environmentId": "windows-opencode-1.18.25-grind-population-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-critical-sdet",
+        "effects": ["provider-free-read", "test-only-write", "independent-review"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-critical-sdet",
+        "effects": ["provider-free-read", "test-only-write", "independent-review"]
+      },
+      "invocation": {
+        "command": "sdet ses_fac829becffeCwJ6RXXC2JFb0M; main reproduce/correct/re-prove; fresh corrected-candidate sdet ses_fac643e8affe940rh35khDv4fC",
+        "status": 0,
+        "recordedAt": "2026-08-30T17:03:43Z"
+      },
+      "artifacts": [
+        "evidence/task-5-1-critical-sdet-r2.md",
+        "evidence/installed-population-r2/raw.json",
+        "evidence/installed-autonomous-r2/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.2",
+      "result": "complete",
+      "candidateId": "grind-task-scoped-population-r2",
+      "environmentId": "windows-opencode-1.18.25-grind-population-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "main-critical-disposition-and-reproof",
+        "effects": ["provider-free-read", "local-source-write", "configured-inference", "openspec-record-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "main-critical-disposition-and-reproof",
+        "effects": ["provider-free-read", "local-source-write", "configured-inference", "openspec-record-write"]
+      },
+      "invocation": {
+        "command": "main reproduce CR-TSB-001; one-predicate correction; focused checks; installed-population-r2; installed-autonomous-r2; fresh SDET and evidence-sufficiency challenge",
+        "status": 0,
+        "recordedAt": "2026-08-30T17:03:43Z"
+      },
+      "artifacts": [
+        "evidence/task-5-1-critical-sdet-r2.md",
+        "evidence/task-4-2-evidence-sufficiency-r2.md",
+        "evidence/installed-population-r2/raw.json",
+        "evidence/installed-autonomous-r2/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.3",
+      "result": "complete",
+      "candidateId": "grind-task-scoped-population-r2",
+      "environmentId": "windows-opencode-1.18.25-grind-population-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complete-project-validation",
+        "effects": ["provider-free-read", "local-validation", "openspec-record-write"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complete-project-validation",
+        "effects": ["provider-free-read", "local-validation", "openspec-record-write"]
+      },
+      "invocation": {
+        "command": "npm test; focused guard/contracts/campaign/config; validate:strict; instruction canonicalization; profile/permission/source diagnostics; provider-free roadmap controller; strict OpenSpec and proposal/apply gates; evidence readback; git diff --check/status/diff",
+        "status": 0,
+        "recordedAt": "2026-08-30T18:22:07Z"
+      },
+      "artifacts": [
+        "evidence/task-5-3-validation-r2.md",
+        "evidence/task-5-1-critical-sdet-r2.md",
+        "evidence/task-4-2-evidence-sufficiency-r2.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    }
+  ]
+}

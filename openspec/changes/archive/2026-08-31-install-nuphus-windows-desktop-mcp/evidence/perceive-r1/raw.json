@@ -1,0 +1,85 @@
+{
+  "candidateId": "nuphus-perceive-r1",
+  "cleanup": {
+    "fixture": "removed",
+    "notepad": "terminal",
+    "nuphus": "terminal"
+  },
+  "cloudVision": {
+    "configuredKeys": [],
+    "credentialsUsed": false,
+    "requestsMade": 0
+  },
+  "fallback": {
+    "evidence": "evidence/notepad-r1-visual/read-oracle.json",
+    "oracle": "OpenCode image-capable Read",
+    "result": "marker-visibly-confirmed-in-attributed-window"
+  },
+  "marker": "NUPHUS_PERCEIVE_72ADC9FDFA",
+  "mode": "perceive",
+  "modelSources": [
+    "https://hf-mirror.com/SWHL/RapidOCR",
+    "https://gitee.com/paddlepaddle/PaddleOCR",
+    "https://hf-mirror.com/onnx-community/OmniParser-icon_detect_640x640"
+  ],
+  "modelsAfter": {
+    "exists": true,
+    "files": [
+      {
+        "bytes": 4745517,
+        "relative": "ch_PP-OCRv4_det.onnx",
+        "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9"
+      },
+      {
+        "bytes": 10857958,
+        "relative": "ch_PP-OCRv4_rec.onnx",
+        "sha256": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b"
+      }
+    ],
+    "path": {
+      "basename": "models",
+      "pathSha256": "e12f7452bea9c35ba6c7160e72e632e4a57ed34ec80ae749db7be0376f8d64f2"
+    },
+    "selectedByEnvironment": false
+  },
+  "modelsBefore": {
+    "exists": false,
+    "files": [],
+    "path": {
+      "basename": "models",
+      "pathSha256": "e12f7452bea9c35ba6c7160e72e632e4a57ed34ec80ae749db7be0376f8d64f2"
+    },
+    "selectedByEnvironment": false
+  },
+  "nuphusStderr": {
+    "bytes": 538,
+    "sha256": "f3f221498fa4fd5dbe8b4153a49e27d3819f7bff4fa66af268faeba099b45cb4"
+  },
+  "perception": {
+    "cause": {
+      "class": "Error",
+      "message": "Nuphus tool failed: desktop_perceive model download failed for ch_PP-OCR_keys_v1.txt: GET http<redacted-path> failed: error sending request for url (http<redacted-path>\nPlease download the following files manually into <redacted-path>\\AppData\\Roaming\\Nuphus\\models:\n  - ch_PP-OCRv4_det.onnx ← http<redacted-path>\n  - ch_PP-OCRv4_rec.onnx ← http<redacted-path>\n  - ch_PP-OCR_keys_v1.txt ← http<redacted-path>",
+      "stackSha256": "f1b4b79ded3c20bb0e13fddd2fc4750055e961ff222de05caf6edfbb7e02ca10"
+    },
+    "status": "degraded"
+  },
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-perceive",
+  "schemaVersion": 1,
+  "screenshot": {
+    "bytes": 69284,
+    "exists": true,
+    "height": 1001,
+    "id": "perceive.png",
+    "pngSignature": true,
+    "sha256": "fee3870762e9c36061e8a6ce6c4ba276b7f53b58fc0b3afc701bdef17728a9d6",
+    "width": 1711
+  },
+  "target": {
+    "createdAt": "2026-08-30T22:25:33.5847300Z",
+    "hwnd": 14156250,
+    "newProcess": true,
+    "pid": 35532,
+    "title": "nuphus-perceive-12fb06fa-ccba-40fa-9c1f-fd7f03df26a2.txt - Notepad"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    {
+      "path": "raw.json",
+      "sha256": "5146284205cb317c2488b9e1ab8951af0d85a2fcb618faa3f2a7f0d3532baf29"
+    }
+  ],
+  "label": "capture",
+  "schemaVersion": 1
+}

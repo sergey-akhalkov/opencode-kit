@@ -105,5 +105,5 @@ The change SHALL compare baseline and candidate using the same workstation ident
 
 #### Scenario: Resource oracle fails after behavior succeeds
 - **WHEN** behavior remains correct but the measured resource or readiness threshold fails
-- **THEN** the evaluator preserves both raw bundles and reports that the optimization target was not met
+- **THEN** the evaluator reports both current-run sample sets and that the optimization target was not met
 - **AND** cleanup and the running managed services are not changed by that evaluator result

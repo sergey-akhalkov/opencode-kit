@@ -11,7 +11,7 @@ import { hashRef } from "../../global/plugin/session-delivery-context/redaction.
 import { isolatedProofServerEnvironment, probeProofServer, proofClient, proofErrorFacts, PROOF_SERVER_CONFIG_LOAD_MS, PROOF_SERVER_PLUGIN_READY_MS, PROOF_SERVER_READINESS_MS, proofServerStartupFacts, requestData, seedProofConfigDependencies } from "./lib/opencode-proof-client.ts";
 import { removeProofFixture, stopProofProcessTree } from "./lib/proof-process-cleanup.ts";
 
-type Scenario = "claims" | "multi-root" | "retention" | "retention-preflight" | "retention-recovery" | "retry";
+type Scenario = "multi-root" | "retention" | "retention-preflight" | "retention-recovery" | "retry";
 type Mode = "capture" | "evaluate";
 type Options = { candidateId: string; evidenceRoot: string; help: boolean; mode: Mode; scenario: Scenario };
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -27,10 +27,9 @@ function usage(): string {
   return [
     "Usage:",
     "  bun tools/proofs/session-completion-guard-restart.ts --help",
-    "  bun tools/proofs/session-completion-guard-restart.ts --mode capture|evaluate --candidate-id <id> --evidence-root <absolute-path> [--scenario claims|multi-root|retry|retention-preflight|retention-recovery|retention]",
+    "  bun tools/proofs/session-completion-guard-restart.ts --mode capture|evaluate --candidate-id <id> --evidence-root <absolute-path> [--scenario multi-root|retry|retention-preflight|retention-recovery|retention]",
     "",
     "Scenarios:",
-    "  claims      Prove installed claim continuation, exact stop, truncation, and ordinary idle behavior.",
     "  multi-root  Prove installed process-wide active/queue bounds and overload isolation with a local provider.",
     "  retry       Prove persisted bounded retry resumes in the same child (default).",
     "  retention-preflight   Capture canonical idle status for realistic interrupted child seeds only.",
@@ -54,7 +53,7 @@ function options(args: string[]): Options {
       index++;
     } else if (args[index] === "--scenario") {
       const value = required(args, index, args[index]);
-      if (value !== "claims" && value !== "multi-root" && value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be claims, multi-root, retry, retention-preflight, retention-recovery, or retention");
+      if (value !== "multi-root" && value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be multi-root, retry, retention-preflight, retention-recovery, or retention");
       scenario = value;
       index++;
     } else if (args[index] === "--mode") {
@@ -181,42 +180,19 @@ function simulator(scenario: Scenario = "retry") {
         await heldArbiters;
         arbiterInFlight -= 1;
       }
-      const claimEvidence = record(record(audit.completionEvidence)?.claimEvidence);
-      const claims = Array.isArray(claimEvidence?.claims) ? claimEvidence.claims.map(record).filter(Boolean) : [];
-      const claimMatrix = claims.map((claim) => ({
-        claimId: claim?.claimId,
-        closureState: claim?.closureState,
-        evidenceRefs: claim?.evidenceRefs,
-        maximumSupportedClaim: claim?.maximumSupportedClaim,
-        outcomeRef: claim?.outcomeRef,
-      }));
-      const claimContinuation = scenario === "claims" && (
-        claimEvidence?.complete !== true || claims.some((claim) => claim?.closureState !== "supported")
-      );
       const verdict = JSON.stringify({
         schemaVersion: 1,
         auditID: audit.auditID,
-        claimMatrix,
         rootSessionRef: audit.rootSessionRef,
         inspectedRevision: audit.inspectedRevision,
-        verdict: claimContinuation ? "continue" : "allow_stop",
+        verdict: "allow_stop",
         confidence: "high",
         goalSummary: "Disposable restart proof complete",
-        requirementMatrix: claimContinuation
-          ? [{ evidenceRefs: [], requirementRef: "claim-scope", status: "unresolved" }]
-          : [],
-        unresolved: claimContinuation
-          ? [{
-              evidenceGap: "Supplied claim closure is incomplete.",
-              nextAction: "Complete or honestly narrow the structured claim closure.",
-              nextEvidence: "Current supported claim closure.",
-              requirementRef: "claim-scope",
-              stopCondition: "Claim closure supports the accepted scope.",
-            }]
-          : [],
+        requirementMatrix: [],
+        unresolved: [],
         ownerBoundary: null,
         questionAnswers: null,
-        evidenceGaps: claimContinuation ? ["claim-closure-incomplete"] : [],
+        evidenceGaps: [],
         evidenceRefs: [],
         strategyAssessment: { fingerprint: "restart-proof", prohibitedStrategies: [], repeated: false, requiredRetryEvidence: [] },
       });
@@ -423,8 +399,8 @@ function writeConfig(configDir: string, dataDir: string, providerUrl: string, sc
   );
   const bridgeSource = pathToFileURL(path.join(sourceRoot, "global", "extensions", "opencode-pty-bridge.ts")).href;
   const guardSource = pathToFileURL(path.join(sourceRoot, "global", "extensions", "session-completion-guard.ts")).href;
-  const bridge = scenario === "claims" ? writeTracedPlugin(configDir, dataDir, "pty-bridge", bridgeSource) : bridgeSource;
-  const guard = scenario === "claims" ? writeTracedPlugin(configDir, dataDir, "completion-guard", guardSource) : guardSource;
+  const bridge = bridgeSource;
+  const guard = guardSource;
   fs.writeFileSync(path.join(configDir, "opencode.json"), json({
     $schema: "https://opencode.ai/config.json",
     model: "proof/proof-model",
@@ -666,125 +642,6 @@ function proofFixture(opts: Options): string {
   return path.join(os.tmpdir(), `guard-restart-proof-${opts.scenario}-${opts.candidateId}`);
 }
 
-function claimRecord(claimId: string, members: string[], disposition: "blocked" | "supported"): Record<string, unknown> {
-  const broad = members.length > 1;
-  const observed = disposition === "supported" ? members : members.slice(0, 1);
-  return {
-    candidateId: "claims-candidate",
-    claimClass: broad ? "finite-population" : "exact-case",
-    claimId,
-    coverageBasis: broad ? "finite-population" : "exact-case",
-    disposition,
-    environmentId: "claims-environment",
-    evidenceRefs: ["product"],
-    independentChallenge: broad
-      ? { evidenceRefs: [], required: true, status: "missing" }
-      : { evidenceRefs: [], required: false, status: "not-required" },
-    materialExclusions: [],
-    maximumSupportedClaim: broad ? `Only ${members[0]} is supported.` : `Exact ${members[0]} only.`,
-    narrowingAccepted: false,
-    observationBoundary: "installed-guard-result",
-    observations: observed.map((memberId) => ({
-      candidateId: "claims-candidate",
-      environmentId: "claims-environment",
-      evidenceRefs: ["product"],
-      memberId,
-      observationBoundary: "installed-guard-result",
-      paths: { baseline: null, candidate: null, production: "installed-guard" },
-      status: "supported",
-      terminal: true,
-      unresolvedObservations: [],
-    })),
-    outcomeRef: `outcome:${claimId}`,
-    paths: { baseline: null, candidate: null, production: "installed-guard" },
-    population: {
-      id: `population-${claimId.toLowerCase()}`,
-      materialClasses: [],
-      members,
-      partitionRule: null,
-      residualSpace: null,
-    },
-    realOracle: { evidenceRefs: [], required: false, status: "not-required" },
-    statement: `Installed guard claim ${claimId}`,
-    unknowns: [],
-  };
-}
-
-function writeClaimIndex(project: string, changeId: string, claims: Record<string, unknown>[]): void {
-  const changeRoot = path.join(project, "openspec", "changes", changeId);
-  fs.mkdirSync(changeRoot, { recursive: true });
-  fs.writeFileSync(path.join(changeRoot, "evidence-index.json"), json({
-    candidateId: "claims-candidate",
-    changeId,
-    claims,
-    environmentId: "claims-environment",
-    lanes: [{ files: [], kind: "terminal", name: "product" }],
-    retention: { exception: null, maxBytes: 25 * 1024 * 1024, maxFiles: 64 },
-    schemaVersion: 2,
-    tasks: [],
-  }), "utf8");
-}
-
-function resetClaimChanges(project: string): void {
-  fs.rmSync(path.join(project, "openspec"), { force: true, recursive: true });
-}
-
-async function waitAuditChild(
-  client: ReturnType<typeof proofClient>,
-  rootID: string,
-  project: string,
-  expectedStatus: "continued" | "passed",
-): Promise<{ child: Record<string, unknown>; request: Record<string, unknown>; requestBytes: number; result: Record<string, unknown> }> {
-  const deadline = Date.now() + 30_000;
-  while (Date.now() < deadline) {
-    const children = await boundedRequestData<Array<Record<string, unknown>>>(
-      client.session.children({ sessionID: rootID, directory: project }),
-      "claim audit children",
-    );
-    const child = children.find((candidate) =>
-      record(record(candidate.metadata)?.completionGuard)?.status === expectedStatus
-    );
-    if (child == null) {
-      await Bun.sleep(100);
-      continue;
-    }
-    const messages = await boundedRequestData<Array<{ info: Record<string, unknown>; parts: unknown[] }>>(
-      client.session.messages({ sessionID: String(child.id), directory: project }),
-      "claim audit messages",
-    );
-    const texts = messages.flatMap((message) => message.parts.flatMap((part) => {
-      const value = record(part);
-      return typeof value?.text === "string" ? [value.text] : [];
-    }));
-    const requestText = texts.find((text) => text.includes("<completion_audit_request>"));
-    const resultText = [...texts].reverse().find((text) => text.trim().startsWith("{") && text.trim().endsWith("}"));
-    const requestMatch = requestText?.match(/<completion_audit_request>\s*([\s\S]*?)\s*<\/completion_audit_request>/);
-    if (requestMatch == null || resultText == null) throw new Error("Claim audit child omitted request or result evidence");
-    return {
-      child,
-      request: JSON.parse(requestMatch[1]) as Record<string, unknown>,
-      requestBytes: Buffer.byteLength(requestText!, "utf8"),
-      result: JSON.parse(resultText) as Record<string, unknown>,
-    };
-  }
-  throw new Error(`Claim audit child did not reach ${expectedStatus}`);
-}
-
-function sourceHashes(): Array<{ digest: string; path: string }> {
-  return [
-    "global/agents/session-completion-arbiter.md",
-    "global/extensions/session-completion-guard/arbiter-evidence.ts",
-    "global/extensions/session-completion-guard/claim-evidence.ts",
-    "global/extensions/session-completion-guard/terminal-certificate.ts",
-    "global/extensions/session-completion-guard/verdict.ts",
-    "global/plugin/session-delivery-context/projection.ts",
-    "tools/proofs/session-completion-guard-restart.ts",
-  ].map((relative) => ({
-    digest: new Bun.CryptoHasher("sha256").update(fs.readFileSync(path.join(sourceRoot, relative))).digest("hex"),
-    path: relative,
-  }));
-}
-
 function multiRootSourceHashes(): Array<{ digest: string; path: string }> {
   return [
     "global/extensions/session-completion-guard.ts",
@@ -999,231 +856,6 @@ async function runMultiRoot(opts: Options): Promise<void> {
     if (cleanupError != null && proofError == null) throw cleanupError;
   }
   stage("multi-root-capture-complete");
-}
-
-async function runClaims(opts: Options): Promise<void> {
-  if (fs.existsSync(opts.evidenceRoot)) throw new Error("Evidence root already exists");
-  await offlineUnlockPreflight();
-  await offlinePluginTracePreflight();
-  const fixture = proofFixture(opts);
-  fs.mkdirSync(fixture, { recursive: false });
-  const configDir = path.join(fixture, "config");
-  const dataDir = path.join(fixture, "data");
-  const project = path.join(fixture, "project");
-  fs.mkdirSync(project, { recursive: true });
-  fs.writeFileSync(path.join(project, "AGENTS.md"), "# Disposable claim-evidence guard proof\n", "utf8");
-  const provider = simulator("claims");
-  writeConfig(configDir, dataDir, `http://${provider.server.hostname}:${provider.server.port}`, "claims");
-  const pluginResolverWarmup = warmupIsolatedPluginResolver(configDir, dataDir, project);
-  let server: ServerProcess | null = null;
-  const rootIDs = new Set<string>();
-  const cases: Array<Record<string, unknown>> = [];
-  let openCodeVersion = "unknown";
-  let proofError: unknown = null;
-  try {
-    server = await startOpenCode(configDir, dataDir, project, true);
-    fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid }), "utf8");
-    stage("claims-server-ready");
-    const client = proofClient(server.url, project);
-    const definitions = [
-      {
-        expected: "continue",
-        name: "representative-overclaim",
-        prepare: () => {
-          resetClaimChanges(project);
-          writeClaimIndex(project, "representative", [claimRecord("CLAIM-REPRESENTATIVE", ["member-1", "member-2"], "blocked")]);
-          return "representative";
-        },
-      },
-      {
-        expected: "allow_stop",
-        name: "supported-exact",
-        prepare: () => {
-          resetClaimChanges(project);
-          writeClaimIndex(project, "exact", [claimRecord("CLAIM-EXACT", ["member-1"], "supported")]);
-          return "exact";
-        },
-      },
-      {
-        expected: "continue",
-        name: "truncated-closure",
-        prepare: () => {
-          resetClaimChanges(project);
-          writeClaimIndex(project, "many-a", Array.from({ length: 17 }, (_, index) =>
-            claimRecord(`CLAIM-A-${String(index).padStart(2, "0")}`, [`member-a-${index}`], "supported")
-          ));
-          writeClaimIndex(project, "many-b", Array.from({ length: 17 }, (_, index) =>
-            claimRecord(`CLAIM-B-${String(index).padStart(2, "0")}`, [`member-b-${index}`], "supported")
-          ));
-          return null;
-        },
-      },
-      {
-        expected: "allow_stop",
-        name: "ordinary-small-idle",
-        prepare: () => {
-          resetClaimChanges(project);
-          return null;
-        },
-      },
-    ] as const;
-
-    for (const definition of definitions) {
-      const changeId = definition.prepare();
-      const before = provider.facts();
-      const root = await boundedRequestData<Record<string, unknown>>(client.session.create({
-        directory: project,
-        title: `claim guard ${definition.name}`,
-        metadata: {
-          completionGuard: { grindEnabled: true, state: "running" },
-          ...(changeId == null ? {} : { roadmapMission: { changeId } }),
-        },
-      }), `claim root ${definition.name}`);
-      const rootID = String(root.id);
-      rootIDs.add(rootID);
-      openCodeVersion = String(root.version ?? openCodeVersion);
-      const prompt = await boundedRequestData<{ info: Record<string, unknown> }>(client.session.prompt({
-        sessionID: rootID,
-        directory: project,
-        model: { providerID: "proof", modelID: "proof-model" },
-        system: "Return one short completion sentence and stop. Do not call tools.",
-        tools: {},
-        parts: [{ type: "text", text: `Complete the reviewed ${definition.name} claim proof.` }],
-      }), `claim prompt ${definition.name}`);
-      if (prompt.info.error != null) throw new Error(`Primary claim prompt failed: ${definition.name}`);
-      const expectedStatus = definition.expected === "continue" ? "continued" : "passed";
-      const audit = await waitAuditChild(client, rootID, project, expectedStatus);
-      if (definition.expected === "continue") {
-        await boundedRequestData(client.session.command({
-          arguments: "",
-          command: "disable-grind",
-          directory: project,
-          sessionID: rootID,
-        }), `disable continued claim ${definition.name}`);
-        await waitGuard(client, rootID, project, ["disabled"], 10_000);
-      } else {
-        await waitGuard(client, rootID, project, ["passed"], 10_000);
-      }
-      const completionEvidence = record(audit.request.completionEvidence) ?? {};
-      const claimEvidence = record(completionEvidence.claimEvidence) ?? {};
-      const verdict = String(audit.result.verdict ?? "unknown");
-      assert(verdict === definition.expected, `${definition.name} verdict was ${verdict}`);
-      const after = provider.facts();
-      cases.push({
-        arbiterRequest: {
-          auditKind: audit.request.auditKind,
-          claimEvidence,
-          requestBytes: audit.requestBytes,
-          rootSessionRef: audit.request.rootSessionRef,
-        },
-        arbiterResult: {
-          claimMatrix: audit.result.claimMatrix,
-          evidenceGaps: audit.result.evidenceGaps,
-          unresolved: audit.result.unresolved,
-          verdict,
-        },
-        expected: definition.expected,
-        name: definition.name,
-        providerCalls: {
-          arbiter: after.arbiterCalls - before.arbiterCalls,
-          primary: after.primaryCalls - before.primaryCalls,
-        },
-        rootSessionRef: hashRef("session", rootID),
-        rootState: definition.expected === "continue" ? "disabled-after-continued" : "passed",
-      });
-      const children = await boundedRequestData<Array<Record<string, unknown>>>(
-        client.session.children({ sessionID: rootID, directory: project }),
-        `claim cleanup children ${definition.name}`,
-      );
-      for (const child of children) {
-        await boundedRequestData(client.session.delete({ sessionID: String(child.id), directory: project }), "claim child delete");
-      }
-      await boundedRequestData(client.session.delete({ sessionID: rootID, directory: project }), "claim root delete");
-      rootIDs.delete(rootID);
-    }
-    const calls = provider.facts();
-    assert(calls.arbiterCalls === 4, `Claim proof expected four arbiter calls, got ${calls.arbiterCalls}`);
-    assert(calls.primaryCalls <= 8, `Claim proof primary call bound exceeded: ${calls.primaryCalls}`);
-    fs.mkdirSync(opts.evidenceRoot, { recursive: false });
-    fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json({
-      candidateId: opts.candidateId,
-      cases,
-      cleanup: "pending",
-      environment: {
-        configDigest: new Bun.CryptoHasher("sha256").update(fs.readFileSync(path.join(configDir, "opencode.json"))).digest("hex"),
-        model: "proof/proof-model",
-        openCode: openCodeVersion,
-        platform: process.platform,
-        pluginResolverWarmup,
-        pluginStartupTrace: readPluginStartupTrace(dataDir),
-        sourceHashes: sourceHashes(),
-      },
-      provider: { ...calls, externalCalls: 0, totalBound: 12 },
-      scenario: "claims",
-      schemaVersion: 1,
-    }), "utf8");
-  } catch (error) {
-    proofError = error;
-    if (!fs.existsSync(opts.evidenceRoot)) fs.mkdirSync(opts.evidenceRoot, { recursive: false });
-    fs.writeFileSync(path.join(opts.evidenceRoot, "failure.json"), json({
-      candidateId: opts.candidateId,
-      cases,
-      cleanup: "pending",
-      error: error instanceof Error ? error.message : String(error),
-      openCode: openCodeVersion,
-      pluginResolverWarmup,
-      pluginStartupTrace: readPluginStartupTrace(dataDir),
-      provider: provider.facts(),
-      scenario: "claims",
-      schemaVersion: 1,
-      status: "failed",
-    }), { encoding: "utf8", flag: "wx" });
-    throw error;
-  } finally {
-    if (server != null) {
-      try {
-        const client = proofClient(server.url, project);
-        for (const rootID of rootIDs) {
-          try {
-            const children = await boundedRequestData<Array<Record<string, unknown>>>(
-              client.session.children({ sessionID: rootID, directory: project }),
-              "claim final cleanup children",
-            );
-            for (const child of children) await client.session.delete({ sessionID: String(child.id), directory: project });
-            await client.session.delete({ sessionID: rootID, directory: project });
-          } catch { /* process cleanup still owns the disposable server tree */ }
-        }
-      } finally {
-        await stopOpenCode(server);
-        fs.rmSync(path.join(fixture, "server-pid.json"), { force: true });
-      }
-    }
-    provider.server.stop(true);
-    const diagnostics = server == null ? null : {
-      pluginStartupTrace: readPluginStartupTrace(dataDir),
-      stderrChars: server.stderr.join("").length,
-      stderrError: /\b(?:error|fatal|panic)\b/i.test(server.stderr.join("")),
-      stdoutChars: server.stdout.join("").length,
-    };
-    removeProofFixture(fixture);
-    if (fs.existsSync(path.join(opts.evidenceRoot, "raw.json"))) {
-      const raw = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "raw.json"), "utf8")) as Record<string, unknown>;
-      raw.cleanup = "complete";
-      raw.diagnostics = diagnostics;
-      raw.processCleanup = "complete";
-      fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json(raw), "utf8");
-    } else if (fs.existsSync(path.join(opts.evidenceRoot, "failure.json"))) {
-      const failure = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "failure.json"), "utf8")) as Record<string, unknown>;
-      failure.cleanup = "complete";
-      failure.diagnostics = diagnostics;
-      failure.processCleanup = "complete";
-      fs.writeFileSync(path.join(opts.evidenceRoot, "failure.json"), json(failure), "utf8");
-    } else if (proofError == null) {
-      throw new Error("Claim guard proof did not publish evidence");
-    }
-    stage("cleanup-complete");
-  }
-  stage("capture-complete");
 }
 
 async function runRetry(opts: Options): Promise<void> {
@@ -1680,24 +1312,6 @@ function evaluate(opts: Options): void {
     assert(failure.candidateId === opts.candidateId && failure.scenario === opts.scenario, "Failure capture correlation mismatch");
     assert(failure.cleanup === "complete" && failure.processCleanup === "complete", "Failure capture cleanup is incomplete");
     const provider = record(failure.provider) ?? {};
-    if (opts.scenario === "claims" && (Number(provider.arbiterCalls ?? 0) > 0 || Number(provider.primaryCalls ?? 0) > 0)) {
-      fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
-        candidateId: opts.candidateId,
-        cleanup: "complete",
-        failureClass: "proof-runner-provider-bound",
-        liveAttemptGate: "blocked",
-        providerCalls: {
-          arbiter: Number(provider.arbiterCalls ?? 0),
-          primary: Number(provider.primaryCalls ?? 0),
-        },
-        scenario: opts.scenario,
-        schemaVersion: 1,
-        status: "blocked",
-        terminalReplayResult: "blocked-after-guard",
-        unlockCondition: "Correct the stale provider-call bound, preserve all case evidence on failure, then use one create-new capture.",
-      }), { encoding: "utf8", flag: "wx" });
-      return;
-    }
     assert(Number(provider.arbiterCalls ?? 0) === 0 && Number(provider.primaryCalls ?? 0) === 0, "Startup failure unexpectedly reached provider effects");
     fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
       candidateId: opts.candidateId,
@@ -1713,59 +1327,6 @@ function evaluate(opts: Options): void {
     return;
   }
   const raw = JSON.parse(fs.readFileSync(rawPath, "utf8")) as Record<string, unknown>;
-  if (opts.scenario === "claims") {
-    assert(raw.candidateId === opts.candidateId && raw.scenario === "claims", "Claim capture candidate correlation mismatch");
-    assert(raw.cleanup === "complete" && raw.processCleanup === "complete", "Claim capture cleanup is incomplete");
-    const cases = Array.isArray(raw.cases) ? raw.cases.map(record).filter(Boolean) : [];
-    assert(cases.length === 4, `Claim capture must contain four cases, got ${cases.length}`);
-    const byName = new Map(cases.map((entry) => [String(entry?.name), entry]));
-    const representative = byName.get("representative-overclaim") ?? {};
-    const exact = byName.get("supported-exact") ?? {};
-    const truncated = byName.get("truncated-closure") ?? {};
-    const ordinary = byName.get("ordinary-small-idle") ?? {};
-    const claimProjection = (entry: Record<string, unknown>): Record<string, unknown> =>
-      record(record(entry.arbiterRequest)?.claimEvidence) ?? {};
-    const verdict = (entry: Record<string, unknown>): string => String(record(entry.arbiterResult)?.verdict ?? "unknown");
-    const representativeClaims = Array.isArray(claimProjection(representative).claims)
-      ? claimProjection(representative).claims as Array<Record<string, unknown>>
-      : [];
-    assert(verdict(representative) === "continue" && representativeClaims[0]?.closureState === "blocked", "Representative overclaim did not continue with blocked closure");
-    const exactClaims = Array.isArray(claimProjection(exact).claims)
-      ? claimProjection(exact).claims as Array<Record<string, unknown>>
-      : [];
-    assert(verdict(exact) === "allow_stop" && exactClaims[0]?.closureState === "supported", "Supported exact claim did not stop");
-    const truncatedProjection = claimProjection(truncated);
-    const omissions = Array.isArray(truncatedProjection.omissions) ? truncatedProjection.omissions.map(record) : [];
-    assert(
-      verdict(truncated) === "continue" && truncatedProjection.complete === false && omissions.some((entry) => entry?.code === "claim-limit" && entry.omitted === 2),
-      "Truncated closure did not continue with an exact omission",
-    );
-    const ordinaryProjection = claimProjection(ordinary);
-    assert(
-      verdict(ordinary) === "allow_stop" && ordinaryProjection.complete === true && Array.isArray(ordinaryProjection.claims) && ordinaryProjection.claims.length === 0,
-      "Ordinary Small idle behavior changed",
-    );
-    const provider = record(raw.provider) ?? {};
-    assert(provider.arbiterCalls === 4 && Number(provider.primaryCalls) <= 8 && Number(provider.arbiterCalls) + Number(provider.primaryCalls) <= 12 && provider.externalCalls === 0, "Claim provider-call bound or isolation failed");
-    const environment = record(raw.environment) ?? {};
-    assert(environment.model === "proof/proof-model" && typeof environment.configDigest === "string", "Claim environment identity is incomplete");
-    assert(Array.isArray(environment.sourceHashes) && environment.sourceHashes.length === 7, "Claim source identities are incomplete");
-    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
-      candidateId: opts.candidateId,
-      cleanup: "complete",
-      decisions: {
-        ordinarySmall: "allow_stop",
-        representativeOverclaim: "continue",
-        supportedExact: "allow_stop",
-        truncatedClosure: "continue",
-      },
-      providerCalls: { arbiter: provider.arbiterCalls, external: 0, primary: provider.primaryCalls },
-      scenario: "claims",
-      schemaVersion: 1,
-      status: "complete",
-    }), { encoding: "utf8", flag: "wx" });
-    return;
-  }
   if (opts.scenario === "multi-root") {
     const multiRoot = record(raw.multiRoot) ?? {};
     const provider = record(raw.provider) ?? {};
@@ -1924,9 +1485,7 @@ const execution = parsed.help
   : parsed.mode === "evaluate"
     ? Promise.resolve().then(() => evaluate(parsed))
   : internalWorker
-    ? parsed.scenario === "claims"
-      ? runClaims(parsed)
-      : parsed.scenario === "multi-root"
+    ? parsed.scenario === "multi-root"
       ? runMultiRoot(parsed)
       : parsed.scenario === "retry"
       ? runRetry(parsed)

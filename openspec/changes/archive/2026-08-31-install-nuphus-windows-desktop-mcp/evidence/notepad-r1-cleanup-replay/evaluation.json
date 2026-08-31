@@ -1,0 +1,14 @@
+{
+  "candidateId": "nuphus-notepad-r1-cleanup",
+  "checks": {
+    "imagesObservedBeforeRemoval": true,
+    "noFailure": true,
+    "ownedTargetTerminal": true,
+    "privacySafe": true,
+    "schema": true,
+    "stateRemoved": true
+  },
+  "passed": true,
+  "proofKind": "nuphus-desktop-notepad-cleanup",
+  "schemaVersion": 1
+}

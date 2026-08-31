@@ -241,7 +241,6 @@ function providerSimulator(scenario: Options["scenario"]) {
           verdict: ownerRequired ? "owner_required" : "allow_stop",
           confidence: "high",
           goalSummary: "Disposable roadmap command fixture complete",
-          claimMatrix: [],
           requirementMatrix: ownerRequired
             ? [{ evidenceRefs: [], requirementRef: "owner-boundary-proof", status: "owner_required" }]
             : [],

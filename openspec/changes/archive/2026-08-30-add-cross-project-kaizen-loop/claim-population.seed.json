@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "claim": {
+    "claimId": "KZN-001",
+    "candidateId": "cross-project-kaizen-loop-kzn-001-r3",
+    "environmentId": "windows-node-24.18.1-opencode-1.18.25-mixed-r3",
+    "disposition": "narrowed",
+    "statement": "All 25 reviewed KZN-001 members are supported for R3 by current pinned loaded tool/compaction evidence and current provider-free production-module boundaries; the composition is mixed-fidelity rather than one monolithic installed traversal.",
+    "evidenceRefs": [
+      "kzn-r3-candidate",
+      "kzn-r3-loaded",
+      "kzn-r3-store",
+      "kzn-r3-archive",
+      "kzn-r3-triage",
+      "kzn-r3-population",
+      "kzn-r3-sdet",
+      "kzn-r3-challenge"
+    ],
+    "externalEffects": {
+      "configuredProviderCalls": 5,
+      "externalProviderCalls": 0,
+      "networkEgress": 0,
+      "remoteWrites": 0
+    },
+    "independentChallenge": {
+      "required": true,
+      "status": "complete",
+      "evidenceRefs": ["kzn-r3-challenge"]
+    },
+    "maximumSupportedClaim": "Every member of the canonical 25-case KZN-001 population is supported on candidate R3 by composed pinned Windows/OpenCode loaded tool and compaction lanes plus current provider-free production store, archive, triage, and focused-test lanes. This does not claim one installed process traversed the whole population in one shared data root, active-process activation, unpinned or non-Windows compatibility, unknown secret encodings or formats, autonomous fixes, or eventual resolution.",
+    "narrowingAccepted": true,
+    "observationBoundary": "mixed-loaded-and-provider-free-terminal",
+    "paths": {
+      "production": "configured-session-env-kaizen",
+      "baseline": "disabled-kaizen-and-markdown-fallback",
+      "candidate": "cross-project-kaizen-loop-kzn-001-r3"
+    },
+    "realOracle": {
+      "required": true,
+      "status": "observed",
+      "evidenceRefs": [
+        "kzn-r3-loaded",
+        "kzn-r3-store",
+        "kzn-r3-archive",
+        "kzn-r3-triage",
+        "kzn-r3-population"
+      ]
+    },
+    "reviewedPopulation": {
+      "id": "cross-project-kaizen-scenarios-v1",
+      "memberIds": [
+        "enabled-explicit-valid",
+        "enabled-explicit-invalid",
+        "disabled-no-write",
+        "two-project-concurrent-append",
+        "capacity-rejection",
+        "compaction-valid-signal",
+        "compaction-valid-empty",
+        "compaction-missing-envelope",
+        "compaction-malformed-or-duplicate-envelope",
+        "compaction-wrong-root-or-child",
+        "compaction-store-failure",
+        "archive-captured",
+        "archive-no-signal",
+        "archive-repair-gap",
+        "archive-checkpoint-unavailable",
+        "archive-failed",
+        "complain-loaded-inbox",
+        "complain-disabled-fallback",
+        "legacy-feedback-idempotent",
+        "legacy-open-status-stale",
+        "status-bounded-truncation",
+        "triage-unknown-owner",
+        "consumer-kit-candidate-no-write",
+        "kit-root-contained-proposal",
+        "privacy-redaction-and-output-bounds"
+      ],
+      "size": 25,
+      "supportedMemberIds": [
+        "enabled-explicit-valid",
+        "enabled-explicit-invalid",
+        "disabled-no-write",
+        "two-project-concurrent-append",
+        "capacity-rejection",
+        "compaction-valid-signal",
+        "compaction-valid-empty",
+        "compaction-missing-envelope",
+        "compaction-malformed-or-duplicate-envelope",
+        "compaction-wrong-root-or-child",
+        "compaction-store-failure",
+        "archive-captured",
+        "archive-no-signal",
+        "archive-repair-gap",
+        "archive-checkpoint-unavailable",
+        "archive-failed",
+        "complain-loaded-inbox",
+        "complain-disabled-fallback",
+        "legacy-feedback-idempotent",
+        "legacy-open-status-stale",
+        "status-bounded-truncation",
+        "triage-unknown-owner",
+        "consumer-kit-candidate-no-write",
+        "kit-root-contained-proposal",
+        "privacy-redaction-and-output-bounds"
+      ]
+    },
+    "unresolvedObservations": [],
+    "unknowns": [
+      "One installed process and one shared data root did not traverse every population member.",
+      "The user's existing OpenCode process was not restarted or activated with the candidate.",
+      "Unknown secret encodings and formats remain outside the maintained privacy population.",
+      "Unpinned OpenCode and non-Windows loaded behavior remain unproved."
+    ]
+  },
+  "observations": [
+    { "memberId": "enabled-explicit-valid", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-loaded", "kzn-r3-store", "kzn-r3-population"] },
+    { "memberId": "enabled-explicit-invalid", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population", "kzn-r3-sdet"] },
+    { "memberId": "disabled-no-write", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-store", "kzn-r3-population"] },
+    { "memberId": "two-project-concurrent-append", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-store", "kzn-r3-population"] },
+    { "memberId": "capacity-rejection", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-store", "kzn-r3-population"] },
+    { "memberId": "compaction-valid-signal", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-loaded", "kzn-r3-population"] },
+    { "memberId": "compaction-valid-empty", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "compaction-missing-envelope", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "compaction-malformed-or-duplicate-envelope", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "compaction-wrong-root-or-child", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "compaction-store-failure", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "archive-captured", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-archive", "kzn-r3-population"] },
+    { "memberId": "archive-no-signal", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-archive", "kzn-r3-population"] },
+    { "memberId": "archive-repair-gap", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-archive", "kzn-r3-population"] },
+    { "memberId": "archive-checkpoint-unavailable", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-archive", "kzn-r3-population"] },
+    { "memberId": "archive-failed", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-archive", "kzn-r3-population"] },
+    { "memberId": "complain-loaded-inbox", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-loaded", "kzn-r3-population"] },
+    { "memberId": "complain-disabled-fallback", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "legacy-feedback-idempotent", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "legacy-open-status-stale", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population"] },
+    { "memberId": "status-bounded-truncation", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-population", "kzn-r3-sdet"] },
+    { "memberId": "triage-unknown-owner", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-triage", "kzn-r3-population"] },
+    { "memberId": "consumer-kit-candidate-no-write", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-triage", "kzn-r3-population", "kzn-r3-sdet"] },
+    { "memberId": "kit-root-contained-proposal", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-triage", "kzn-r3-population"] },
+    { "memberId": "privacy-redaction-and-output-bounds", "status": "supported", "terminal": true, "evidenceRefs": ["kzn-r3-loaded", "kzn-r3-population", "kzn-r3-sdet"] }
+  ],
+  "lanes": [
+    {
+      "name": "kzn-r3-candidate",
+      "kind": "terminal",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "candidate-composition-r17.json" },
+        { "path": "task-4-1-runtime-proof-r1.md" },
+        { "path": "task-4-5-validation-r1.md" }
+      ]
+    },
+    {
+      "name": "kzn-r3-loaded",
+      "kind": "raw-bundle",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "loaded-tools-r8/bundle.json" },
+        { "path": "compaction-context-r5a/bundle.json" },
+        { "path": "compaction-context-r5b/bundle.json" }
+      ]
+    },
+    {
+      "name": "kzn-r3-store",
+      "kind": "product",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "store-boundary-r9/bundle.json" }
+      ]
+    },
+    {
+      "name": "kzn-r3-archive",
+      "kind": "product",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "archive-boundary-r7/bundle.json" }
+      ]
+    },
+    {
+      "name": "kzn-r3-triage",
+      "kind": "product",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "triage-boundary-r6/bundle.json" }
+      ]
+    },
+    {
+      "name": "kzn-r3-population",
+      "kind": "terminal",
+      "pathPrefix": "evidence/population-r5",
+      "files": [
+        { "path": "bundle.json" },
+        { "path": "archive-boundary/bundle.json" },
+        { "path": "triage-boundary/bundle.json" }
+      ]
+    },
+    {
+      "name": "kzn-r3-sdet",
+      "kind": "evaluator",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "task-4-2-regression-disposition-r1.md" },
+        { "path": "task-4-3-sdet-r1.md" }
+      ]
+    },
+    {
+      "name": "kzn-compaction-history",
+      "kind": "raw-bundle",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "compaction-context-r1/bundle.json" },
+        { "path": "compaction-context-r2/bundle.json" }
+      ]
+    },
+    {
+      "name": "kzn-r3-challenge",
+      "kind": "evaluator",
+      "pathPrefix": "evidence",
+      "files": [
+        { "path": "task-4-4-evidence-challenge-r1.md" }
+      ]
+    },
+    {
+      "name": "kzn-r3-seeds",
+      "kind": "runner",
+      "files": [
+        { "path": "claim-population.seed.json" },
+        { "path": "task-evidence.seed.json" }
+      ]
+    }
+  ]
+}

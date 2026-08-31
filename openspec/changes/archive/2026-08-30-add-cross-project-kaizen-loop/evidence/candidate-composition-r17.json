@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-kzn-001-r3",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-mixed-r3",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-docs-r1",
+      "artifact": "evidence/candidate-composition-r14.json",
+      "ceiling": "Implemented store, lifecycle, tools, compaction context, archive integration, triage containment, portability, and operator documentation before final population proof."
+    },
+    {
+      "role": "critical-privacy-corrections",
+      "candidateId": "cross-project-kaizen-loop-kzn-001-r3",
+      "artifact": "evidence/task-4-3-sdet-r1.md",
+      "sourceIdentity": {
+        "global/plugin/kaizen/store.ts": "3a74cf7b4d4e4a671e3ff76f40fbe4879603c579d45c2d5e452dfb468a5833e6",
+        "tools/test-cross-project-kaizen.ts": "8a17819ba5ac413375ef4b7947f8c6a98a4668b52e891ca15ca3bf2a721c83fc"
+      },
+      "ceiling": "Maintained Windows drive, POSIX, backslash/forward UNC, file URI, assignment/JSON/backtick delimiter formats fail closed; HTTP(S) controls remain accepted."
+    },
+    {
+      "role": "loaded-explicit-tools",
+      "candidateId": "cross-project-kaizen-loop-loaded-tools-r8",
+      "artifact": "evidence/loaded-tools-r8/bundle.json",
+      "ceiling": "Pinned OpenCode loaded the byte-matched R3 plugin and completed explicit report/status with bounded provider calls, no trapped egress, no worktree writes, and terminal cleanup."
+    },
+    {
+      "role": "loaded-compaction-a",
+      "candidateId": "kaizen-compaction-runtime-context-r1",
+      "artifact": "evidence/compaction-context-r5a/bundle.json",
+      "ceiling": "One pinned-OpenCode root compaction loaded R3 source, preserved the ordinary prompt, appended Kaizen context, and persisted one strict privacy-safe signal."
+    },
+    {
+      "role": "loaded-compaction-b",
+      "candidateId": "kaizen-compaction-runtime-context-r1",
+      "artifact": "evidence/compaction-context-r5b/bundle.json",
+      "ceiling": "A second independent pinned-OpenCode root compaction repeated the R3 loaded boundary and cleanup."
+    },
+    {
+      "role": "shared-two-project-store",
+      "candidateId": "cross-project-kaizen-loop-store-boundary-r9",
+      "artifact": "evidence/store-boundary-r9/bundle.json",
+      "ceiling": "Provider-free R3 production-store execution used two disposable Git roots and one isolated data root, retained two privacy-safe project refs, and left both worktrees clean."
+    },
+    {
+      "role": "archive-harvest-outcomes",
+      "candidateId": "cross-project-kaizen-loop-archive-boundary-r7",
+      "artifact": "evidence/archive-boundary-r7/bundle.json",
+      "ceiling": "Provider-free R3 archive-helper execution covered captured, no-signal, repair-gap, unavailable, and archive-failed outcomes without relabeling archive state."
+    },
+    {
+      "role": "triage-and-proposal-containment",
+      "candidateId": "cross-project-kaizen-loop-triage-boundary-r6",
+      "artifact": "evidence/triage-boundary-r6/bundle.json",
+      "ceiling": "Provider-free R3 triage and installed OpenSpec validation created exactly one owner-root proposal and zero source-project writes."
+    },
+    {
+      "role": "reviewed-finite-population",
+      "candidateId": "cross-project-kaizen-loop-population-r5",
+      "artifact": "evidence/population-r5/bundle.json",
+      "ceiling": "All 25 canonical members passed through R3 focused, archive, and triage drivers with stable seed readback and no provider or network calls."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-kzn-001-r2",
+    "cross-project-kaizen-loop-population-r4"
+  ],
+  "excluded": [
+    "one monolithic installed process and shared-data-root traversal of every population member",
+    "activation or restart of the user's existing OpenCode process",
+    "unpinned OpenCode versions or non-Windows loaded behavior",
+    "unknown secret encodings or formats outside the maintained privacy population",
+    "automatic scheduling, semantic grouping, or autonomous fixes"
+  ]
+}

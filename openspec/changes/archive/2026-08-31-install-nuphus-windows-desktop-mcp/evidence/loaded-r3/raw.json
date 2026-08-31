@@ -1,0 +1,221 @@
+{
+  "active": {
+    "configSha256": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "model": "openai/gpt-5.6-sol",
+    "nuphus": {
+      "command": [
+        "nuphus-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NUPHUS_MCP_CONFIRM_WRITE": "0"
+      },
+      "timeout": 60000,
+      "type": "local"
+    }
+  },
+  "candidateId": "nuphus-apply-r3-loaded",
+  "cleanup": {
+    "fixture": "removed",
+    "server": "terminal",
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "session": "not-created"
+  },
+  "failure": {
+    "class": "Error",
+    "message": "Loaded OpenCode exposed 0 screen-size tool candidates",
+    "stackSha256": "724a28b6356d6e9dc96f0847368860e370af7fa0445c93995c871366b428d95f"
+  },
+  "isolation": {
+    "credentialCopies": 2,
+    "rootsDistinct": true,
+    "testHomeConfigured": true,
+    "xdgDataConfigured": true
+  },
+  "logs": {
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderr": {
+      "bytes": 2374,
+      "sha256": "ab3004859534a0d16caacc01ae2cdfd1f8932787f1f2c870c8eeb232d0eed6df",
+      "tail": "timestamp=2026-08-30T21:58:22.906Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:22.914Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:22.915Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.280Z level=INFO run=5d61e64d message=\"creating instance\" directory=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.282Z level=INFO run=5d61e64d message=fromDirectory directory=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.690Z level=INFO run=5d61e64d message=bootstrapping directory=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.708Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.708Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.709Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.758Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.789Z level=INFO run=5d61e64d message=loading path=\"<redacted-path>\"\ntimestamp=2026-08-30T21:58:23.864Z level=INFO run=5d61e64d message=\"all LSPs are disabled\"\ntimestamp=2026-08-30T21:58:23.865Z level=INFO run=5d61e64d message=\"all formatters are disabled\"\ntimestamp=2026-08-30T21:58:23.865Z level=INFO run=5d61e64d message=init\ntimestamp=2026-08-30T21:58:24.146Z level=INFO run=5d61e64d message=\"shell tool using shell\" shell=\"<redacted-path> Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\n"
+    },
+    "stdout": {
+      "bytes": 119,
+      "sha256": "13d94a874311b5f094456865a0266056a300fb375d6d363f6ad6fa2c266ac7e0",
+      "tail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on htt<redacted-path>\n"
+    }
+  },
+  "managedAfter": [],
+  "managedBefore": [],
+  "managedUnchanged": true,
+  "mcpStatuses": {
+    "codebase-memory-mcp": {
+      "errorSha256": null,
+      "status": "disabled"
+    },
+    "graphify-global": {
+      "errorSha256": null,
+      "status": "disabled"
+    },
+    "nuphus": {
+      "errorSha256": null,
+      "status": "connected"
+    },
+    "serena": {
+      "errorSha256": null,
+      "status": "disabled"
+    }
+  },
+  "mode": "loaded",
+  "openCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "overlay": {
+    "mcp": {
+      "codebase-memory-mcp": {
+        "enabled": false
+      },
+      "graphify-global": {
+        "enabled": false
+      },
+      "serena": {
+        "enabled": false
+      }
+    }
+  },
+  "privacySafe": true,
+  "processTree": {
+    "confirmationRequested": false,
+    "nuphusCount": 1,
+    "rows": [
+      {
+        "createdAt": "2026-08-30T21:58:21.4938160Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 34424,
+        "pid": 16148,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T21:58:23.9824970Z",
+        "executableSha256": null,
+        "name": "node.exe",
+        "parentPid": 47700,
+        "pid": 18800,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T21:58:24.0395320Z",
+        "executableSha256": null,
+        "name": "nuphus-mcp.exe",
+        "parentPid": 18800,
+        "pid": 38948,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T21:58:21.5026890Z",
+        "executableSha256": null,
+        "name": "conhost.exe",
+        "parentPid": 16148,
+        "pid": 41380,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T21:58:23.9438220Z",
+        "executableSha256": null,
+        "name": "conhost.exe",
+        "parentPid": 47700,
+        "pid": 44156,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T21:58:21.5225960Z",
+        "executableSha256": null,
+        "name": "opencode.exe",
+        "parentPid": 16148,
+        "pid": 47560,
+        "requestedConfirmation": false
+      },
+      {
+        "createdAt": "2026-08-30T21:58:23.9228820Z",
+        "executableSha256": null,
+        "name": "cmd.exe",
+        "parentPid": 47560,
+        "pid": 47700,
+        "requestedConfirmation": false
+      }
+    ],
+    "siblingMcpCount": 0
+  },
+  "proofKind": "nuphus-desktop-loaded",
+  "resolved": {
+    "mcpNames": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "nuphus",
+      "serena"
+    ],
+    "nuphus": {
+      "command": [
+        "nuphus-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NUPHUS_MCP_CONFIRM_WRITE": "0"
+      },
+      "timeout": 60000,
+      "type": "local"
+    },
+    "siblingStatuses": {
+      "codebase-memory-mcp": false,
+      "graphify-global": false,
+      "serena": false
+    }
+  },
+  "schemaVersion": 1,
+  "screenCaptureCount": 0,
+  "server": {
+    "baseUrl": "http://127.0.0.1:60654",
+    "pid": 16148
+  },
+  "tools": {
+    "idsEndpoint": [
+      "apply_patch",
+      "bash",
+      "edit",
+      "glob",
+      "grep",
+      "invalid",
+      "question",
+      "read",
+      "skill",
+      "task",
+      "todowrite",
+      "webfetch",
+      "websearch",
+      "write"
+    ],
+    "listEndpoint": [
+      "apply_patch",
+      "bash",
+      "glob",
+      "grep",
+      "invalid",
+      "question",
+      "read",
+      "skill",
+      "task",
+      "todowrite",
+      "webfetch"
+    ],
+    "screenCandidates": []
+  }
+}

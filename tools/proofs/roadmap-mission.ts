@@ -44,7 +44,6 @@ const productionSourcePaths = [
   "global/bin/openspec-operation-gate.ts",
   "global/bin/openspec-change/automation-dividend.ts",
   "global/bin/openspec-change/claims.ts",
-  "global/bin/openspec-change/evidence.ts",
   "global/bin/openspec-change/gate.ts",
   "global/bin/openspec-change/inventory.ts",
   "global/bin/openspec-change/manifest.ts",

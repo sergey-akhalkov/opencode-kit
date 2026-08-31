@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "nuphus-desktop-preflight", "effects": ["provider-free-read", "create-new-evidence"] },
+      "invocation": { "command": "npm run proof:nuphus-desktop -- --mode preflight --candidate-id nuphus-preflight-r2 --config-dir <active-global> --evidence-root <change>/evidence/preflight-r2", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/preflight-r2/raw.json", "evidence/preflight-r2/evaluation.json", "evidence/final-preflight-replay/evaluation.json"],
+      "cleanup": "none"
+    },
+    {
+      "taskId": "1.2",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "nuphus-desktop-proof-cli-and-tests", "effects": ["provider-free-read", "disposable-local-write", "create-new-evidence"] },
+      "invocation": { "command": "node tools/proofs/nuphus-desktop.ts --help && node tools/proofs/nuphus-desktop.ts -h && node --test tools/test-nuphus-desktop.ts", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/quality-config-failure-r2/raw.json", "evidence/quality-config-failure-r2/evaluation.json", "evidence/quality-loaded-replay-r2/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "2.1",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "pinned-package-install-and-direct-mcp", "effects": ["network-read", "local-package-install", "local-screen-read", "create-new-evidence"] },
+      "invocation": { "command": "npm install --global @nuphus/nuphus-mcp@0.2.2 @nuphus/nuphus-mcp-win32-x64@0.2.2 && npm run proof:nuphus-desktop -- --mode direct --candidate-id nuphus-direct-r2 --evidence-root <change>/evidence/direct-r2", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/install-r1/install-result.json", "evidence/install-r1/registry-integrity.json", "evidence/direct-r2/raw.json", "evidence/direct-r2/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "2.2",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "machine-local-config-and-instruction-readback", "effects": ["machine-local-config-write", "provider-free-read", "create-new-evidence"] },
+      "invocation": { "command": "npm run proof:nuphus-desktop -- --mode config --candidate-id nuphus-instruction-fix-r1-config --config-dir <active-global> --input-root <change>/evidence/restore-r2-config --evidence-root <change>/evidence/instruction-fix-r1-config", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/instruction-fix-r1-config/raw.json", "evidence/instruction-fix-r1-config/evaluation.json", "evidence/instruction-fix-config-replay/evaluation.json"],
+      "cleanup": "none"
+    },
+    {
+      "taskId": "3.1",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "isolated-loaded-opencode-provider", "effects": ["loopback-process", "configured-model-call", "local-screen-read", "create-new-evidence"] },
+      "invocation": { "command": "npm run proof:nuphus-desktop -- --mode loaded --candidate-id nuphus-instruction-fix-r1-loaded --config-dir <active-global> --state-root <proof-owned-state> --evidence-root <change>/evidence/instruction-fix-r1-loaded", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/instruction-fix-r1-loaded/raw.json", "evidence/instruction-fix-r1-loaded/evaluation.json", "evidence/instruction-fix-loaded-replay/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "3.2",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "attributed-notepad-observe-act-observe", "effects": ["local-gui-read", "local-gui-write", "model-image-read", "create-new-evidence"] },
+      "invocation": { "command": "proof:nuphus-desktop notepad-prepare/notepad-act/notepad-cleanup for candidate nuphus-notepad-r2 plus OpenCode Read of the identified-window PNG", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/notepad-r2-prepare/raw.json", "evidence/notepad-r2-act/raw.json", "evidence/notepad-r2-cleanup/raw.json", "evidence/notepad-r2-visual/read-oracle.json", "evidence/final-notepad-act-replay/evaluation.json", "evidence/final-notepad-cleanup-replay/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "3.3",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "bounded-local-perception-bootstrap", "effects": ["local-gui-read", "network-model-download", "create-new-evidence"] },
+      "invocation": { "command": "npm run proof:nuphus-desktop -- --mode perceive --candidate-id nuphus-perceive-r1 --config-dir <active-global> --state-root <proof-owned-state> --evidence-root <change>/evidence/perceive-r1", "status": 1, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/perceive-r1/raw.json", "evidence/perceive-r1/evaluation.json", "evidence/perceive-r1-outcome.json", "evidence/perceive-r1-source-urls.json", "evidence/final-perceive-replay/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "4.1",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "exact-rollback-absence-and-restore", "effects": ["machine-local-config-write", "local-package-remove", "local-package-install", "loopback-process", "configured-model-call", "create-new-evidence"] },
+      "invocation": { "command": "guarded exact-block rollback; npm uninstall --global @nuphus/nuphus-mcp @nuphus/nuphus-mcp-win32-x64; proof:nuphus-desktop absent; restore reviewed candidate; proof:nuphus-desktop loaded", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/rollback-r1-absent/raw.json", "evidence/rollback-r1-absent/evaluation.json", "evidence/rollback-r1-outcome.json", "evidence/restore-r2-config/evaluation.json", "evidence/restore-r1-loaded/evaluation.json", "evidence/final-absent-replay/evaluation.json", "evidence/final-loaded-replay/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "4.2",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "focused-regressions-and-offline-replay", "effects": ["provider-free-read", "disposable-local-write", "create-new-evidence"] },
+      "invocation": { "command": "node --test tools/test-nuphus-desktop.ts && npm run test:focused:portable-process && npm run proof:nuphus-desktop -- --mode replay --input-root <installed-proof> --evidence-root <create-new-replay>", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/quality-loaded-replay-r2/evaluation.json", "evidence/quality-config-failure-r2/raw.json", "evidence/quality-config-failure-r2/evaluation.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "4.3",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "practice-review-sdet-and-corrected-reproof", "effects": ["read-only-review", "test-only-write", "machine-local-instruction-write", "configured-model-call", "local-gui-write", "create-new-evidence"] },
+      "invocation": { "command": "instruction-artifact and configuration Practice Owner reviews; corrected loaded and Notepad proof; fresh critical-only SDET; node --test tools/test-nuphus-desktop.ts", "status": 0, "recordedAt": "2026-08-30T23:40:01.8018182Z" },
+      "artifacts": ["evidence/review-r1-disposition.json", "evidence/instruction-fix-r1-config/evaluation.json", "evidence/instruction-fix-r1-loaded/evaluation.json", "evidence/notepad-r2-act/evaluation.json", "evidence/notepad-r2-cleanup/evaluation.json", "evidence/notepad-r2-visual/read-oracle.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "4.4",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "cross-project-ui-positioning-readback", "effects": ["provider-free-read", "machine-local-instruction-write", "read-only-review", "create-new-evidence"] },
+      "invocation": { "command": "node --test tools/test-nuphus-desktop.ts; proof:nuphus-desktop config candidate nuphus-ui-positioning-r3-config; case-sensitive opencode debug config --pure projection in opencode-kit plus two unrelated projects; instruction-artifact Practice Owner review", "status": 0, "recordedAt": "2026-08-30T23:57:48.8046658Z" },
+      "artifacts": ["evidence/ui-positioning-r3-config/raw.json", "evidence/ui-positioning-r3-config/evaluation.json", "evidence/ui-positioning-r1-cross-project.json", "evidence/ui-positioning-r1-review.json"],
+      "cleanup": "none"
+    },
+    {
+      "taskId": "5.1",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "project-native-validation-and-privacy-scan", "effects": ["provider-free-read", "disposable-local-write", "create-new-evidence"] },
+      "invocation": { "command": "openspec validate install-nuphus-windows-desktop-mcp --strict; npm run validate:strict; node --test tools/test-nuphus-desktop.ts; npm run test:focused:portable-process; npm run doctor; npm run opencode:sources; package/config/status readback; evidence-index inventory; git diff --check; scoped privacy scan", "status": 0, "recordedAt": "2026-08-31T00:03:51.0543693Z" },
+      "artifacts": ["evidence/final-validation-r1.json", "evidence-index.json", "evidence/ui-positioning-r3-config/evaluation.json", "evidence/ui-positioning-r1-cross-project.json"],
+      "cleanup": "complete"
+    },
+    {
+      "taskId": "5.2",
+      "result": "complete",
+      "boundary": { "kind": "named-entrypoint", "name": "final-identity-cleanup-and-handoff", "effects": ["provider-free-read", "create-new-evidence"] },
+      "invocation": { "command": "final package/config/model hash readback; Nuphus/Notepad/process/listener/state-root/PNG cleanup inventory; exact claim/restart/rollback/privacy/effect handoff materialization", "status": 0, "recordedAt": "2026-08-31T00:03:51.0543693Z" },
+      "artifacts": ["evidence/final-handoff-r1.json", "evidence/final-validation-r1.json", "evidence/rollback-r1-outcome.json"],
+      "cleanup": "complete"
+    }
+  ]
+}

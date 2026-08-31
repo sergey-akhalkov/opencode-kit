@@ -1,0 +1,126 @@
+{
+  "acceptedEvaluation": {
+    "candidateId": "candidate-working-tree",
+    "candidateOraclePass": true,
+    "captureKind": "candidate",
+    "cleanupComplete": true,
+    "cleanupOraclePass": true,
+    "evaluatorRecovered": false,
+    "expectedPendingQuestionRejections": 0,
+    "failure": null,
+    "inputRaw": "raw.json",
+    "inputRawBytes": 992,
+    "livenessClosed": true,
+    "mode": "replay",
+    "modelCalls": 0,
+    "pendingQuestionsRejected": 0,
+    "replayComplete": true,
+    "resultPresent": true,
+    "schemaVersion": 1,
+    "terminalResult": "captured-result-clean"
+  },
+  "cleanup": "not-applicable-provider-free",
+  "completionVerdictSchemaVersion": 2,
+  "deliveryCheckpoint": {
+    "acceptedEvaluation": {
+      "candidateId": "candidate-working-tree",
+      "candidateOraclePass": true,
+      "captureKind": "candidate",
+      "cleanupComplete": true,
+      "cleanupOraclePass": true,
+      "evaluatorRecovered": false,
+      "expectedPendingQuestionRejections": 0,
+      "failure": null,
+      "inputRaw": "raw.json",
+      "inputRawBytes": 2783,
+      "livenessClosed": true,
+      "mode": "replay",
+      "modelCalls": 0,
+      "pendingQuestionsRejected": 0,
+      "replayComplete": true,
+      "resultPresent": true,
+      "schemaVersion": 1,
+      "terminalResult": "captured-result-clean"
+    },
+    "rejected": [
+      {
+        "id": "delivery-costly-before-checkpoint",
+        "candidateOraclePass": false
+      },
+      {
+        "id": "delivery-premature-gate-satisfaction",
+        "candidateOraclePass": false
+      },
+      {
+        "id": "delivery-product-question",
+        "candidateOraclePass": false
+      },
+      {
+        "id": "delivery-missing-continuation",
+        "candidateOraclePass": false
+      },
+      {
+        "id": "delivery-missing-oracle",
+        "candidateOraclePass": false
+      }
+    ]
+  },
+  "existingControls": [
+    {
+      "candidateOraclePass": true,
+      "scenario": "autonomous"
+    },
+    {
+      "candidateOraclePass": true,
+      "scenario": "mixed-protected"
+    },
+    {
+      "candidateOraclePass": true,
+      "scenario": "completion-checked-unmet"
+    },
+    {
+      "candidateOraclePass": true,
+      "scenario": "task-scoped-product"
+    },
+    {
+      "candidateOraclePass": true,
+      "scenario": "task-scoped-non-product"
+    }
+  ],
+  "mode": "preflight",
+  "modelCalls": 0,
+  "rejected": [
+    {
+      "id": "allow-stop",
+      "candidateOraclePass": false
+    },
+    {
+      "id": "owner-required",
+      "candidateOraclePass": false
+    },
+    {
+      "id": "no-continuation",
+      "candidateOraclePass": false
+    },
+    {
+      "id": "stale-continuation",
+      "candidateOraclePass": false
+    },
+    {
+      "id": "leaked-ownership",
+      "candidateOraclePass": false
+    }
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "757d171a0ee2070c2b90de2b50217d6940a37ece4398930352e170e825a77c79",
+    "global/agents/session-completion-arbiter.md": "e097a43f2c9d7fd640f108de1455c1d4d322ff52f75f3d8064f7482238b91bde",
+    "global/opencode.json": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "global/opencode.local.instructions.md": "23c893ef557551e0e3e5f9600a967c941bd80eb77d45fa9a70ea85addeba4f5f",
+    "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+    "global/extensions/session-completion-guard/frontier.ts": "e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c",
+    "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+    "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+    "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+    "tools/proofs/session-completion-guard-autonomous.ts": "17fea24bbe798eaea28595e1a38827bc2f5586a8930e08f858f223c9365cd1af"
+  }
+}

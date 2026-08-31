@@ -1,0 +1,15 @@
+{
+  "candidateId": "nuphus-ui-positioning-r1-config",
+  "checks": {
+    "exactInsertions": false,
+    "officialReadback": false,
+    "privacySafe": true,
+    "protectedFiles": false,
+    "rollbackPreimages": false,
+    "schema": true,
+    "sourceReadback": false
+  },
+  "passed": false,
+  "proofKind": "nuphus-desktop-config",
+  "schemaVersion": 1
+}

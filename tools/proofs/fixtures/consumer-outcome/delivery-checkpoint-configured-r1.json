@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "id": "delivery-checkpoint-configured-r1",
+  "profile": "quality-independent",
+  "runtimeProfile": "core",
+  "configuredProviderRequestBound": 1,
+  "maximumClaim": "configured loaded-main observations for one reviewed ordinary checkpoint path and the twelve reviewed OPDC-001 members across two unrelated disposable ordinary/OpenSpec fixture repositories under the exact recorded candidate, model, profile, source, fixture, and environment only; each selected scenario is bounded to one request and supports only its exact member rows, not universal trigger quality, optimization benefit, untested cross-project reliability, active user-process activation, or deployed-runtime behavior",
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/model-profiles/quality-independent.json",
+    "profiles/core.json",
+    "tools/model-profile.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/delivery-checkpoint.ts",
+    "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-configured-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-population-openspec-v1",
+    "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-population-ordinary-v1",
+    "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-v1",
+    "tools/proofs/lib/opencode-proof-client.ts",
+    "tools/proofs/lib/proof-process-cleanup.ts",
+    "tools/runtime-surface-profile.ts"
+  ],
+  "scenarios": [
+    {
+      "id": "configured-different-late-failures",
+      "shape": "ordinary-small",
+      "fixtureId": "configured-different-late-failures",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "scripts/check-result.ts",
+          "scripts/run-canary.ts"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this ordinary fixture. Read case.json as the complete observed evidence and apply the loaded outcome-preserving delivery-checkpoint instructions. The two failures have different causes and mechanisms but repeatedly reached the same costly late boundary, so before any repeat of the costly action record exactly one outcome-preserving checkpoint. Select the earlier sufficient manifest-and-cache canary while preserving the original outcome, operating envelope, oracle, reviewed population, and non-deferrable invariants. Do not ask a product or process question and do not take a protected action. Write checkpoint-result.json with exactly schemaVersion, checkpointId, checkpointStatus, triggerRef, selectedRoute, nextOracle, outcomeRef, envelopeRef, oracleRef, populationRef, nonDeferrableInvariants, checkpointCount, costlyActionRepeatCount, productQuestionCount, protectedActionCount, duplicateDisposition, and events. Use schemaVersion=1; the identifiers late-validation-manifest-cache-r1, recorded, materially-different-failures-same-costly-late-boundary, earlier-manifest-cache-canary, canary-result.json:passed, twelve-reviewed-local-reports, disposable-local-fixture, unchanged-twelve-report-late-validation, and twelve-report-population-r1; invariants no-population-reduction, no-proof-weakening, and no-protected-action; checkpointCount=1 and all three action/question counts=0; duplicateDisposition=suppressed-unchanged-evidence; and the ordered events trigger-detected:different-failures-same-costly-late-boundary, checkpoint-recorded:late-validation-manifest-cache-r1, route-selected:earlier-manifest-cache-canary, scope-oracle-population:unchanged, costly-action-repeat-count:0, protected-boundary:unchanged, autonomous-continuation:canary, duplicate-suppressed:unchanged-evidence, cleanup-ready:proof-owned-fixture. Then continue autonomously with node scripts/run-canary.ts, run node scripts/check-result.ts, and return its exact result. Do not repeat the full validation, create another checkpoint, modify fixture inputs, access external directories or credentials, install, commit, use network tools, dispatch agents, or perform remote, destructive, protected, or target-worktree effects.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["canary-result.json", "checkpoint-result.json"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "scripts/check-result.ts"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": ["\"canary\":\"passed\"", "\"checkpointCount\":1", "\"costlyActionRepeatCount\":0", "\"duplicateDisposition\":\"suppressed-unchanged-evidence\"", "\"eventCount\":9", "\"productQuestionCount\":0", "\"protectedActionCount\":0", "\"scopeOraclePopulation\":\"unchanged\""]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {
+        "canary": "passed",
+        "checkpointCount": 1,
+        "costlyActionRepeatCount": 0,
+        "duplicateDisposition": "suppressed-unchanged-evidence",
+        "eventCount": 9,
+        "productQuestionCount": 0,
+        "protectedActionCount": 0,
+        "scopeOraclePopulation": "unchanged"
+      }
+    },
+    {
+      "id": "configured-population-ordinary",
+      "shape": "ordinary-small",
+      "fixtureId": "configured-population-ordinary",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-population-ordinary-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "scripts/check-result.ts"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this ordinary fixture. Read case.json as the complete reviewed evidence for five distinct OPDC-001 members and apply the loaded delivery-checkpoint instructions to each member independently. Do not let one member stand in for another. Write only population-result.json with the exact schema and member order in case.json.expectedResult when, and only when, your classification of every member matches those reviewed outcomes. Preserve every accepted outcome, oracle, and population; do not ask a question or take a protected action. Run node scripts/check-result.ts once after writing the result, then stop.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["population-result.json"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "scripts/check-result.ts"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": ["\"memberCount\":5", "\"ownerQuestionCount\":0", "\"protectedActionCount\":0", "\"repositoryClass\":\"ordinary-report-fixture\"", "\"scopeOraclePopulation\":\"unchanged\""]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {"fixtureField": "expectedResult"}
+    },
+    {
+      "id": "configured-population-openspec-grind",
+      "shape": "openspec-backed",
+      "fixtureId": "configured-population-openspec-grind",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/delivery-checkpoint-population-openspec-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "openspec/changes/population-evidence/.openspec.yaml",
+          "openspec/changes/population-evidence/history.md",
+          "openspec/changes/population-evidence/proposal.md",
+          "openspec/changes/population-evidence/tasks.md",
+          "scripts/check-result.ts"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this OpenSpec fixture. Read case.json and the active population-evidence change as the complete reviewed evidence for seven distinct OPDC-001 members spanning OpenSpec and grind task classes. Apply the loaded delivery-checkpoint, OpenSpec, and task-scoped grind instructions to each member independently; the grind rows are reviewed frontier observations and deterministic code does not classify their semantics. Write only population-result.json with the exact schema and member order in case.json.expectedResult when, and only when, every classification matches those reviewed outcomes. Preserve every accepted outcome, oracle, population, task-scoped gate, and owner boundary; do not modify OpenSpec artifacts, take a protected action, or ask any question beyond the exact reviewed owner-boundary row. Run node scripts/check-result.ts once after writing the result, then stop.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["archive", "commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["population-result.json"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "scripts/check-result.ts"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": ["\"memberCount\":7", "\"ownerQuestionCount\":1", "\"protectedActionCount\":0", "\"repositoryClass\":\"openspec-grind-campaign-fixture\"", "\"scopeOraclePopulation\":\"unchanged\""]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {"fixtureField": "expectedResult"}
+    }
+  ]
+}

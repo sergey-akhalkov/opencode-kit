@@ -36,6 +36,14 @@ export const KAIZEN_IMPORT_TOOL = "kaizen_import_feedback";
 export const KAIZEN_ENVELOPE_OPEN = "<kaizen_signal>";
 export const KAIZEN_ENVELOPE_CLOSE = "</kaizen_signal>";
 
+const KAIZEN_COMPACTION_CONTEXT = [
+  "Kaizen compaction output contract (mandatory): after the ordinary summary and Session Reflection, append exactly one Kaizen envelope and nothing after it.",
+  `The envelope has no Markdown fence and uses this exact outer form: ${KAIZEN_ENVELOPE_OPEN}{\"schemaVersion\":1,\"signals\":[]}${KAIZEN_ENVELOPE_CLOSE}`,
+  "Use signals: [] when there is no evidence-backed workflow improvement. Otherwise signals contains one to three objects with exactly these keys: kind, summary, observedEvidence, impact, likelyCause, doNotRepeat, scopeHint, evidenceRefs.",
+  "kind is one of friction, repetition, waste, failure-pattern, process-gap, tooling-gap. scopeHint is one of current-project, opencode-kit, external, unknown. evidenceRefs contains one to eight repository-relative forward-slash paths without empty, dot, or parent segments.",
+  "Keep the JSON body under 4 KiB and every text field concise and non-empty. Do not include another kaizen_signal tag, transcript text, secrets, credentials, absolute paths, tool calls, product tasks, or proposals.",
+].join("\n");
+
 export type KaizenProposalOwnerState = "current-root" | "different-root" | "invalid" | "unconfigured";
 
 type KaizenFeatureInput = Omit<KaizenRootInput, "environment"> & { environment?: KaizenEnvironment };
@@ -599,6 +607,12 @@ export function createKaizenPluginHooks(input: PluginInput, environment: KaizenE
           return boundedToolResult("Kaizen legacy feedback import", output, output, context, 4 * 1024);
         },
       },
+    },
+    "experimental.session.compacting": async (
+      _hookInput: { sessionID: string },
+      output: { context: string[]; prompt?: string },
+    ) => {
+      output.context.push(KAIZEN_COMPACTION_CONTEXT);
     },
     event: async ({ event }: { event: unknown }) => {
       if (record(event)?.type !== "session.compacted") return;

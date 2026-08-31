@@ -42,9 +42,20 @@ export default {
     const kaizenEvent = "event" in kaizenHooks ? kaizenHooks.event : null;
     const projectMemoryDispose = "dispose" in projectMemoryHooks ? projectMemoryHooks.dispose : null;
     const kaizenDispose = "dispose" in kaizenHooks ? kaizenHooks.dispose : null;
+    const projectMemoryCompacting = "experimental.session.compacting" in projectMemoryHooks ? projectMemoryHooks["experimental.session.compacting"] : null;
+    const kaizenCompacting = "experimental.session.compacting" in kaizenHooks ? kaizenHooks["experimental.session.compacting"] : null;
     return {
       ...projectMemoryHooks,
       ...kaizenHooks,
+      ...(projectMemoryCompacting != null || kaizenCompacting != null ? {
+        "experimental.session.compacting": async (
+          hookInput: { sessionID: string },
+          output: { context: string[]; prompt?: string },
+        ) => {
+          if (projectMemoryCompacting != null) await projectMemoryCompacting(hookInput, output);
+          if (kaizenCompacting != null) await kaizenCompacting(hookInput, output);
+        },
+      } : {}),
       event: async (eventInput) => {
         if (projectMemoryEvent != null) await projectMemoryEvent(eventInput);
         if (kaizenEvent != null) await kaizenEvent(eventInput);

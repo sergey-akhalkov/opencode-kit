@@ -432,48 +432,11 @@ function reviewedLongRootFixture(source: SessionDeliveryContextResult): SessionD
     unresolved: structuredClone(currentTodos),
   };
   fixture.userMessages = structuredClone(fixture.humanMessages);
-  fixture.claimEvidence = {
-    claims: Array.from({ length: 4 }, (_, index) => ({
-      candidateId: "completion-arbiter-evidence-budget-baseline-r1",
-      changeRef: `change_reviewed_${index}`,
-      claimClass: "finite-population" as const,
-      claimId: `claim_reviewed_${index}`,
-      closureState: "supported" as const,
-      coverageBasis: "finite-population" as const,
-      disposition: "supported" as const,
-      environmentId: "environment_reviewed",
-      evidenceRefs: Array.from({ length: 8 }, (__, refIndex) => `evidence_${index}_${refIndex}`),
-      independentChallenge: { evidenceRefs: [`challenge_${index}`], required: true, status: "complete" as const },
-      materialExclusions: [`Unreviewed population ${index}`],
-      maximumSupportedClaim: `Reviewed bounded claim ${index} ${"M".repeat(180)}`,
-      observationBoundary: `provider-free-reviewed-${index}`,
-      outcomeRef: `outcome_reviewed_${index}`,
-      paths: {
-        baseline: `baseline_reviewed_${index}`,
-        candidate: `candidate_reviewed_${index}`,
-        production: `production_reviewed_${index}`,
-      },
-      population: {
-        id: `population_reviewed_${index}`,
-        members: Array.from({ length: 8 }, (__, memberIndex) => `member_${index}_${memberIndex}`),
-        requiredMembers: 8,
-        supportedMembers: 8,
-      },
-      realOracle: { evidenceRefs: [`oracle_${index}`], required: true, status: "observed" as const },
-      statement: `Reviewed claim statement ${index} ${"C".repeat(180)}`,
-      unresolvedObservations: [],
-    })),
-    complete: true,
-    omissions: [],
-    selection: "explicit",
-  };
   const counts = fixture.session!.counts;
   fixture.session!.counts = {
     ...counts,
     assistantEvidence: fixture.assistantEvidence.length,
     background: fixture.background.length,
-    claimEvidence: fixture.claimEvidence.claims.length,
-    claimOmissions: fixture.claimEvidence.omissions.length,
     currentTodos: fixture.todos.current.length,
     descendants: fixture.descendants.length,
     diffEvidence: fixture.diffEvidence.length,
@@ -517,7 +480,6 @@ function emptyCompletionEvidence(): SessionDeliveryContextResult {
     assistantEvidence: [],
     auditRefs: [],
     background: [],
-    claimEvidence: { claims: [], complete: true, omissions: [], selection: "none" },
     descendants: [],
     diffEvidence: [],
     generatedAt: "1970-01-01T00:00:00.000Z",
@@ -545,13 +507,13 @@ function emptyCompletionEvidence(): SessionDeliveryContextResult {
     userMessages: [],
     validationEvidence: [],
     warnings: [],
+    workFrontier: { assessment: null, errorCode: "missing-frontier", status: "absent" },
   };
 }
 
 function assertReviewedCounts(fixture: SessionDeliveryContextResult): void {
   const actual = reviewedCounts(fixture);
   assert(JSON.stringify(actual) === JSON.stringify(REVIEWED_COUNTS), `Reviewed fixture count mismatch: ${JSON.stringify(actual)}`);
-  assert(fixture.claimEvidence.claims.length === 4, "Reviewed fixture must retain four ordinary claim records");
 }
 
 function sameStable(left: unknown, right: unknown): boolean {
@@ -608,7 +570,6 @@ function candidateReadbackMatrix(
         requirementSignals: source.requirementSignals,
       },
     ),
-    claims: sameStable(candidate.claimEvidence, source.claimEvidence),
     liveness: sameStable(
       { auditRefs: candidate.auditRefs, background: candidate.background, descendants: candidate.descendants },
       { auditRefs: source.auditRefs, background: source.background, descendants: source.descendants },
@@ -755,7 +716,7 @@ async function proveCandidateController(
   const journal = discoverStrategyJournal(
     directory,
     rootRef,
-    { assistantEvidence: [], background: [], humanMessages: [] },
+    { background: [], humanMessages: [] },
     "docs/session-strategy-history",
   );
   const prompts: string[] = [];
@@ -779,15 +740,6 @@ async function proveCandidateController(
     rootRef,
     rootSessionID: rootID,
   };
-  const claimMatrix = completionEvidence.claimEvidence.claims.map((claim) => ({
-    claimId: claim.claimId,
-    closureState: claim.closureState,
-    evidenceRefs: claim.evidenceRefs,
-    maximumSupportedClaim: claim.maximumSupportedClaim,
-    outcomeRef: claim.outcomeRef,
-  }));
-  const mustContinue = completionEvidence.claimEvidence.complete !== true
-    || completionEvidence.claimEvidence.claims.some((claim) => claim.closureState !== "supported");
   const client = {
     tool: { ids: async () => ({ data: [] }) },
     v2: { agent: { list: async () => ({ data: { data: [{ id: "session-completion-arbiter", hidden: true, model: { providerID: "proof", id: "model" } }] } }) } },
@@ -812,18 +764,11 @@ async function proveCandidateController(
             auditID: epoch.auditID,
             rootSessionRef: epoch.rootRef,
             inspectedRevision: revision.revisionDigest,
-            verdict: mustContinue ? "continue" : "allow_stop",
+            verdict: "allow_stop",
             confidence: "high",
             goalSummary: "Reviewed provider-free candidate complete",
-            claimMatrix,
-            requirementMatrix: mustContinue ? [{ evidenceRefs: [], requirementRef: "claim-closure", status: "unresolved" }] : [],
-            unresolved: mustContinue ? [{
-              requirementRef: "claim-closure",
-              evidenceGap: "Supplied claim closure is incomplete.",
-              nextAction: "Complete or honestly narrow the structured claim closure.",
-              nextEvidence: "Current supported claim closure.",
-              stopCondition: "Claim closure supports the accepted scope.",
-            }] : [],
+            requirementMatrix: [],
+            unresolved: [],
             strategyAssessment: { fingerprint: "reviewed-candidate", prohibitedStrategies: [], repeated: false, requiredRetryEvidence: [] },
             questionAnswers: null,
             ownerBoundary: null,
@@ -870,12 +815,11 @@ async function proveCandidateController(
   assert(childCreates === 1 && prompts.length === 1, "Candidate controller must create and prompt one fake child");
   assert(prompts[0] === expectedRequest, "Candidate controller must submit the exact measured request");
   assert(state.auditDiagnostics.requestBytes === requestBytes(expectedRequest), "Candidate controller request byte diagnostics mismatch");
-  const expectedState = mustContinue ? "continued" : "passed";
   assert(
-    state.state === expectedState && state.activeAudit == null,
-    `Candidate controller must reach ${expectedState} terminal state (state=${state.state}, errorClass=${state.auditDiagnostics.errorClass}, active=${state.activeAudit != null}, continuationCalls=${continuationCalls}, logs=${JSON.stringify(logs)})`,
+    state.state === "passed" && state.activeAudit == null,
+    `Candidate controller must reach passed terminal state (state=${state.state}, errorClass=${state.auditDiagnostics.errorClass}, active=${state.activeAudit != null}, continuationCalls=${continuationCalls}, logs=${JSON.stringify(logs)})`,
   );
-  assert(continuationCalls === (mustContinue ? 1 : 0), "Candidate controller continuation side-effect mismatch");
+  assert(continuationCalls === 0, "Candidate controller continuation side-effect mismatch");
   return {
     childCreates,
     cleanup: "complete",
@@ -884,7 +828,7 @@ async function proveCandidateController(
     requestBytes: state.auditDiagnostics.requestBytes,
     requestDigest: crypto.createHash("sha256").update(expectedRequest).digest("hex"),
     rootState: state.state,
-    verdict: mustContinue ? "continue" : "allow_stop",
+    verdict: "allow_stop",
   };
 }
 
@@ -1121,7 +1065,6 @@ function evaluateRaw(rawValue: unknown): Record<string, unknown> {
     const observedBytes = numberValue(overflow.observedBytes, "overflow.observedBytes");
     const allowedBytes = numberValue(overflow.allowedBytes, "overflow.allowedBytes");
     assert(JSON.stringify(counts) === JSON.stringify(REVIEWED_COUNTS), "Fixture retained counts do not match the reviewed population");
-    assert(fixture.claimRecords === 4, "Fixture must retain four ordinary claim records");
     assert(allowedBytes === MAX_REQUEST_BYTES && observedBytes > allowedBytes, "Baseline fixture must exceed the unchanged request limit");
     assert(overflow.promptCalls === 0 && overflow.childCreates === 0, "Baseline overflow must create no child or model call");
     assert(overflow.errorClass === "input-state" && overflow.stoppedLog === true, "Baseline overflow must remain terminal and observable");
@@ -1146,7 +1089,6 @@ function evaluateRaw(rawValue: unknown): Record<string, unknown> {
     const matrix = record(candidate.readbackMatrix, "candidate.readbackMatrix");
     const exactRequestBytes = numberValue(candidate.exactRequestBytes, "candidate.exactRequestBytes");
     assert(JSON.stringify(counts) === JSON.stringify(REVIEWED_COUNTS), "Candidate fixture retained counts do not match the reviewed population");
-    assert(fixture.claimRecords === 4, "Candidate fixture must retain four ordinary claim records");
     assert(exactRequestBytes <= 175_000 && exactRequestBytes <= MAX_REQUEST_BYTES, "Candidate fixture must retain proof-control and runtime headroom");
     assert(candidate.byteStable === true && candidate.requestSchemaVersion === 2 && candidate.evidenceSchemaVersion === 1, "Candidate schemas and serialization must be stable");
     assert(Object.values(matrix).every((value) => value === true), "Candidate readback matrix is incomplete");
@@ -1178,11 +1120,11 @@ function evaluateRaw(rawValue: unknown): Record<string, unknown> {
     const request = record(raw.request, "request");
     const result = record(provider.result, "provider.result");
     const exactRequestBytes = numberValue(request.requestBytes, "request.requestBytes");
-    assert(JSON.stringify(counts) === JSON.stringify(REVIEWED_COUNTS) && fixture.claimRecords === 4, "Installed reviewed fixture identity mismatch");
+    assert(JSON.stringify(counts) === JSON.stringify(REVIEWED_COUNTS), "Installed reviewed fixture identity mismatch");
     assert(exactRequestBytes <= 175_000 && exactRequestBytes <= MAX_REQUEST_BYTES, "Installed reviewed request exceeds its control envelope");
     assert(request.requestSchemaVersion === 2 && request.evidenceSchemaVersion === 1, "Installed reviewed request schema mismatch");
     assert(provider.arbiterCalls === 1 && provider.primaryCalls === 0 && provider.externalCalls === 0, "Installed reviewed fixture must use exactly one local hidden-arbiter call");
-    assert(result.verdict === "allow_stop" && result.claimRows === 4 && result.requirementRows === 0, "Installed reviewed verdict matrix mismatch");
+    assert(result.verdict === "allow_stop" && result.requirementRows === 0, "Installed reviewed verdict matrix mismatch");
     assert(raw.cleanup === "complete" && raw.childCount === 1, "Installed reviewed cleanup/child count mismatch");
     return {
       candidateId,
@@ -1213,7 +1155,7 @@ function evaluateRaw(rawValue: unknown): Record<string, unknown> {
     assert(provider.arbiterCalls === 1 && provider.externalCalls === 0, "Installed proof must use one local arbiter call and no external call");
     assert(provider.primaryCalls === Number(profile.messageCount) + 1, "Installed primary call count must include the official activation turn");
     assert(
-      result.verdict === "allow_stop" && result.requirementRows === 0 && result.claimRows === 0
+      result.verdict === "allow_stop" && result.requirementRows === 0
         && result.questionAnswers === null && result.ownerBoundary === null,
       "Installed correlated verdict matrix mismatch",
     );
@@ -1317,7 +1259,7 @@ function installedProvider(messageChars: number) {
   let arbiterCalls = 0;
   let audit: InstalledAuditCapture | null = null;
   let primaryCalls = 0;
-  let result: { claimRows: number; ownerBoundary: null; questionAnswers: null; requirementRows: number; verdict: "allow_stop" } | null = null;
+  let result: { ownerBoundary: null; questionAnswers: null; requirementRows: number; verdict: "allow_stop" } | null = null;
   const server = Bun.serve({
     hostname: "127.0.0.1",
     port: 0,
@@ -1339,17 +1281,6 @@ function installedProvider(messageChars: number) {
         arbiterCalls += 1;
         const requestPayload = JSON.parse(match[1]) as Record<string, unknown>;
         const completionEvidence = record(requestPayload.completionEvidence, "installed completionEvidence");
-        const claimEvidence = record(completionEvidence.claimEvidence, "installed claimEvidence");
-        const claims = Array.isArray(claimEvidence.claims)
-          ? claimEvidence.claims.map((claim) => record(claim, "installed claim"))
-          : [];
-        const claimMatrix = claims.map((claim) => ({
-          claimId: claim.claimId,
-          closureState: claim.closureState,
-          evidenceRefs: claim.evidenceRefs,
-          maximumSupportedClaim: claim.maximumSupportedClaim,
-          outcomeRef: claim.outcomeRef,
-        }));
         audit = {
           assistantEvidence: Array.isArray(completionEvidence.assistantEvidence) ? completionEvidence.assistantEvidence.length : -1,
           evidenceSchemaVersion: completionEvidence.schemaVersion,
@@ -1359,7 +1290,7 @@ function installedProvider(messageChars: number) {
           requestSchemaVersion: requestPayload.schemaVersion,
           rootSessionRef: requestPayload.rootSessionRef,
         };
-        result = { claimRows: claimMatrix.length, ownerBoundary: null, questionAnswers: null, requirementRows: 0, verdict: "allow_stop" };
+        result = { ownerBoundary: null, questionAnswers: null, requirementRows: 0, verdict: "allow_stop" };
         response = JSON.stringify({
           schemaVersion: 1,
           auditID: requestPayload.auditID,
@@ -1368,7 +1299,6 @@ function installedProvider(messageChars: number) {
           verdict: "allow_stop",
           confidence: "high",
           goalSummary: "Disposable installed long-root proof complete",
-          claimMatrix,
           requirementMatrix: [],
           unresolved: [],
           ownerBoundary: null,
@@ -1539,7 +1469,7 @@ async function runInstalledReviewed(options: Options): Promise<void> {
           "global/plugin/session-delivery-context/projection.ts",
         ].map((relative) => ({ path: relative, sha256: digest(path.join(options.runtimeSource, relative)) })),
       },
-      fixture: { claimRecords: completionEvidence.claimEvidence.claims.length, counts: reviewedCounts(completionEvidence) },
+      fixture: { counts: reviewedCounts(completionEvidence) },
       mode: "installed-reviewed",
       provider: { arbiterCalls: facts.arbiterCalls, externalCalls: 0, primaryCalls: facts.primaryCalls, result: facts.result },
       request: facts.audit,
@@ -1791,7 +1721,6 @@ async function runFixture(options: Options): Promise<void> {
       controller,
       environment: { bun: Bun.version, platform: process.platform },
       fixture: {
-        claimRecords: fixture.claimEvidence.claims.length,
         counts: reviewedCounts(fixture),
         projectionBytes: requestBytes(JSON.stringify(fixture)),
       },

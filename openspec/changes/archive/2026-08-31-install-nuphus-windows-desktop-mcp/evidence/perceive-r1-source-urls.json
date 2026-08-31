@@ -1,0 +1,37 @@
+{
+  "files": [
+    {
+      "cacheName": "ch_PP-OCRv4_det.onnx",
+      "urls": [
+        "https://hf-mirror.com/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_det_infer.onnx",
+        "https://huggingface.co/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_det_infer.onnx"
+      ]
+    },
+    {
+      "cacheName": "ch_PP-OCRv4_rec.onnx",
+      "urls": [
+        "https://hf-mirror.com/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_rec_infer.onnx",
+        "https://huggingface.co/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_rec_infer.onnx"
+      ]
+    },
+    {
+      "cacheName": "ch_PP-OCR_keys_v1.txt",
+      "urls": [
+        "https://gitee.com/paddlepaddle/PaddleOCR/raw/main/ppocr/utils/ppocr_keys_v1.txt"
+      ]
+    },
+    {
+      "cacheName": "icon_detect.onnx",
+      "urls": [
+        "https://hf-mirror.com/onnx-community/OmniParser-icon_detect_640x640/resolve/main/onnx/model.onnx",
+        "https://huggingface.co/onnx-community/OmniParser-icon_detect_640x640/resolve/main/onnx/model.onnx"
+      ]
+    }
+  ],
+  "source": {
+    "gitBlobSha": "2376343fe902eadf93b473b3b08e4f331c745fc0",
+    "path": "crates/nuphus-mcp/src/models.rs",
+    "ref": "v0.2.2",
+    "repository": "https://github.com/mrpulor-gh/nuphus-mcp"
+  }
+}

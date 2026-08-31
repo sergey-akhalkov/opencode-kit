@@ -1,0 +1,6 @@
+{
+  "candidateId": "nuphus-rollback-r1-absent-replay",
+  "inputRawSha256": "6461f1d54ceaedde487b7a4bd65095d18209b1601f19b33e3b4a833b0f3c52c2",
+  "noLiveCalls": true,
+  "sourceCandidateId": "nuphus-rollback-r1-absent"
+}

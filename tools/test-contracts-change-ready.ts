@@ -80,8 +80,10 @@ const CRITICAL_PROCESS_CONTROL_SKILL_MARKERS = [
 const CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS = [
   "attempt limits, and process stop lines are autonomous controls",
   "`one attempt`, `no successor`, or checked-task rule is not human scope by itself",
-  "Classify questions asking whether to update those controls",
-  "as `continue`",
+  "a complete frontier uses `verdict=allow_stop` plus `questionAction=answer`",
+  "a runnable frontier uses `verdict=continue` plus `questionAction=answer`",
+  "completion-audit gaps about updating those controls as `verdict=continue` with `questionAction:null`",
+  "use the complete/runnable answer pairing above and never `product_decision_required`",
   "underlying protected action remains a scoped non-product gate",
 ] as const;
 
@@ -623,10 +625,15 @@ export const changeReadyContractTests: TestCase[] = [
         "Arbiter must keep planning-update vs protected-action authority separation.",
       );
 
-      const arbiterWithoutContinue = arbiter.replaceAll("as `continue`", "as `product_decision_required`");
+      const arbiterWithoutContinue = arbiter.replaceAll(
+        "completion-audit gaps about updating those controls as `verdict=continue` with `questionAction:null`",
+        "completion-audit gaps about updating those controls as `verdict=product_decision_required` with `questionAction:null`",
+      );
       assert(
-        missingTokens(arbiterWithoutContinue, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes("as `continue`"),
-        "Arbiter process-only questions must remain classified as continue, not product decisions.",
+        missingTokens(arbiterWithoutContinue, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes(
+          "completion-audit gaps about updating those controls as `verdict=continue` with `questionAction:null`",
+        ),
+        "Arbiter completion process-control gaps must remain continue with no question action.",
       );
     },
   },

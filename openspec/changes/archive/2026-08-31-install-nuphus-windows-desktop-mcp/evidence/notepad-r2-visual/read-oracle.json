@@ -1,0 +1,16 @@
+{
+  "after": {
+    "markerSuffixVisible": "PROOF_8A15B9CD49",
+    "notepadCharacterCountVisible": 23,
+    "pngSha256": "0f1228d34ac6b91dfea3c48e3465a28bf902f540105d197895eef95617e4d121"
+  },
+  "before": {
+    "editorVisiblyBlank": true,
+    "notepadCharacterCountVisible": 0,
+    "pngSha256": "6cf7ab93e3746ede98838ba29575eb1bd7cb3799f5ab0ff2b560ffd46b7ab58f"
+  },
+  "fullMarker": "NUPHUS_PROOF_8A15B9CD49",
+  "fullMarkerCharacterCount": 23,
+  "oracle": "OpenCode image-capable Read",
+  "result": "marker-visibly-confirmed-in-attributed-window"
+}

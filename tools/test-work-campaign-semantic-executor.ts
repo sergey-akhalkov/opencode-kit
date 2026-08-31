@@ -210,7 +210,7 @@ test("semantic executor authenticates the managed runtime without persisting the
   }
 });
 
-test("semantic executor enforces parentless deny-by-default read-only ownership", async () => {
+test("semantic executor preserves unrestricted tools while enforcing parentless read-only outcomes", async () => {
   const { root } = fixture();
   const fake = fakeClient();
   try {
@@ -220,15 +220,8 @@ test("semantic executor enforces parentless deny-by-default read-only ownership"
     assert.equal(result.modelCalls, 1);
     assert.deepEqual(result.verification, { children: 0, fileDiffs: 0, parentless: true, permissionRequests: 0, questions: 0 });
     assert.equal(fake.creates[0].parentID, undefined);
-    const permission = fake.creates[0].permission as JsonRecord[];
-    assert.deepEqual(permission[0], { permission: "*", pattern: "*", action: "deny" });
-    const tools = fake.prompts[0].tools as Record<string, boolean>;
-    assert.equal(tools.read, true);
-    assert.equal(tools.grep, true);
-    assert.equal(tools.edit, false);
-    assert.equal(tools.bash, false);
-    assert.equal(tools.task, false);
-    assert.equal(tools.question, false);
+    assert.equal("permission" in fake.creates[0], false);
+    assert.equal("tools" in fake.prompts[0], false);
     const format = fake.prompts[0].format as JsonRecord;
     const schema = format.schema as JsonRecord;
     const properties = schema.properties as Record<string, JsonRecord>;

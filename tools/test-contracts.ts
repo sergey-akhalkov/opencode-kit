@@ -395,6 +395,14 @@ const tests: TestCase[] = [
       assert(arbiterDescription.includes("Hidden completion adjudicator"), "Completion arbiter description must identify the hidden adjudicator role.");
       assert(arbiter.includes("never approves `Development-Stage`"), "Completion arbiter must forbid lifecycle approval.");
       assert(arbiter.includes("one JSON object"), "Completion arbiter must require exact JSON verdict transport.");
+      assert(
+        arbiter.includes('"consequences":["privacy-safe consequence"]'),
+        "Completion arbiter must show the product-only ownerBoundary array shape.",
+      );
+      assert(
+        arbiter.includes("unique string arrays, never scalars"),
+        "Completion arbiter must keep ownerBoundary arrays typed without relaxing the parser.",
+      );
 
       const globalAgents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
       for (const token of [

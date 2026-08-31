@@ -85,20 +85,20 @@ The helper or extension SHALL have explicit inputs, outputs, effects, stable ord
 - **THEN** the dividend records `build-minimal`, the rejected owners, and the new helper's exact contract
 - **AND** the helper remains limited to the current deterministic responsibility.
 
-### Requirement: Automation dividend evidence is candidate-correlated
-A completed `[automation-dividend]` task SHALL have one current evidence-index row containing the task id and digest, disposition, recurrence source, helper identity, exact real-entrypoint invocation and status, before-sequence operation identities, after-sequence operation identities, observed output/effects, candidate and environment identity, bounded artifact references, and cleanup. The row SHALL demonstrate equivalent required facts and no weaker safety; call-count reduction SHALL be reported only from exact comparable operations or matched consumer evidence.
+### Requirement: Automation dividend completion is current and observable
+A completed `[automation-dividend]` task SHALL name the helper or removal, its first real consumer, and the focused real-entrypoint validation that demonstrates the intended reduction with no weaker safety. The task checkbox and current project-native validation are the durable completion facts; the handoff records the current invocation, result, effects, and cleanup without creating a separate index or report. Call-count reduction SHALL be reported only from exact comparable operations or matched consumer observations.
 
 Automation evidence SHALL NOT satisfy or replace any accepted product proof, validation, safety, cleanup, or qualification requirement. Missing, stale, truncated acceptance-critical, red, or weaker evidence SHALL leave only the dividend incomplete.
 
 #### Scenario: Current helper proof satisfies the dividend
-- **WHEN** the checked dividend task has a matching current evidence row and the first consumer successfully uses the helper
+- **WHEN** the checked dividend task names its helper or removal and the first consumer plus focused real-entrypoint validation succeed
 - **THEN** the operation gate accepts the dividend fact
-- **AND** product completion remains independently gated by its own tasks and evidence.
+- **AND** product completion remains independently gated by its own tasks and validation.
 
-#### Scenario: Checked task has stale automation evidence
-- **WHEN** the helper, task text, candidate, environment, or declared sequence changes after capture
-- **THEN** the dividend is reported incomplete despite its checkbox
-- **AND** preserved product evidence outside the dependency of that change remains valid.
+#### Scenario: Checked task has stale automation behavior
+- **WHEN** the helper, task text, first consumer, or declared sequence changes after the current validation
+- **THEN** the affected validation is rerun before the dividend is reported complete
+- **AND** unrelated product validation remains scoped to its own dependencies.
 
 ### Requirement: Workflow-friction claims require matched outcome evidence
 A change that claims lower agent workflow friction SHALL use the maintained consumer-outcome regression capability with identical reviewed scenarios, model/profile, permissions, environment, initial state, and accepted outcome oracles. Outcome, proof, validation, safety, diagnostics, and cleanup equivalence SHALL pass before friction evaluation. Every candidate friction field SHALL be no greater than baseline and at least one maintained scenario median `totalToolCallCount` SHALL be strictly lower for an improvement claim.

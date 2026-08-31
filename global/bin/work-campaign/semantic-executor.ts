@@ -114,8 +114,7 @@ type SemanticExecutorDependencies = {
 const digestPattern = /^[a-f0-9]{64}$/u;
 const idPattern = /^[a-z][a-z0-9-]{0,99}$/u;
 const referencePattern = /^[a-z][a-z0-9-]*:(?:[A-Za-z0-9][A-Za-z0-9._/#-]*|\.[A-Za-z0-9][A-Za-z0-9._/#-]*)$/u;
-const readOnlyToolIds = new Set(["glob", "grep", "lsp", "read"]);
-const observableToolIds = new Set([...readOnlyToolIds, "StructuredOutput"]);
+const observableToolIds = new Set(["StructuredOutput", "glob", "grep", "lsp", "read"]);
 
 function record(value: unknown, field: string): JsonRecord {
   if (value == null || typeof value !== "object" || Array.isArray(value)) {
@@ -528,14 +527,9 @@ export async function executeSemanticAssignment(
     const route = await resolveRoute(client, root, agent);
     result.model = route;
     const toolIds = await requestData<string[]>(client.tool.ids({ directory: root }) as Promise<unknown>, "semantic tool ids");
-    for (const required of ["glob", "grep", "read"]) {
-      if (!toolIds.includes(required)) throw new WorkCampaignError(`semantic runtime is missing read-only tool ${required}`, 1);
+    for (const required of ["bash", "glob", "grep", "read"]) {
+      if (!toolIds.includes(required)) throw new WorkCampaignError(`semantic runtime is missing required tool ${required}`, 1);
     }
-    const tools = Object.fromEntries(toolIds.map((toolId) => [toolId, readOnlyToolIds.has(toolId)]));
-    const permission = [
-      { permission: "*", pattern: "*", action: "deny" as const },
-      ...["glob", "grep", "lsp", "read"].map((name) => ({ permission: name, pattern: "*", action: "allow" as const })),
-    ];
     const created = await requestData<JsonRecord>(client.session.create({
       agent: route.agent,
       directory: root,
@@ -544,7 +538,6 @@ export async function executeSemanticAssignment(
         providerID: route.providerID,
         ...(route.variant == null ? {} : { variant: route.variant }),
       },
-      permission,
       title: `work campaign ${assignment.campaignId}/${assignment.assignmentId}`,
       metadata: {
         workCampaignSemantic: {
@@ -583,7 +576,6 @@ export async function executeSemanticAssignment(
         },
         parts: [{ type: "text", text: promptText(assignment, result.sessionRef!) }],
         sessionID,
-        tools,
       }, { signal }) as Promise<unknown>,
     );
     const output = messageOutput(response);

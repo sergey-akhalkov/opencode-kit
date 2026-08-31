@@ -57,15 +57,15 @@ Signals can come from four source classes:
 
 ### Compaction
 
-The compaction hook accepts exactly one envelope with schema version 1 and zero to three signals. An empty valid envelope records a durable `no-signal` observation. Missing, duplicate, malformed, wrong-root, timeout, lookup, and store failures produce bounded diagnostics and one privacy-safe warning chain while ordinary compaction remains usable.
+The Kaizen plugin appends an output contract to OpenCode's compaction context without replacing the configured compaction prompt. `session-env` composes any selected project-memory capsule first and the Kaizen contract second. The capture hook accepts exactly one unfenced envelope with schema version 1 and zero to three signals. An empty valid envelope records a durable `no-signal` observation. Missing, duplicate, malformed, wrong-root, timeout, lookup, and store failures produce bounded diagnostics and one privacy-safe warning chain while ordinary compaction remains usable.
 
-Automatic compaction capture also depends on the loaded managed compaction prompt emitting that exact envelope and on unambiguous root-session summary correlation. Presence of the hook alone is not evidence that the active prompt is synchronized. Inspect the active/template prompt relation with:
+Automatic compaction capture depends on the loaded plugin context reaching the compaction model, that model emitting the exact envelope, and unambiguous root-session summary correlation. The context hook never assigns `output.prompt`, so active/template prompt drift remains a separate compaction-continuity diagnostic rather than a Kaizen activation requirement. Inspect that separate relation with:
 
 ```sh
 npm run opencode:sources
 ```
 
-The diagnostic reports only hashes, semantic markers, status `same | different | missing | unknown`, and the synchronization/restart boundary. It never prints prompt text or changes the active copy. Treat `different`, `missing`, or `unknown` as an unproved automatic-compaction lane, not as permission to scan transcripts or persist arbitrary summaries.
+The diagnostic reports only hashes, semantic markers, status `same | different | missing | unknown`, and the synchronization/restart boundary. It never prints prompt text or changes the active copy. Treat `different`, `missing`, or `unknown` as an unproved managed-prompt continuity lane, not as permission to scan transcripts or persist arbitrary summaries. Kaizen still requires its own copied-plugin or installed compaction observation.
 
 ### Archive Harvest
 
@@ -157,15 +157,15 @@ Provider-free focused checks are:
 ```sh
 node tools/test-cross-project-kaizen.ts
 node tools/test-session-env-plugin.ts
-node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir <new-change-evidence-path>
+node tools/proofs/cross-project-kaizen.ts --mode population
 ```
 
-Loaded modes require the absolute pinned OpenCode executable and a create-new evidence directory:
+Loaded modes require the absolute pinned OpenCode executable. The runner creates and removes its own temporary output:
 
 ```sh
-node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <absolute-path> --evidence-dir <new-change-evidence-path>
-node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <absolute-path> --evidence-dir <new-change-evidence-path>
-node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <absolute-path> --evidence-dir <new-change-evidence-path>
+node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <absolute-path>
+node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <absolute-path>
+node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <absolute-path>
 ```
 
 The provider-free population proves only its reviewed fixture paths. Component loaded modes prove only their exercised source, environment, tool, and cleanup identities. None alone establishes complete installed command following, all compaction/archive behavior, every secret format, proposal quality, SDET closure, or the complete `KZN-001` claim.

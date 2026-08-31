@@ -35,7 +35,6 @@
     "global/bin/openspec-archive.ts",
     "global/bin/openspec-change/claims.ts",
     "global/bin/openspec-change/delivery-horizon.ts",
-    "global/bin/openspec-change/evidence.ts",
     "global/bin/openspec-change/gate.ts",
     "global/bin/openspec-change/inventory.ts",
     "global/bin/openspec-change/manifest.ts",

@@ -1,0 +1,175 @@
+{
+  "candidateId": "opdc-grind-checkpoint-frontier-r1",
+  "checks": {
+    "cleanupComplete": true,
+    "expectedResults": true,
+    "explicitSemanticFixture": true,
+    "inputObservationsMatch": true,
+    "providerFree": true,
+    "sourceUnchanged": true,
+    "stableScenarioOrder": true
+  },
+  "environmentId": "provider-free-node-24.18.1-frontier-r1",
+  "mode": "replay",
+  "observations": [
+    {
+      "frontierState": "product-decision",
+      "id": "all-product-blocked",
+      "openGateRefs": [
+        "gate_product"
+      ],
+      "parkedDecisionRefs": [
+        "decision_product"
+      ],
+      "reason": "ok",
+      "runnableItemRefs": [],
+      "serverGeneration": 5,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "bounded-field-bytes",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "limit-resumeCondition",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "bounded-reference-count",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "limit-requirementRefs",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "complete",
+      "id": "complete",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [],
+      "serverGeneration": 9,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "cyclic",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "dependency-cycle",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "delivery-checkpoint-due",
+      "openGateRefs": [
+        "gate_checkpoint"
+      ],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_checkpoint",
+        "item_sibling"
+      ],
+      "serverGeneration": 10,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "delivery-checkpoint-irreducible",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_costly"
+      ],
+      "serverGeneration": 11,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "delivery-checkpoint-scope-reduction",
+      "openGateRefs": [
+        "gate_checkpoint",
+        "gate_scope_reduction"
+      ],
+      "parkedDecisionRefs": [
+        "decision_scope_reduction"
+      ],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_checkpoint"
+      ],
+      "serverGeneration": 12,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "malformed",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "invalid-item-status",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    },
+    {
+      "frontierState": "frontier-reconciling",
+      "id": "migration",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "missing-frontier",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "reconcile"
+    },
+    {
+      "frontierState": "waiting",
+      "id": "non-product-waiting",
+      "openGateRefs": [
+        "gate_technical"
+      ],
+      "parkedDecisionRefs": [],
+      "reason": "ok",
+      "runnableItemRefs": [],
+      "serverGeneration": 6,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "runnable",
+      "id": "partial-product-block",
+      "openGateRefs": [
+        "gate_product"
+      ],
+      "parkedDecisionRefs": [
+        "decision_product"
+      ],
+      "reason": "ok",
+      "runnableItemRefs": [
+        "item_independent"
+      ],
+      "serverGeneration": 3,
+      "status": "accepted"
+    },
+    {
+      "frontierState": "rejected",
+      "id": "stale-generation",
+      "openGateRefs": [],
+      "parkedDecisionRefs": [],
+      "reason": "stale-generation",
+      "runnableItemRefs": [],
+      "serverGeneration": null,
+      "status": "rejected"
+    }
+  ],
+  "scenarioCount": 13,
+  "schemaVersion": 1,
+  "status": "passed"
+}

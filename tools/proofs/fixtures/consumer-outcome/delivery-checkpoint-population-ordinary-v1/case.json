@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-population-ordinary",
+  "repositoryClass": "ordinary-report-fixture",
+  "cases": [
+    {
+      "memberId": "similar-retry-stagnation",
+      "taskClass": "ordinary",
+      "evidence": ["two materially similar attempts", "no downstream advancement", "same local failure mechanism"],
+      "acceptedFacts": {"outcomeRef": "outcome-a", "oracleRef": "oracle-a", "populationRef": "population-a"},
+      "availableRoutes": ["repeat unchanged", "run earlier canary"]
+    },
+    {
+      "memberId": "different-defect-late-discovery",
+      "taskClass": "ordinary",
+      "evidence": ["two materially different defects", "same costly late boundary", "no accepted downstream advancement"],
+      "acceptedFacts": {"outcomeRef": "outcome-b", "oracleRef": "oracle-b", "populationRef": "population-b"},
+      "availableRoutes": ["repeat costly boundary", "run earlier contract check"]
+    },
+    {
+      "memberId": "failed-costly-repetition",
+      "taskClass": "ordinary",
+      "evidence": ["one costly action failed", "only a local correction is proposed", "the successor would repeat the same costly class"],
+      "acceptedFacts": {"outcomeRef": "outcome-d", "oracleRef": "oracle-d", "populationRef": "population-d"},
+      "availableRoutes": ["repeat costly action", "run offline preflight"]
+    },
+    {
+      "memberId": "advancing-long-work",
+      "taskClass": "ordinary",
+      "evidence": ["the action is long", "two accepted downstream milestones completed", "the current oracle remains reachable"],
+      "acceptedFacts": {"outcomeRef": "outcome-f", "oracleRef": "oracle-f", "populationRef": "population-f"},
+      "availableRoutes": ["continue current route"]
+    },
+    {
+      "memberId": "single-cheap-failure",
+      "taskClass": "ordinary",
+      "evidence": ["one inexpensive local failure", "direct actionable cause", "no costly repetition or invalidation"],
+      "acceptedFacts": {"outcomeRef": "outcome-g", "oracleRef": "oracle-g", "populationRef": "population-g"},
+      "availableRoutes": ["make local correction"]
+    }
+  ],
+  "expectedResult": {
+    "schemaVersion": 1,
+    "repositoryClass": "ordinary-report-fixture",
+    "memberCount": 5,
+    "ownerQuestionCount": 0,
+    "protectedActionCount": 0,
+    "scopeOraclePopulation": "unchanged",
+    "rows": [
+      {
+        "memberId": "similar-retry-stagnation",
+        "taskClass": "ordinary",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-a", "oracleRef": "oracle-a", "populationRef": "population-a"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "earlier-canary-a",
+        "scopeAction": "preserved",
+        "events": ["failure-one", "failure-two", "checkpoint", "earlier-canary"]
+      },
+      {
+        "memberId": "different-defect-late-discovery",
+        "taskClass": "ordinary",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-b", "oracleRef": "oracle-b", "populationRef": "population-b"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "earlier-contract-check",
+        "scopeAction": "preserved",
+        "events": ["defect-one", "defect-two", "checkpoint", "earlier-contract-check"]
+      },
+      {
+        "memberId": "failed-costly-repetition",
+        "taskClass": "ordinary",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-d", "oracleRef": "oracle-d", "populationRef": "population-d"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "offline-preflight",
+        "scopeAction": "preserved",
+        "events": ["costly-failure", "checkpoint", "offline-preflight"]
+      },
+      {
+        "memberId": "advancing-long-work",
+        "taskClass": "ordinary",
+        "disposition": "continue",
+        "anchors": {"outcomeRef": "outcome-f", "oracleRef": "oracle-f", "populationRef": "population-f"},
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "current-oracle",
+        "scopeAction": "preserved",
+        "events": ["progress-one", "progress-two", "continue-current-route"]
+      },
+      {
+        "memberId": "single-cheap-failure",
+        "taskClass": "ordinary",
+        "disposition": "continue",
+        "anchors": {"outcomeRef": "outcome-g", "oracleRef": "oracle-g", "populationRef": "population-g"},
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "local-correction",
+        "scopeAction": "preserved",
+        "events": ["cheap-failure", "local-correction"]
+      }
+    ]
+  }
+}

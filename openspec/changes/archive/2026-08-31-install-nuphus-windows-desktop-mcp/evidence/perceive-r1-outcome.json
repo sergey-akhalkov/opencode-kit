@@ -1,0 +1,22 @@
+{
+  "fallback": {
+    "evidence": "evidence/notepad-r1-visual/read-oracle.json",
+    "status": "sufficient"
+  },
+  "iconDetection": {
+    "available": false,
+    "reason": "desktop_perceive stopped at the incomplete required OCR model set before optional icon detection"
+  },
+  "localOcr": {
+    "available": false,
+    "downloadedAndHashedFiles": [
+      "ch_PP-OCRv4_det.onnx",
+      "ch_PP-OCRv4_rec.onnx"
+    ],
+    "missingFile": "ch_PP-OCR_keys_v1.txt",
+    "reason": "dictionary GET failed during the single bounded bootstrap attempt"
+  },
+  "rawSha256": "995cf2242dd4848080bf51f607948af0eeec59f7fc61ef3cfb9b2c7a5ab3427b",
+  "result": "cause-preserving-degraded",
+  "unchangedLiveRetryAllowed": false
+}

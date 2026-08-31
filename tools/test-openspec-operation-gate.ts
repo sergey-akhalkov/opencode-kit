@@ -5,7 +5,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { taskTextDigest } from "./contracts/openspec-evidence.ts";
 import {
   formatBoundedFalsificationReview,
   inspectBoundedFalsificationReview,
@@ -18,11 +17,6 @@ type TestCase = { name: string; run: () => void };
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const gate = path.join(root, "tools", "openspec-operation-gate.ts");
 const generatedAt = "2026-06-12T00:00:00.000Z";
-const claimFixture = JSON.parse(fs.readFileSync(path.join(root, "tools", "fixtures", "openspec-claim-evidence", "cases.json"), "utf8")) as {
-  lanes: unknown[];
-  baseClaim: Record<string, unknown>;
-  cases: Array<{ id: string; replace: Record<string, unknown> }>;
-};
 
 const OUTCOME_CAPSULE = [
   "Outcome",
@@ -121,38 +115,6 @@ function broadClaimScope(omit?: string): string {
   return `\n${Object.entries(fields).filter(([name]) => name !== omit).map(([name, value]) => `- **${name}**: ${value}.`).join("\n")}\n`;
 }
 
-function materializeClaim(id: string): Record<string, unknown> {
-  const fixture = claimFixture.cases.find((item) => item.id === id);
-  if (fixture == null) throw new Error(`Missing claim fixture ${id}.`);
-  return { ...claimFixture.baseClaim, ...fixture.replace };
-}
-
-function writeEvidenceIndex(repo: string, changeId: string, claims: Array<Record<string, unknown>>): void {
-  const changeRoot = path.join(repo, "openspec", "changes", changeId);
-  writeText(path.join(changeRoot, "evidence-index.json"), `${JSON.stringify({
-    schemaVersion: 2,
-    changeId,
-    candidateId: "demo-r1",
-    environmentId: "demo-env",
-    retention: { maxFiles: 64, maxBytes: 26214400, exception: null },
-    tasks: [{
-      taskId: "1.1",
-      taskTextDigest: taskTextDigest("1.1 Done."),
-      result: "complete",
-      candidateId: "demo-r1",
-      environmentId: "demo-env",
-      requiredBoundary: { kind: "named-entrypoint", name: "fixture-cli", effects: ["read-only"] },
-      boundary: { kind: "named-entrypoint", name: "fixture-cli", effects: ["read-only"] },
-      invocation: { command: "fixture-cli", status: 0, recordedAt: generatedAt },
-      artifacts: [],
-      cleanup: "none",
-      manualGate: null,
-    }],
-    lanes: claimFixture.lanes,
-    claims,
-  }, null, 2)}\n`);
-}
-
 function writeStrategyHistory(changeRoot: string): void {
   writeText(path.join(changeRoot, "history.md"), "# Strategy History\n\n");
 }
@@ -244,25 +206,6 @@ const tests: TestCase[] = [
     }),
   },
   {
-    name: "apply blocks missing broad claim records and warns for development evidence",
-    run: () => withTempRepo("claim-apply", (repo) => {
-      writeChange(repo, "missing-record");
-      writeText(path.join(repo, "openspec", "changes", "missing-record", "proposal.md"), proposalWithCapsule(broadClaimScope()));
-      const missing = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "missing-record", generatedAt });
-      const records = missing.checks.find((item) => item.id === "claim-evidence:records");
-      assert(missing.status === "failed" && missing.exitCode === 1, `Apply must fail without a declared broad claim record, got ${missing.status}.`);
-      assert(records?.status === "failed" && records.blocking, "Missing broad claim record must be an apply-blocking failure.");
-
-      writeChange(repo, "development-record");
-      writeText(path.join(repo, "openspec", "changes", "development-record", "proposal.md"), proposalWithCapsule(broadClaimScope()));
-      writeEvidenceIndex(repo, "development-record", [materializeClaim("unknown-observation")]);
-      const development = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "development-record", generatedAt });
-      const closure = development.checks.find((item) => item.id === "claim-evidence:closure");
-      assert(development.status === "warning" && development.exitCode === 0, `Schema-valid development evidence must reach apply with a warning, got ${development.status}.`);
-      assert(closure?.status === "warning" && !closure.blocking && closure.summary.includes("claim-unknown=unknown"), "Development claim closure must preserve its unknown state without blocking apply planning.");
-    }),
-  },
-  {
     name: "archive gate blocks missing change, unsafe change id, and unchecked tasks",
     run: () => withTempRepo("archive-blocked", (repo) => {
       const missing = runOpenSpecOperationGate(repo, { operation: "archive", generatedAt });
@@ -275,61 +218,6 @@ const tests: TestCase[] = [
       const incomplete = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "open-change", generatedAt });
       assert(incomplete.status === "failed" && incomplete.exitCode === 1, `Expected incomplete archive failure, got ${incomplete.status}.`);
       assert(incomplete.checks.some((check) => check.id === "archive:tasks-incomplete" && check.blocking), "Complete archive must fail closed on unchecked tasks.");
-    }),
-  },
-  {
-    name: "archive rejects broad closure gaps and accepts supported exact or accepted narrowed claims",
-    run: () => withTempRepo("claim-archive", (repo) => {
-      const rejected = [
-        ["missing-member", "missing-member"],
-        ["mismatched-path", "path-mismatch"],
-        ["unavailable-real-oracle", "real-oracle-unavailable"],
-        ["stale", "stale-candidate"],
-        ["unknown-observation", "member-unknown"],
-      ] as const;
-      for (const [fixtureId, reason] of rejected) {
-        const changeId = `reject-${fixtureId}`;
-        writeChange(repo, changeId, "- [x] 1.1 Done.");
-        writeText(path.join(repo, "openspec", "changes", changeId, "proposal.md"), proposalWithCapsule(broadClaimScope()));
-        writeEvidenceIndex(repo, changeId, [materializeClaim(fixtureId)]);
-        const output = runOpenSpecOperationGate(repo, { operation: "archive", changeId, generatedAt });
-        const closure = output.checks.find((item) => item.id === "claim-evidence:closure");
-        assert(output.exitCode === 1 && closure?.blocking === true, `${fixtureId} must block complete archive.`);
-        assert(closure.summary.includes(reason) && closure.summary.includes("observed="), `${fixtureId} must retain reason ${reason} and expected/observed counts.`);
-      }
-
-      const missingId = "reject-missing-record";
-      writeChange(repo, missingId, "- [x] 1.1 Done.");
-      writeText(path.join(repo, "openspec", "changes", missingId, "proposal.md"), proposalWithCapsule(broadClaimScope()));
-      writeEvidenceIndex(repo, missingId, []);
-      const missing = runOpenSpecOperationGate(repo, { operation: "archive", changeId: missingId, generatedAt });
-      assert(missing.exitCode === 1 && missing.checks.some((item) => item.id === "claim-evidence:records" && item.blocking), "Missing declared broad claim record must block archive.");
-
-      const challengeId = "reject-missing-challenge";
-      writeChange(repo, challengeId, "- [x] 1.1 Done.");
-      writeText(path.join(repo, "openspec", "changes", challengeId, "proposal.md"), proposalWithCapsule(broadClaimScope()));
-      const challenge = {
-        ...materializeClaim("complete-finite-population"),
-        claimId: "claim-missing-challenge",
-        independentChallenge: { required: true, status: "missing", evidenceRefs: [] },
-        disposition: "blocked",
-      };
-      writeEvidenceIndex(repo, challengeId, [challenge]);
-      const challengeOutput = runOpenSpecOperationGate(repo, { operation: "archive", changeId: challengeId, generatedAt });
-      assert(challengeOutput.exitCode === 1 && challengeOutput.checks.some((item) => item.id === "claim-evidence:closure" && item.summary.includes("challenge-incomplete")), "Missing independent challenge must block archive with its original cause.");
-
-      const exactId = "accept-exact";
-      writeChange(repo, exactId, "- [x] 1.1 Done.");
-      writeEvidenceIndex(repo, exactId, [materializeClaim("exact-case")]);
-      const exact = runOpenSpecOperationGate(repo, { operation: "archive", changeId: exactId, generatedAt });
-      assert(exact.status === "passed" && exact.exitCode === 0, `Supported exact claim must archive, observed ${exact.status}.`);
-
-      const narrowedId = "accept-narrowed";
-      writeChange(repo, narrowedId, "- [x] 1.1 Done.");
-      writeText(path.join(repo, "openspec", "changes", narrowedId, "proposal.md"), proposalWithCapsule(broadClaimScope()));
-      writeEvidenceIndex(repo, narrowedId, [materializeClaim("narrowed")]);
-      const narrowed = runOpenSpecOperationGate(repo, { operation: "archive", changeId: narrowedId, generatedAt });
-      assert(narrowed.status === "passed" && narrowed.exitCode === 0 && narrowed.checks.some((item) => item.id === "claim-evidence:closure" && item.summary.includes("Only item-a")), "Explicitly accepted narrowed claim must preserve its ceiling and pass.");
     }),
   },
   {
@@ -664,22 +552,10 @@ const tests: TestCase[] = [
       const unchecked = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "required-unchecked", generatedAt });
       assert(unchecked.exitCode === 1 && unchecked.checks.some((item) => item.id === "archive:automation-dividend" && item.summary.includes("unchecked")), "Archive must fail an unchecked required dividend.");
 
-      const digestText = "1.1 [automation-dividend] Snapshot.";
-      writeChange(repo, "required-stale", `- [x] ${digestText}\n- [x] Product work.`);
-      writeText(path.join(repo, "openspec", "changes", "required-stale", "proposal.md"), proposalWithCapsule().replace("exempt - fixture does not introduce repeated automation.", "required - snapshot helper"));
-      writeEvidenceIndex(repo, "required-stale", [materializeClaim("exact-case")]);
-      const stale = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "required-stale", generatedAt });
-      assert(stale.exitCode === 1 && stale.checks.some((item) => item.id === "archive:automation-dividend" && item.summary.includes("digest")), "Archive must fail a stale required dividend digest.");
-
-      writeChange(repo, "required-current", `- [x] ${digestText}\n- [x] Product work.`);
+      writeChange(repo, "required-current", "- [x] 1.1 [automation-dividend] Snapshot.\n- [x] Product work.");
       writeText(path.join(repo, "openspec", "changes", "required-current", "proposal.md"), proposalWithCapsule().replace("exempt - fixture does not introduce repeated automation.", "required - snapshot helper"));
-      writeEvidenceIndex(repo, "required-current", [materializeClaim("exact-case")]);
-      const indexPath = path.join(repo, "openspec", "changes", "required-current", "evidence-index.json");
-      const index = JSON.parse(fs.readFileSync(indexPath, "utf8")) as { tasks: Array<{ taskTextDigest: string }> };
-      index.tasks[0].taskTextDigest = taskTextDigest(digestText);
-      writeText(indexPath, `${JSON.stringify(index, null, 2)}\n`);
       const current = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "required-current", generatedAt });
-      assert(current.checks.some((item) => item.id === "archive:automation-dividend" && item.status === "passed"), `Current required dividend must pass archive correlation, got ${current.status} ${current.checks.find((item) => item.id === "archive:automation-dividend")?.summary ?? ""}`);
+      assert(current.checks.some((item) => item.id === "archive:automation-dividend" && item.status === "passed"), `Checked required dividend must pass archive, got ${current.status} ${current.checks.find((item) => item.id === "archive:automation-dividend")?.summary ?? ""}`);
     }),
   },
 ];

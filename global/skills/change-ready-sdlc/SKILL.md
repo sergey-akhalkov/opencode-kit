@@ -61,20 +61,14 @@ The phrase "all critical bugs are fixed" means no **known confirmed reachable** 
 
 ## Shift-Left Proof Cadence
 
-- For each behavior dependency chain, minimize `time-to-first-real-signal`: execute the first safely reachable real boundary sufficient to observe the accepted effect, from offline/preserved replay through local integration/simulator, shadow or independently effect-blocked read-only real use, bounded live effects, and end-to-end operation. Unit/mock/component checks are support, not real-boundary proof. Authority is a ceiling, not a fidelity target; climb only for a current requirement, invariant, or unresolved equivalence risk.
-- Roadmaps SHALL state the ladder once. Each behavior-slice item SHALL include `Current Rung`, `Next Real Boundary`, `Blocker/Unblocker`, `Observable Proof`, owner authorization, safeguards, restoration/cleanup, and expected immutable evidence; omission is incomplete. Run the sufficient boundary before dependent expansion. A path-only action/gate stays blocked; reconcile controls and use an alternate sufficient route without claiming that path. Stop the accepted outcome only when every sufficient route requires owner action.
-- For emulation, replacement, replay, caching, skipping, or another substitution claim, load `behavioral-substitution-qualification`; it owns baseline/candidate path identity, same-actor/environment comparison, observation closure, real-oracle dependency, and the maximum supported claim. Keep this skill focused on lifecycle/evidence topology rather than copying that workflow.
+- For each behavior dependency chain, minimize `time-to-first-real-signal`: execute the first safely reachable real boundary sufficient to observe the accepted effect, from local tests or simulators through shadow or independently effect-blocked read-only real use, bounded live effects, and end-to-end operation. Unit/mock/component checks are support, not real-boundary proof. Authority is a ceiling, not a fidelity target; climb only for a current requirement, invariant, or unresolved equivalence risk.
+- Roadmaps SHALL state the ladder once. Each behavior-slice item SHALL include `Current Rung`, `Next Real Boundary`, `Blocker/Unblocker`, `Observable Proof`, owner authorization, safeguards, and restoration/cleanup; omission is incomplete. Run the sufficient boundary before dependent expansion. A path-only action/gate stays blocked; reconcile controls and use an alternate sufficient route without claiming that path. Stop the accepted outcome only when every sufficient route requires owner action.
+- For emulation, replacement, replay, caching, skipping, or another substitution claim, load `behavioral-substitution-qualification`; it owns baseline/candidate path identity, same-actor/environment comparison, observation closure, real-oracle dependency, and the maximum supported claim. Keep this skill focused on lifecycle rules rather than copying that workflow.
 - This cadence does not authorize external operations or weaken protected boundaries, physical-effect suppression, `Live-Attempt Gate`, identity, restoration, cleanup, cost, or remote/destructive/deploy/install/release controls. Early characterization is production-owned run-observe-correct; fresh critical SDET remains after current proof and accepted-scope completion only when the named-risk or explicit requirement applies.
 
-## Evidence Topology And Scoped Invalidation
+## Runtime Proof And Retry Discipline
 
-For evidence-heavy work, identify these roles before building or changing a proof harness:
-
-- **Product Candidate**: behavior-affecting production code, config, data, or schema;
-- **Proof Runner**: drives the real boundary and records observations;
-- **Evaluator**: derives acceptance results from observations;
-- **Environment Identity**: relevant executable, configuration, dependency, hardware, dataset, or service identity;
-- **Raw Evidence Bundle**: immutable observations and hashes used for replay.
+Identify the Product Candidate, real boundary, representative input, environment identity, expected observation, safety guards, and cleanup. Prefer the actual entry point and project-native tests. Do not build or retain an evidence bundle, lane index, evaluator archive, or replay corpus.
 
 ### Blocker self-diagnosis and absence-source qualification
 
@@ -84,23 +78,13 @@ A mandatory source used to prove that an event, state, packet, process, response
 
 Missing qualification keeps only the dependent Proof Runner/Evaluator/Environment lane unknown. It never clears or waives safety, identity/liveness, authorization, data-integrity, restoration/cleanup, irreversible-action, envelope, or live-attempt gates and never authorizes another costly/live attempt through the blocked path. Keep a defective proof path blocked while another sufficient safe route advances the accepted outcome; evidence on the alternate route does not clear the defective path. If the bounded pass remains inconclusive, follow the global one-consultation `troubleshooter` route; if an exact owner-only boundary is already proven, bypass redundant diagnosis.
 
-For runtime lanes, the Raw Evidence Bundle includes the exact invocation and representative input, Candidate/Environment identity, exit status, stdout/stderr, relevant logs and exceptions, observed side effects, and artifact paths. Inspect that preserved evidence before mutation or another live attempt. If it cannot distinguish realistic in-scope causes, add only the smallest safe instrumentation at the owning boundary and recapture the affected lane.
+Inspect the current run's exact invocation, representative input, Candidate/Environment identity, exit status, stdout/stderr, relevant logs and exceptions, observed side effects, and cleanup before mutation or another live attempt. If those diagnostics cannot distinguish realistic in-scope causes, add only the smallest safe instrumentation at the owning boundary and rerun. Product Candidate or relevant environment mutation invalidates dependent Runtime Proof; report formatting does not.
 
-Invalidation is dependency-scoped:
+Keep runtime fail-closed guards for non-deferrable safety, identity/liveness, authorization, data-integrity, ownership/correlation, required restoration/cleanup, irreversible-action, and envelope-escape conditions. Domain-specific policy may add concrete guards but must not omit accepted global invariants. A live fail-closed outcome is not report-only and later evaluation cannot waive it. Evaluate non-safety cardinality, grouping, formatting, percentile, report, and similar acceptance oracles from current-run observations when possible. Such evaluator failures must not alter cleanup or manufacture an unknown product state.
 
-- Product Candidate mutation invalidates dependent Runtime Proof and validation lanes and returns the candidate to `development`.
-- Environment mutation invalidates only lanes that rely on that identity.
-- Proof Runner mutation invalidates only captures whose driven behavior or recorded facts may differ.
-- Evaluator-only mutation invalidates derived verdicts, not trustworthy raw observations; replay the preserved bundle instead of repeating a live/external attempt.
-- Report or documentation formatting changes invalidate nothing unless accepted semantics or evidence interpretation changed.
+Proof may compose multiple bounded runs against the same Product Candidate and compatible Environment Identity unless simultaneity is itself an accepted requirement. A new exception, log, failing line, or later failure in the same chain is diagnosis, not outcome progress. Inspect the current run, correct the owning cause, and use the smallest safe causally distinct probe rather than building a retained replay path.
 
-Keep runtime fail-closed guards for non-deferrable safety, identity/liveness, authorization, data-integrity, ownership/correlation, required restoration/cleanup, irreversible-action, and envelope-escape conditions. Domain-specific policy may add concrete guards but must not omit accepted global invariants. A live fail-closed outcome is not evidence-only and evaluator replay cannot waive it. Evaluate non-safety cardinality, grouping, formatting, percentile, report, and similar acceptance oracles after raw capture when possible. Such evaluator failures must not alter cleanup or manufacture an unknown product state.
-
-Proof may compose multiple bounded lanes against the same Product Candidate and compatible Environment Identity unless simultaneity is itself an accepted requirement. After an evidence-only failure, preserve the complete raw bundle and replay the post-run/evaluator path against it without re-driving live effects. A new exception, log, failing line, or later failure in the same chain is diagnosis, not outcome progress.
-
-One evidence-only failure after an external, physical, costly, destructive, or long-running attempt blocks unchanged live repetition through the same proof path. The failed invocation remains finalized and non-reusable, but it does not impose a fixed mission-wide attempt ceiling on causally distinct successors. Before another live invocation through that path, run the candidate post-run/evaluator chain against the preserved bundle through its terminal verdict and every downstream stage reachable for the actual run mode, including non-side-effecting finalization checks; fixing or testing only the first failing line, helper, or parser is insufficient. Replay prior bundles from the same failure chain. Unlock only when preserved-corpus replay is green or the exact missing raw observation is identified. If that observation can only be acquired live, the next invocation is bounded evidence capture, not proof, and must record that limit in advance. Required live restoration and cleanup remain fail-closed and cannot be waived by replay.
-
-Before a repeated high-cost live attempt, record the causal change, preserved bundles, exact offline replay coverage and terminal result, unlock condition, and why the attempt can now reach farther. `unknown` gate state remains blocked. If this evidence cannot be stated, do not run the attempt. When it can be stated and existing authority covers the underlying action, an exhausted agent-authored attempt count or stop line SHALL be updated rather than escalated to the owner.
+A failed external, physical, costly, destructive, or long-running attempt blocks unchanged repetition through the same path. The invocation remains finalized and non-reusable. Another authorized attempt requires a causal mechanism change or the exact missing observation, plus the same safety and cleanup guards. Current-run diagnostics, not a retained replay corpus, determine that decision.
 
 ## Orchestrator And Writer Safety
 
@@ -120,7 +104,7 @@ Freeze the accepted outcome capsule, trusted validation, operating envelope, pro
 
 Main implements the smallest complete happy path and owns run-observe-correct at the earliest safely reachable real boundary. Production authors may build its Proof Runner, capture/evaluator, and restoration tooling before proof. After current representative proof, main may create or update the smallest focused regression oracle for a reproduced accepted-outcome defect or realistic requirement-linked regression; this is not independent SDET evidence.
 
-After current Runtime Proof, capture a readable Product Candidate Reference plus Proof Runner, Evaluator, Environment Identity, and Raw Evidence Bundle identities when applicable, then set `Development-Stage: MVP`. Failed proof remains `development` and consumes no RC number.
+After current Runtime Proof, record a readable Product Candidate Reference, environment identity, invocation, and observed result in the session handoff, then set `Development-Stage: MVP`. Failed proof remains `development` and consumes no RC number.
 
 ### 3. Complete Accepted Scope
 
@@ -134,7 +118,7 @@ Main must reproduce, disprove, or show unreachable every plausible non-deferrabl
 
 ### 5. Critical SDET
 
-Dispatch one fresh test-only SDET after current proof and accepted-scope completion only for a reachable authorization/privacy compromise, important data corruption/loss, irreversible external action, materially wrong financial/legal/business outcome, system-wide/mission-critical outage, another explicitly accepted critical consequence, or an explicit project/owner requirement. Supply original requirements, Candidate Reference, raw proof, safe local/ephemeral runner, current tests, criticality rubric, exact test-only write scope, and require Effective Model provenance.
+Dispatch one fresh test-only SDET after current proof and accepted-scope completion only for a reachable authorization/privacy compromise, important data corruption/loss, irreversible external action, materially wrong financial/legal/business outcome, system-wide/mission-critical outage, another explicitly accepted critical consequence, or an explicit project/owner requirement. Supply original requirements, Candidate Reference, current proof result, safe local/ephemeral runner, current tests, criticality rubric, exact test-only write scope, and require Effective Model provenance.
 
 SDET challenges only reachable incidents that can cause authorization/privacy compromise, important data corruption/loss, irreversible external action, materially wrong financial/legal/business outcome, system-wide or mission-critical outage, or another explicitly accepted critical outcome. It returns exactly `Action: critical-risks-reported | no-critical-risk | blocked` and may author only the smallest critical reproducer/regression oracle.
 
@@ -144,7 +128,7 @@ Main independently reproduces each row. An unchanged candidate and unchanged cri
 
 Run every applicable trusted project-native validation procedure. With accepted scope complete, validation green, triggered critical SDET terminal and usable when applicable, and no known confirmed reachable critical/non-deferrable defect, freeze the next monotonic `RC<n>`.
 
-RC numbering starts at RC1 and never resets within the root. Product Candidate mutation invalidates RC/stable and returns to `development`; scoped runner/environment mutation invalidates affected evidence lanes; evaluator/report mutation requires replay but does not erase trustworthy raw product observations. Current affected proof restores MVP, and the next complete qualification freezes `RC<n+1>`.
+RC numbering starts at RC1 and never resets within the root. Product Candidate mutation invalidates RC/stable and returns to `development`; scoped runner/environment mutation invalidates affected proof. Report-only formatting changes do not invalidate trustworthy product observations. Current affected proof restores MVP, and the next complete qualification freezes `RC<n+1>`.
 
 ### 7. Stable Handoff
 
@@ -154,18 +138,17 @@ Known documented non-critical limitations do not require an owner quiz and do no
 
 ## Restart And Continuity
 
-After restart or compaction, reconstruct the accepted outcome, current Candidate Reference, Development-Stage, root RC history, current proof, SDET state, validation, known limitations, and any live-attempt gate with its failure chain, preserved bundles, replay coverage, terminal result, and unlock condition. Uncertainty never resets RC history or clears a live-attempt gate. Unknown RC history leaves the candidate at MVP after proof and blocks the next RC number until history is resolved; unknown live-attempt gate state blocks another high-cost live attempt until resolved.
+After restart or compaction, reconstruct the accepted outcome, current Candidate Reference, Development-Stage, root RC history, current proof, SDET state, validation, known limitations, and any live-attempt gate with its observed failure, changed mechanism or missing observation, and retry/stop condition. Uncertainty never resets RC history or clears a live-attempt gate. Unknown RC history leaves the candidate at MVP after proof and blocks the next RC number until history is resolved; unknown live-attempt gate state blocks another high-cost live attempt until resolved.
 
 ## Output
 
 - `Profile`: Ordinary Small | Material
 - `Outcome`: working | blocked | unknown
-- `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none
-- `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason
-- `Live-Attempt Gate`: clear | blocked | unknown plus governed path/lane; name the path/lane and never clear it because another route/outcome works; retain each relevant status dimension/value explicitly rather than as a claim or context pointer; include failure chain, replay coverage/result, and unlock condition when not clear
+- `Candidate Reference`: readable Product Candidate plus environment identity when applicable, or none
+- `Live-Attempt Gate`: clear | blocked | unknown for a relevant costly/live path; when not clear, state the observed failure, causal change or exact missing observation, and retry/stop condition
 - `Runtime Proof`: boundary, input, expected/actual observation, side effects, outcome
 - `Architecture`: touched responsibilities and `split-or-justify` decisions, or N/A with reason
-- `Diagnostics`: exit status, stdout/stderr, relevant log/exception and artifact paths, or N/A with reason
+- `Diagnostics`: current-run exit status, stdout/stderr, relevant log/exception, effects, and cleanup, or N/A with reason
 - `Critical SDET`: terminal state and confirmed-critical correction history, or N/A with reason
 - `Validation`: trusted commands and outcomes
 - `Known Non-Critical Limitations`: list or none

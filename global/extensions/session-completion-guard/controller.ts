@@ -64,7 +64,6 @@ import {
   createTerminalCertificateChallenge,
   evaluateTerminalCertificate,
 } from "./terminal-certificate.ts";
-import { terminalClaimBindings } from "./claim-evidence.ts";
 import type {
   AuditEpoch,
   CompletionVerdict,
@@ -617,7 +616,8 @@ export class SessionCompletionController {
           if (messageID != null && messageID !== state.lastAssistantID) {
             const guardTurn = state.guardTurnPending;
             state.lastAssistantID = messageID;
-            if (!state.controlTurnPending) state.guardTurnPending = false;
+            state.controlTurnPending = false;
+            state.guardTurnPending = false;
             state.compacting = false;
             if (!guardTurn) this.invalidateAudit(state.root.id, "assistant revision changed");
           }
@@ -932,29 +932,7 @@ export class SessionCompletionController {
       return "fallback";
     }
     this.traceTerminalStage(state, "validator-bindings-start");
-    const completionEvidence = captureArbiterEvidence(
-      state.root.id,
-      hashRef("session", state.root.id),
-      this.input.directory,
-      state.root.metadata,
-    );
-    const claimEvidence = completionEvidence.claimEvidence;
-    const claimBindings = terminalClaimBindings(claimEvidence);
-    if (claimBindings.reason != null) {
-      state.terminalCertificate = {
-        challenge: null,
-        deadlineAt: null,
-        evidenceRefs: [],
-        issuer,
-        reason: claimBindings.reason,
-        status: "rejected",
-      };
-      return "fallback";
-    }
-    const { acceptedClaimIds, claimEvidenceRefs } = claimBindings;
     const challenge = createTerminalCertificateChallenge({
-      acceptedClaimIds,
-      claimEvidenceRefs,
       issuer,
       leaseGeneration: inspection.revision.leaseGeneration,
       requirementIds,
@@ -991,9 +969,7 @@ export class SessionCompletionController {
         state.lastAuditedRevision = inspection.revision.revisionDigest;
         state.recoveryAudit = null;
         state.terminalCertificate = {
-          acceptedClaimIds: evaluated.certificate.acceptedClaimIds,
           challenge: null,
-          claimEvidenceRefs: evaluated.certificate.claimEvidenceRefs,
           deadlineAt: null,
           evidenceRefs: evaluated.certificate.evidenceRefs,
           issuer: evaluated.certificate.issuer,
@@ -1041,9 +1017,7 @@ export class SessionCompletionController {
       return "fallback";
     }
     state.terminalCertificate = {
-      acceptedClaimIds,
       challenge,
-      claimEvidenceRefs,
       deadlineAt,
       evidenceRefs: [],
       issuer,
@@ -1396,6 +1370,7 @@ export class SessionCompletionController {
     if (final == null) return;
     await this.status.set(state, "continuation-pending", "Continuing root session", "info");
     if (!this.isCurrentAudit(state, epoch)) return;
+    state.guardTurnPending = true;
     await ensureNoError(this.client.session.promptAsync({
       sessionID: state.root.id,
       directory: state.root.directory,
@@ -1407,7 +1382,6 @@ export class SessionCompletionController {
     if (!this.isCurrentAudit(state, epoch)) return;
     state.continuationCycles += 1;
     state.lastStrategyFingerprint = fingerprint;
-    state.guardTurnPending = true;
     await this.updateAuditMetadata(epoch, "continued", undefined, verdict);
     this.cancelAudit(state, "running");
     await this.status.persist(state);
@@ -1659,6 +1633,7 @@ export class SessionCompletionController {
     const current = await this.currentInspection(state, epoch);
     if (current == null || !this.isCurrentAudit(state, epoch)) return;
     question.deferredVerdict = null;
+    question.state = "guard-answered";
     state.restartRecoveryAction = "question-deferral-confirmed";
     if (verdict.verdict === "waiting") {
       await this.enterWaiting(state, epoch, verdict);

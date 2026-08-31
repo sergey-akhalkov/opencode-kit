@@ -1,0 +1,119 @@
+{
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "livenessClosed": true,
+    "pendingQuestionsRejected": 1,
+    "rootDeleted": true
+  },
+  "failure": null,
+  "result": {
+    "candidateId": "candidate-working-tree-task-scoped-product",
+    "captureKind": "candidate",
+    "assistantMarker": true,
+    "auditMessageFacts": [
+      {
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "{\"schemaVersion\":2,\"auditID\":\"audit_11bd9ddfbf94\",\"rootSessionRef\":\"session_b38893e7a7f4\",\"inspectedRevision\":\"b2e3b9671b741fa00713db6f1ecb9da5fb4c18d6b545e149f252c40d893831c5\",\"frontierGeneration\":1,\"verdict\":\"continue\",\"goalSummary\":\"Complete runnable independent marker work for the task-scoped installed probe; keep the proof-product format decision parked until the runnable set is empty.\",\"claimMatrix\":[],\"requirementMatrix\":[{\"requirementRef\":\"requirement_independent_marker\",\"status\":\"unresolved\",\"evidenceRefs\":[\"evidence_independent_ready\"]},{\"requirementRef\":\"requirement_product_decision\",\"status\":\"product_decision_required\",\"evidenceRefs\":[\"evidence_product_options\"]}],\"unresolved\":[{\"requirementRef\":\"requirement_independent_marker\",\"evidenceGap\":\"item_independent_marker is pending with no terminal completion evidence\",\"nextAction\":\"Execute item_independent_marker at the first sufficient real boundary\",\"nextEvidence\":\"Terminal completion evidence for item_independent_marker\",\"stopCondition\":\"item_independent_marker status=complete\"}],\"strategyAssessment\":{\"fingerprint\":\"requirement_independent_marker/item_independent_marker/evidence_independent_ready\",\"repeated\":false,\"prohibitedStrategies\":[\"present or answer the proof-product format question while item_independent_marker remains runnable\"],\"requiredRetryEvidence\":[]},\"runnableItemRefs\":[\"item_independent_marker\"],\"selectedItemRef\":\"item_independent_marker\",\"parkedDecisionRefs\":[\"decision_product_format\"],\"deferredGateRefs\":[],\"questionAction\":\"defer\",\"questionAnswers\":null,\"ownerBoundary\":null,\"waitKind\":null,\"resumeCondition\":null,\"evidenceRefs\":[\"message_b2fb985cdcdc\",\"evidence_independent_ready\",\"evidence_product_options\",\"call_74c9d9d76d09\"],\"evidenceGaps\":[\"item_independent_marker has no terminal completion evidence\"],\"confidence\":\"high\"}",
+        "textDigest": "86c71bc5cc185c8778215bc7c4dd5375d1e6c96e65a111e12d3326461c96bc78"
+      },
+      {
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "{\"schemaVersion\":2,\"auditID\":\"audit_82ccebacb90b\",\"rootSessionRef\":\"session_b38893e7a7f4\",\"inspectedRevision\":\"b1e1a19cc9063f19531a13210c8780947c384bdc99a9f0874fffc4261051e82d\",\"frontierGeneration\":2,\"verdict\":\"product_decision_required\",\"goalSummary\":\"Independent marker is complete; owner must select Compact or Detailed format for the synthetic proof product.\",\"claimMatrix\":[],\"requirementMatrix\":[{\"requirementRef\":\"requirement_independent_marker\",\"status\":\"complete\",\"evidenceRefs\":[\"evidence_independent_ready\"]},{\"requirementRef\":\"requirement_product_decision\",\"status\":\"product_decision_required\",\"evidenceRefs\":[\"evidence_product_options\"]}],\"unresolved\":[{\"requirementRef\":\"requirement_product_decision\",\"evidenceGap\":\"Owner has not selected Compact or Detailed proof product format\",\"nextAction\":\"Present the parked proof-product format decision\",\"nextEvidence\":\"Owner selection of Compact or Detailed format\",\"stopCondition\":\"The owner selects the proof product format.\"}],\"strategyAssessment\":{\"fingerprint\":\"requirement_product_decision/product-format/evidence_product_options/gen2\",\"repeated\":false,\"prohibitedStrategies\":[],\"requiredRetryEvidence\":[]},\"runnableItemRefs\":[],\"selectedItemRef\":null,\"parkedDecisionRefs\":[\"decision_product_format\"],\"deferredGateRefs\":[],\"questionAction\":\"present-product-decision\",\"questionAnswers\":null,\"ownerBoundary\":{\"decision\":\"Select Compact or Detailed output format for the synthetic proof product\",\"consequences\":[\"Compact emits the compact synthetic proof product\",\"Detailed emits the detailed synthetic proof product\"],\"affectedItemRefs\":[\"item_product_decision\"],\"evidenceRefs\":[\"evidence_product_options\"],\"resumeCondition\":\"The owner selects the proof product format.\"},\"waitKind\":null,\"resumeCondition\":null,\"evidenceRefs\":[\"evidence_independent_ready\",\"evidence_product_options\"],\"evidenceGaps\":[],\"confidence\":\"high\"}",
+        "textDigest": "2ba2badf11d1c54aac57438697a45b40fbfe5625b57dd40b1acfb5dee39f7759"
+      }
+    ],
+    "auditRefs": [
+      {
+        "auditRef": "audit_870cf5e42ebb",
+        "childRef": "session_48488469f952",
+        "status": "continued"
+      },
+      {
+        "auditRef": "audit_aad9bef44e00",
+        "childRef": "session_7573d3eec056",
+        "status": "product-decision-required"
+      }
+    ],
+    "auditRoutes": [
+      "xai/grok-4.6"
+    ],
+    "auditStatuses": [
+      "continued",
+      "product-decision-required"
+    ],
+    "autonomousRefs": 0,
+    "claimCeilingReported": false,
+    "cleanup": "pending",
+    "continuationAuditCorrelated": true,
+    "continuationAuditRef": "audit_870cf5e42ebb",
+    "continuationCount": 2,
+    "continuationRevisionPresent": true,
+    "continuationRevisionRef": "revision_18f2a60433a6",
+    "continuationSchemaVersionTwo": true,
+    "deferredQuestionCount": 1,
+    "deferredSelectedItemRefs": [
+      "item_independent_marker"
+    ],
+    "finalFrontierGeneration": 2,
+    "finalFrontierState": "product-decision",
+    "finalRunnableItemRefs": [],
+    "guardState": "product-decision-required",
+    "humanQuestionReplies": 0,
+    "inputDigest": "c4712ee115d5cd292f74c9df449b401763e0f4376ba668b0506846a73870e568",
+    "directoryRef": "directory_f7cef0822729",
+    "model": "xai/grok-4.6/high",
+    "modelCallClasses": {
+      "arbiter": 2,
+      "primary": 4
+    },
+    "openCodeVersion": "1.18.25",
+    "offeredLabels": [
+      "Compact",
+      "Detailed"
+    ],
+    "ownerRequiredLeaked": false,
+    "pendingQuestionCalls": 1,
+    "pendingRefs": 0,
+    "probeEvents": [
+      "tool:grind_frontier",
+      "tool:question",
+      "marker:task-scoped-product-independent",
+      "tool:grind_frontier",
+      "tool:question"
+    ],
+    "primaryRoutes": [
+      "xai/grok-4.6"
+    ],
+    "projectedAnswer": null,
+    "projectedStatus": null,
+    "questionCalls": 2,
+    "questionStatus": "error",
+    "finalQuestionStatus": "running",
+    "rejectedQuestionInterventions": 0,
+    "rootRef": "session_b38893e7a7f4",
+    "safeLabel": null,
+    "scenario": "task-scoped-product",
+    "selectedAnswer": null,
+    "sourceHashes": {
+      "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+      "global/agents/session-completion-arbiter.md": "17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748",
+      "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+      "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+      "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+      "global/extensions/session-completion-guard/frontier.ts": "e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c",
+      "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+      "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+      "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+      "tools/proofs/session-completion-guard-autonomous.ts": "214f8cc15767a27d0fdf9d93a9b7360680c66f8133a593b5a380304674178763"
+    },
+    "terminalDisposition": "product-decision-required",
+    "toolOnlyQuestion": [
+      "grind_frontier",
+      "question"
+    ]
+  },
+  "schemaVersion": 1
+}

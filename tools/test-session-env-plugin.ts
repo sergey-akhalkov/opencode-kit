@@ -5,6 +5,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { pathToFileURL } from "node:url";
 import plugin, { SESSION_COMPLETION_ARBITER_AGENT, SESSION_DELIVERY_CONTEXT_TOOL } from "../global/plugin/session-env.ts";
+import { graphifyProjectContextTests } from "./test-graphify-project-context-cases.ts";
 
 type TestCase = {
   name: string;
@@ -301,6 +302,7 @@ const tests: TestCase[] = [
       );
     },
   },
+  ...graphifyProjectContextTests,
   {
     name: "registers session delivery context custom tool",
     run: async () => {

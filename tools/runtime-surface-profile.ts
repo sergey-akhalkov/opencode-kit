@@ -49,7 +49,6 @@ export const OPENSPEC_ARCHIVE_HELPER_FILES = [
   "global/bin/openspec-archive.ts",
   "global/bin/portable-process.ts",
   "global/bin/openspec-change/claims.ts",
-  "global/bin/openspec-change/evidence.ts",
   "global/bin/openspec-change/gate.ts",
   "global/bin/openspec-change/inventory.ts",
   "global/bin/openspec-change/ownership.ts",

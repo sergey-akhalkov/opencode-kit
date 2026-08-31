@@ -66,11 +66,11 @@ Use this skill when the user asks to start or continue implementation of one Ope
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
 
-   Read `<changeRoot>/history.md` before substantial work. If it is missing, create it with `# Strategy History` and no invented attempts. Reconcile any `Pending Strategy History` entries from compaction before continuing.
+   Read `<changeRoot>/history.md` before substantial work. If it is missing, create it with `# Strategy History` and no invented attempts. Reconcile any `Pending Strategy History` entries from compaction before continuing, except when the same suppression identity is already carried by a due `Delivery Checkpoint State`; in that case the checkpoint is the continuation owner and no duplicate history entry is appended.
 
     Before accepting `all_done`, map the proposal outcome and current human requirement to their required observable proof. If proof is absent, `Development-Stage` remains `development`, or another explicit outcome fact is unmet, reopen or add the smallest ordinary task and continue. A change is complete only when its accepted outcome is achieved or the owner explicitly selects a supported incomplete/abandoned disposition. Optional retrospective or workflow feedback stays outside the product task graph.
 
-    Read the change-level Claim And Evidence Scope once. Before mutating a declared broad class, require its structured evidence-index record; incomplete `blocked` or `unknown` closure may remain during development, but it cannot be promoted to accepted completion. Exact-case work keeps its concise proposal line and existing proof path.
+    Read the change-level claim scope once. A broad claim must state its maximum supported scope and real observable proof directly; exact-case work keeps its concise proposal line. Do not create or require an evidence index or retained claim report.
 
     Read the proposal's `Bounded Falsification Review` declaration and the operation-gate result before substantial production mutation:
     - A reviewed `exempt - <Ordinary Small reason>` declaration proceeds without creating an empty `falsification-review.md`.
@@ -80,6 +80,8 @@ Use this skill when the user asks to start or continue implementation of one Ope
     - Persist privacy-safe references and explicit statuses only. Do not store raw user requests, hidden reasoning, or reviewer transcripts.
 
     If that record claims skipped, omitted, suppressed, cached, replayed, emulated, replaced, or optimized-bypass behavior preserves an existing result, load `behavioral-substitution-qualification` for the detailed closure workflow rather than duplicating it here.
+
+    Reconcile any current `Delivery Checkpoint State` before dependent implementation. When current observations select a materially different outcome-preserving route and the suppression identity is absent from existing history, append one concise strategy-history entry with the superseded route, do-not-repeat and retry conditions, selected route, next boundary/oracle, and suppression identity; update only the affected design, task order, and attempt/stop-line controls, then continue without process approval. When that identity is already recorded, continue its `Next Action` with zero planning writes. When the checkpoint confirms the current route or records `irreducible`, create no proposal/design/spec/task/history churn solely to document reflection. A proposed outcome, proof, or population reduction stays at the existing owner boundary and parks only its dependency; optional Kaizen capture never authorizes, schedules, completes, or blocks the current checkpoint.
 
     Read the proposal's `Delivery Horizon` declaration before substantial dependent implementation. Legacy-unlinked and `none - <reason>` changes need no trajectory route. For a linked change with a prior successful archive in the same Horizon, run the exact active `delivery-trajectory-context.ts` helper and evaluate the current compact signal. If it is `review-required`, load `roadmap-delivery-trajectory` once for the current evidence tuple and consume or create the matching terminal receipt before dependent expansion. Only a `measure-next-boundary` or `replan-outcome-preserving` receipt admits its named same-Horizon successor. A `continue` receipt permits ordinary same-Horizon continuation; `owner-required` and `unknown` create no successor and block only the exact unresolved dependent action. No receipt waives ordinary proof, safety, validation, or owner-boundary gates.
 
@@ -109,7 +111,7 @@ Use this skill when the user asks to start or continue implementation of one Ope
 
    **If proof or validation fails:**
    - Leave the task unchecked
-   - Preserve the command, representative input, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths
+    - Inspect the command, representative input, exit status, stdout/stderr, relevant logs/exceptions, side effects, and cleanup from the current run
    - Treat the raw tool result as authoritative; never substitute an expected exit code. If only generic non-zero status is observable, record the precise process exit code as `unknown`
    - Inspect those diagnostics and continue local run-observe-correct when the failure is resolvable inside the accepted scope
    - Before another materially distinct attempt, append objective, approach, evidence, outcome, reason, do-not-repeat condition, and retry condition to `history.md`

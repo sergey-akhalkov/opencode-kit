@@ -1,0 +1,12 @@
+{
+  "addedPackages": 2,
+  "exactPackageVersions": [
+    "@nuphus/nuphus-mcp@0.2.2",
+    "@nuphus/nuphus-mcp-win32-x64@0.2.2"
+  ],
+  "npmAllowScripts": {
+    "pending": "@nuphus/nuphus-mcp@0.2.2 postinstall: node bin/check.js",
+    "result": "not-run-by-host-policy"
+  },
+  "status": 0
+}

@@ -210,6 +210,11 @@ function expectedMaterializedPrinciplesPath(fixtureGlobal: string): string {
   return path.join(fixtureGlobal, "principles-of-work.md").replaceAll("\\", "/");
 }
 
+function writeValidFixtureLocalConfig(fixtureGlobal: string): void {
+  const catalog = path.join(fixtureGlobal, "extensions", "specialist-catalog.ts").replaceAll("\\", "/");
+  fs.writeFileSync(path.join(fixtureGlobal, "opencode.json"), `${JSON.stringify({ plugin: [catalog] }, null, 2)}\n`, "utf8");
+}
+
 function prepareCopiedInstaller(name: string, fakeWindows = false, safeLimit = SETX_SAFE_LIMIT): {
   copiedInstaller: string;
   dir: string;
@@ -270,6 +275,8 @@ const tests: { name: string; run: () => void }[] = [
         assert(!JSON.stringify(config).includes("__OPENCODE_"), "Generated all profile must materialize every placeholder.");
         const check = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
         assertSuccess(check, "Installer check must accept the complete generated all profile.");
+        const keepExisting = invokeCopiedInstaller(copiedInstaller, dir, [], { [ENV_VAR]: generated });
+        assertSuccess(keepExisting, "Default install must accept and preserve a complete generated all profile.");
         const printed = invokeCopiedInstaller(copiedInstaller, dir, ["--print", "--profile", "all"]);
         assertSuccess(printed, "Explicit all-profile print must succeed.");
         assertOutputContains(printed, buildExportLine(generated), "Explicit all-profile print must use the generated target.");
@@ -281,6 +288,63 @@ const tests: { name: string; run: () => void }[] = [
         const missing = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
         assertFailure(missing, "Installer check must reject a generated all profile with a missing launcher.");
         assertOutputContains(missing, "Missing generated all/extensions/roadmap-mission-launcher.ts", "Generated-profile check must identify the missing launcher.");
+      } finally {
+        rmTempDir(path.dirname(dir));
+      }
+    },
+  },
+  {
+    name: "installer check requires exactly one specialist catalog plugin in active configs",
+    run: () => {
+      const { copiedInstaller, dir, fixtureGlobal } = prepareCopiedInstaller("specialist-catalog-check");
+      try {
+        const local = path.join(fixtureGlobal, "opencode.json");
+        const catalog = path.join(fixtureGlobal, "extensions", "specialist-catalog.ts");
+        for (const [label, plugin] of [
+          ["missing", []],
+          ["duplicate", [catalog, catalog]],
+        ] as const) {
+          const original = Buffer.from(`${JSON.stringify({ plugin }, null, 2)}\n`);
+          fs.writeFileSync(local, original);
+          const checked = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: fixtureGlobal });
+          assertFailure(checked, `Unprofiled ${label} specialist catalog config must fail check.`);
+          assertOutputContains(checked, "extensions/specialist-catalog.ts exactly once", `${label} diagnostic must name the exact plugin invariant.`);
+          const installed = invokeCopiedInstaller(copiedInstaller, dir, [], { [ENV_VAR]: fixtureGlobal });
+          assertFailure(installed, `Default install must fail for an existing ${label} specialist catalog config.`);
+          assertOutputContains(installed, "Existing kit install is incomplete", `${label} default install must fail loudly.`);
+          assert(fs.readFileSync(local).equals(original), `${label} default install must preserve machine-local config bytes.`);
+          const profile = path.join(dir, `.profile-${label}`);
+          const persisted = invokeCopiedInstaller(copiedInstaller, dir, ["--persist-script", profile]);
+          assertFailure(persisted, `Unprofiled ${label} specialist catalog config must not be persisted.`);
+          assert(!fs.existsSync(profile), `${label} persistence failure must not create a profile file.`);
+        }
+
+        fs.writeFileSync(local, `${JSON.stringify({ plugin: [catalog] }, null, 2)}\n`, "utf8");
+        assertSuccess(
+          invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: fixtureGlobal }),
+          "Unprofiled exact-one specialist catalog config must pass check.",
+        );
+        const profile = path.join(dir, ".profile-exact");
+        assertSuccess(
+          invokeCopiedInstaller(copiedInstaller, dir, ["--persist-script", profile]),
+          "Unprofiled exact-one specialist catalog config must be persistable.",
+        );
+
+        assertSuccess(
+          invokeCopiedInstaller(copiedInstaller, dir, ["--profile", "core"]),
+          "Generated core fixture must materialize before its negative check.",
+        );
+        const generated = path.join(fixtureGlobal, ".runtime-profiles", "core");
+        const generatedConfig = path.join(generated, "opencode.json");
+        const parsed = JSON.parse(fs.readFileSync(generatedConfig, "utf8")) as { plugin?: unknown[] };
+        parsed.plugin = (parsed.plugin ?? []).filter((entry) => !JSON.stringify(entry).includes("specialist-catalog.ts"));
+        fs.writeFileSync(generatedConfig, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
+        const generatedCheck = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
+        assertFailure(generatedCheck, "Generated core without specialist catalog must fail check.");
+        assertOutputContains(generatedCheck, "Generated core config must load extensions/specialist-catalog.ts exactly once", "Generated-core diagnostic must name the exact invariant.");
+        const generatedInstall = invokeCopiedInstaller(copiedInstaller, dir, [], { [ENV_VAR]: generated });
+        assertFailure(generatedInstall, "Default install must reject an incomplete existing generated core.");
+        assertOutputContains(generatedInstall, "Generated core config must load extensions/specialist-catalog.ts exactly once", "Generated-core default install must fail on the exact invariant.");
       } finally {
         rmTempDir(path.dirname(dir));
       }
@@ -417,7 +481,8 @@ const tests: { name: string; run: () => void }[] = [
         fs.mkdirSync(toolsDir, { recursive: true });
         writeFixtureGlobalSkeleton(fixtureGlobal);
         const local = path.join(fixtureGlobal, "opencode.json");
-        const originalBytes = Buffer.from('{ "permission": "allow", "provider": "owner-local-value" }\n');
+        const catalog = path.join(fixtureGlobal, "extensions", "specialist-catalog.ts").replaceAll("\\", "/");
+        const originalBytes = Buffer.from(`{ "permission": "allow", "provider": "owner-local-value", "plugin": [${JSON.stringify(catalog)}] }\n`);
         fs.writeFileSync(local, originalBytes);
         const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
         writeCopiedInstaller(copiedInstaller);
@@ -751,6 +816,7 @@ const tests: { name: string; run: () => void }[] = [
         assertOutputContains(dryRun, `would print: ${expected}`, "--dry-run must use the exact safe export line.");
 
         const profile = path.join(fixture.dir, ".profile");
+        writeValidFixtureLocalConfig(fixture.fixtureGlobal);
         const persisted = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, ["--persist-script", profile]);
         assertSuccess(persisted, "Copied POSIX persistence should succeed.");
         const persistExpected = buildExportLine(fixture.fixtureGlobal);
@@ -905,6 +971,7 @@ const tests: { name: string; run: () => void }[] = [
       const fixture = prepareCopiedInstaller("atomic-profile-failures");
       writeFailureInjectedInstaller(fixture.copiedInstaller);
       try {
+        writeValidFixtureLocalConfig(fixture.fixtureGlobal);
         const directoryTarget = path.join(fixture.dir, "directory-profile");
         const symlinkDestination = path.join(fixture.dir, "symlink-destination");
         const symlinkTarget = path.join(fixture.dir, "symlink-profile");

@@ -63,7 +63,6 @@ function seedArchive(
   if (optionalFiles) {
     writeText(path.join(archive, "tasks.md"), "# Tasks\n\n- [x] PRIVATE TASK PAYLOAD\n");
     writeText(path.join(archive, "history.md"), "# History\n\nPRIVATE HISTORY PAYLOAD\n");
-    writeText(path.join(archive, "evidence-index.json"), "{\"private\":\"EVIDENCE PAYLOAD\"}\n");
   }
 }
 

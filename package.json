@@ -36,6 +36,7 @@
     "proof:project-unattended": "node tools/proofs/project-unattended-readiness.ts",
     "proof:doctor-qualification": "node tools/proofs/doctor-qualification.ts",
     "proof:permissions": "node tools/proofs/opencode-permissions.ts",
+    "proof:nuphus-desktop": "node tools/proofs/nuphus-desktop.ts",
     "proof:tooling-ergonomics": "node tools/proofs/agent-tooling-ergonomics.ts",
     "proof:pre-escalation-recovery": "node tools/proofs/pre-escalation-recovery.ts",
     "proof:reuse-discovery": "node tools/proofs/reuse-discovery.ts",

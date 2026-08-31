@@ -1,0 +1,34 @@
+{
+  "candidate": {
+    "configSha256": "2db08accb1d2ec48ed8fc7fee07b4c7cb5cfa3ee909721ec576469a4ef9e84b5",
+    "instructionsSha256": "b9344b78a13027621595222f05f3c554819100b3ba53c1fdc69e0b777455b739"
+  },
+  "configurationReview": {
+    "effectiveModel": "xai/grok-4.6",
+    "result": "no-material-finding",
+    "taskRef": "ses_fab233a49ffeG0I4z5qk6WcLYW"
+  },
+  "instructionReview": {
+    "effectiveModel": "xai/grok-4.6",
+    "rows": [
+      { "disposition": "confirmed-corrected", "riskId": "IA-NUPHUS-001" },
+      { "disposition": "confirmed-corrected", "riskId": "IA-NUPHUS-002" },
+      { "disposition": "confirmed-corrected", "riskId": "IA-NUPHUS-003" }
+    ],
+    "taskRef": "ses_fab233a6fffeFZCyKAHoik5nQP"
+  },
+  "runtimeReproof": {
+    "loaded": "evidence/instruction-fix-r1-loaded",
+    "notepadAct": "evidence/notepad-r2-act",
+    "notepadCleanup": "evidence/notepad-r2-cleanup",
+    "notepadVisual": "evidence/notepad-r2-visual/read-oracle.json",
+    "perception": "offline replay plus current unchanged cache hashes"
+  },
+  "sdet": {
+    "effectiveModel": "xai/grok-4.6",
+    "result": "no-critical-risk",
+    "taskRef": "ses_fab14cc9effeKX4vXacIFa2wu2",
+    "testCommand": "node --test tools/test-nuphus-desktop.ts",
+    "testsPassed": 6
+  }
+}

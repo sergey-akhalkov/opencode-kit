@@ -332,7 +332,8 @@ function assess(frontier: WorkFrontier): WorkFrontierAssessment {
   const parkedDecisionRefs = frontier.parkedDecisions.map((decision) => decision.id).sort();
   let frontierState: WorkFrontierAssessment["frontierState"];
   if (runnableItemRefs.length > 0) frontierState = "runnable";
-  else if (frontier.items.every((item) => item.status === "complete" || item.status === "deferred")) frontierState = "complete";
+  else if (openGateRefs.length === 0 && parkedDecisionRefs.length === 0
+    && frontier.items.every((item) => item.status === "complete" || item.status === "deferred")) frontierState = "complete";
   else if (openGates.some((gate) => gate.kind === "product-decision") && parkedDecisionRefs.length > 0) frontierState = "product-decision";
   else if (openGates.some((gate) => gate.kind !== "product-decision")) frontierState = "waiting";
   else fail("unresolved-without-open-gate");

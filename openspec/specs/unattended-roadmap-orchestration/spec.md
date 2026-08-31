@@ -83,12 +83,22 @@ Every multi-change mission SHALL select `local-commit` or `external` checkpoint 
 - **AND** it never pushes or stages an unrelated path.
 
 ### Requirement: Protected and unavailable outcomes stop cleanly
-The controller SHALL stop before any slice whose required effect class, owner decision, credential, remote system, external capability, live-attempt gate, or dependency is not currently satisfied. It SHALL persist the exact blocker, preserve prior completed slices, and SHALL NOT ask the completion arbiter to approve or simulate the missing boundary.
+The controller SHALL stop before any slice whose required effect class, product decision, credential, remote system, external capability, live-attempt gate, writer ownership, or dependency is not currently satisfied. It SHALL persist the exact blocker, preserve prior completed slices, and SHALL NOT ask the completion arbiter to approve or simulate the missing boundary. The blocked slice SHALL remain incomplete while the controller launches every declared dependency-valid, ownership-safe, authorized slice outside that gate's dependency cone. Only an exact material product decision may become terminal after no independent slice remains; every non-product prerequisite SHALL produce a resumable paused, waiting, or external-blocked state only after the runnable mission frontier is empty.
+
+#### Scenario: External blocker has an independent sibling
+- **WHEN** one declared slice requires an unavailable external capability and another declared slice is dependency-valid, ownership-safe, authorized, and independent of that capability
+- **THEN** the controller preserves the blocked slice and launches the independent sibling
+- **AND** sibling completion neither clears the external gate nor completes the mission.
 
 #### Scenario: Only external blocker remains
-- **WHEN** all earlier slices are checkpointed and the next slice requires an unavailable external capability
-- **THEN** the mission reaches terminal `owner-required` or `external-blocked` with the exact unblock condition
-- **AND** it performs no attempt against that boundary.
+- **WHEN** all runnable independent slices are checkpointed and every incomplete slice requires one unavailable external capability
+- **THEN** the mission reaches non-terminal `external-blocked` or `waiting` with the exact unblock condition
+- **AND** it performs no attempt against that boundary and emits no product question.
+
+#### Scenario: Only material product decision remains
+- **WHEN** every incomplete declared slice depends on one exact unresolved material product decision and no independent slice is eligible
+- **THEN** the mission reaches terminal `product-decision-required` with the affected slice refs, consequences, and resume condition
+- **AND** it closes executor ownership without answering or simulating the decision.
 
 ### Requirement: Mission retry and writer recovery are bounded
 The controller SHALL classify failures as stale/cancelled, retryable transient, locally correctable, terminal input/state, or owner/external. It SHALL apply finite per-slice attempt and wall-clock limits, require a materially changed mechanism after recorded stagnation, and SHALL NOT launch another writer while prior writer liveness or mutation authority is unknown.
@@ -148,7 +158,7 @@ Preflight SHALL permit multiple active OpenSpec changes only when their identifi
 - **AND** it does not infer safety from Git cleanliness or transcript prose.
 
 ### Requirement: Each slice runs in a fresh grind root on the current runtime
-The installed executor SHALL connect only to the launcher's current loopback OpenCode runtime, create one fresh parentless root for each slice attempt, enable grind in that root before its first command, invoke the canonical named propose and apply workflows for the declared change, and return one bounded structured result containing `completed`, `owner-required`, `paused`, `transient`, or `terminal` plus correlated session and evidence references. It SHALL NOT start a hidden nested OpenCode server or report lifecycle completion from model prose.
+The installed executor SHALL connect only to the launcher's current loopback OpenCode runtime, create one fresh parentless root for each slice attempt, enable grind in that root before its first command, invoke the canonical named propose and apply workflows for the declared change, and return one bounded structured result containing `completed`, `product-decision-required`, `waiting`, `paused`, `transient`, or `terminal` plus correlated session, frontier, gate, and evidence references. It SHALL NOT start a hidden nested OpenCode server or report lifecycle completion from model prose.
 
 #### Scenario: Propose slice reaches controller verification
 - **WHEN** an eligible `propose` slice starts against the current runtime
@@ -156,14 +166,14 @@ The installed executor SHALL connect only to the launcher's current loopback Ope
 - **AND** `completed` only returns after the root is terminal-clear for deterministic controller verification.
 
 #### Scenario: Continue slice uses a new root
-- **WHEN** a later attempt continues an existing declared change
+- **WHEN** a later authorized attempt continues an existing declared change after product-decision or waiting state is resolved
 - **THEN** the executor creates a new grind-enabled root and invokes apply for that exact change
-- **AND** it does not resume an owner-required or interrupted root from transcript context.
+- **AND** it does not resume the prior quiescent or interrupted root from transcript context.
 
 #### Scenario: Current runtime identity is unsafe
 - **WHEN** the supplied runtime URL is non-loopback, missing, stale, or cannot prove the expected project directory and installed kit capabilities
-- **THEN** the executor returns a terminal or paused structured result before session creation
-- **AND** it does not start a replacement server.
+- **THEN** the executor returns a terminal or waiting structured result before session creation
+- **AND** it does not start a replacement server or convert the identity failure into a product question.
 
 ### Requirement: Interactive mission control exposes live work and emergency stop
 The installed launcher SHALL provide run, resume, status, and stop slash commands that accept only a safe mission id and derive fixed project-contained paths and kit-owned argv. Before interactive run or resume starts mutation, it SHALL open the existing shared PTY cockpit and create one named controller PTY in that same manager. Every PTY created by a slice root SHALL appear in that cockpit, and every non-PTY child process owned by the mission SHALL stream prefixed stdout and stderr into the controller PTY while preserving full bounded diagnostics in evidence. The launcher SHALL NOT implement scheduling, create a second dashboard, or execute arbitrary user argv.
@@ -189,12 +199,17 @@ The installed launcher SHALL provide run, resume, status, and stop slash command
 - **AND** no new writer starts until prior mutation authority is proven terminal or isolated.
 
 ### Requirement: Owner-required and interrupted roots do not remain live
-When a slice reaches an owner-only decision, protected boundary, pending question that cannot be answered within accepted authority, explicit stop, runtime loss, or executor interruption, the mission SHALL persist the exact handoff and stop the campaign. Owner-required handling SHALL close the executor's active ownership and leave no live question wait; a later authorized resume SHALL use a fresh root. Mid-slice crash, hard kill, and unknown child liveness SHALL remain fail-closed until reconciliation proves terminal cessation or isolation.
+When a slice reaches an exact material product decision after every independent declared slice has drained, the mission SHALL persist the bounded product-decision handoff, close the executor's active ownership, and return `product-decision-required` with no live question wait; later authorized resume SHALL use a fresh root. When a slice reaches a protected boundary, unavailable capability, or another non-product gate, the executor SHALL close that slice root and return a scoped waiting result while the mission continues any independent eligible sibling. Explicit stop, runtime loss, mid-slice crash, hard kill, and unknown child liveness SHALL remain fail-closed until reconciliation proves terminal cessation or isolation.
 
 #### Scenario: Question requires owner authority
-- **WHEN** the completion guard classifies a pending question as owner-required
-- **THEN** the executor persists the bounded question handoff, ends the active slice ownership, and returns `owner-required`
-- **AND** the controller does not continue the campaign or retain a server wait for a future answer.
+- **WHEN** the completion guard classifies a pending question as `product_decision_required` and the mission frontier has no independent eligible slice
+- **THEN** the executor persists the bounded product-decision handoff, ends active slice ownership, and returns `product-decision-required`
+- **AND** the controller retains no server wait for a future answer and resumes later only through a fresh root.
+
+#### Scenario: Non-product gate blocks one slice
+- **WHEN** the completion guard returns `waiting` for one slice and another declared slice is dependency-valid, ownership-safe, and authorized
+- **THEN** the executor closes the blocked slice root and the controller launches the independent slice
+- **AND** the waiting gate remains unresolved with its exact resume condition.
 
 #### Scenario: Runtime disappears during a slice
 - **WHEN** the current OpenCode runtime becomes unavailable while a mutation-capable root may still own work
@@ -202,17 +217,17 @@ When a slice reaches an owner-only decision, protected boundary, pending questio
 - **AND** resume cannot create a fresh root until runtime and writer reconciliation is green.
 
 ### Requirement: Installed runtime proof covers the operator path
-The kit SHALL maintain a disposable project-neutral proof runner that exercises the installed slash launcher, shared PTY cockpit, same-runtime grind executor, mission controller, OpenSpec lifecycle, checkpoint, interruption, and evaluator paths without remote or protected effects. The raw bundle SHALL distinguish Product Candidate, Proof Runner, Evaluator, Environment Identity, controller and root session references, PTY inventory, exact invocations, stdout/stderr, state transitions, repository effects, cleanup, and terminal verdicts.
+The kit SHALL maintain a disposable project-neutral proof runner that exercises the installed slash launcher, shared PTY cockpit, same-runtime grind executor, mission controller, OpenSpec lifecycle, checkpoint, interruption, and evaluator paths without remote or protected effects. The current run SHALL expose Product Candidate, environment identity, controller and root session references, PTY inventory, exact invocations, stdout/stderr, state transitions, repository effects, cleanup, and terminal verdicts. Temporary output SHALL be removed automatically.
 
 #### Scenario: Visible two-slice mission completes
 - **WHEN** a separately authorized bounded configured-provider proof launches a disposable two-slice mission through the installed slash command
 - **THEN** the cockpit evidence contains the controller and any slice PTYs, both changes pass propose/apply/archive/local-commit readback, and the evaluator reaches terminal complete
 - **AND** the proof makes no target-project or remote-readiness claim.
 
-#### Scenario: Preserved interruption corpus is replayed
-- **WHEN** a proof captures hard kill, mid-slice runtime loss, owner-required question, unlisted active change, or local blocker evidence
-- **THEN** the evaluator and non-side-effecting finalization chain can replay the preserved bundle without another provider or live attempt
-- **AND** another high-cost attempt remains blocked until that replay is green or identifies the exact missing raw observation.
+#### Scenario: Interrupted run is diagnosed before retry
+- **WHEN** a proof observes hard kill, mid-slice runtime loss, product-decision question, non-product waiting gate, unlisted active change, or a local blocker
+- **THEN** the runner inspects that run's status, stdout/stderr, state, effects, and cleanup and reports the exact failing boundary
+- **AND** another high-cost attempt remains blocked until a causal mechanism change or the exact missing observation is identified.
 
 ### Requirement: Every synchronous mission command has a finite timeout
 Every synchronous child process invoked by roadmap preflight, checkpoint, Git/OpenSpec inspection, validation, or finalization SHALL receive an explicit finite timeout from a reviewed command class. Defaults SHALL be 30 seconds for read-only inspection, 120 seconds for Git mutation and OpenSpec operations, and 600 seconds for project validation/finalization. A project adapter MAY set validation/finalization from 1 second through 1800 seconds. No production caller SHALL pass an undefined or infinite timeout. Timeout SHALL terminate only the owned process tree, preserve argv identity, signal/status, bounded stdout/stderr, original timeout cause, and cleanup state, then pause or block the affected mission without retrying an unchanged command automatically.
@@ -277,3 +292,21 @@ behavior.
 - **WHEN** the campaign controller exits while a correlated mission remains active
 - **THEN** the mission continues or stops only under its own existing lifecycle and stop policy
 - **AND** it does not infer parent completion, start another mission, or release unknown source ownership.
+
+### Requirement: Roadmap missions SHALL continue dependency-valid slices around scoped gates
+The mission controller SHALL evaluate a blocked slice against the declared dependency graph and current effect authority. It SHALL preserve that slice and its exact gate while launching every later declared slice that is dependency-valid, ownership-safe, authorized, and independent of the gate. Terminal product-decision state SHALL require that no such slice remains. External, technical, safety, access, capability, live-attempt, and budget conditions SHALL use non-product paused or waiting dispositions.
+
+#### Scenario: Protected slice has an authorized independent successor
+- **WHEN** one declared slice requires an unavailable protected effect and a later slice has no dependency on it, owns non-overlapping paths, and is authorized
+- **THEN** the controller preserves the protected slice and executes the independent successor
+- **AND** sibling completion neither clears the protected gate nor completes the mission.
+
+#### Scenario: Immutable order makes successor dependent
+- **WHEN** a later slice depends on the blocked slice or cannot execute without overlapping unknown writer ownership
+- **THEN** the controller does not reorder or launch that slice
+- **AND** records the exact non-product waiting or product-decision state supported by current evidence.
+
+#### Scenario: Owner product choice is globally terminal
+- **WHEN** every remaining declared slice depends on one unresolved material product choice and no independent slice is eligible
+- **THEN** the controller returns terminal product-decision-required with the affected slice refs and resume condition
+- **AND** closes active executor ownership without simulating an answer.

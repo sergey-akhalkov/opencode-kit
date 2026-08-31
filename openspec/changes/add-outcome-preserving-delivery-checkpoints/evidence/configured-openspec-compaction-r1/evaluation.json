@@ -1,0 +1,10 @@
+{
+  "bundleDigest": "2849806b2472e98d0b0aa4ffefd2295c14898a1652e4f7485710af44e567b9d2",
+  "evaluationDigest": "b42c0be9df7aaabae2366844f0fccbc37419afcb9610b84054b8e7b28918e895",
+  "failures": [
+    "missing-checkpoint-state:Next Action"
+  ],
+  "maximumClaim": "Exact configured OpenSpec route correction, actual compaction retention, and continuation for the reviewed disposable fixture only.",
+  "modelCalls": 3,
+  "status": "failed"
+}

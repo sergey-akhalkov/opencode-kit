@@ -1,0 +1,20 @@
+{
+  "candidateId": "opdc-configured-grind-r1",
+  "candidateOraclePass": true,
+  "captureKind": "candidate",
+  "cleanupComplete": true,
+  "cleanupOraclePass": true,
+  "evaluatorRecovered": false,
+  "expectedPendingQuestionRejections": 0,
+  "failure": null,
+  "inputRaw": "raw.json",
+  "inputRawBytes": 2783,
+  "livenessClosed": true,
+  "mode": "replay",
+  "modelCalls": 0,
+  "pendingQuestionsRejected": 0,
+  "replayComplete": true,
+  "resultPresent": true,
+  "schemaVersion": 1,
+  "terminalResult": "captured-result-clean"
+}

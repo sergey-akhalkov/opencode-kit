@@ -227,6 +227,216 @@
       }
     },
     {
+      "id": "delivery-checkpoint-due",
+      "context": {
+        "rootSessionRef": "session_checkpoint_due",
+        "latestHumanRef": "human_checkpoint_due",
+        "taskStateDigest": "5555555555555555555555555555555555555555555555555555555555555555",
+        "currentGeneration": 9
+      },
+      "input": {
+        "expectedGeneration": 9,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_checkpoint",
+            "requirementRefs": ["requirement_checkpoint_process"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_checkpoint_due"]
+          },
+          {
+            "id": "item_costly",
+            "requirementRefs": ["requirement_costly_action"],
+            "status": "pending",
+            "dependsOn": ["item_checkpoint"],
+            "gateRefs": ["gate_checkpoint"],
+            "evidenceRefs": []
+          },
+          {
+            "id": "item_sibling",
+            "requirementRefs": ["requirement_independent_sibling"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_sibling_ready"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_checkpoint",
+            "kind": "process",
+            "status": "open",
+            "affectedItemRefs": ["item_costly"],
+            "resumeCondition": "The delivery checkpoint reaches its selected oracle or records irreducible evidence.",
+            "evidenceRefs": ["evidence_checkpoint_due"]
+          }
+        ],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_checkpoint_due"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 10,
+        "runnableItemRefs": ["item_checkpoint", "item_sibling"],
+        "openGateRefs": ["gate_checkpoint"],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "delivery-checkpoint-irreducible",
+      "context": {
+        "rootSessionRef": "session_checkpoint_irreducible",
+        "latestHumanRef": "human_checkpoint_irreducible",
+        "taskStateDigest": "6666666666666666666666666666666666666666666666666666666666666666",
+        "currentGeneration": 10
+      },
+      "input": {
+        "expectedGeneration": 10,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_checkpoint",
+            "requirementRefs": ["requirement_checkpoint_process"],
+            "status": "complete",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_checkpoint_irreducible"]
+          },
+          {
+            "id": "item_costly",
+            "requirementRefs": ["requirement_costly_action"],
+            "status": "pending",
+            "dependsOn": ["item_checkpoint"],
+            "gateRefs": ["gate_checkpoint"],
+            "evidenceRefs": ["evidence_original_route_preserved"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_checkpoint",
+            "kind": "process",
+            "status": "satisfied",
+            "affectedItemRefs": ["item_costly"],
+            "resumeCondition": "Irreducible evidence releases the unchanged original route.",
+            "evidenceRefs": ["evidence_checkpoint_irreducible"]
+          }
+        ],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_checkpoint_irreducible"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 11,
+        "runnableItemRefs": ["item_costly"],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "delivery-checkpoint-omitted",
+      "context": null,
+      "input": null,
+      "persisted": {
+        "metadataSchemaVersion": 1,
+        "workFrontier": null
+      },
+      "expected": {
+        "status": "reconcile",
+        "reason": "missing-frontier",
+        "frontierState": "frontier-reconciling",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "delivery-checkpoint-scope-reduction",
+      "context": {
+        "rootSessionRef": "session_checkpoint_scope_reduction",
+        "latestHumanRef": "human_checkpoint_scope_reduction",
+        "taskStateDigest": "7777777777777777777777777777777777777777777777777777777777777777",
+        "currentGeneration": 11
+      },
+      "input": {
+        "expectedGeneration": 11,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_checkpoint",
+            "requirementRefs": ["requirement_checkpoint_process"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_checkpoint_due"]
+          },
+          {
+            "id": "item_costly",
+            "requirementRefs": ["requirement_costly_action"],
+            "status": "pending",
+            "dependsOn": ["item_checkpoint"],
+            "gateRefs": ["gate_checkpoint"],
+            "evidenceRefs": []
+          },
+          {
+            "id": "item_scope_reduction",
+            "requirementRefs": ["requirement_preserve_proof_population"],
+            "status": "blocked",
+            "dependsOn": [],
+            "gateRefs": ["gate_scope_reduction"],
+            "evidenceRefs": ["evidence_scope_reduction_proposed"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_checkpoint",
+            "kind": "process",
+            "status": "open",
+            "affectedItemRefs": ["item_costly"],
+            "resumeCondition": "The delivery checkpoint reaches its selected oracle.",
+            "evidenceRefs": ["evidence_checkpoint_due"]
+          },
+          {
+            "id": "gate_scope_reduction",
+            "kind": "product-decision",
+            "status": "open",
+            "affectedItemRefs": ["item_scope_reduction"],
+            "resumeCondition": "The owner accepts or rejects the proposed proof-population reduction.",
+            "evidenceRefs": ["evidence_scope_reduction_proposed"]
+          }
+        ],
+        "parkedDecisions": [
+          {
+            "id": "decision_scope_reduction",
+            "questionRef": "question_scope_reduction",
+            "affectedItemRefs": ["item_scope_reduction"],
+            "optionInvariantItemRefs": ["item_checkpoint"],
+            "decisionPoint": "Decide the proof-population reduction only after runnable checkpoint work drains.",
+            "evidenceRefs": ["evidence_scope_reduction_proposed"]
+          }
+        ],
+        "progressFingerprint": "progress_checkpoint_scope_reduction"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 12,
+        "runnableItemRefs": ["item_checkpoint"],
+        "openGateRefs": ["gate_checkpoint", "gate_scope_reduction"],
+        "parkedDecisionRefs": ["decision_scope_reduction"]
+      }
+    },
+    {
       "id": "malformed",
       "context": {
         "rootSessionRef": "session_malformed",

@@ -322,7 +322,6 @@ function installGlobalSource(globalSource: string, model: string, variant: strin
     "bin/openspec-operation-gate.ts",
     "bin/openspec-change/automation-dividend.ts",
     "bin/openspec-change/claims.ts",
-    "bin/openspec-change/evidence.ts",
     "bin/openspec-change/gate.ts",
     "bin/openspec-change/inventory.ts",
     "bin/openspec-change/manifest.ts",

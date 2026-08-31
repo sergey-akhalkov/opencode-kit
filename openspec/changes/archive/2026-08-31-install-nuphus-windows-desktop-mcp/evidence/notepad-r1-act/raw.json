@@ -1,0 +1,35 @@
+{
+  "candidateId": "nuphus-notepad-r1-act",
+  "cleanup": {
+    "notepad": "retained-for-visual-read",
+    "nuphus": "terminal",
+    "state": "present"
+  },
+  "inputCount": 1,
+  "inputResultSha256": "5500891c1b570d035ac09cd34740f7f973746b47211639fadc591da5eb2b4efc",
+  "marker": "NUPHUS_PROOF_E2DB3D9C88",
+  "mode": "notepad-act",
+  "nuphusStderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-notepad-act",
+  "schemaVersion": 1,
+  "screenshot": {
+    "bytes": 68633,
+    "exists": true,
+    "height": 1001,
+    "id": "after.png",
+    "pngSignature": true,
+    "sha256": "b9d23e03532aa5398b61295a34d64efa901819a7343b9a635ebde7af8d607d31",
+    "width": 1711
+  },
+  "target": {
+    "createdAt": "2026-08-30T22:15:13.9538990Z",
+    "hwnd": 7145654,
+    "pid": 44776,
+    "revalidated": true,
+    "title": "nuphus-proof-6c5782ee-31d2-475c-85a1-e7462bb1729c.txt - Notepad"
+  }
+}

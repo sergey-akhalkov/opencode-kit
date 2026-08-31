@@ -66,17 +66,17 @@ Concurrency SHALL NOT be mandatory. The repository SHALL select serial or bounde
 ### Requirement: Operation gate checks completion facts at each caller boundary
 `global/bin/openspec-operation-gate.ts` SHALL expose project-neutral operation-specific deterministic checks consumed by the globally installed propose, apply, and complete-archive entrypoints. It SHALL require an explicit project root and change identity and SHALL NOT depend on a target project's package manager or scripts. A repository-maintenance compatibility shim MAY re-export the portable core for existing local tests and callers but SHALL NOT own behavior.
 
-Registry operations without shipped callers SHALL NOT be represented as integrated. Propose checks SHALL validate the explicit automation-dividend declaration shape. Apply and archive checks SHALL correlate a required declaration with exactly one tagged task. Complete archive checks SHALL fail on unchecked tasks, missing or stale required automation-dividend evidence, and other explicit incomplete state. The gate SHALL parse only reviewed stable fields, task identifiers and digests, and evidence-index identities; it SHALL NOT infer Material profile, recurrence, value, semantic equivalence, or exemption from prose or repository contents. The prepush plan SHALL run repository validation, tests, and OpenSpec validation directly; it SHALL NOT retain an operation check that passes solely because `openspec/` exists.
+Registry operations without shipped callers SHALL NOT be represented as integrated. Propose checks SHALL validate the explicit automation-dividend declaration shape. Apply and archive checks SHALL correlate a required declaration with exactly one tagged task. Complete archive checks SHALL fail on unchecked tasks and other explicit incomplete state. The gate SHALL parse only reviewed stable fields and task identifiers; it SHALL NOT infer Material profile, recurrence, value, semantic equivalence, or exemption from prose or repository contents. The prepush plan SHALL run repository validation, tests, and OpenSpec validation directly; it SHALL NOT retain an operation check that passes solely because `openspec/` exists.
 
 #### Scenario: Archive gate sees unchecked tasks
 - **WHEN** the archive gate reads a tasks file with one or more unchecked items
 - **THEN** it returns non-zero with a blocking check and exact unchecked count
 - **AND** it does not classify that state as a non-blocking summary.
 
-#### Scenario: Archive gate sees stale required dividend evidence
-- **WHEN** a required dividend task is checked but its evidence row has a different task digest, helper identity, candidate, or environment
-- **THEN** the gate returns non-zero with the mismatched field
-- **AND** does not invalidate unrelated product evidence or infer a replacement value.
+#### Scenario: Archive gate sees a checked required dividend task
+- **WHEN** a required dividend declaration has exactly one checked tagged task
+- **THEN** the gate accepts the structural dividend fact
+- **AND** does not infer helper value or replace product validation.
 
 #### Scenario: Unrelated project invokes apply gate
 - **WHEN** a target project invokes the global operation gate with explicit `--root`, operation, and change id
@@ -451,30 +451,29 @@ god file for convenience.
 - **THEN** it invokes the portable campaign status/resume/stop boundary with explicit campaign refs
 - **AND** campaign policy and mission execution remain outside the workstation lifecycle owner.
 
-### Requirement: Campaign proof tooling is replayable and discoverable
+### Requirement: Campaign proof tooling is disposable and discoverable
 The repository SHALL maintain one project-neutral campaign proof family under
 `tools/proofs/` that exercises provider-free schema/state/report paths, bounded
 configured semantic partitions, actual OpenSpec mission handoff, Windows supervisor
 re-entry, interruption, protected stop, and cleanup. Its inventory entry SHALL state
-exact invocation, candidate/environment identity, model and host effects, immutable raw
-bundle, evaluator/replay modes, restoration, cleanup, and maximum claim.
+exact invocation, candidate/environment identity, model and host effects, restoration,
+cleanup, and maximum claim. Any temporary capture SHALL be automatically removed.
 
 After a configured, host, or long-running attempt fails in evaluator/finalization,
-the proof family SHALL replay the complete reachable non-side-effecting chain from the
-preserved bundle before another unchanged live attempt. Provider-free replay SHALL NOT
-claim a required live process, checkpoint, restoration, or host effect occurred.
+the proof family SHALL inspect that run's status, stdout/stderr, state, effects, and
+cleanup before another live attempt. An unchanged failed attempt SHALL NOT be repeated.
 
-#### Scenario: Preserved campaign bundle is replayed
+#### Scenario: Failed campaign run is diagnosed
 - **WHEN** a configured campaign capture reaches source effects but its report evaluator fails
-- **THEN** the evaluator and every reachable non-side-effecting finalization check can replay the immutable bundle to a terminal result
-- **AND** another live capture remains blocked until replay is green or names the exact missing raw observation.
+- **THEN** the runner reports the original result, effects, cleanup, and exact evaluator failure from that run
+- **AND** another live capture remains blocked until a causal mechanism change or the exact missing observation is identified.
 
 ### Requirement: Trajectory context SHALL have one portable fact owner
 
 The kit SHALL provide one portable trajectory-context core and CLI at the active global
 source. It SHALL accept explicit root, horizon id, current successful archive id,
 output format, archive-count, aggregate-byte, and timeout arguments; read only the
-versioned horizon plus bounded linked archived planning/evidence metadata; and emit one
+versioned horizon plus bounded linked archived planning metadata; and emit one
 stable schema with privacy-safe root identity, exact paths, digests, sizes, support
 states, and cause-preserving diagnostics. The repository command, if any, SHALL remain a
 thin adapter over that core.

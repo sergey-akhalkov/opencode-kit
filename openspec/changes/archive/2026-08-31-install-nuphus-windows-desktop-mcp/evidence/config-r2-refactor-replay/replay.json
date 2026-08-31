@@ -1,0 +1,6 @@
+{
+  "candidateId": "nuphus-config-r2-refactor-replay",
+  "inputRawSha256": "d7cf30e5e4cd2b8a8393d2c26da1fc76b02156746b2fa55e88853a4839263e26",
+  "noLiveCalls": true,
+  "sourceCandidateId": "nuphus-apply-r2-config"
+}

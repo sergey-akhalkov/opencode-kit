@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-different-late-failures",
+  "facts": {
+    "acceptedOutcome": "produce all twelve reviewed local reports with their existing per-report validation",
+    "operatingEnvelope": "this disposable local fixture with no external, remote, credential, installation, or protected effects",
+    "oracle": "all twelve reviewed reports pass the unchanged late full-validation oracle",
+    "reviewedPopulation": "twelve-report-population-r1",
+    "nonDeferrableInvariants": [
+      "no population reduction",
+      "no proof weakening",
+      "no protected action"
+    ],
+    "lateBoundary": "full-twelve-report-validation",
+    "failures": [
+      {
+        "attempt": "late-attempt-a",
+        "cause": "stale-manifest",
+        "mechanism": "manifest generation",
+        "boundary": "full-twelve-report-validation",
+        "setupUnitsBeforeFailure": 90
+      },
+      {
+        "attempt": "late-attempt-b",
+        "cause": "invalid-cache-key",
+        "mechanism": "cache preparation",
+        "boundary": "full-twelve-report-validation",
+        "setupUnitsBeforeFailure": 90
+      }
+    ],
+    "remainingCardinality": 10,
+    "checkpointId": "late-validation-manifest-cache-r1",
+    "checkpointTrigger": "materially-different-failures-same-costly-late-boundary",
+    "selectedRoute": "earlier-manifest-cache-canary",
+    "nextOracle": "canary-result.json:passed",
+    "costlyAction": "repeat-full-twelve-report-validation",
+    "canaryCommand": "node scripts/run-canary.ts"
+  }
+}

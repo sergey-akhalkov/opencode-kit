@@ -1,0 +1,127 @@
+{
+  "candidateId": "nuphus-apply-r1-direct",
+  "cleanup": {
+    "process": "terminal",
+    "screenshotFixture": "removed"
+  },
+  "environment": {
+    "arch": "x64",
+    "confirmWrite": "0",
+    "platform": "win32",
+    "visionConfigured": false
+  },
+  "mcp": {
+    "initialize": {
+      "protocolVersion": "2024-11-05",
+      "serverName": "nuphus-mcp"
+    },
+    "screen": {
+      "height": 1680,
+      "width": 2520
+    },
+    "screenshot": {
+      "bytes": 1462343,
+      "format": "png",
+      "height": 1680,
+      "pngSignature": true,
+      "sha256": "39931a77f575060d7c51c2db3742ef869aa985615c571457b63dcc1f0289554c",
+      "width": 2520
+    },
+    "toolNames": [
+      "browser_back",
+      "browser_click",
+      "browser_close",
+      "browser_cookies_get",
+      "browser_cookies_set",
+      "browser_drag_files",
+      "browser_evaluate",
+      "browser_exec",
+      "browser_extract",
+      "browser_forward",
+      "browser_import_cookies",
+      "browser_list_downloads",
+      "browser_list_tabs",
+      "browser_navigate",
+      "browser_new_tab",
+      "browser_press",
+      "browser_screenshot",
+      "browser_scroll",
+      "browser_snapshot",
+      "browser_switch_tab",
+      "browser_type",
+      "browser_upload",
+      "browser_wait_for",
+      "desktop_clipboard_clean",
+      "desktop_clipboard_write",
+      "desktop_input",
+      "desktop_mouse",
+      "desktop_mouse_drag",
+      "desktop_perceive",
+      "desktop_screen_size",
+      "desktop_screenshot",
+      "desktop_vision",
+      "desktop_window_activate",
+      "desktop_window_info",
+      "desktop_window_move",
+      "desktop_window_resize",
+      "desktop_window_screenshot",
+      "desktop_windows_list"
+    ]
+  },
+  "mode": "direct",
+  "packages": {
+    "command": {
+      "found": true,
+      "kind": "cmd",
+      "selected": {
+        "bytes": 344,
+        "exists": true,
+        "id": "command-shim",
+        "sha256": "822db35bd983769054cb48280a778bdf67ec6d2c1939f6dd5eb24a77d7468747"
+      }
+    },
+    "meta": {
+      "packageJson": {
+        "bytes": 981,
+        "exists": true,
+        "id": "meta-package-json",
+        "sha256": "66dec5772adf92bb338180f96b4626a1682de0aa37528a90cf5a8b503141eeb3"
+      },
+      "version": "0.2.2"
+    },
+    "npmRoot": {
+      "basename": "node_modules",
+      "pathSha256": "c847f8404edd6e5d5b13d82e4dbcc6689559a4343d025165cd964c7900d54052"
+    },
+    "platform": {
+      "binary": {
+        "bytes": 15607296,
+        "exists": true,
+        "id": "platform-binary",
+        "sha256": "9a07112f17a964d9c0b1a54653af95559d7de33cce1cb3dffd60dfc4c85ccfb0"
+      },
+      "layout": "top-level",
+      "packageJson": {
+        "bytes": 514,
+        "exists": true,
+        "id": "platform-package-json",
+        "sha256": "5a514a1ff9e1e8844308975c09074b551a6a41bffad69ac41925248d52d2ceca"
+      },
+      "version": "0.2.2"
+    },
+    "prefix": {
+      "basename": "node-v24.18.1-win-x64",
+      "pathSha256": "41f89564d6c42f0dbd0ab59206b1502b76bd629553828465d1d549135d87e88d"
+    }
+  },
+  "privacySafe": true,
+  "proofKind": "nuphus-desktop-direct",
+  "runner": {
+    "bytes": 33289,
+    "exists": true,
+    "id": "tools/proofs/nuphus-desktop.ts",
+    "sha256": "666759a8887826d69232fee8e81218c886369fd94e5a626babd12d687fdf44d7"
+  },
+  "schemaVersion": 1,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

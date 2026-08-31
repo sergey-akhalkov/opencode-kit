@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-population-openspec-grind",
+  "repositoryClass": "openspec-grind-campaign-fixture",
+  "cases": [
+    {
+      "memberId": "coarse-invalidation-amplification",
+      "taskClass": "openspec",
+      "evidence": ["three coarse identity changes", "each invalidated the same unchanged prerequisite chain", "unrelated evidence was repeatedly rerun"],
+      "acceptedFacts": {"outcomeRef": "outcome-c", "oracleRef": "oracle-c", "populationRef": "population-c"},
+      "availableRoutes": ["repeat full revalidation", "split the volatile evidence lane"]
+    },
+    {
+      "memberId": "dominant-repeated-setup",
+      "taskClass": "openspec",
+      "evidence": ["setup count 3 at 250 units", "useful work count 3 at 25 units", "remaining cardinality is exactly 3"],
+      "acceptedFacts": {"outcomeRef": "outcome-e", "oracleRef": "oracle-e", "populationRef": "population-e"},
+      "availableRoutes": ["repeat setup per member", "establish reusable setup boundary without changing observation independence"]
+    },
+    {
+      "memberId": "irreducible-cost",
+      "taskClass": "grind",
+      "evidence": ["one required boundary costs 500 units", "no safe removal, shift, replay, isolation, automation, batching, or parallel route exists", "the original route remains authorized"],
+      "acceptedFacts": {"outcomeRef": "outcome-h", "oracleRef": "oracle-h", "populationRef": "population-h"},
+      "availableRoutes": ["record irreducible and release the unchanged route"]
+    },
+    {
+      "memberId": "duplicate-suppression",
+      "taskClass": "openspec",
+      "evidence": ["the outcome lane is unchanged", "the last downstream advancement is unchanged", "the pattern, evidence refs, and selected-route oracle are unchanged"],
+      "acceptedFacts": {"outcomeRef": "outcome-i", "oracleRef": "oracle-i", "populationRef": "population-i"},
+      "availableRoutes": ["repeat checkpoint", "continue prior next boundary"]
+    },
+    {
+      "memberId": "independent-sibling-work",
+      "taskClass": "grind",
+      "evidence": ["one costly item depends on a due process checkpoint", "one authorized sibling has no dependency on that checkpoint", "the sibling completed before the checkpoint oracle"],
+      "acceptedFacts": {"outcomeRef": "outcome-j", "oracleRef": "oracle-j", "populationRef": "population-j"},
+      "availableRoutes": ["globally wait", "drain sibling then complete checkpoint before dependent eligibility"]
+    },
+    {
+      "memberId": "scope-proof-weakening",
+      "taskClass": "openspec",
+      "evidence": ["the proposed faster route removes accepted members", "the unchanged complete route remains available", "the proof-scope choice belongs to the owner"],
+      "acceptedFacts": {"outcomeRef": "outcome-k", "oracleRef": "oracle-k", "populationRef": "population-k"},
+      "availableRoutes": ["apply scope reduction", "reject weakening and park the product decision"]
+    },
+    {
+      "memberId": "compaction-continuity",
+      "taskClass": "openspec",
+      "evidence": ["one checkpoint is due", "its suppression identity and next oracle are current", "compaction occurs before that oracle"],
+      "acceptedFacts": {"outcomeRef": "outcome-l", "oracleRef": "oracle-l", "populationRef": "population-l"},
+      "availableRoutes": ["repeat reflection", "persist and resume the same checkpoint"]
+    }
+  ],
+  "expectedResult": {
+    "schemaVersion": 1,
+    "repositoryClass": "openspec-grind-campaign-fixture",
+    "memberCount": 7,
+    "ownerQuestionCount": 1,
+    "protectedActionCount": 0,
+    "scopeOraclePopulation": "unchanged",
+    "rows": [
+      {
+        "memberId": "coarse-invalidation-amplification",
+        "taskClass": "openspec",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-c", "oracleRef": "oracle-c", "populationRef": "population-c"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "split-evidence-lane",
+        "scopeAction": "preserved",
+        "events": ["invalidation-observed", "checkpoint", "split-evidence-lane"]
+      },
+      {
+        "memberId": "dominant-repeated-setup",
+        "taskClass": "openspec",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-e", "oracleRef": "oracle-e", "populationRef": "population-e"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "reusable-setup-boundary",
+        "scopeAction": "preserved",
+        "events": ["measurements-recorded", "checkpoint", "reusable-setup-boundary"]
+      },
+      {
+        "memberId": "irreducible-cost",
+        "taskClass": "grind",
+        "disposition": "irreducible",
+        "anchors": {"outcomeRef": "outcome-h", "oracleRef": "oracle-h", "populationRef": "population-h"},
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "required-boundary",
+        "scopeAction": "preserved",
+        "events": ["cost-recorded", "irreducible-recorded", "required-boundary"]
+      },
+      {
+        "memberId": "duplicate-suppression",
+        "taskClass": "openspec",
+        "disposition": "suppress-duplicate",
+        "anchors": {"outcomeRef": "outcome-i", "oracleRef": "oracle-i", "populationRef": "population-i"},
+        "checkpointCount": 0,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "prior-next-boundary",
+        "scopeAction": "preserved",
+        "events": ["same-evidence", "same-checkpoint-identity", "duplicate-suppressed"]
+      },
+      {
+        "memberId": "independent-sibling-work",
+        "taskClass": "grind",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-j", "oracleRef": "oracle-j", "populationRef": "population-j"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "bounded-checkpoint-j",
+        "scopeAction": "preserved",
+        "events": ["checkpoint-due", "sibling-complete", "checkpoint-applied", "dependent-eligible"]
+      },
+      {
+        "memberId": "scope-proof-weakening",
+        "taskClass": "openspec",
+        "disposition": "owner-boundary",
+        "anchors": {"outcomeRef": "outcome-k", "oracleRef": "oracle-k", "populationRef": "population-k"},
+        "checkpointCount": 0,
+        "ownerQuestionCount": 1,
+        "nextBoundaryRef": null,
+        "scopeAction": "parked-owner-boundary",
+        "events": ["weakening-route-rejected", "product-decision-parked"]
+      },
+      {
+        "memberId": "compaction-continuity",
+        "taskClass": "openspec",
+        "disposition": "checkpoint",
+        "anchors": {"outcomeRef": "outcome-l", "oracleRef": "oracle-l", "populationRef": "population-l"},
+        "checkpointCount": 1,
+        "ownerQuestionCount": 0,
+        "nextBoundaryRef": "checkpoint-oracle-l",
+        "scopeAction": "preserved",
+        "events": ["checkpoint-due", "checkpoint-persisted", "compaction", "same-checkpoint-resumed"]
+      }
+    ]
+  }
+}

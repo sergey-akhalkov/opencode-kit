@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-outcome-preserving-delivery-checkpoints",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "outcome-preserving-delivery-checkpoints",
+      "requirements": [
+        "Delivery drag is evidence-backed and project-neutral",
+        "A due checkpoint pauses only the dependent costly action",
+        "Route improvements preserve outcome and evidence semantics",
+        "Checkpoint continuity uses existing lifecycle owners"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Loaded main performs bounded outcome-preserving delivery checkpoints"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "OpenSpec apply reconciles outcome-preserving delivery route changes"
+      ]
+    },
+    {
+      "capability": "session-completion-guard",
+      "requirements": [
+        "Grind delivery checkpoints remain task scoped and non-product",
+        "The hidden completion arbiter receives no tool schemas at the resolved agent and session permission boundary"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "docs/workflows/session-reflection.md",
+    "global/AGENTS.md",
+    "global/agents/session-completion-arbiter.md",
+    "global/extensions/unrestricted-agent-tools.ts",
+    "global/opencode.json.template",
+    "global/skills/openspec-apply-change",
+    "instructions/reusable-project-agent-instructions.md",
+    "templates/project/AGENTS.md",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/fixtures/consumer-outcome",
+    "tools/proofs/fixtures/session-completion-guard",
+    "tools/proofs/opencode-permissions.ts",
+    "tools/proofs/session-completion-guard-autonomous.ts",
+    "tools/proofs/session-completion-guard-frontier.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-contracts-change-ready-delivery.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts.ts",
+    "tools/test-session-completion-guard.ts",
+    "tools/validators/agents.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "make-grind-blockers-task-scoped",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/agents/session-completion-arbiter.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "global/skills/openspec-apply-change" },
+        { "type": "write-root", "path": "instructions/reusable-project-agent-instructions.md" },
+        { "type": "write-root", "path": "templates/project/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/session-completion-guard" },
+        { "type": "write-root", "path": "tools/proofs/session-completion-guard-frontier.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready-delivery.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/test-session-completion-guard.ts" }
+      ],
+      "transferCondition": "terminal: make-grind-blockers-task-scoped archived as 2026-08-30-make-grind-blockers-task-scoped; its proof writers are terminal and the current frontier/main/OpenSpec owners were rebound"
+    },
+    {
+      "changeId": "add-cross-project-kaizen-loop",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "docs/workflows/session-reflection.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/consumer-outcome" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" }
+      ],
+      "transferCondition": "terminal: add-cross-project-kaizen-loop archived as 2026-08-30-add-cross-project-kaizen-loop; helper exit 0 and terminal writer liveness were observed before the current compaction/Kaizen/shared-proof owners were rebound"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "make-grind-blockers-task-scoped",
+      "toChangeId": "add-outcome-preserving-delivery-checkpoints",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/agents/session-completion-arbiter.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "global/skills/openspec-apply-change" },
+        { "type": "write-root", "path": "instructions/reusable-project-agent-instructions.md" },
+        { "type": "write-root", "path": "templates/project/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/session-completion-guard" },
+        { "type": "write-root", "path": "tools/proofs/session-completion-guard-frontier.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready-delivery.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/test-session-completion-guard.ts" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-cross-project-kaizen-loop",
+      "toChangeId": "add-outcome-preserving-delivery-checkpoints",
+      "owners": [
+        { "type": "write-root", "path": "docs/workflows/session-reflection.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/consumer-outcome" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

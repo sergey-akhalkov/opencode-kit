@@ -2,13 +2,14 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
 import {
   GENERATED_RUNTIME_PROFILES_RELATIVE,
   PORTABLE_WORKFLOW_RUNTIME_FILES,
   ROADMAP_MISSION_PLUGIN_FILES,
   ROADMAP_MISSION_RUNTIME_FILES,
+  SPECIALIST_CATALOG_PLUGIN_FILE,
   inspectRuntimeSurfaceInstall,
   materializeRuntimeSurfaceTemplate,
   materializeRuntimeSurfaceProfile,
@@ -48,8 +49,9 @@ Options:
   (default)              Fresh install: materialize core and persist/print that generated path.
                          Existing kit install: leave the current path unchanged.
                          Windows persists via setx. macOS/Linux prints a safe export line only.
-  --check, --audit       Exit 0 if OPENCODE_CONFIG_DIR already points at this kit global/ or a generated profile; 1 otherwise.
-                         Also reports the current runtime-surface profile without changing files or env.
+  --check, --audit       Exit 0 if OPENCODE_CONFIG_DIR points at this kit global/ or a valid generated profile; 1 otherwise.
+                         Validates the required specialist catalog plugin and reports the current runtime-surface profile
+                         without changing files or env.
   --preview-profile      Preview the proposed runtime-surface profile (default core). No mutation.
   --plan-migration       Show current vs proposed profile additions/removals. No mutation.
   --profile <name>       Proposed profile for preview/plan/check (core or all). Default: core.
@@ -538,6 +540,10 @@ function runPersistScript(file: string, profileName: string, explicitProfile: bo
     }
     const generatedErrors = validateGeneratedProfile(targetDir, profileName as "all" | "core");
     if (generatedErrors.length > 0) throw new Error(generatedErrors.join("\n"));
+  } else {
+    const config = assertSupportedLocalConfig(path.join(targetDir, "opencode.json"));
+    const sourceErrors = specialistCatalogConfigProblems(config, targetDir, "Existing global/opencode.json");
+    if (sourceErrors.length > 0) throw new Error(sourceErrors.join("\n"));
   }
   const envLine = buildExportLine(targetDir);
   const result = appendExportLine(file, envLine, ENV_VAR);
@@ -611,6 +617,9 @@ function validateGeneratedProfile(target: string, profileName: "all" | "core"): 
   } catch (error) {
     errors.push(error instanceof Error ? error.message : `Generated ${profileName} config is invalid.`);
   }
+  if (config != null) {
+    errors.push(...specialistCatalogConfigProblems(config, target, `Generated ${profileName} config`));
+  }
   if (profileName === "all") {
     for (const relative of ROADMAP_MISSION_RUNTIME_FILES) {
       const candidate = path.join(target, ...relative.split("/"));
@@ -637,6 +646,9 @@ function validateGeneratedProfile(target: string, profileName: "all" | "core"): 
 }
 
 function assertSupportedLocalConfig(file: string): Record<string, unknown> {
+  if (!fs.existsSync(file) || !fs.statSync(file).isFile()) {
+    throw new Error(`Existing global/opencode.json is missing; install a generated profile or create it from the template.`);
+  }
   let text: string;
   try {
     text = decodeUtf8Strict(fs.readFileSync(file), "opencode.json");
@@ -679,15 +691,45 @@ function assertSupportedTemplate(templatePath: string): Buffer {
   return templateBytes;
 }
 
+function configuredPluginPath(entry: unknown, configDir: string): string | null {
+  const source = typeof entry === "string"
+    ? entry
+    : Array.isArray(entry) && typeof entry[0] === "string" ? entry[0] : null;
+  if (source == null) return null;
+  try {
+    if (source.startsWith("file:")) return fileURLToPath(source);
+    return path.isAbsolute(source) ? source : path.resolve(configDir, source);
+  } catch {
+    return null;
+  }
+}
+
+function specialistCatalogConfigProblems(config: Record<string, unknown>, configDir: string, label: string): string[] {
+  const expected = path.join(configDir, ...SPECIALIST_CATALOG_PLUGIN_FILE.split("/"));
+  const plugins = Array.isArray(config.plugin) ? config.plugin : [];
+  const exact = plugins.filter((entry) => {
+    const candidate = configuredPluginPath(entry, configDir);
+    return candidate != null && sameConfigPath(candidate, expected);
+  });
+  const problems: string[] = [];
+  if (!fs.existsSync(expected) || !fs.statSync(expected).isFile()) {
+    problems.push(`${label} requires the missing ${SPECIALIST_CATALOG_PLUGIN_FILE} source.`);
+  }
+  if (exact.length !== 1) {
+    problems.push(`${label} must load ${SPECIALIST_CATALOG_PLUGIN_FILE} exactly once (found ${exact.length}).`);
+  }
+  return problems;
+}
+
 function materializeTemplate(templateBytes: Buffer, target: string): Buffer {
   const templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
   return Buffer.from(materializeRuntimeSurfaceTemplate(templateText, target), "utf8");
 }
 
-function inspectExistingSourceConfig(): void {
+function inspectExistingSourceConfig(): string[] {
   const local = path.join(globalDir, "opencode.json");
   if (!fs.existsSync(local)) {
-    return;
+    return ["Existing global/opencode.json is missing."];
   }
   const config = assertSupportedLocalConfig(local);
   const expectedPrinciples = path.join(globalDir, "principles-of-work.md");
@@ -709,6 +751,14 @@ function inspectExistingSourceConfig(): void {
       `note: preserved existing global/opencode.json; its instructions do not reference ${expected}. Add that absolute path to load machine-local preferences.`,
     );
   }
+  const catalogProblems = specialistCatalogConfigProblems(config, globalDir, "Existing global/opencode.json");
+  if (catalogProblems.length > 0) {
+    console.log(`note: preserved existing global/opencode.json; ${catalogProblems.join(" ")}`);
+    console.log(
+      `Add ${pathToFileURL(path.join(globalDir, ...SPECIALIST_CATALOG_PLUGIN_FILE.split("/"))).href} to plugin, then restart OpenCode.`,
+    );
+  }
+  return catalogProblems;
 }
 
 function ensureLocalConfig(target: string): void {
@@ -827,7 +877,19 @@ function runCheck(profileName: string): void {
       }
     }
     const local = path.join(globalDir, "opencode.json");
-    if (fs.existsSync(local)) {
+    if (sameConfigPath(current, globalDir)) {
+      try {
+        const config = assertSupportedLocalConfig(local);
+        const errors = specialistCatalogConfigProblems(config, globalDir, "Existing global/opencode.json");
+        if (errors.length > 0) {
+          for (const error of errors) console.error(error);
+          process.exit(1);
+        }
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exit(1);
+      }
+    } else if (fs.existsSync(local)) {
       try {
         assertSupportedLocalConfig(local);
       } catch (error) {
@@ -910,7 +972,15 @@ function runSet(dryRun: boolean, profileName: string, explicitProfile: boolean):
   const targetDir = resolved.targetDir;
   if (!dryRun) {
     assertSupportedTemplate(path.join(globalDir, "opencode.json.template"));
-    inspectExistingSourceConfig();
+    const sourceConfigProblems = inspectExistingSourceConfig();
+    if (resolved.keepExisting && sameConfigPath(targetDir, globalDir) && sourceConfigProblems.length > 0) {
+      throw new Error("Existing kit install is incomplete; no file or environment value was changed.");
+    }
+    if (resolved.keepExisting && !sameConfigPath(targetDir, globalDir)) {
+      const existingProfile = sameConfigPath(targetDir, generatedProfileRoot("all")) ? "all" : "core";
+      const generatedErrors = validateGeneratedProfile(targetDir, existingProfile);
+      if (generatedErrors.length > 0) throw new Error(generatedErrors.join("\n"));
+    }
     ensureLocalInstructions(globalDir);
   }
   if (resolved.materialize && !dryRun) {

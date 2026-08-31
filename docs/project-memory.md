@@ -160,7 +160,7 @@ Do not delete `.serena/memories/` as part of local project-memory cleanup.
 The provider-free maintained corpus is:
 
 ```powershell
-npm run proof:project-memory -- --evidence-dir <new-repository-evidence-path>
+npm run proof:project-memory
 ```
 
 Focused tests are:
@@ -169,7 +169,7 @@ Focused tests are:
 npm run test:focused:project-memory
 ```
 
-The proof command requires a create-new repository-local evidence path, uses only disposable project/data roots, reports cleanup, and performs no configured-provider or remote call. Loaded OpenCode proof is a separate maintainer qualification mode described by:
+The proof command uses only disposable project, data, and output roots, removes them before exit, reports cleanup, and performs no configured-provider or remote call. Loaded OpenCode proof is a separate maintainer qualification mode described by:
 
 ```powershell
 node tools/proofs/project-memory-context.ts --help

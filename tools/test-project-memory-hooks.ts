@@ -48,12 +48,14 @@ const tests: TestCase[] = [
       fs.mkdirSync(outsideRoot);
       initializeProject(projectRoot);
       const previousEnabled = process.env.OPENCODE_PROJECT_MEMORY;
+      const previousKaizen = process.env.OPENCODE_KAIZEN;
       const previousDataRoot = process.env.OPENCODE_DATA_DIR;
       const previousWarn = console.warn;
       const warningLines: string[] = [];
       const rawSecret = "sk-proj-abcdefghijklmnopqrstuvwxyz";
       const rawHome = os.homedir();
       process.env.OPENCODE_PROJECT_MEMORY = "1";
+      delete process.env.OPENCODE_KAIZEN;
       process.env.OPENCODE_DATA_DIR = dataRoot;
       console.warn = (...values: unknown[]) => warningLines.push(values.map(String).join(" "));
       let parentID: string | null = null;
@@ -80,12 +82,15 @@ const tests: TestCase[] = [
         });
         await feature.manage({ action: "promote", cardRef: candidate.cardRef, evidence: "Verified against src/config.ts." });
         const pluginInput = {
-          client: { session: { async get(input: unknown) {
-            lookupCalls += 1;
-            lookupInput = input;
-            if (lookupTimeout) return new Promise(() => {});
-            return { data: { id: responseID, parentID, directory: sessionDirectory } };
-          } } },
+          client: { session: {
+            async get(input: unknown) {
+              lookupCalls += 1;
+              lookupInput = input;
+              if (lookupTimeout) return new Promise(() => {});
+              return { data: { id: responseID, parentID, directory: sessionDirectory } };
+            },
+            async messages() { return { data: [] }; },
+          } },
           directory: projectRoot,
           project: { worktree: projectRoot },
           worktree: projectRoot,
@@ -97,6 +102,7 @@ const tests: TestCase[] = [
         assert.equal(Object.hasOwn(hooks.tool, "project_memory_manage"), true);
         assert.equal(typeof hooks["chat.message"], "function");
         assert.equal(typeof hooks["experimental.chat.system.transform"], "function");
+        assert.equal(typeof hooks["experimental.session.compacting"], "function");
 
         const sendMessage = async (sessionID: string | undefined, text = "How should I restart supervisor safely?") => hooks["chat.message"]?.(
           { sessionID, agent: "build", model: { providerID: "fake", modelID: "fake" }, messageID: "message" } as never,
@@ -175,11 +181,15 @@ const tests: TestCase[] = [
         }
 
         const context: string[] = [];
+        const compactionOutput = { context, prompt: "keep-default" };
         await hooks["experimental.session.compacting"]?.(
           { sessionID: "session-root" },
-          { context, prompt: undefined },
+          compactionOutput,
         );
-        assert.deepEqual(context, [system[1]]);
+        assert.equal(compactionOutput.prompt, "keep-default");
+        assert.equal(context[0], system[1]);
+        assert.equal(context.length, 2);
+        assert.match(context[1] ?? "", /<kaizen_signal>/u);
         await assert.rejects(
           hooks.tool.project_memory_recall.execute({ input: { query: "restart supervisor" } }, { directory: outsideRoot, metadata() {} } as never),
           /does not match the configured project root/,
@@ -235,7 +245,9 @@ const tests: TestCase[] = [
         invalidateInSecondProcess(fixtureRoot, projectRoot, dataRoot, compactCandidate.cardRef);
         const invalidatedCompaction = { context: [] as string[], prompt: "keep-default" };
         await hooks["experimental.session.compacting"]?.({ sessionID: "session-root" }, invalidatedCompaction as never);
-        assert.deepEqual(invalidatedCompaction, { context: [], prompt: "keep-default" });
+        assert.equal(invalidatedCompaction.prompt, "keep-default");
+        assert.equal(invalidatedCompaction.context.length, 1);
+        assert.match(invalidatedCompaction.context[0] ?? "", /<kaizen_signal>/u);
 
         parentID = "session-root";
         responseID = "session-child";
@@ -267,6 +279,8 @@ const tests: TestCase[] = [
         console.warn = previousWarn;
         if (previousEnabled == null) delete process.env.OPENCODE_PROJECT_MEMORY;
         else process.env.OPENCODE_PROJECT_MEMORY = previousEnabled;
+        if (previousKaizen == null) delete process.env.OPENCODE_KAIZEN;
+        else process.env.OPENCODE_KAIZEN = previousKaizen;
         if (previousDataRoot == null) delete process.env.OPENCODE_DATA_DIR;
         else process.env.OPENCODE_DATA_DIR = previousDataRoot;
         fs.rmSync(fixtureRoot, { recursive: true, force: true });

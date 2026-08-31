@@ -1,0 +1,111 @@
+{
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "livenessClosed": true,
+    "pendingQuestionsRejected": 0,
+    "rootDeleted": true
+  },
+  "failure": null,
+  "result": {
+    "candidateId": "candidate-working-tree-technical-blocker",
+    "captureKind": "candidate",
+    "assistantMarker": true,
+    "auditMessageFacts": [
+      {
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "{\n  \"schemaVersion\": 2,\n  \"auditID\": \"audit_269104947c74\",\n  \"rootSessionRef\": \"session_a4142cc51139\",\n  \"inspectedRevision\": \"efc0729b3fc80deb3892f81f664ba72ef3f91dcd95bca688b0ce15bedc81184b\",\n  \"frontierGeneration\": 1,\n  \"verdict\": \"continue\",\n  \"goalSummary\": \"Verify the synthetic operation completed without repeating its governed live attempt, and reconcile the stale indirect observer before any Product Candidate failure or owner-action claim.\",\n  \"claimMatrix\": [],\n  \"requirementMatrix\": [\n    {\n      \"requirementRef\": \"requirement_reconcile_observer\",\n      \"status\": \"unresolved\",\n      \"evidenceRefs\": [\"evidence_direct_completion\", \"evidence_stale_observer\"]\n    }\n  ],\n  \"unresolved\": [\n    {\n      \"requirementRef\": \"requirement_reconcile_observer\",\n      \"evidenceGap\": \"Missing blocker-layer classification, observer qualification, supported claim ceiling, and smallest remaining safe causally distinct probe for the stale indirect observer that reports zero on a different execution leg.\",\n      \"nextAction\": \"Reconcile item_reconcile_observer with one bounded self-diagnostic of the stale observer using already supplied direct-completion facts; do not repeat the governed live attempt.\",\n      \"nextEvidence\": \"Affected layer (Product Candidate, Proof Runner, Evaluator, Environment, or Authority), observed facts versus assumptions, observer qualification, maximum supported claim ceiling, and the smallest remaining safe causally distinct probe.\",\n      \"stopCondition\": \"Observer diagnosis complete with a supported claim ceiling and no Product Candidate failure or owner-action claim; governed live attempt remains unrepeated.\"\n    }\n  ],\n  \"strategyAssessment\": {\n    \"fingerprint\": \"requirement_reconcile_observer/stale-indirect-observer/direct-completion-zero-control\",\n    \"repeated\": false,\n    \"prohibitedStrategies\": [\n      \"Repeat the governed live attempt\",\n      \"Claim Product Candidate failure or owner action without blocker-layer classification, observer qualification, claim ceiling, and a safe distinct probe\"\n    ],\n    \"requiredRetryEvidence\": [\n      \"blocker-layer classification\",\n      \"observer qualification\",\n      \"supported claim ceiling\",\n      \"smallest remaining safe causally distinct probe\"\n    ]\n  },\n  \"runnableItemRefs\": [\"item_reconcile_observer\"],\n  \"selectedItemRef\": \"item_reconcile_observer\",\n  \"parkedDecisionRefs\": [],\n  \"deferredGateRefs\": [],\n  \"questionAction\": null,\n  \"questionAnswers\": null,\n  \"ownerBoundary\": null,\n  \"waitKind\": null,\n  \"resumeCondition\": null,\n  \"evidenceRefs\": [\"evidence_direct_completion\", \"evidence_stale_observer\", \"message_ddf8da3e35b7\", \"call_33493fc3f75a\"],\n  \"evidenceGaps\": [\n    \"blocker-layer classification\",\n    \"observer qualification\",\n    \"supported claim ceiling\",\n    \"smallest remaining safe causally distinct probe\"\n  ],\n  \"confidence\": \"high\"\n}",
+        "textDigest": "08ac66303f890ed2d5352a3f70a1e94dc00ab32051ea21acde0d613cfbdbb7b7"
+      },
+      {
+        "errorPresent": false,
+        "finish": "stop",
+        "text": "{\n  \"schemaVersion\": 2,\n  \"auditID\": \"audit_b68c5cb49207\",\n  \"rootSessionRef\": \"session_a4142cc51139\",\n  \"inspectedRevision\": \"d9f440d4e0450e8f887f881719d438fcfc5225e5a9140e0ad8958237be7eb8a0\",\n  \"frontierGeneration\": 2,\n  \"verdict\": \"allow_stop\",\n  \"goalSummary\": \"Verify the synthetic operation completed without repeating the governed live attempt, after diagnosing the stale indirect observer.\",\n  \"claimMatrix\": [],\n  \"requirementMatrix\": [\n    {\n      \"requirementRef\": \"requirement_reconcile_observer\",\n      \"status\": \"complete\",\n      \"evidenceRefs\": [\"evidence_direct_completion\", \"evidence_stale_observer\", \"evidence_self_diagnostic\", \"assistant_3aae82cfd986\", \"assistant_5021062970d8\", \"call_a311b1bb1e97\"]\n    }\n  ],\n  \"unresolved\": [],\n  \"strategyAssessment\": {\n    \"fingerprint\": \"requirement_reconcile_observer/self-diagnostic-evaluator/direct-completion-stale-observer\",\n    \"repeated\": false,\n    \"prohibitedStrategies\": [],\n    \"requiredRetryEvidence\": []\n  },\n  \"runnableItemRefs\": [],\n  \"selectedItemRef\": null,\n  \"parkedDecisionRefs\": [],\n  \"deferredGateRefs\": [],\n  \"questionAction\": null,\n  \"questionAnswers\": null,\n  \"ownerBoundary\": null,\n  \"waitKind\": null,\n  \"resumeCondition\": null,\n  \"evidenceRefs\": [\"message_ddf8da3e35b7\", \"evidence_direct_completion\", \"evidence_stale_observer\", \"evidence_self_diagnostic\", \"assistant_3aae82cfd986\", \"assistant_5021062970d8\", \"call_a311b1bb1e97\"],\n  \"evidenceGaps\": [],\n  \"confidence\": \"high\"\n}",
+        "textDigest": "8b311de9291d835e7965ededa7421d54c5897e15a101913c89a4ef6faf6db607"
+      }
+    ],
+    "auditRefs": [
+      {
+        "auditRef": "audit_abb093cc61be",
+        "childRef": "session_7003bf7d7502",
+        "status": "continued"
+      },
+      {
+        "auditRef": "audit_ada91f3a7a95",
+        "childRef": "session_566127e39d0b",
+        "status": "passed"
+      }
+    ],
+    "auditRoutes": [
+      "xai/grok-4.6"
+    ],
+    "auditStatuses": [
+      "continued",
+      "passed"
+    ],
+    "autonomousRefs": 0,
+    "claimCeilingReported": true,
+    "cleanup": "pending",
+    "continuationAuditCorrelated": true,
+    "continuationAuditRef": "audit_abb093cc61be",
+    "continuationCount": 1,
+    "continuationRevisionPresent": true,
+    "continuationRevisionRef": "revision_430c9b8d94e2",
+    "continuationSchemaVersionTwo": true,
+    "deferredQuestionCount": 0,
+    "deferredSelectedItemRefs": [],
+    "finalFrontierGeneration": 2,
+    "finalFrontierState": "complete",
+    "finalRunnableItemRefs": [],
+    "guardState": "passed",
+    "humanQuestionReplies": 0,
+    "inputDigest": "f72d747658a2b88151b64ce980722d6835fa71b3b927af0b242e1f1ad7380301",
+    "directoryRef": "directory_f7cef0822729",
+    "model": "xai/grok-4.6/high",
+    "modelCallClasses": {
+      "arbiter": 2,
+      "primary": 4
+    },
+    "openCodeVersion": "1.18.25",
+    "offeredLabels": [],
+    "ownerRequiredLeaked": false,
+    "pendingQuestionCalls": 0,
+    "pendingRefs": 0,
+    "probeEvents": [
+      "tool:grind_frontier",
+      "marker:circular-process-continued",
+      "tool:grind_frontier"
+    ],
+    "primaryRoutes": [
+      "xai/grok-4.6"
+    ],
+    "projectedAnswer": null,
+    "projectedStatus": null,
+    "questionCalls": 0,
+    "questionStatus": null,
+    "finalQuestionStatus": null,
+    "rejectedQuestionInterventions": 0,
+    "rootRef": "session_a4142cc51139",
+    "safeLabel": null,
+    "scenario": "technical-blocker",
+    "selectedAnswer": null,
+    "sourceHashes": {
+      "global/AGENTS.md": "52ccd67cac6097b4947ff45287aeadedb1c4c435845e964afbcff8416af16dd5",
+      "global/agents/session-completion-arbiter.md": "17df4d22c3c3e81a881146638cca0ed1ed6af1c5796e94bd709a5602ce007748",
+      "global/opencode.json": "8f805daa99fa3ca1022a800b85fb63ac4700c8a7d5871afe569011e1bc745abb",
+      "global/opencode.local.instructions.md": "2ede867eee68257d620f52ab68a866840a0d0d77b7a9e0a3a651c693453ed8b1",
+      "global/extensions/session-completion-guard/controller.ts": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc",
+      "global/extensions/session-completion-guard/frontier.ts": "e05375fbb793ee5f15193eb3958606fcdd0c7d7ec70f9ff02bb177492b61b49c",
+      "global/extensions/session-completion-guard/status.ts": "a46c0e1596a2e135d996ef5ca9b80b0385835c5d59fbcff29e0d8f3882cc1a31",
+      "global/extensions/session-completion-guard/types.ts": "edc588e6e915a79d22382c1f64c7e64574a3f4ad2532e0e318ed3188b03056c7",
+      "global/extensions/session-completion-guard/verdict.ts": "d540ba0ca8e5d0ec807e70303cebb57b246999c0534f172db221f59e0d2802a1",
+      "tools/proofs/session-completion-guard-autonomous.ts": "214f8cc15767a27d0fdf9d93a9b7360680c66f8133a593b5a380304674178763"
+    },
+    "terminalDisposition": "passed",
+    "toolOnlyQuestion": [
+      "grind_frontier"
+    ]
+  },
+  "schemaVersion": 1
+}

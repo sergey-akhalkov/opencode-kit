@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-cross-project-kaizen-loop",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "cross-project-kaizen-loop",
+      "requirements": [
+        "Kaizen capture is available and independently disableable",
+        "Signals use a closed redacted schema",
+        "The inbox is append-only, bounded, and cross-project",
+        "Compaction emits and persists a mandatory signal envelope",
+        "Complete archive uses a non-blocking harvest checkpoint",
+        "Complain and legacy feedback have one lifecycle owner",
+        "Status and triage are bounded and non-authoritative",
+        "Kit proposal promotion is explicit and root-contained",
+        "Failures are visible without breaking unrelated work"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "Complete archive reports Kaizen harvest independently"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Workflow improvement is explicit and non-blocking"
+      ]
+    },
+    {
+      "capability": "library-runtime-surface-profiles",
+      "requirements": [
+        "Core and all expose one Kaizen lifecycle surface"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "docs/kaizen.md",
+    "global/commands/kaizen-status.md",
+    "global/commands/kaizen-triage.md",
+    "global/plugin/kaizen",
+    "global/plugin/project-memory/store.ts",
+    "global/plugin/session-env.ts",
+    "global/skills/complain",
+    "global/skills/openspec-archive-change",
+    "profiles/core.json",
+    "profiles/all.json",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/cross-project-kaizen.ts",
+    "tools/proofs/fixtures/consumer-outcome/cross-project-kaizen-v1",
+    "tools/proofs/fixtures/cross-project-kaizen",
+    "tools/runtime-surface-profile.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-cross-project-kaizen.ts",
+    "tools/test-project-memory-hooks.ts",
+    "tools/test-library/runtime-surface-profiles.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "add-roadmap-delivery-trajectory-loop",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "global/skills/openspec-archive-change" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" }
+      ],
+      "transferCondition": "terminal: add-roadmap-delivery-trajectory-loop archived as 2026-08-29-add-roadmap-delivery-trajectory-loop; post-archive durable-source correction validated and no writer remains live"
+    },
+    {
+      "changeId": "make-grind-blockers-task-scoped",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "tools/proofs/README.md" }
+      ],
+      "transferCondition": "owner-selected serial insertion: Kaizen is mutation-disabled until make-grind-blockers-task-scoped is archived and transfers the declared shared roots back"
+    }
+  ],
+  "transfers": []
+}

@@ -1,0 +1,251 @@
+{
+  "agentCount": 30,
+  "agentToolCounts": [
+    {
+      "agent": "build",
+      "enabled": 18
+    },
+    {
+      "agent": "code-quality-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "compaction",
+      "enabled": 19
+    },
+    {
+      "agent": "deployment-config-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "evidence-sufficiency-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "execution-safety-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "explore",
+      "enabled": 19
+    },
+    {
+      "agent": "final-candidate-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "foundation-integrity-reviewer",
+      "enabled": 18
+    },
+    {
+      "agent": "general",
+      "enabled": 18
+    },
+    {
+      "agent": "implementation-readiness-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "implementation-worker",
+      "enabled": 18
+    },
+    {
+      "agent": "instruction-artifact-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "legacy-client-compatibility-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "legacy-evidence-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "openspec-architecture-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "performance-reliability-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "plan",
+      "enabled": 18
+    },
+    {
+      "agent": "protocol-api-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "qwen-local-worker",
+      "enabled": 19
+    },
+    {
+      "agent": "rust-concurrency-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "scout",
+      "enabled": 19
+    },
+    {
+      "agent": "sdet-quality-engineer",
+      "enabled": 19
+    },
+    {
+      "agent": "session-completion-arbiter",
+      "enabled": 0
+    },
+    {
+      "agent": "specialist-team-advisor",
+      "enabled": 18
+    },
+    {
+      "agent": "summary",
+      "enabled": 19
+    },
+    {
+      "agent": "test-coverage-reviewer",
+      "enabled": 19
+    },
+    {
+      "agent": "title",
+      "enabled": 19
+    },
+    {
+      "agent": "troubleshooter",
+      "enabled": 18
+    },
+    {
+      "agent": "wire-protocol-reviewer",
+      "enabled": 19
+    }
+  ],
+  "agents": [
+    "build",
+    "code-quality-reviewer",
+    "compaction",
+    "deployment-config-reviewer",
+    "evidence-sufficiency-reviewer",
+    "execution-safety-reviewer",
+    "explore",
+    "final-candidate-reviewer",
+    "foundation-integrity-reviewer",
+    "general",
+    "implementation-readiness-reviewer",
+    "implementation-worker",
+    "instruction-artifact-reviewer",
+    "legacy-client-compatibility-reviewer",
+    "legacy-evidence-reviewer",
+    "openspec-architecture-reviewer",
+    "performance-reliability-reviewer",
+    "plan",
+    "protocol-api-reviewer",
+    "qwen-local-worker",
+    "rust-concurrency-reviewer",
+    "scout",
+    "sdet-quality-engineer",
+    "session-completion-arbiter",
+    "specialist-team-advisor",
+    "summary",
+    "test-coverage-reviewer",
+    "title",
+    "troubleshooter",
+    "wire-protocol-reviewer"
+  ],
+  "boundary": "installed-opencode-resolved-agent-permissions",
+  "candidateId": "opdc-configured-grind-r2",
+  "configuredMainPrecedence": {
+    "allow": "allow",
+    "ask": "allow",
+    "deny": "allow"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "invocation": [
+    "npm",
+    "run",
+    "proof:permissions",
+    "--",
+    "--evidence-root",
+    "<evidence-root>",
+    "--candidate-id",
+    "opdc-configured-grind-r2"
+  ],
+  "liveSessionPermissionRecovery": {
+    "arbiter": {
+      "configuredPermission": "deny",
+      "enabledToolCount": 0,
+      "externalProviderCalled": false,
+      "listedToolCount": 21,
+      "loopbackProviderCalls": 1,
+      "messageAdmission": true,
+      "nuphusConnected": true,
+      "persistedWildcardAllow": false,
+      "providerToolCount": 0
+    },
+    "ordinary": {
+      "inputPermission": "deny",
+      "messageAdmission": true,
+      "persistedPermission": "allow",
+      "providerCalled": false
+    }
+  },
+  "messageToolRestrictions": "removed-except-tool-less-arbiter",
+  "opencodeVersion": "1.18.25",
+  "outcome": "pass",
+  "permissionKinds": [
+    "bash",
+    "doom_loop",
+    "edit",
+    "external_directory",
+    "glob",
+    "grep",
+    "list",
+    "lsp",
+    "question",
+    "read",
+    "skill",
+    "task",
+    "todowrite",
+    "webfetch",
+    "websearch"
+  ],
+  "persistedSessionPermissions": "ordinary-healed-arbiter-not-overridden",
+  "productionSources": [
+    {
+      "path": "global/extensions/unrestricted-agent-tools.ts",
+      "sha256": "2b90a2b758e12c630efd9eeb49e8616b3893d7d9e3d23a9c339d459c6db8fafa"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/controller.ts",
+      "sha256": "1cc3b6509640fdc73e81978c25c53563aed9b26a787944319787e2453e9054bc"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/runtime-support.ts",
+      "sha256": "baf02a6f547f5c3f96ba8be2f8bdc66a528cd6e98f94800426f98453405b21a0"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+      "sha256": "36bd723697cc9c7399af968525a5d1f0688ed08a2c971f03bbca962862bd165f"
+    },
+    {
+      "path": "global/agents/session-completion-arbiter.md",
+      "sha256": "3e9ff02414d66e7680b5e187425d498564e9286ac1a4d84e4141779a4fb22cb8"
+    },
+    {
+      "path": "global/agents/sdet-quality-engineer.md",
+      "sha256": "18264183b5f71c4067274c3714a8dc1242b118cd4403d40fc5b3358456a914cd"
+    }
+  ],
+  "promptToolRestrictions": "absent",
+  "runnerSource": {
+    "path": "tools/proofs/opencode-permissions.ts",
+    "sha256": "a87ebd7aa90852582d0b293033fcaa418b95c31fad500690cb97824a1d7f1cd7"
+  },
+  "schemaVersion": 1,
+  "sessionPermissionRestrictions": "absent"
+}
