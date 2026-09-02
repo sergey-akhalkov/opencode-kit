@@ -1,0 +1,649 @@
+{
+  "schemaVersion": 1,
+  "id": "ordinary-small-closure-r1",
+  "claimId": "SOSC-001",
+  "maximumClaim": "provider-free structural proof for exactly the twelve reviewed SOSC-001 seed members under the recorded seed and current governed working-tree identity only; all risk dispositions, artifact expectations, gate outcomes, and diagnostics are reviewed fixture facts, and no installed behavior, model behavior, provider compatibility, untested population, universal semantic classification, or delivery-speed claim is established",
+  "governedSourcePaths": [
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/ordinary-small-closure.ts",
+    "tools/proofs/fixtures/consumer-outcome/ordinary-small-closure-r1.json"
+  ],
+  "limits": {
+    "maxArtifactsPerObservation": 12,
+    "maxDiagnosticsPerObservation": 4,
+    "maxEventsPerObservation": 12,
+    "maxRedControlsPerScenario": 4,
+    "maxScenarios": 12
+  },
+  "scenarios": [
+    {
+      "id": "compact-ordinary-exact",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["design.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["design.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": [],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "compact-normalized", "ordinary-exact-supplied", "compact-artifacts-matched", "gate-ready"],
+          "observed": ["metadata-read", "compact-normalized", "ordinary-exact-supplied", "compact-artifacts-matched", "gate-ready"]
+        },
+        "gateStatus": "ready",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": true,
+        "normalizedProfile": "compact",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": true,
+        "riskDispositionKind": "ordinary-small-exact",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "compact-profile-drift",
+          "expectedFailures": ["artifact-profile"],
+          "patch": { "artifactProfile": "full" }
+        },
+        {
+          "id": "compact-no-event-history",
+          "expectedFailures": ["artifact-facts"],
+          "patch": {
+            "artifactFacts": {
+              "expected": ["design.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+              "observed": ["design.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-ordinary-exact",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "full",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": [],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "full-normalized", "ordinary-exact-supplied", "full-artifacts-matched", "gate-ready"],
+          "observed": ["metadata-read", "full-normalized", "ordinary-exact-supplied", "full-artifacts-matched", "gate-ready"]
+        },
+        "gateStatus": "ready",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": true,
+        "normalizedProfile": "full",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "correlated",
+        "parserTokensValid": true,
+        "riskDispositionKind": "ordinary-small-exact",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "full-ordinary-risk-drift",
+          "expectedFailures": ["risk-disposition-kind"],
+          "patch": { "riskDispositionKind": "material" }
+        },
+        {
+          "id": "full-ordinary-event-order-drift",
+          "expectedFailures": ["event-facts"],
+          "patch": {
+            "eventFacts": {
+              "expected": ["metadata-read", "full-normalized", "ordinary-exact-supplied", "full-artifacts-matched", "gate-ready"],
+              "observed": ["full-normalized", "metadata-read", "ordinary-exact-supplied", "full-artifacts-matched", "gate-ready"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-material",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "full",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": [],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "full-normalized", "material-supplied", "full-artifacts-matched", "gate-ready"],
+          "observed": ["metadata-read", "full-normalized", "material-supplied", "full-artifacts-matched", "gate-ready"]
+        },
+        "gateStatus": "ready",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": true,
+        "normalizedProfile": "full",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "correlated",
+        "parserTokensValid": true,
+        "riskDispositionKind": "material",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "full-material-blocked-without-diagnostic",
+          "expectedFailures": ["gate-status"],
+          "patch": { "gateStatus": "blocked" }
+        },
+        {
+          "id": "full-material-provider-call",
+          "expectedFailures": ["effect-facts"],
+          "patch": {
+            "effectFacts": {
+              "modelCalls": 0,
+              "networkCalls": 0,
+              "processCalls": 0,
+              "providerCalls": 1,
+              "remoteEffects": 0,
+              "sourceWrites": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-unknown",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "full",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["risk-disposition-unknown"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "full-normalized", "unknown-supplied", "full-artifacts-matched", "unknown-blocked"],
+          "observed": ["metadata-read", "full-normalized", "unknown-supplied", "full-artifacts-matched", "unknown-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "full",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "correlated",
+        "parserTokensValid": true,
+        "riskDispositionKind": "unknown",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "full-unknown-authorizes-mutation",
+          "expectedFailures": ["mutation-authority"],
+          "patch": { "mutationAuthorized": true }
+        },
+        {
+          "id": "full-unknown-incomplete-cleanup",
+          "expectedFailures": ["cleanup-facts"],
+          "patch": {
+            "cleanup": {
+              "persistentTemporaryFiles": 1,
+              "processesRemaining": 0,
+              "sessionsRemaining": 0,
+              "status": "incomplete",
+              "terminal": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "legacy-missing-metadata",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "absent",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": [],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "both-fields-absent", "legacy-normalized", "legacy-strict-retained"],
+          "observed": ["metadata-read", "both-fields-absent", "legacy-normalized", "legacy-strict-retained"]
+        },
+        "gateStatus": "legacy-strict",
+        "metadataState": "missing",
+        "metadataValidity": "valid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "legacy",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "correlated",
+        "parserTokensValid": true,
+        "riskDispositionKind": "absent",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "legacy-normalized-compact",
+          "expectedFailures": ["normalized-profile"],
+          "patch": { "normalizedProfile": "compact" }
+        }
+      ]
+    },
+    {
+      "id": "partial-metadata",
+      "observation": {
+        "artifactFacts": {
+          "expected": [".openspec.yaml"],
+          "observed": [".openspec.yaml"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["metadata-partial"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "one-field-absent", "metadata-invalid", "gate-blocked"],
+          "observed": ["metadata-read", "one-field-absent", "metadata-invalid", "gate-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "partial",
+        "metadataValidity": "invalid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "invalid",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": true,
+        "riskDispositionKind": "absent",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "partial-metadata-gate-ready",
+          "expectedFailures": ["gate-status"],
+          "patch": { "gateStatus": "ready" }
+        }
+      ]
+    },
+    {
+      "id": "malformed-values",
+      "observation": {
+        "artifactFacts": {
+          "expected": [".openspec.yaml"],
+          "observed": [".openspec.yaml"]
+        },
+        "artifactProfile": "invalid",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["metadata-malformed"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "invalid-enum-observed", "metadata-invalid", "gate-blocked"],
+          "observed": ["metadata-read", "invalid-enum-observed", "metadata-invalid", "gate-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "malformed",
+        "metadataValidity": "invalid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "invalid",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": true,
+        "riskDispositionKind": "invalid",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "malformed-values-marked-complete",
+          "expectedFailures": ["metadata-state"],
+          "patch": { "metadataState": "complete" }
+        }
+      ]
+    },
+    {
+      "id": "compact-material",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["artifact-profile-risk-conflict"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "compact-normalized", "material-supplied", "profile-risk-conflict", "gate-blocked"],
+          "observed": ["metadata-read", "compact-normalized", "material-supplied", "profile-risk-conflict", "gate-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "compact",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": true,
+        "riskDispositionKind": "material",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "compact-material-diagnostic-omitted",
+          "expectedFailures": ["diagnostic-ids"],
+          "patch": { "diagnosticIds": [] }
+        }
+      ]
+    },
+    {
+      "id": "compact-unknown",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["artifact-profile-risk-conflict", "risk-disposition-unknown"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "compact-normalized", "unknown-supplied", "profile-risk-conflict", "unknown-blocked"],
+          "observed": ["metadata-read", "compact-normalized", "unknown-supplied", "profile-risk-conflict", "unknown-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "compact",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": true,
+        "riskDispositionKind": "unknown",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "compact-unknown-gate-ready",
+          "expectedFailures": ["gate-status"],
+          "patch": { "gateStatus": "ready" }
+        }
+      ]
+    },
+    {
+      "id": "stale-compact",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["compact-stale"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "compact-normalized", "material-trigger-supplied", "compact-marked-stale", "gate-blocked"],
+          "observed": ["metadata-read", "compact-normalized", "material-trigger-supplied", "compact-marked-stale", "gate-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "compact",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": true,
+        "riskDispositionKind": "ordinary-small-exact",
+        "staleCompact": true
+      },
+      "redControls": [
+        {
+          "id": "stale-compact-flag-cleared",
+          "expectedFailures": ["stale-compact"],
+          "patch": { "staleCompact": false }
+        }
+      ]
+    },
+    {
+      "id": "explicit-optional-mechanisms",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["design.md", "falsification-review.md", "history.md", "proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": [],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "compact-normalized", "ordinary-exact-supplied", "optional-mechanisms-present", "optional-correlations-matched", "gate-ready"],
+          "observed": ["metadata-read", "compact-normalized", "ordinary-exact-supplied", "optional-mechanisms-present", "optional-correlations-matched", "gate-ready"]
+        },
+        "gateStatus": "ready",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": true,
+        "normalizedProfile": "compact",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "correlated",
+        "parserTokensValid": true,
+        "riskDispositionKind": "ordinary-small-exact",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "explicit-optional-correlation-drift",
+          "expectedFailures": ["optional-correlation"],
+          "patch": { "optionalCorrelationValid": false }
+        }
+      ]
+    },
+    {
+      "id": "syntax-versus-prose-defects",
+      "observation": {
+        "artifactFacts": {
+          "expected": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"],
+          "observed": ["proposal.md", "specs/library-spec-workflow-integrity/spec.md", "tasks.md"]
+        },
+        "artifactProfile": "compact",
+        "cleanup": {
+          "persistentTemporaryFiles": 0,
+          "processesRemaining": 0,
+          "sessionsRemaining": 0,
+          "status": "complete",
+          "terminal": true
+        },
+        "diagnosticIds": ["parser-token-defect"],
+        "effectFacts": {
+          "modelCalls": 0,
+          "networkCalls": 0,
+          "processCalls": 0,
+          "providerCalls": 0,
+          "remoteEffects": 0,
+          "sourceWrites": 0
+        },
+        "equivalentProseAccepted": true,
+        "eventFacts": {
+          "expected": ["metadata-read", "compact-normalized", "equivalent-prose-accepted", "parser-token-defect-observed", "gate-blocked"],
+          "observed": ["metadata-read", "compact-normalized", "equivalent-prose-accepted", "parser-token-defect-observed", "gate-blocked"]
+        },
+        "gateStatus": "blocked",
+        "metadataState": "complete",
+        "metadataValidity": "valid",
+        "mutationAuthorized": false,
+        "normalizedProfile": "compact",
+        "optionalCorrelationValid": true,
+        "optionalMechanismState": "omitted",
+        "parserTokensValid": false,
+        "riskDispositionKind": "ordinary-small-exact",
+        "staleCompact": false
+      },
+      "redControls": [
+        {
+          "id": "parser-token-defect-hidden",
+          "expectedFailures": ["parser-tokens"],
+          "patch": { "parserTokensValid": true }
+        },
+        {
+          "id": "equivalent-prose-rejected",
+          "expectedFailures": ["equivalent-prose"],
+          "patch": { "equivalentProseAccepted": false }
+        }
+      ]
+    }
+  ]
+}

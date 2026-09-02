@@ -29,8 +29,9 @@ Use this skill when implementation and evidence are complete and the user asks t
 - A finalized failed invocation, exhausted agent-authored attempt count, or process stop line does not complete the change when a safe causally distinct route remains. Preserve the attempt and revise only the necessary process controls.
 - Complete archive may proceed only when the accepted outcome is achieved. An unmet outcome requires the distinct owner-selected incomplete/abandoned preservation flow, which never claims completion or synchronizes undelivered requirements.
 - Optional retrospective or workflow feedback stays outside the product task graph and never blocks complete archive. This does not skip the bounded non-blocking Kaizen harvest attempt when the loaded checkpoint tool is available.
-- A required Automation Dividend needs its one tagged task checked; an exempt declaration must have no tagged task.
-- Reconcile broad claims against the current real-boundary result and project validation. Archive only the exact scope those observations support; do not create or require a retained claim record.
+- Read current `artifactProfile` and `riskDisposition.kind` metadata before complete archive. Compact is valid only with current `ordinary-small-exact`; Material, unknown, broad, decision-material, or stale compact evidence requires current full artifacts, and unknown/stale state blocks archive. Both metadata fields absent retains legacy-strict behavior; partial or malformed metadata fails closed.
+- A declared required Automation Dividend needs its one tagged task checked. Valid compact omission has no declaration, exemption, or task; explicit compact mechanisms retain their existing correlation gates.
+- Reconcile broad claims against the current real-boundary result and project validation. Broad claims require full artifacts; compact exact uses `Observable Proof` as its boundary. Archive only the exact scope those observations support; do not create or require a retained claim record.
 
 ## Open Harvest Checkpoint
 
@@ -75,7 +76,7 @@ Treat helper output and harvest as independent dimensions:
 ## Post-Success Trajectory Routing
 
 - Run this route only after the helper exits zero and reports final `status: archived`; a failed archive or post-validation emits no success-based trajectory signal.
-- Read the archived proposal's exact `Delivery Horizon` declaration. Report `trajectory: not-applicable` for legacy-unlinked or `none - <reason>` work without inferring membership.
+- Read the archived proposal's exact `Delivery Horizon` declaration when present. Report `trajectory: not-applicable` for compact-unlinked, legacy-unlinked, or full `none - <reason>` work without inferring membership.
 - For a linked archive, invoke the exact active `delivery-trajectory-context.ts` helper with the project root, Horizon id, archive id, and bounded JSON output. Main evaluates one compact signal from that output and selected current evidence. Report `trajectory: none` without a durable receipt when no material trigger exists.
 - When the current signal is `review-required`, load `roadmap-delivery-trajectory` once for that evidence tuple. Any resulting receipt or same-Horizon successor is future planning evidence, not archive completion credit. If context, semantic evaluation, or capability resolution fails, report `trajectory: unknown` with the original cause and no adjacent-skill or alternate-source fallback.
 - Preserve independent operation dimensions exactly: `archive: archived` and `trajectory: not-applicable | none | review-required | unknown`. Trajectory processing must not change archive exit status, reopen the change, append tasks, rewrite archived bytes/specs, or block unrelated work.

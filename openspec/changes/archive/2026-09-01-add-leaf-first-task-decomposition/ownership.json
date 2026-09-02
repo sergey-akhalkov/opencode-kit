@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-leaf-first-task-decomposition",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "leaf-first-task-decomposition",
+      "requirements": [
+        "Compound work is decomposed before dependent integration",
+        "Required leaves are proved before their parent",
+        "Hidden independent prerequisites create recursive child work",
+        "Decomposition remains proportional and outcome preserving",
+        "Leaf-first state composes with current lifecycle owners"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Loaded main performs proportional leaf-first execution"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "OpenSpec authoring and apply preserve leaf-first task dependencies"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Material dependency chains use evidence-bearing leaves"
+      ]
+    },
+    {
+      "capability": "session-completion-guard",
+      "requirements": [
+        "Grind frontiers preserve leaf-first parent dependencies"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "docs/workflows/session-reflection.md",
+    "global/AGENTS.md",
+    "global/agents/session-completion-arbiter.md",
+    "global/opencode.json.template",
+    "global/skills/change-ready-sdlc",
+    "global/skills/deep-task-planning",
+    "global/skills/openspec-apply-change",
+    "global/skills/openspec-propose",
+    "instructions/reusable-project-agent-instructions.md",
+    "instructions/universal-development-loop.md",
+    "templates/project/AGENTS.md",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/fixtures/consumer-outcome",
+    "tools/proofs/fixtures/session-completion-guard",
+    "tools/proofs/session-completion-guard-autonomous.ts",
+    "tools/proofs/session-completion-guard-frontier.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-contracts-change-ready-delivery.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts.ts",
+    "tools/test-session-completion-guard.ts",
+    "tools/validators/agents.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "add-outcome-preserving-delivery-checkpoints",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "docs/workflows/session-reflection.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/agents/session-completion-arbiter.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "global/skills/openspec-apply-change" },
+        { "type": "write-root", "path": "instructions/reusable-project-agent-instructions.md" },
+        { "type": "write-root", "path": "templates/project/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/consumer-outcome" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/session-completion-guard" },
+        { "type": "write-root", "path": "tools/proofs/session-completion-guard-autonomous.ts" },
+        { "type": "write-root", "path": "tools/proofs/session-completion-guard-frontier.ts" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready-delivery.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/test-session-completion-guard.ts" },
+        { "type": "write-root", "path": "tools/validators/agents.ts" }
+      ],
+      "transferCondition": "terminal: add-outcome-preserving-delivery-checkpoints archived as 2026-09-01-add-outcome-preserving-delivery-checkpoints; all production and proof writers are terminal, current canonical specs and source were reread, and the exact overlapping owners were transferred before this change enabled mutation"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "add-outcome-preserving-delivery-checkpoints",
+      "toChangeId": "add-leaf-first-task-decomposition",
+      "owners": [
+        { "type": "write-root", "path": "docs/workflows/session-reflection.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/agents/session-completion-arbiter.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "global/skills/openspec-apply-change" },
+        { "type": "write-root", "path": "instructions/reusable-project-agent-instructions.md" },
+        { "type": "write-root", "path": "templates/project/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/consumer-outcome" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/session-completion-guard" },
+        { "type": "write-root", "path": "tools/proofs/session-completion-guard-autonomous.ts" },
+        { "type": "write-root", "path": "tools/proofs/session-completion-guard-frontier.ts" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready-delivery.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/test-session-completion-guard.ts" },
+        { "type": "write-root", "path": "tools/validators/agents.ts" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

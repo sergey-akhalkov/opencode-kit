@@ -16,6 +16,7 @@ Do not use it for routine single-file changes, simple questions, or tasks where 
 - Identify primary evidence: source, tests, schemas, scripts, live output, product docs, external specs, or owner decisions.
 - Prefer the next useful working increment inside a technically enforced operating envelope; unreachable future design is non-blocking residual.
 - Sequence every behavior dependency chain to minimize time-to-first-real-signal. Identify the current fidelity rung, earliest safely reachable real boundary, next rung, and the exact blocker and earliest unblocking task when deferred; a reachable real check precedes dependent behavior.
+- Plan compound accepted work from parent to leaves, then execute and prove from leaves to parent. Each evidence-bearing leaf identifies one bounded result, required dependencies, one owner or effect boundary, earliest sufficient oracle, local failure/diagnostic and cleanup envelope, and dependency stop condition; its parent retains a distinct integration oracle. Keep cohesive Ordinary Small work and grouped mechanical edits direct, preserve exact gates and the accepted proof, and never use task/file counts or prose to infer semantic granularity.
 - Material behavior-changing slices: original requirements, minimal happy-path implementation and observable proof, accepted-scope completion, and final validation. Main may add the smallest focused regression after proof; independent fresh critical-only SDET/test authoring is required only for a reachable named critical consequence or explicit project/owner requirement. Optional reviewers run only for concrete risk.
 - For Material live-proof work, identify the Product Candidate, real boundary, Environment Identity, current-run diagnostics, non-deferrable guards, authorization, effect suppression, restoration/cleanup, and dependency-chain stop condition. Do not plan retained evidence bundles, indexes, lanes, or replay corpora.
 - Make the test plan risk-driven rather than coverage-driven: identify realistic business and operational failures, real boundaries, justified mock exceptions, and residual risks.
@@ -36,7 +37,7 @@ Return:
 - `Test Plan`: unit, integration, acceptance, negative, performance, or manual gates as applicable.
 - `Runtime Proof Plan`: for Material work, real boundary, representative input, environment identity, expected observation, live-only guards, cleanup, and exact invalidation consequences; otherwise `N/A - <reason>`.
 - `Architecture And Context Plan`: touched responsibility map, navigation risks, cohesive boundaries, and `split-or-justify` decisions; `N/A - <reason>` for a non-code or truly mechanical slice.
-- `Diagnostics Plan`: failure boundaries, exception/log context, correlation/redaction policy, current-run stdout/stderr, and cleanup; otherwise `N/A - <reason>`.
+- `Diagnostic Evidence Plan`: failure boundaries, exception/log context, correlation/redaction policy, current-run stdout/stderr, and cleanup; otherwise `N/A - <reason>`.
 - `Code Quality Checkpoint`: when concrete risk justifies `code-quality-audit` or `code-quality-reviewer`, or `N/A - <reason>`.
 - `Risk Register`: risk, impact, mitigation, owner or blocker.
 - `Decision Points`: choices that need evidence or owner input.

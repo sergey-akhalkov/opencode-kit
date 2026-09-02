@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "ordinary-small-closure-configured-r1",
+  "profile": "quality-independent",
+  "runtimeProfile": "core",
+  "configuredProviderRequestBound": 1,
+  "maximumClaim": "configured loaded-main observation for one reviewed SOSC-001 compact Ordinary Small exact authoring path in one disposable repository under the exact recorded candidate, model, profile, source, fixture, and environment only; the scenario is bounded to one request and proves only its current artifact, operation-gate, effect, and cleanup rows, not universal risk classification, untested repository or runtime versions, active user-process activation, or deployed behavior",
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/bin/openspec-change/automation-dividend.ts",
+    "global/bin/openspec-change/bounded-falsification.ts",
+    "global/bin/openspec-change/claims.ts",
+    "global/bin/openspec-change/delivery-horizon.ts",
+    "global/bin/openspec-change/manifest.ts",
+    "global/bin/openspec-change/state.ts",
+    "global/bin/openspec-operation-gate.ts",
+    "global/model-profiles/quality-independent.json",
+    "global/skills/openspec-propose/SKILL.md",
+    "profiles/core.json",
+    "tools/model-profile.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/ordinary-small-closure-configured.ts",
+    "tools/proofs/consumer-outcome/ordinary-small-closure.ts",
+    "tools/proofs/fixtures/consumer-outcome/ordinary-small-closure-configured-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/ordinary-small-closure-configured-v1",
+    "tools/proofs/lib/opencode-proof-client.ts",
+    "tools/proofs/lib/proof-process-cleanup.ts",
+    "tools/runtime-surface-profile.ts"
+  ],
+  "scenarios": [
+    {
+      "id": "configured-compact-ordinary-small",
+      "shape": "openspec-backed",
+      "fixtureId": "configured-compact-ordinary-small",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/ordinary-small-closure-configured-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "notes/title.txt",
+          "openspec/config.yaml",
+          "oracle/check-result.ts",
+          "scripts/check-title.ts"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this OpenSpec fixture. Load the openspec-propose skill and read case.json as the complete accepted request. Author the new compact-note-title OpenSpec change with capability id note-title. Use artifactProfile compact and current riskDisposition.kind ordinary-small-exact. Create only .openspec.yaml, proposal.md, design.md, specs/note-title/spec.md, and tasks.md under that change. Keep the exact six-field compact Outcome Capsule in proposal.md and omit Material Residual Risks, Delivery Horizon, Automation Dividend, Bounded Falsification Review, Claim And Evidence Scope, history.md, falsification-review.md, and ownership.json because case.json declares no applicable mechanism or strategy event. Do not read oracle/check-result.ts. Do not implement or edit notes/title.txt, do not run scripts/check-title.ts, and do not archive or apply implementation tasks. Ask no question, invoke no subagent, access no credential/network/external path, and take no commit, install, remote, destructive, deploy, release, or protected action. The harness owns strict validation and propose/apply readiness checks after your response. Report the authored compact change briefly when the five files are complete.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["archive", "commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": [
+          "openspec/changes/compact-note-title/.openspec.yaml",
+          "openspec/changes/compact-note-title/design.md",
+          "openspec/changes/compact-note-title/proposal.md",
+          "openspec/changes/compact-note-title/specs/note-title/spec.md",
+          "openspec/changes/compact-note-title/tasks.md"
+        ],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["openspec", "validate", "compact-note-title", "--strict"],
+      "proofExpectations": {
+        "argv": ["node", "oracle/check-result.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": [
+          "\"applyExitCode\":0",
+          "\"applyStatus\":\"passed\"",
+          "\"artifactProfile\":\"compact\"",
+          "\"forbiddenArtifactCount\":0",
+          "\"proposalCapsuleFieldCount\":6",
+          "\"proposeExitCode\":0",
+          "\"proposeStatus\":\"warning\"",
+          "\"riskDispositionKind\":\"ordinary-small-exact\"",
+          "\"status\":\"passed\""
+        ]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read", "skill:openspec-propose"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {
+        "applyExitCode": 0,
+        "applyStatus": "passed",
+        "artifactProfile": "compact",
+        "forbiddenArtifactCount": 0,
+        "planningArtifacts": [
+          "openspec/changes/compact-note-title/.openspec.yaml",
+          "openspec/changes/compact-note-title/design.md",
+          "openspec/changes/compact-note-title/proposal.md",
+          "openspec/changes/compact-note-title/specs/note-title/spec.md",
+          "openspec/changes/compact-note-title/tasks.md"
+        ],
+        "proposalCapsuleFieldCount": 6,
+        "proposeExitCode": 0,
+        "proposeStatus": "warning",
+        "riskDispositionKind": "ordinary-small-exact",
+        "status": "passed"
+      }
+    }
+  ]
+}

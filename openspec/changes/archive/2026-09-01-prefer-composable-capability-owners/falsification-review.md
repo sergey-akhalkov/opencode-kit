@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:current-root-global-capability-composition-request
+- **Reviewed Request Ref**: event:current-root-global-capability-composition-request
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:cco-planning-r2
+- **Reviewed Candidate Ref**: candidate:cco-planning-r2
+- **Decision Surface**: challenge semantic-owner ambiguity, over-fragmentation, hidden duplicate ownership, missing direct or integration oracle, dependency-selection policy, leaf-first overlap, and unnecessary new runtime mechanisms.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fa4c37a60ffe67AL5WW3QKPhw6
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: CCO-R2-01
+- **Main Dispositions**: CCO-R2-01=confirmed
+- **Correction Ref**: correction:cco-planning-r3-capsule-axis
+- **Invalidated Surfaces**: proposal-observable-proof, proposal-comparison-paths
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: none

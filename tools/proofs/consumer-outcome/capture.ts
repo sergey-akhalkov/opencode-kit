@@ -444,7 +444,7 @@ export function createCaptureBundle(input: {
     byteLength: 0,
     comparisonIdentity: digestOf({ candidateId: input.candidateId, kind: input.kind, scenarioDigest: input.scenarioDigest }),
     evaluatorDigest: evaluatorDigest(),
-    inventory: input.inventory ?? ["bundle.json"],
+    inventory: input.inventory ?? [],
     kind: input.kind,
     samples: input.samples,
     scenarioDigest: input.scenarioDigest,
@@ -453,7 +453,6 @@ export function createCaptureBundle(input: {
   };
   bundle.byteLength = bundleByteLength(bundle);
   if (bundle.byteLength > CAPTURE_BYTE_LIMIT) throw new ContractError("bundle.byteLength", "capture exceeds the reviewed byte bound");
-  writeNewFile(path.join(input.evidenceRoot, "bundle.json"), stableJson(bundle));
   return bundle;
 }
 
@@ -780,7 +779,7 @@ export function createFoundationBundleFromDiagnostic(
   return createCaptureBundle({
     candidateId: options.candidateId,
     evidenceRoot: options.evidenceRoot,
-    inventory: ["bundle.json", "diagnostic.json"],
+    inventory: ["diagnostic.json"],
     kind: "candidate",
     samples: [sample],
     scenarioDigest,
@@ -911,7 +910,7 @@ async function captureSample(
         argv,
         status: result.status,
         stderr: result.stderr.slice(0, 4_000),
-        stdout: result.stdout.slice(0, stdoutLimit),
+        stdout: result.stdout.slice(-stdoutLimit),
         termination,
       };
       const parsed = parseToolFacts(result.stdout);

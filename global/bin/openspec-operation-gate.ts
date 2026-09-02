@@ -2,10 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import * as yaml from "js-yaml";
 import { automationDividendTasks, parseAutomationDividend } from "./openspec-change/automation-dividend.ts";
 import { inspectBoundedFalsificationReview, parseBoundedFalsificationDeclaration } from "./openspec-change/bounded-falsification.ts";
 import { loadDeliveryHorizon, parseDeliveryHorizonDeclaration } from "./openspec-change/delivery-horizon.ts";
 import { ownershipGateChecks } from "./openspec-change/gate.ts";
+import { parseOpenSpecArtifactMetadata, type OpenSpecArtifactMetadata } from "./openspec-change/manifest.ts";
 
 export { formatBoundedFalsificationReview, inspectBoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
 export type { BoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
@@ -65,6 +67,8 @@ const specCapsuleFields = [
   "Stop Line",
 ] as const;
 
+const compactCapsuleFields = specCapsuleFields.filter((field) => field !== "Material Residual Risks");
+
 const broadClaimScopeFields = [
   "Claim ID",
   "Claim Class",
@@ -119,6 +123,72 @@ function changePath(root: string, changeId: string, ...parts: string[]): string 
   return path.join(changeRoot(root, changeId), ...parts);
 }
 
+function artifactMetadata(root: string, changeId: string): { check: OpenSpecOperationGateCheck; value?: OpenSpecArtifactMetadata } {
+  const metadataPath = changePath(root, changeId, ".openspec.yaml");
+  const source = `openspec/changes/${changeId}/.openspec.yaml`;
+  if (!fs.existsSync(metadataPath)) {
+    return {
+      check: check("artifact:profile-risk-metadata", "OpenSpec artifact profile and risk disposition", "passed", false, source, "No metadata file exists; the change remains legacy-strict."),
+      value: { artifactProfile: "legacy", riskDispositionKind: null },
+    };
+  }
+  let parsedYaml: unknown;
+  try {
+    parsedYaml = yaml.load(fs.readFileSync(metadataPath, "utf8"));
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    return { check: check("artifact:profile-risk-metadata", "OpenSpec artifact profile and risk disposition", "failed", true, source, `OpenSpec metadata is not valid YAML: ${reason}`) };
+  }
+  const parsed = parseOpenSpecArtifactMetadata(parsedYaml);
+  if (!parsed.ok) {
+    return {
+      check: check("artifact:profile-risk-metadata", "OpenSpec artifact profile and risk disposition", "failed", true, source, parsed.issues.map((issue) => `${issue.path}: ${issue.message}`).join(" ")),
+    };
+  }
+  const summary = parsed.value.artifactProfile === "legacy"
+    ? "Both structured fields are absent; the change remains legacy-strict."
+    : `Artifact profile is ${parsed.value.artifactProfile}; risk disposition is ${parsed.value.riskDispositionKind}.`;
+  return { check: check("artifact:profile-risk-metadata", "OpenSpec artifact profile and risk disposition", "passed", false, source, summary), value: parsed.value };
+}
+
+function profileRiskChecks(root: string, operation: string, changeId: string, metadata: OpenSpecArtifactMetadata): OpenSpecOperationGateCheck[] {
+  const source = `openspec/changes/${changeId}/.openspec.yaml`;
+  const checks: OpenSpecOperationGateCheck[] = [];
+  if (metadata.riskDispositionKind === "unknown") {
+    const blocksMutation = operation === "apply" || operation === "archive";
+    checks.push(check(
+      "artifact:risk-disposition-readiness",
+      "OpenSpec risk disposition readiness",
+      blocksMutation ? "blocked" : "warning",
+      blocksMutation,
+      source,
+      blocksMutation
+        ? `riskDisposition.kind unknown blocks ${operation} mutation; resolve the reviewed risk disposition first.`
+        : "Full artifacts may be authored while riskDisposition.kind is unknown, but semantic readiness remains unknown.",
+    ));
+  }
+  if (metadata.artifactProfile !== "compact") return checks;
+  const proposalPath = changePath(root, changeId, "proposal.md");
+  if (!fs.existsSync(proposalPath)) return checks;
+  const proposalText = fs.readFileSync(proposalPath, "utf8");
+  const fullOnlyFacts = [
+    proposalText.includes("**Material Residual Risks**") ? "Material Residual Risks" : null,
+    proposalText.includes("**Claim Class**") ? "broad Claim Class" : null,
+    /\*\*Bounded Falsification Review\*\*\s*:\s*required\s*-/u.test(proposalText) ? "required bounded falsification" : null,
+  ].filter((value): value is string => value != null);
+  if (fullOnlyFacts.length > 0) {
+    checks.push(check(
+      "artifact:compact-stale",
+      "OpenSpec compact profile freshness",
+      "failed",
+      true,
+      `openspec/changes/${changeId}/proposal.md`,
+      `Compact readiness is stale because the proposal contains full-only fact(s): ${fullOnlyFacts.join(", ")}. Use full artifacts and a current material or unknown disposition.`,
+    ));
+  }
+  return checks;
+}
+
 function requiredChangeChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
   if (!changeScopedOperations.has(operation)) {
     return [];
@@ -136,7 +206,7 @@ function requiredChangeChecks(root: string, operation: string, changeId: string 
   return [check("scope:change:exists", "OpenSpec change directory", "passed", false, `openspec/changes/${changeId}`, "Scoped change directory exists.")];
 }
 
-function artifactChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+function artifactChecks(root: string, operation: string, changeId: string | undefined, metadata: OpenSpecArtifactMetadata): OpenSpecOperationGateCheck[] {
   if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) {
     return [];
   }
@@ -152,7 +222,8 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
       : check("artifact:proposal", "OpenSpec proposal", "failed", true, `openspec/changes/${changeId}/proposal.md`, "proposal.md is required."));
     if (hasProposal) {
       const proposalText = fs.readFileSync(proposalPath, "utf8");
-      const missingFields = specCapsuleFields.filter((field) => !proposalText.includes(field));
+      const requiredCapsuleFields = metadata.artifactProfile === "compact" ? compactCapsuleFields : specCapsuleFields;
+      const missingFields = requiredCapsuleFields.filter((field) => !proposalText.includes(field));
       checks.push(missingFields.length === 0
         ? check("artifact:proposal-capsule", "OpenSpec proposal outcome capsule", "passed", false, `openspec/changes/${changeId}/proposal.md`, "proposal.md contains every required current-increment Outcome Capsule field.")
         : check("artifact:proposal-capsule", "OpenSpec proposal outcome capsule", "failed", true, `openspec/changes/${changeId}/proposal.md`, `proposal.md is missing required Outcome Capsule field(s): ${missingFields.join(", ")}.`));
@@ -161,7 +232,12 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
       const missingClaimFields = broadDeclared
         ? broadClaimScopeFields.filter((field) => !proposalText.includes(`**${field}**`))
         : [];
-      const requireClaimScope = operation === "propose" || hasClaimScope;
+      const requireClaimScope = metadata.artifactProfile !== "compact" && (operation === "propose" || hasClaimScope);
+      if (metadata.artifactProfile === "compact" && !hasClaimScope) {
+        checks.push(check("artifact:proposal-claim-scope", "OpenSpec proposal claim scope", "not-applicable", false, `openspec/changes/${changeId}/proposal.md`, "Compact exact Observable Proof is the claim boundary; no separate claim record exists."));
+      } else if (metadata.artifactProfile === "compact" && hasClaimScope && !broadDeclared) {
+        checks.push(check("artifact:proposal-claim-scope", "OpenSpec proposal claim scope", "failed", true, `openspec/changes/${changeId}/proposal.md`, "Compact exact proposals use Observable Proof directly and must not create a separate exact-case claim record."));
+      }
       if (requireClaimScope) {
         checks.push(!hasClaimScope
           ? check("artifact:proposal-claim-scope", "OpenSpec proposal claim scope", "failed", true, `openspec/changes/${changeId}/proposal.md`, "proposal.md is missing Claim And Evidence Scope.")
@@ -193,7 +269,9 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
     const hasHistory = fs.existsSync(historyPath) && fs.statSync(historyPath).isFile();
     checks.push(hasHistory
       ? check("artifact:strategy-history", "OpenSpec strategy history", "passed", false, `openspec/changes/${changeId}/history.md`, "history.md exists for strategy continuity.")
-      : check("artifact:strategy-history", "OpenSpec strategy history", "failed", true, `openspec/changes/${changeId}/history.md`, "history.md is required for strategy continuity."));
+      : metadata.artifactProfile === "compact"
+        ? check("artifact:strategy-history", "OpenSpec strategy history", "not-applicable", false, `openspec/changes/${changeId}/history.md`, "Compact exact change has no recorded materially distinct strategy event.")
+        : check("artifact:strategy-history", "OpenSpec strategy history", "failed", true, `openspec/changes/${changeId}/history.md`, "history.md is required for full and legacy strategy continuity."));
     if (hasHistory && !/^# Strategy History\s*$/m.test(fs.readFileSync(historyPath, "utf8"))) {
       checks.push(check("artifact:strategy-history-heading", "OpenSpec strategy history format", "failed", true, `openspec/changes/${changeId}/history.md`, "history.md must contain the '# Strategy History' heading."));
     }
@@ -207,7 +285,7 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
   return checks;
 }
 
-function dividendChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+function dividendChecks(root: string, operation: string, changeId: string | undefined, metadata: OpenSpecArtifactMetadata): OpenSpecOperationGateCheck[] {
   if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) return [];
   if (!["propose", "apply", "archive"].includes(operation)) return [];
   const proposalPath = changePath(root, changeId, "proposal.md");
@@ -215,6 +293,13 @@ function dividendChecks(root: string, operation: string, changeId: string | unde
   const parsed = parseAutomationDividend(fs.readFileSync(proposalPath, "utf8"));
   const source = `openspec/changes/${changeId}/proposal.md`;
   if (parsed.status === "missing") {
+    if (metadata.artifactProfile === "compact") {
+      const tasksPath = changePath(root, changeId, "tasks.md");
+      const tagged = fs.existsSync(tasksPath) ? automationDividendTasks(fs.readFileSync(tasksPath, "utf8")) : [];
+      return [tagged.length === 0
+        ? check("artifact:automation-dividend", "OpenSpec automation dividend", "not-applicable", false, source, "Compact exact change omits a non-applicable automation dividend and has no tagged task.")
+        : check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, `openspec/changes/${changeId}/tasks.md`, `Compact omission must not retain an [automation-dividend] task; found ${tagged.length}.`)];
+    }
     return operation === "propose"
       ? [check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, source, "proposal.md is missing Automation Dividend: required - <candidate> or exempt - <reason>.")]
       : [];
@@ -224,6 +309,9 @@ function dividendChecks(root: string, operation: string, changeId: string | unde
   }
   if (parsed.status === "malformed") {
     return [check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, source, parsed.reason)];
+  }
+  if (metadata.artifactProfile === "compact" && parsed.mode === "exempt") {
+    return [check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, source, "Compact exact changes omit a non-applicable dividend instead of declaring an exemption.")];
   }
   const checks = [check("artifact:automation-dividend", "OpenSpec automation dividend", "passed", false, source, `Automation Dividend is ${parsed.mode}.`)];
   if (operation === "propose") return checks;
@@ -253,7 +341,7 @@ function dividendChecks(root: string, operation: string, changeId: string | unde
   return checks;
 }
 
-function falsificationChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+function falsificationChecks(root: string, operation: string, changeId: string | undefined, metadata: OpenSpecArtifactMetadata): OpenSpecOperationGateCheck[] {
   if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) return [];
   if (!["propose", "apply", "review", "acceptance", "archive"].includes(operation)) return [];
   const proposalPath = changePath(root, changeId, "proposal.md");
@@ -261,6 +349,12 @@ function falsificationChecks(root: string, operation: string, changeId: string |
   const declaration = parseBoundedFalsificationDeclaration(fs.readFileSync(proposalPath, "utf8"));
   const proposalSource = `openspec/changes/${changeId}/proposal.md`;
   if (declaration.status === "missing") {
+    if (metadata.artifactProfile === "compact") {
+      const reviewPath = changePath(root, changeId, "falsification-review.md");
+      return [fs.existsSync(reviewPath)
+        ? check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "failed", true, reviewPath, "Compact omission must not retain a synthetic falsification-review.md record.")
+        : check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "not-applicable", false, proposalSource, "Compact exact change has no decision-material review episode or synthetic exemption.")];
+    }
     const blocking = operation === "propose" || operation === "archive";
     return [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", blocking ? "failed" : "warning", blocking, proposalSource, "proposal.md is missing Bounded Falsification Review: required - <decision surface> or exempt - <Ordinary Small reason>.")];
   }
@@ -269,6 +363,9 @@ function falsificationChecks(root: string, operation: string, changeId: string |
   }
   if (declaration.status === "malformed") {
     return [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "failed", true, proposalSource, declaration.reason)];
+  }
+  if (metadata.artifactProfile === "compact" && declaration.mode === "exempt") {
+    return [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "failed", true, proposalSource, "Compact exact changes omit a non-applicable falsification episode instead of declaring an exemption.")];
   }
 
   const checks = [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "passed", false, proposalSource, `Bounded Falsification Review is ${declaration.mode}; applicability remains reviewed semantic input.`)];
@@ -298,7 +395,7 @@ function falsificationChecks(root: string, operation: string, changeId: string |
   return checks;
 }
 
-function deliveryHorizonChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+function deliveryHorizonChecks(root: string, operation: string, changeId: string | undefined, metadata: OpenSpecArtifactMetadata): OpenSpecOperationGateCheck[] {
   if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) return [];
   if (!["propose", "apply", "task-update", "review", "acceptance", "archive"].includes(operation)) return [];
   const proposalPath = changePath(root, changeId, "proposal.md");
@@ -317,6 +414,12 @@ function deliveryHorizonChecks(root: string, operation: string, changeId: string
   }
   const declaration = parseDeliveryHorizonDeclaration(proposalText);
   if (declaration.status === "legacy-unlinked") {
+    if (metadata.artifactProfile === "compact") {
+      return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "not-applicable", false, source, "Compact exact proposal is not linked to a Delivery Horizon.")];
+    }
+    if (metadata.artifactProfile === "full") {
+      return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, "Full proposals require exactly one Delivery Horizon declaration.")];
+    }
     return operation === "propose"
       ? [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, "New proposals require exactly one Delivery Horizon declaration.")]
       : [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "passed", false, source, "Proposal has no Delivery Horizon declaration and remains legacy-unlinked.")];
@@ -328,6 +431,9 @@ function deliveryHorizonChecks(root: string, operation: string, changeId: string
     return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, declaration.reason)];
   }
   if (declaration.status === "none") {
+    if (metadata.artifactProfile === "compact") {
+      return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, "Unlinked compact exact proposals omit Delivery Horizon instead of declaring none.")];
+    }
     return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "passed", false, source, "Delivery Horizon is none with a non-empty reviewed reason.")];
   }
   try {
@@ -343,12 +449,22 @@ function operationChecks(root: string, operation: string, changeId: string | und
   if (!knownOperations.has(operation)) {
     return [check("operation:known", "OpenSpec operation registry", "unknown", true, operation, `Unknown OpenSpec operation ${operation}.`)];
   }
+  const required = requiredChangeChecks(root, operation, changeId);
+  if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) {
+    return [...required, ...ownershipGateChecks({ root, operation, changeId, enforcement })];
+  }
+  const metadata = artifactMetadata(root, changeId);
+  if (metadata.value == null) {
+    return [...required, metadata.check, ...ownershipGateChecks({ root, operation, changeId, enforcement })];
+  }
   return [
-    ...requiredChangeChecks(root, operation, changeId),
-    ...artifactChecks(root, operation, changeId),
-    ...deliveryHorizonChecks(root, operation, changeId),
-    ...dividendChecks(root, operation, changeId),
-    ...falsificationChecks(root, operation, changeId),
+    ...required,
+    metadata.check,
+    ...profileRiskChecks(root, operation, changeId, metadata.value),
+    ...artifactChecks(root, operation, changeId, metadata.value),
+    ...deliveryHorizonChecks(root, operation, changeId, metadata.value),
+    ...dividendChecks(root, operation, changeId, metadata.value),
+    ...falsificationChecks(root, operation, changeId, metadata.value),
     ...ownershipGateChecks({ root, operation, changeId, enforcement }),
   ];
 }

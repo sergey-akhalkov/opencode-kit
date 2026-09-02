@@ -79,6 +79,19 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
+    name: "validator rejects missing project OpenSpec artifact marker",
+    run: () => {
+      const fixture = newLibraryFixture("missing-project-openspec-artifact-marker");
+      const agentsPath = path.join(fixture, "templates", "project", "AGENTS.md");
+      const agents = fs.readFileSync(agentsPath, "utf8");
+      writeText(agentsPath, agents.replace("artifact-profile/risk-disposition", "artifact profiles"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A project template missing its OpenSpec artifact marker must fail validation.");
+      assertOutputContains(result, "OpenSpec artifact instruction structure", "Validation should name the governed instruction structure.");
+      assertOutputContains(result, "artifact-profile/risk-disposition", "Validation should name the missing project marker.");
+    },
+  },
+  {
     name: "validator rejects inline UDL step list outside canonical file",
     run: () => {
       const fixture = newLibraryFixture("inline-udl-step-list");

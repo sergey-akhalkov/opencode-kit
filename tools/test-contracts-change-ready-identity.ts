@@ -208,7 +208,7 @@ export const identityRecipeContractTests: TestCase[] = [
       const sdet = fs.readFileSync(path.join(root, "global", "agents", "sdet-quality-engineer.md"), "utf8");
       const activeOutput = sectionBetween(sdet, "## Output", "</SDET_QUALITY_REPORT>");
       assert(
-        skill.includes("After current Runtime Proof, capture a readable Product Candidate Reference"),
+        skill.includes("After current Runtime Proof, record a readable Product Candidate Reference"),
         "Active skill must require a readable Candidate Reference rather than a dual-identity handshake.",
       );
       assert(

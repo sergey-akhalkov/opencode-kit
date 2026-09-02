@@ -35,7 +35,7 @@ For each scenario sample, capture SHALL run baseline and candidate from fresh is
 
 #### Scenario: Matched capture records both arms
 - **WHEN** baseline and candidate complete under identical governed environment fields
-- **THEN** the raw bundle records both source identities, all three paired sample indexes, and their shared comparison identity
+- **THEN** the bounded current-run evaluation reports both source identities, all three paired sample indexes, and their shared comparison identity
 - **AND** each sample records exactly zero or one configured-primary request within its declared bound
 
 #### Scenario: Environment mismatch blocks comparison
@@ -46,7 +46,7 @@ For each scenario sample, capture SHALL run baseline and candidate from fresh is
 #### Scenario: Provider request bound is exceeded
 - **WHEN** a scenario arm would issue a configured-provider request beyond its declared bound
 - **THEN** the arm stops before that request
-- **AND** the comparison remains blocked with attributable cleanup evidence
+- **AND** the comparison remains blocked with attributable cleanup diagnostics
 
 ### Requirement: Outcome and safety equivalence are hard gates
 Evaluation SHALL require every baseline and candidate arm to satisfy the scenario's exact output/state manifest, validation exit and expected output contract, representative proof contract, permission envelope, forbidden-effect assertions, failure visibility, and cleanup oracle. Candidate evidence SHALL fail if any accepted outcome or safety fact is weaker than baseline or unknown. A lower friction count SHALL NOT compensate for an outcome, proof, safety, diagnostics, or cleanup regression.
@@ -66,7 +66,7 @@ Evaluation SHALL require every baseline and candidate arm to satisfy the scenari
 - **AND** never treats absence as a passing zero
 
 ### Requirement: Friction evaluation is deterministic and expectation-specific
-Each sample SHALL expose the exact non-negative friction vector `ownerQuestionCount`, `configuredProviderRequestCount`, `failedToolCallCount`, `duplicateFailedToolInvocationCount`, and `totalToolCallCount`. Duplicate failed invocation identity SHALL be the same normalized tool name plus canonical argument digest after an earlier non-successful invocation in that sample. Each scenario arm SHALL use the stable sorted median of its three sample values for every friction field while retaining all raw sample values. Under `no-regression`, every candidate median SHALL be less than or equal to its matched baseline median for every scenario. Under `improvement`, the no-regression rule SHALL hold and at least one candidate median SHALL be strictly lower across the complete scenario set. The maintained scenario manifest SHALL default controlled fixtures to `no-regression`; a real candidate comparison SHALL carry its expectation in a separate exact candidate-request record. Tooling SHALL NOT infer expectation from prose, changed files, or measurements. Elapsed time and token data MAY be reported when observed but SHALL NOT decide pass/fail in this increment.
+Each sample SHALL expose the exact non-negative friction vector `ownerQuestionCount`, `configuredProviderRequestCount`, `failedToolCallCount`, `duplicateFailedToolInvocationCount`, and `totalToolCallCount`. Duplicate failed invocation identity SHALL be the same normalized tool name plus canonical argument digest after an earlier non-successful invocation in that sample. Each scenario arm SHALL use the stable sorted median of its three sample values for every friction field while supplying all current-run sample values to the evaluator. Under `no-regression`, every candidate median SHALL be less than or equal to its matched baseline median for every scenario. Under `improvement`, the no-regression rule SHALL hold and at least one candidate median SHALL be strictly lower across the complete scenario set. The maintained scenario manifest SHALL default controlled fixtures to `no-regression`; a real candidate comparison SHALL carry its expectation in a separate exact candidate-request record. Tooling SHALL NOT infer expectation from prose, changed files, or measurements. Elapsed time and token data MAY be reported when observed but SHALL NOT decide pass/fail in this increment.
 
 #### Scenario: No-regression candidate passes without improvement claim
 - **WHEN** all outcome and safety gates pass, expectation is `no-regression`, and every candidate friction field is no greater than baseline
@@ -89,7 +89,7 @@ Each sample SHALL expose the exact non-negative friction vector `ownerQuestionCo
 - **AND** report the scenario, field, baseline value, and candidate value
 
 ### Requirement: Baseline establishment and freshness are explicit
-When no accepted baseline exists, the capability SHALL support `baseline-establishment` only after all scenario outcome, proof, safety, validation, and cleanup oracles pass. Establishment SHALL record a new immutable baseline version and SHALL NOT claim no-regression or improvement. A baseline SHALL identify the governed model-facing source manifest and environment. A current-candidate gate SHALL reject stale or mismatched baseline/candidate/evaluator identities. Replacing an accepted baseline SHALL require an explicit reviewed seed change that preserves the prior baseline reference and reason; capture or materialization tooling SHALL NOT silently overwrite or approve a new baseline.
+When no accepted baseline exists, the capability SHALL support `baseline-establishment` only after all scenario outcome, proof, safety, validation, and cleanup oracles pass. Establishment SHALL record a reviewed baseline seed version and SHALL NOT claim no-regression or improvement. A baseline SHALL identify the governed model-facing source manifest and environment. A current-candidate gate SHALL reject stale or mismatched baseline/candidate/evaluator identities. Replacing an accepted baseline SHALL require an explicit reviewed seed change that preserves the prior baseline reference and reason; capture or materialization tooling SHALL NOT silently overwrite or approve a new baseline.
 
 #### Scenario: First accepted baseline is established honestly
 - **WHEN** no baseline exists and the explicit accepted source passes both scenarios
@@ -99,29 +99,29 @@ When no accepted baseline exists, the capability SHALL support `baseline-establi
 #### Scenario: Governed source changes without candidate evidence
 - **WHEN** the current governed source manifest differs from the accepted baseline and no matching candidate evaluation exists
 - **THEN** the current-candidate gate fails as `stale-evidence`
-- **AND** names only changed governed path identities and digests
+- **AND** reports only the accepted and current governed-source digests
 
 #### Scenario: Baseline replacement is not automatic
 - **WHEN** a passing candidate is available
 - **THEN** evaluator and capture modes leave the accepted baseline bytes unchanged
 - **AND** report the explicit reviewed promotion input required for a later baseline version
 
-### Requirement: Evidence is bounded privacy-safe and replayable
-Every capture SHALL write a create-new immutable bundle with schema version, candidate and environment identities, normalized scenario inputs, bounded redacted event facts, exact command argv, exit status, stdout and stderr bounds, output/state manifests, validation and proof facts, friction vectors, side effects, cleanup, and source hashes. The current manifest SHALL limit each sample bundle to 524288 bytes and one complete baseline or matched capture to 8388608 bytes. Evidence SHALL exclude credentials, provider options, private prompt content, absolute home paths, and unrelated session or repository content. Exceeding a byte or row bound SHALL produce an explicit truncation; truncation of an acceptance-critical field SHALL block evaluation. Capture SHALL clean only attributable sessions, processes, and fixtures and SHALL report cleanup failure as terminal evidence.
+### Requirement: Current-run observations are bounded privacy-safe and cleaned
+Every capture SHALL evaluate the candidate and environment identities, normalized scenario inputs, bounded redacted event facts, exact command argv, exit status, stdout and stderr bounds, output/state manifests, validation and proof facts, friction vectors, side effects, cleanup, and source hashes during the same invocation. Intermediate structured data MAY exist only in an automatically cleaned temporary directory outside the repository and SHALL NOT become a retained bundle, replay input, evidence root, or handoff artifact. The current manifest SHALL limit each sample observation to 524288 bytes and one complete baseline or matched comparison to 8388608 bytes. Current-run diagnostics SHALL exclude credentials, provider options, private prompt content, absolute home paths, and unrelated session or repository content. Exceeding a byte or row bound SHALL produce an explicit truncation; truncation of an acceptance-critical field SHALL block evaluation. Capture SHALL clean only attributable sessions, processes, fixtures, and temporary output and SHALL report cleanup failure in the terminal result.
 
-#### Scenario: Evidence remains within reviewed bounds
-- **WHEN** a matched capture completes within every scenario evidence bound
-- **THEN** its bundle is complete, stable ordered, privacy-safe, and replayable
-- **AND** retained fields are sufficient to recompute every acceptance result
+#### Scenario: Current-run observations remain within reviewed bounds
+- **WHEN** a matched comparison completes within every scenario observation bound
+- **THEN** its evaluator receives complete, stable-ordered, privacy-safe current-run facts
+- **AND** temporary structured output is removed after the terminal result is computed
 
-#### Scenario: Critical evidence is truncated
+#### Scenario: Critical observation is truncated
 - **WHEN** a byte or row bound truncates an outcome, safety, friction, validation, proof, or cleanup field
 - **THEN** evaluation returns `blocked`
 - **AND** identifies the affected field and configured bound
 
 #### Scenario: Cleanup fails
 - **WHEN** an attributable session, process, or fixture cannot be proven terminal or removed
-- **THEN** the bundle records cleanup as incomplete
+- **THEN** the terminal result reports cleanup as incomplete
 - **AND** no later scenario arm starts through the same unisolated ownership
 
 ### Requirement: Evaluation performs no live effects
@@ -155,7 +155,7 @@ The capability SHALL expose effect-free help and preflight plus an explicit boun
 - **AND** creates no file, session, process, network request, or provider call
 
 ### Requirement: Focused decision-gap packs do not alter the maintained baseline
-The consumer-outcome regression capability SHALL allow a versioned focused decision-gap scenario pack to reuse the existing matched baseline/candidate source staging, installed OpenCode capture, environment correlation, hard outcome and safety gates, privacy bounds, cleanup, and provider-free evaluator. A focused pack SHALL declare its own scenarios, exact expected decisions, sample count, provider bound, temporary-output bound, and maximum claim and SHALL remain separate from the maintained general consumer comparison and friction expectation.
+The consumer-outcome regression capability SHALL allow a versioned focused decision-gap scenario pack to reuse the existing matched baseline/candidate source staging, installed OpenCode current-run comparison, environment correlation, hard outcome and safety gates, privacy bounds, cleanup, and provider-free evaluator. A focused pack SHALL declare its own scenarios, exact expected decisions, sample count, provider bound, temporary-output bound, and maximum claim and SHALL remain separate from the maintained general consumer comparison and friction expectation.
 
 Focused-pack tooling SHALL NOT promote, replace, or rewrite the accepted baseline, add its scenarios to the general productivity claim, infer semantic expectations, or run implicitly from CI. This increment's claim-evidence pack SHALL use only generic disposable projects and synthetic facts and SHALL cover representative-only overclaim rejection, complete finite-population scoping, unavailable-real-oracle blocking, and unaffected Ordinary Small exact-case completion.
 
@@ -178,7 +178,7 @@ The first scenario SHALL require an already reachable safe real characterization
 #### Scenario: Reviewed shift-left pack loads deterministically
 
 - **WHEN** preflight loads the versioned shift-left manifest and its contained fixture seed
-- **THEN** it reports the stable ordered two-scenario identity, one sample per arm, configured-provider and evidence bounds, governed source paths, exact decision oracles, and maximum claim
+- **THEN** it reports the stable ordered two-scenario identity, one sample per arm, configured-provider and temporary-output bounds, governed source paths, exact decision oracles, and maximum claim
 - **AND** a missing, extra, malformed, non-contained, or helper-inferred semantic field fails before any OpenCode session, provider request, or fixture mutation.
 
 #### Scenario: Reachable characterization precedes dependent expansion
@@ -195,7 +195,7 @@ The first scenario SHALL require an already reachable safe real characterization
 
 #### Scenario: Dependent expansion or unnecessary climb fails the hard oracle
 
-- **WHEN** either arm places dependent implementation before the reachable characterization, selects the higher rung without a requirement or unresolved equivalence risk, omits its claim ceiling, or weakens authorization, safety, restoration, cleanup, identity, or evidence facts
+- **WHEN** either arm places dependent implementation before the reachable characterization, selects the higher rung without a requirement or unresolved equivalence risk, omits its claim ceiling, or weakens authorization, safety, restoration, cleanup, identity, or observation facts
 - **THEN** evaluation returns `failed` or `blocked` with the exact scenario, arm, sample, and missing or regressed oracle
 - **AND** friction, marker presence, fluent rationale, or success in the other scenario cannot compensate for the failure.
 

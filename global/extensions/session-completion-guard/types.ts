@@ -209,6 +209,7 @@ export type RootState = {
   grindEnabled: boolean;
   guardTurnPending: boolean;
   frontierError: string | null;
+  frontierReconciliationAttempts?: number;
   frontierReconciliationRef: string | null;
   frontierStatus: "absent" | "current" | "invalid" | "stale" | "unverified";
   lastAssistantID: string | null;

@@ -3693,9 +3693,70 @@ const tests: TestCase[] = [
         } as RootInspection;
         await probe.reconcileWorkFrontier(state!, staleInspection, "stale");
         await probe.reconcileWorkFrontier(state!, staleInspection, "stale");
-        assert(promptCalls.length === 1, "One stale human/task basis may inject at most one reconciliation turn.");
+        assert(promptCalls.length === 1, "One stale human/task basis may inject at most one in-flight reconciliation turn.");
         assert(!("tools" in promptCalls[0]), "Reconciliation must preserve the root's unrestricted tool surface.");
         assert(state?.frontierStatus === "stale" && state.state === "frontier-reconciling", "Stale basis must suppress ordinary controller application.");
+
+        const writesBeforeRecoveryReject = updateCalls;
+        const rejectedCandidate = structuredClone(scenarios.get("all-product-blocked")?.input) as Record<string, unknown>;
+        rejectedCandidate.expectedGeneration = 4;
+        ((rejectedCandidate.gates as Array<Record<string, unknown>>)[0]).resumeCondition = "\u044f".repeat(129);
+        let recoveryError = "";
+        try {
+          await frontierTool.execute({ input: rejectedCandidate }, context);
+        } catch (error) {
+          recoveryError = error instanceof Error ? error.message : String(error);
+        }
+        assert(recoveryError.includes("limit-resumeCondition"), "The recovery probe must reproduce the rejected reconciliation candidate.");
+        assert(updateCalls === writesBeforeRecoveryReject, "A rejected reconciliation candidate must not persist partial frontier or recovery metadata.");
+
+        state!.guardTurnPending = false;
+        await probe.reconcileWorkFrontier(state!, staleInspection, "stale");
+        assert(promptCalls.length === 2, "A completed rejected reconciliation turn must launch one bounded correction turn.");
+        const correctionPart = (promptCalls[1].parts as Array<Record<string, unknown>>)[0];
+        const correctionText = String(correctionPart.text ?? "");
+        assert(correctionText.includes('"attempt": 2') && correctionText.includes('"previousError": "limit-resumeCondition"'), "The correction turn must carry the safe cause and durable attempt number.");
+        assert(correctionText.includes("do not stop until it succeeds"), "The correction turn must require same-turn repair instead of stopping after one tool error.");
+
+        await hooks.event?.({ event: {
+          type: "message.part.updated",
+          properties: {
+            part: {
+              callID: "call_frontier_schema_reject",
+              messageID: "message_frontier_schema_reject",
+              sessionID: rootID,
+              state: { error: "schema validation rejected the tool input", input: {}, status: "error", time: { end: 2, start: 1 } },
+              tool: GRIND_FRONTIER_TOOL,
+              type: "tool",
+            },
+          },
+        } as never });
+        state!.guardTurnPending = false;
+        await probe.reconcileWorkFrontier(state!, staleInspection, "stale");
+        assert(promptCalls.length === 3, "A pre-execute schema rejection must also launch a bounded correction turn.");
+        const schemaCorrectionText = String(((promptCalls[2].parts as Array<Record<string, unknown>>)[0]).text ?? "");
+        assert(schemaCorrectionText.includes('"attempt": 3') && schemaCorrectionText.includes('"previousError": "frontier-tool-rejected"'), "Schema rejection recovery must use a safe generic code without injecting raw error text.");
+        assert(!schemaCorrectionText.includes("schema validation rejected"), "Raw tool error text must not enter the synthetic correction prompt.");
+
+        const recoveredCandidate = structuredClone(scenarios.get("partial-product-block")?.input) as Record<string, unknown>;
+        recoveredCandidate.expectedGeneration = 4;
+        const recovered = await frontierTool.execute({ input: recoveredCandidate }, context);
+        assert(recovered.metadata.serverGeneration === 5, "A corrected frontier must persist the next generation.");
+        assert(state?.frontierStatus === "current" && state.frontierReconciliationAttempts === 0 && state.frontierReconciliationRef == null, "Successful correction must clear all reconciliation recovery state.");
+
+        const exhaustionInspection = {
+          revision: { humanRef: "human_reconciliation_exhaustion", todoDigest: "d".repeat(64) },
+        } as RootInspection;
+        state!.guardTurnPending = false;
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          await probe.reconcileWorkFrontier(state!, exhaustionInspection, "stale");
+          state!.guardTurnPending = false;
+        }
+        const promptsBeforeExhaustion = promptCalls.length;
+        await probe.reconcileWorkFrontier(state!, exhaustionInspection, "stale");
+        assert(promptCalls.length === promptsBeforeExhaustion, "Reconciliation exhaustion must not create an unbounded provider loop.");
+        assert(state?.state === "error" && state.frontierError?.startsWith("frontier-reconciliation-exhausted:") === true, "Bounded exhaustion must remain explicit and fail closed.");
+        assert(initialRootState(root).frontierReconciliationAttempts === 3, "Restart recovery must restore the persisted reconciliation turn count.");
       } finally {
         await controller.dispose();
       }
@@ -3995,16 +4056,28 @@ const tests: TestCase[] = [
         const materialEvaluation = JSON.parse(fs.readFileSync(path.join(materialized, "evaluation.json"), "utf8")) as Record<string, unknown>;
         const materialRaw = JSON.parse(fs.readFileSync(path.join(materialized, "raw.json"), "utf8")) as Record<string, unknown>;
         assert(materialEvaluation.status === "passed", "Frontier materialization must pass.");
-        assert(materialEvaluation.scenarioCount === 14, "Frontier seed must exercise fourteen reviewed scenarios.");
+        assert(materialEvaluation.scenarioCount === 20, "Frontier seed must exercise twenty reviewed scenarios.");
         const observations = materialEvaluation.observations as Array<Record<string, unknown>>;
         const due = observations.find((item) => item.id === "delivery-checkpoint-due");
         const irreducible = observations.find((item) => item.id === "delivery-checkpoint-irreducible");
         const omitted = observations.find((item) => item.id === "delivery-checkpoint-omitted");
         const scopeReduction = observations.find((item) => item.id === "delivery-checkpoint-scope-reduction");
+        const leafCheckpoint = observations.find((item) => item.id === "leaf-first-checkpoint-composition");
+        const leafHidden = observations.find((item) => item.id === "leaf-first-hidden-prerequisite");
+        const leafSiblings = observations.find((item) => item.id === "leaf-first-independent-siblings");
+        const leafOwner = observations.find((item) => item.id === "leaf-first-owner-gate");
+        const leafParentProof = observations.find((item) => item.id === "leaf-first-parent-own-proof");
+        const leafParent = observations.find((item) => item.id === "leaf-first-parent-suppression");
         assert(JSON.stringify(due?.runnableItemRefs) === JSON.stringify(["item_checkpoint", "item_sibling"]) && JSON.stringify(due?.openGateRefs) === JSON.stringify(["gate_checkpoint"]), "Due checkpoint must block only its costly dependent while preserving the sibling.");
         assert(JSON.stringify(irreducible?.runnableItemRefs) === JSON.stringify(["item_costly"]) && JSON.stringify(irreducible?.parkedDecisionRefs) === JSON.stringify([]), "Irreducible checkpoint evidence must release the original route without owner scope.");
         assert(omitted?.status === "reconcile" && omitted?.frontierState === "frontier-reconciling" && omitted?.reason === "missing-frontier", "An omitted delivery checkpoint frontier must reconcile instead of silently advancing costly work.");
         assert(JSON.stringify(scopeReduction?.runnableItemRefs) === JSON.stringify(["item_checkpoint"]) && JSON.stringify(scopeReduction?.parkedDecisionRefs) === JSON.stringify(["decision_scope_reduction"]), "Proof-scope reduction must stay separately parked while the checkpoint remains runnable.");
+        assert(JSON.stringify(leafCheckpoint?.runnableItemRefs) === JSON.stringify(["item_checkpoint", "item_leaf"]) && JSON.stringify(leafCheckpoint?.openGateRefs) === JSON.stringify(["gate_checkpoint"]), "Leaf-first checkpoint composition must keep one process gate and suppress the parent.");
+        assert(JSON.stringify(leafHidden?.runnableItemRefs) === JSON.stringify(["item_hidden_leaf", "item_sibling"]), "A hidden prerequisite must replace the coarse parent in the runnable set without suppressing its independent sibling.");
+        assert(JSON.stringify(leafSiblings?.runnableItemRefs) === JSON.stringify(["item_leaf_a", "item_leaf_b"]), "Independent leaf siblings must remain runnable while their parent waits.");
+        assert(JSON.stringify(leafOwner?.runnableItemRefs) === JSON.stringify(["item_sibling"]) && JSON.stringify(leafOwner?.parkedDecisionRefs) === JSON.stringify(["decision_owner"]), "An owner-gated leaf must not preempt independent runnable work.");
+        assert(JSON.stringify(leafParentProof?.runnableItemRefs) === JSON.stringify(["item_parent"]), "Completed child evidence must unlock, but never complete, the parent's distinct proof item.");
+        assert(JSON.stringify(leafParent?.runnableItemRefs) === JSON.stringify(["item_leaf"]) && !leafParent?.runnableItemRefs?.includes("item_parent"), "A required leaf must suppress its parent until closure.");
         assert((materialRaw.effects as Record<string, unknown>).providerCalls === 0 && (materialRaw.effects as Record<string, unknown>).networkRequests === 0, "Frontier materialization must remain provider and network free.");
 
         const replayed = path.join(tempRoot, "replayed");

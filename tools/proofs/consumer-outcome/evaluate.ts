@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import path from "node:path";
 import {
   type Arm,
   type BaselinePointer,
@@ -69,18 +68,6 @@ function compareEnvironment(left: EnvironmentIdentity, right: EnvironmentIdentit
   return mismatches;
 }
 
-function compareSource(left: SourceIdentity, right: SourceIdentity): string[] {
-  if (left.governedDigest === right.governedDigest && left.gitRef === right.gitRef && left.kind === right.kind) return [];
-  const names = new Set([...left.pathDigests.map((row) => row.path), ...right.pathDigests.map((row) => row.path)]);
-  const changed: string[] = [];
-  for (const name of [...names].sort((a, b) => a.localeCompare(b))) {
-    const baseline = left.pathDigests.find((row) => row.path === name)?.sha256 ?? "absent";
-    const current = right.pathDigests.find((row) => row.path === name)?.sha256 ?? "absent";
-    if (baseline !== current) changed.push(`${name}:${baseline.slice(0, 12)}:${current.slice(0, 12)}`);
-  }
-  return changed;
-}
-
 function sampleComplete(sample: SampleEvidence): string[] {
   const missing: string[] = [];
   if (sample.cleanup.complete !== true || sample.cleanup.error != null) missing.push("cleanup");
@@ -146,6 +133,164 @@ function result(partial: Omit<EvaluationResult, "digest" | "schemaVersion">): Ev
   const value: EvaluationResult = { ...partial, digest: "", schemaVersion: SCHEMA_VERSION };
   value.digest = digestOf({ ...value, digest: "" });
   return value;
+}
+
+function evaluateCandidate(input: {
+  baselineMedians: Record<string, FrictionVector>;
+  candidate?: CaptureBundle;
+  environmentDigest: string;
+  expectedEnvironments: Record<string, EnvironmentIdentity | string>;
+  expectation: Expectation;
+  manifest: RegressionManifest;
+  reasons: string[];
+  scenarioDigest: string;
+  sourceDigest: string;
+}): EvaluationResult {
+  const reasons = [...input.reasons];
+  if (input.candidate == null) {
+    return result({
+      baselineMedians: input.baselineMedians,
+      candidateMedians: null,
+      environmentDigest: input.environmentDigest,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons: [...reasons, "missing-candidate"],
+      scenarioDigest: input.scenarioDigest,
+      sourceDigest: input.sourceDigest,
+      status: "blocked",
+    });
+  }
+  verifyBundleIntegrity(input.candidate);
+  if (input.candidate.scenarioDigest !== input.scenarioDigest) reasons.push("candidate.scenario-digest");
+  for (const sample of input.candidate.samples) {
+    const expected = input.expectedEnvironments[sample.scenarioId];
+    const envMismatch = expected == null
+      ? ["missing-baseline"]
+      : typeof expected === "string"
+        ? environmentDigest(sample.environmentIdentity) === expected ? [] : ["digest"]
+        : compareEnvironment(expected, sample.environmentIdentity);
+    if (envMismatch.length > 0) {
+      return result({
+        baselineMedians: input.baselineMedians,
+        candidateMedians: null,
+        environmentDigest: input.environmentDigest,
+        expectation: input.expectation,
+        improvedField: null,
+        reasons: [typeof expected === "string"
+          ? `environment:${sample.scenarioId}:${envMismatch.join(",")}`
+          : `environment:${envMismatch.join(",")}`],
+        scenarioDigest: input.scenarioDigest,
+        sourceDigest: input.sourceDigest,
+        status: "blocked",
+      });
+    }
+  }
+  for (const sample of input.candidate.samples) {
+    reasons.push(...sampleComplete(sample).map((field) => `candidate.${sample.scenarioId}.${sample.sampleIndex}.${field}`));
+    reasons.push(...scanPrivacy(sample).map((field) => `candidate.${sample.scenarioId}.${sample.sampleIndex}.${field}`));
+    const scenario = input.manifest.scenarios.find((row) => row.id === sample.scenarioId);
+    if (scenario == null) reasons.push(`candidate.unknown-scenario.${sample.scenarioId}`);
+    else {
+      reasons.push(...outcomeHolds(sample, scenario).map((field) => `candidate.${sample.scenarioId}.${sample.sampleIndex}.${field}`));
+      if (sample.friction.configuredProviderRequestCount > scenario.configuredProviderRequestBound) {
+        reasons.push(`candidate.${sample.scenarioId}.${sample.sampleIndex}.provider-bound`);
+      }
+    }
+  }
+
+  const unknown = reasons.filter((reason) => reason.includes("cleanup") || reason.includes("forbiddenEffects") || reason.includes("permissions") || reason.includes("secret") || reason.includes("private-path") || reason.includes("scenario-digest"));
+  if (unknown.length > 0) {
+    return result({
+      baselineMedians: input.baselineMedians,
+      candidateMedians: null,
+      environmentDigest: input.environmentDigest,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons,
+      scenarioDigest: input.scenarioDigest,
+      sourceDigest: input.sourceDigest,
+      status: "blocked",
+    });
+  }
+  const outcomeFailures = reasons.filter((reason) => reason.includes("outcome") || reason.includes("validation") || reason.includes("proof"));
+  if (outcomeFailures.length > 0) {
+    return result({
+      baselineMedians: input.baselineMedians,
+      candidateMedians: null,
+      environmentDigest: input.environmentDigest,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons,
+      scenarioDigest: input.scenarioDigest,
+      sourceDigest: input.sourceDigest,
+      status: "failed",
+    });
+  }
+
+  const candidateMedians: Record<string, FrictionVector> = {};
+  let improved: EvaluationResult["improvedField"] = null;
+  for (const scenario of input.manifest.scenarios) {
+    const samples = groupSamples(input.candidate, "candidate", scenario.id);
+    const baseline = input.baselineMedians[scenario.id];
+    if (samples.length !== input.manifest.sampleCount || baseline == null) {
+      return result({
+        baselineMedians: input.baselineMedians,
+        candidateMedians: null,
+        environmentDigest: input.environmentDigest,
+        expectation: input.expectation,
+        improvedField: null,
+        reasons: [...reasons, baseline == null ? `baseline.${scenario.id}.missing` : `candidate.${scenario.id}.sampleCount`],
+        scenarioDigest: input.scenarioDigest,
+        sourceDigest: input.sourceDigest,
+        status: "blocked",
+      });
+    }
+    candidateMedians[scenario.id] = mediansFor(samples, input.manifest.sampleCount);
+    for (const field of FRICTION_FIELDS) {
+      if (candidateMedians[scenario.id][field] > baseline[field]) {
+        reasons.push(`friction-regression:${scenario.id}:${field}:${baseline[field]}:${candidateMedians[scenario.id][field]}`);
+      } else if (candidateMedians[scenario.id][field] < baseline[field] && improved == null) {
+        improved = { baseline: baseline[field], candidate: candidateMedians[scenario.id][field], field, scenarioId: scenario.id };
+      }
+    }
+  }
+  if (reasons.some((reason) => reason.startsWith("friction-regression:"))) {
+    return result({
+      baselineMedians: input.baselineMedians,
+      candidateMedians,
+      environmentDigest: input.environmentDigest,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons,
+      scenarioDigest: input.scenarioDigest,
+      sourceDigest: input.sourceDigest,
+      status: "failed",
+    });
+  }
+  if (input.expectation === "improvement" && improved == null) {
+    return result({
+      baselineMedians: input.baselineMedians,
+      candidateMedians,
+      environmentDigest: input.environmentDigest,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons: [...reasons, "no-strict-friction-improvement"],
+      scenarioDigest: input.scenarioDigest,
+      sourceDigest: input.sourceDigest,
+      status: "failed",
+    });
+  }
+  return result({
+    baselineMedians: input.baselineMedians,
+    candidateMedians,
+    environmentDigest: input.environmentDigest,
+    expectation: input.expectation,
+    improvedField: input.expectation === "improvement" ? improved : null,
+    reasons,
+    scenarioDigest: input.scenarioDigest,
+    sourceDigest: input.sourceDigest,
+    status: input.expectation === "improvement" ? "passed-improvement" : "passed-no-regression",
+  });
 }
 
 export function verifyBundleIntegrity(bundle: CaptureBundle, rawText?: string): void {
@@ -235,143 +380,73 @@ export function evaluateBundle(input: {
     });
   }
 
-  if (input.candidate == null) {
-    return result({
-      baselineMedians,
-      candidateMedians: null,
-      environmentDigest: environmentDigest(firstEnv),
-      expectation: input.expectation,
-      improvedField: null,
-      reasons: [...reasons, "missing-candidate"],
-      scenarioDigest: input.baseline.scenarioDigest,
-      sourceDigest,
-      status: "blocked",
-    });
-  }
-  verifyBundleIntegrity(input.candidate);
-  for (const sample of input.candidate.samples) {
-    const expected = envByScenario.get(sample.scenarioId);
-    if (expected == null) continue;
-    const envMismatch = compareEnvironment(expected, sample.environmentIdentity);
-    if (envMismatch.length > 0) {
-      return result({
-        baselineMedians,
-        candidateMedians: null,
-        environmentDigest: environmentDigest(firstEnv),
-        expectation: input.expectation,
-        improvedField: null,
-        reasons: [`environment:${envMismatch.join(",")}`],
-        scenarioDigest: input.baseline.scenarioDigest,
-        sourceDigest,
-        status: "blocked",
-      });
-    }
-  }
-  for (const sample of input.candidate.samples) {
-    reasons.push(...sampleComplete(sample).map((field) => `candidate.${sample.scenarioId}.${sample.sampleIndex}.${field}`));
-    reasons.push(...scanPrivacy(sample).map((field) => `candidate.${sample.scenarioId}.${sample.sampleIndex}.${field}`));
-    const scenario = input.manifest.scenarios.find((row) => row.id === sample.scenarioId);
-    if (scenario == null) reasons.push(`candidate.unknown-scenario.${sample.scenarioId}`);
-    else {
-      reasons.push(...outcomeHolds(sample, scenario).map((field) => `candidate.${sample.scenarioId}.${sample.sampleIndex}.${field}`));
-      if (sample.friction.configuredProviderRequestCount > scenario.configuredProviderRequestBound) {
-        reasons.push(`candidate.${sample.scenarioId}.${sample.sampleIndex}.provider-bound`);
-      }
-    }
-  }
-
-  const unknown = reasons.filter((reason) => reason.includes("cleanup") || reason.includes("forbiddenEffects") || reason.includes("permissions") || reason.includes("secret") || reason.includes("private-path"));
-  if (unknown.length > 0) {
-    return result({
-      baselineMedians,
-      candidateMedians: null,
-      environmentDigest: environmentDigest(firstEnv),
-      expectation: input.expectation,
-      improvedField: null,
-      reasons,
-      scenarioDigest: input.baseline.scenarioDigest,
-      sourceDigest,
-      status: "blocked",
-    });
-  }
-  const outcomeFailures = reasons.filter((reason) => reason.includes("outcome") || reason.includes("validation") || reason.includes("proof"));
-  if (outcomeFailures.length > 0) {
-    return result({
-      baselineMedians,
-      candidateMedians: null,
-      environmentDigest: environmentDigest(firstEnv),
-      expectation: input.expectation,
-      improvedField: null,
-      reasons,
-      scenarioDigest: input.baseline.scenarioDigest,
-      sourceDigest,
-      status: "failed",
-    });
-  }
-
-  const candidateMedians: Record<string, FrictionVector> = {};
-  let improved: EvaluationResult["improvedField"] = null;
-  for (const scenario of input.manifest.scenarios) {
-    const samples = groupSamples(input.candidate, "candidate", scenario.id);
-    if (samples.length !== input.manifest.sampleCount) {
-      return result({
-        baselineMedians,
-        candidateMedians: null,
-        environmentDigest: environmentDigest(firstEnv),
-        expectation: input.expectation,
-        improvedField: null,
-        reasons: [...reasons, `candidate.${scenario.id}.sampleCount`],
-        scenarioDigest: input.baseline.scenarioDigest,
-        sourceDigest,
-        status: "blocked",
-      });
-    }
-    candidateMedians[scenario.id] = mediansFor(samples, input.manifest.sampleCount);
-    const baseline = baselineMedians[scenario.id];
-    for (const field of FRICTION_FIELDS) {
-      if (candidateMedians[scenario.id][field] > baseline[field]) {
-        reasons.push(`friction-regression:${scenario.id}:${field}:${baseline[field]}:${candidateMedians[scenario.id][field]}`);
-      } else if (candidateMedians[scenario.id][field] < baseline[field] && improved == null) {
-        improved = { baseline: baseline[field], candidate: candidateMedians[scenario.id][field], field, scenarioId: scenario.id };
-      }
-    }
-  }
-  if (reasons.some((reason) => reason.startsWith("friction-regression:"))) {
-    return result({
-      baselineMedians,
-      candidateMedians,
-      environmentDigest: environmentDigest(firstEnv),
-      expectation: input.expectation,
-      improvedField: null,
-      reasons,
-      scenarioDigest: input.baseline.scenarioDigest,
-      sourceDigest,
-      status: "failed",
-    });
-  }
-  if (input.expectation === "improvement" && improved == null) {
-    return result({
-      baselineMedians,
-      candidateMedians,
-      environmentDigest: environmentDigest(firstEnv),
-      expectation: input.expectation,
-      improvedField: null,
-      reasons: [...reasons, "no-strict-friction-improvement"],
-      scenarioDigest: input.baseline.scenarioDigest,
-      sourceDigest,
-      status: "failed",
-    });
-  }
-  return result({
+  return evaluateCandidate({
     baselineMedians,
-    candidateMedians,
+    candidate: input.candidate,
     environmentDigest: environmentDigest(firstEnv),
+    expectedEnvironments: Object.fromEntries(envByScenario),
     expectation: input.expectation,
-    improvedField: input.expectation === "improvement" ? improved : null,
+    manifest: input.manifest,
     reasons,
     scenarioDigest: input.baseline.scenarioDigest,
     sourceDigest,
-    status: input.expectation === "improvement" ? "passed-improvement" : "passed-no-regression",
+  });
+}
+
+export function evaluateCandidateAgainstBaseline(input: {
+  baseline: BaselinePointer;
+  candidate: CaptureBundle;
+  expectation: Expectation;
+  manifest: RegressionManifest;
+}): EvaluationResult {
+  const baseline = input.baseline;
+  const sourceDigest = input.candidate.sourceIdentity.governedDigest;
+  const environmentDigestValue = baseline.environmentDigests == null ? "" : digestOf(baseline.environmentDigests);
+  if (baseline.status !== "accepted" || baseline.baselineMedians == null || baseline.environmentDigests == null || baseline.scenarioDigest == null) {
+    return result({
+      baselineMedians: baseline.baselineMedians ?? {},
+      candidateMedians: null,
+      environmentDigest: environmentDigestValue,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons: ["no-accepted-baseline"],
+      scenarioDigest: baseline.scenarioDigest ?? "",
+      sourceDigest,
+      status: "blocked",
+    });
+  }
+  const expectedScenarios = input.manifest.scenarios.map((scenario) => scenario.id).sort();
+  const medianScenarios = Object.keys(baseline.baselineMedians).sort();
+  const environmentScenarios = Object.keys(baseline.environmentDigests).sort();
+  const identityReasons: string[] = [];
+  if (baseline.evaluatorDigest !== evaluatorDigest() || input.candidate.evaluatorDigest !== evaluatorDigest()) identityReasons.push("stale-evaluator");
+  if (baseline.scenarioDigest !== input.candidate.scenarioDigest) identityReasons.push("stale-scenario");
+  if (expectedScenarios.join(",") !== medianScenarios.join(",") || expectedScenarios.join(",") !== environmentScenarios.join(",")) {
+    identityReasons.push("baseline-scenario-set");
+  }
+  if (identityReasons.length > 0) {
+    return result({
+      baselineMedians: baseline.baselineMedians,
+      candidateMedians: null,
+      environmentDigest: environmentDigestValue,
+      expectation: input.expectation,
+      improvedField: null,
+      reasons: identityReasons,
+      scenarioDigest: baseline.scenarioDigest,
+      sourceDigest,
+      status: "blocked",
+    });
+  }
+  return evaluateCandidate({
+    baselineMedians: baseline.baselineMedians,
+    candidate: input.candidate,
+    environmentDigest: environmentDigestValue,
+    expectedEnvironments: baseline.environmentDigests,
+    expectation: input.expectation,
+    manifest: input.manifest,
+    reasons: [],
+    scenarioDigest: baseline.scenarioDigest,
+    sourceDigest,
   });
 }
 
@@ -1289,7 +1364,7 @@ export function readBundle(filePath: string): CaptureBundle {
   return parsed;
 }
 
-export function replayEvaluation(input: {
+export function evaluateDisposableInputs(input: {
   baselinePath: string;
   candidatePath?: string;
   expectation: Expectation | "baseline-establishment";
@@ -1309,13 +1384,14 @@ export function gateCurrent(input: {
   currentSource: SourceIdentity;
   manifest: RegressionManifest;
   pointer: BaselinePointer;
-  repoRoot: string;
 }): EvaluationResult {
-  if (input.pointer.status !== "accepted" || input.pointer.bundlePath == null || input.pointer.sourceDigest == null) {
+  const baselineMedians = input.pointer.baselineMedians ?? {};
+  const environmentDigestValue = input.pointer.environmentDigests == null ? "" : digestOf(input.pointer.environmentDigests);
+  if (input.pointer.status !== "accepted" || input.pointer.baselineMedians == null || input.pointer.environmentDigests == null || input.pointer.sourceDigest == null) {
     return result({
-      baselineMedians: {},
+      baselineMedians,
       candidateMedians: null,
-      environmentDigest: input.pointer.environmentDigest ?? "",
+      environmentDigest: environmentDigestValue,
       expectation: "baseline-establishment",
       improvedField: null,
       reasons: ["no-accepted-baseline"],
@@ -1325,29 +1401,55 @@ export function gateCurrent(input: {
     });
   }
   const evaluator = evaluatorDigest();
-  if (input.pointer.evaluatorDigest != null && input.pointer.evaluatorDigest !== evaluator) {
+  if (input.pointer.evaluatorDigest !== evaluator || input.pointer.scenarioDigest !== digestOf(input.manifest)) {
     return result({
-      baselineMedians: {},
+      baselineMedians,
       candidateMedians: null,
-      environmentDigest: input.pointer.environmentDigest ?? "",
+      environmentDigest: environmentDigestValue,
       expectation: "no-regression",
       improvedField: null,
-      reasons: ["stale-evaluator"],
+      reasons: [input.pointer.evaluatorDigest !== evaluator ? "stale-evaluator" : "stale-scenario"],
       scenarioDigest: input.pointer.scenarioDigest ?? "",
       sourceDigest: input.currentSource.governedDigest,
       status: "blocked",
     });
   }
-  const baselinePath = path.resolve(input.repoRoot, input.pointer.bundlePath);
-  let baseline: CaptureBundle;
+  if (input.currentSource.governedDigest === input.pointer.sourceDigest) {
+    return result({
+      baselineMedians,
+      candidateMedians: null,
+      environmentDigest: environmentDigestValue,
+      expectation: "no-regression",
+      improvedField: null,
+      reasons: ["unchanged-governed-source"],
+      scenarioDigest: input.pointer.scenarioDigest ?? "",
+      sourceDigest: input.currentSource.governedDigest,
+      status: "baseline-current",
+    });
+  }
+  if (input.candidatePath == null || input.candidateRequestPath == null) {
+    return result({
+      baselineMedians,
+      candidateMedians: null,
+      environmentDigest: environmentDigestValue,
+      expectation: "no-regression",
+      improvedField: null,
+      reasons: ["stale-evidence", `governed-source:${input.pointer.sourceDigest.slice(0, 12)}:${input.currentSource.governedDigest.slice(0, 12)}`],
+      scenarioDigest: input.pointer.scenarioDigest ?? "",
+      sourceDigest: input.currentSource.governedDigest,
+      status: "stale-evidence",
+    });
+  }
+  const request = parseCandidateRequest(JSON.parse(fs.readFileSync(input.candidateRequestPath, "utf8")));
+  let candidate: CaptureBundle;
   try {
-    baseline = readBundle(baselinePath);
+    candidate = readBundle(input.candidatePath);
   } catch (error) {
     return result({
-      baselineMedians: {},
+      baselineMedians,
       candidateMedians: null,
-      environmentDigest: input.pointer.environmentDigest ?? "",
-      expectation: "no-regression",
+      environmentDigest: environmentDigestValue,
+      expectation: request.expectation,
       improvedField: null,
       reasons: ["stale-evidence", error instanceof Error ? error.message : String(error)],
       scenarioDigest: input.pointer.scenarioDigest ?? "",
@@ -1355,62 +1457,21 @@ export function gateCurrent(input: {
       status: "stale-evidence",
     });
   }
-  const replayed = evaluateBundle({
-    baseline,
-    expectation: "baseline-establishment",
-    manifest: input.manifest,
-  });
-  if (replayed.status !== "baseline-established") {
-    return result({
-      ...replayed,
-      reasons: [...replayed.reasons, "baseline-replay-failed"],
-      status: "blocked",
-    });
-  }
-  const changed = compareSource(baseline.sourceIdentity, input.currentSource);
-  if (changed.length === 0 && input.currentSource.governedDigest === input.pointer.sourceDigest) {
-    return result({
-      baselineMedians: replayed.baselineMedians,
-      candidateMedians: null,
-      environmentDigest: replayed.environmentDigest,
-      expectation: "no-regression",
-      improvedField: null,
-      reasons: ["unchanged-governed-source"],
-      scenarioDigest: replayed.scenarioDigest,
-      sourceDigest: input.currentSource.governedDigest,
-      status: "baseline-current",
-    });
-  }
-  if (input.candidatePath == null || input.candidateRequestPath == null) {
-    return result({
-      baselineMedians: replayed.baselineMedians,
-      candidateMedians: null,
-      environmentDigest: replayed.environmentDigest,
-      expectation: "no-regression",
-      improvedField: null,
-      reasons: ["stale-evidence", ...changed],
-      scenarioDigest: replayed.scenarioDigest,
-      sourceDigest: input.currentSource.governedDigest,
-      status: "stale-evidence",
-    });
-  }
-  const request = parseCandidateRequest(JSON.parse(fs.readFileSync(input.candidateRequestPath, "utf8")));
-  const candidate = readBundle(input.candidatePath);
   if (candidate.sourceIdentity.governedDigest !== input.currentSource.governedDigest) {
     return result({
-      baselineMedians: replayed.baselineMedians,
+      baselineMedians,
       candidateMedians: null,
-      environmentDigest: replayed.environmentDigest,
+      environmentDigest: environmentDigestValue,
       expectation: request.expectation,
       improvedField: null,
       reasons: ["stale-evidence", "candidate-source-mismatch"],
-      scenarioDigest: replayed.scenarioDigest,
+      scenarioDigest: input.pointer.scenarioDigest ?? "",
       sourceDigest: input.currentSource.governedDigest,
       status: "stale-evidence",
     });
   }
-  return evaluateBundle({
-    baseline,
+  return evaluateCandidateAgainstBaseline({
+    baseline: input.pointer,
     candidate,
     expectation: request.expectation,
     manifest: input.manifest,

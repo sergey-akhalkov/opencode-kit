@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-prospective-consequence-rehearsal",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "library-bounded-falsification-review",
+      "requirements": [
+        "Fresh challenge receives independent task and candidate inputs",
+        "One episode has a finite challenge budget",
+        "Review state remains candidate-correlated and structurally honest",
+        "Consequence comparison stops at supported evidence"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Implementation readiness review exposes discarded consequential distinctions"
+      ]
+    },
+    {
+      "capability": "library-consumer-outcome-regression",
+      "requirements": [
+        "Answer-free packs test contextual distinction discovery"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Decision-material work receives one early falsification episode",
+        "Prospective rehearsal stays proportional and composes with exact owners"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/AGENTS.md",
+    "global/agents/implementation-readiness-reviewer.md",
+    "global/bin/openspec-change/bounded-falsification.ts",
+    "global/bin/openspec-operation-gate.ts",
+    "global/principles-of-work.md",
+    "global/skills/change-ready-sdlc",
+    "global/skills/openspec-propose",
+    "tools/contracts/agents.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/evaluate.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/fixtures/consumer-outcome",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts.ts",
+    "tools/test-openspec-operation-gate.ts",
+    "tools/validators/agents.ts",
+    "tools/validators/devkit-contract.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "make-team-advice-evidence-triggered",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/skills/change-ready-sdlc" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome/capture.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome/contracts.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome/evaluate.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/consumer-outcome" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/validators/agents.ts" },
+        { "type": "write-root", "path": "tools/validators/devkit-contract.ts" }
+      ],
+      "transferCondition": "MTAET is archived, every mutation-capable writer is terminal, the exact overlapping owners are reread, and the ownership inventory reports no unresolved pairwise conflict"
+    }
+  ],
+  "transfers": []
+}

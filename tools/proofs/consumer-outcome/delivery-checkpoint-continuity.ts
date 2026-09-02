@@ -427,10 +427,11 @@ export function deliveryCheckpointContinuityPreflight(options: {
     const compaction = object(agents.compaction, "configured compaction agent");
     const prompt = requiredString(compaction.prompt, "configured compaction prompt");
     assert(["Original User Goal", "Goal Status", "Session Reflection", "Next-Session Action"].every((field) => prompt.includes(field)), "configured compaction prompt is missing current summary fields");
+    assert(prompt.includes("due or executing outcome-preserving delivery checkpoint has not reached its selected oracle"), "configured compaction prompt is missing the independent due-checkpoint preservation trigger");
     const mainAuthority = fs.readFileSync(path.join(options.repoRoot, "global", "AGENTS.md"), "utf8");
     const normalizedAuthority = mainAuthority.toLowerCase();
     assert(["selected route", "unchanged outcome/oracle/population", "next action", "next oracle", "suppression condition"].every((field) => normalizedAuthority.includes(field)), "loaded main authority is missing Delivery Checkpoint State fields");
-    assert(mainAuthority.includes("latest completed assistant actions") && mainAuthority.includes("later observable result governs factual status") && mainAuthority.includes("This precedence never authorizes a protected action"), "loaded main authority is missing bounded latest-observed-state precedence");
+    assert(mainAuthority.includes("latest completed assistant actions") && mainAuthority.includes("later observable evidence governs factual status") && mainAuthority.includes("never by itself clears or reclassifies `Live-Attempt Gate`"), "loaded main authority is missing bounded latest-observed-state precedence");
     const applySkill = fs.readFileSync(path.join(generated.configDir, "skills", "openspec-apply-change", "SKILL.md"), "utf8");
     assert(applySkill.includes("Delivery Checkpoint State") && applySkill.includes("history.md"), "configured apply skill is missing checkpoint continuity controls");
     let loadedConfig = false;

@@ -1,6 +1,6 @@
 ---
 name: reuse-discovery
-description: Use before production when adding a dependency, mechanism, reusable API, owner, abstraction, sibling, or same-versus-new uncertainty.
+description: Use before production for a dependency, out-of-owner mechanism/API, multi-implementation abstraction, sibling, or same-versus-new uncertainty; stay quiet for a selected same-owner private extraction.
 license: MIT
 ---
 
@@ -13,12 +13,12 @@ Use this skill only when the trigger below matches. Keep discovery proportional 
 Load this skill before production code when the proposed change adds any of:
 
 - a package dependency;
-- a top-level module, service, executable tool, or reusable API;
+- a top-level module, service, executable tool, or reusable API outside a selected current owner;
 - a parser, serializer, validator, adapter, client/protocol, cache, queue, retry, scheduler, simulator, or proof harness outside an existing owner;
 - an interface, factory, plugin point, generic framework, or other multi-implementation abstraction;
 - another implementation of a live owner, or same-versus-new uncertainty.
 
-Do not load it for an owner-local bug fix, data/config edit, generated output, mechanical change, or glue under an already selected API unless that work independently adds a trigger above.
+Do not load it for an owner-local bug fix, data/config edit, generated output, mechanical change, glue under an already selected API, or one private owner-local capability after the semantic owner and extraction boundary are already selected, unless that work independently adds a trigger above.
 
 ## Discovery
 
@@ -32,7 +32,9 @@ Before implementation:
 6. For a typical capability still unmatched, perform bounded read-only public ecosystem research when applicable and authorized.
 7. Choose `build-minimal` only when no reached verified candidate satisfies the current contract at lower total lifecycle cost.
 
-Stop when a verified candidate fits and broader search cannot materially change the selection, or when the next layer is unavailable or costs more than its likely decision value. Record every unavailable or stopped layer explicitly.
+Record `reuse` when the implementation calls a verified current capability without changing its contract. Record `extend` when accepted behavior remains a case of the current semantic owner; `extend` may reshape that owner through one private capability with a current bounded contract and direct oracle when the owner delegates or removes the old path. Record `build-minimal` only for a genuinely new responsibility or when no reached verified fit has lower total lifecycle cost. A physical file alone does not establish a new owner, capability, or reuse candidate.
+
+Stop when a verified candidate fits and broader search cannot materially change the selection, or when the next layer is unavailable or costs more than its likely decision value. Record every unavailable or stopped layer explicitly. Mark a later layer `not-applicable` only when this stop makes it immaterial to the selection; unavailable or unconfigured evidence is never `not-applicable` while it remains decision-relevant.
 
 ## Cross-Project Boundary
 
@@ -40,9 +42,11 @@ Follow any stricter repository or machine-local gate for the configured source, 
 
 Treat a graph or index result as a candidate. Verify the selected current entrypoint, actual input/output/error/effect/constraint contract, relevant evidence, and integration ownership. Targeted current-source reads are authoritative.
 
-If no explicit source/scope exists, the source is stale without a safe refresh path, or selected source cannot be verified, mark cross-project discovery `degraded`. Continue through current-repository, platform/dependency, and applicable bounded ecosystem evidence without claiming complete peer search, reusability, or portability.
+If cross-project evidence remains decision-relevant and no explicit source/scope exists, the source is stale without a safe refresh path, or selected source cannot be verified, mark cross-project discovery `degraded`. If an earlier or already supplied verified candidate meets the stop rule, mark cross-project discovery `not-applicable`. Continue through current-repository, platform/dependency, and applicable bounded ecosystem evidence without claiming complete peer search, reusability, or portability.
 
-Select by current contract fit, adaptation/runtime cost, provenance and maintenance, known license/security evidence, upgrade ownership, proof cost, and resulting code/context cost. Discovery never authorizes dependency installation, source copying, publication, credentials, or remote mutation.
+Select by current contract fit, adaptation/runtime cost, provenance and maintenance, adoption evidence, known license/security evidence, upgrade ownership, proof cost, and resulting code/context cost. Popularity supports maintenance or operational evidence only; it cannot override a contract, safety, license, or lifecycle mismatch. Discovery never authorizes dependency installation, source copying, publication, credentials, or remote mutation.
+
+The selected candidate in the recorded disposition is the chosen target, never a rejected comparator. Contract fit and total cost describe that target; an unbuilt `build-minimal` target's contract fit remains `unknown` rather than inheriting a rejected candidate's verified or mismatch facts.
 
 ## Output
 

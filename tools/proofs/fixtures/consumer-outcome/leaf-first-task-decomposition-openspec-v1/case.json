@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-openspec-leaf-first",
+  "acceptedOutcome": "Author and apply the leaf-first OpenSpec task shape while preserving the accepted client outcome and passing transport evidence.",
+  "operatingEnvelope": "One disposable OpenSpec repository with local reads, edits, skills, and node commands only.",
+  "changeId": "leaf-first-fixture",
+  "initialTaskState": "checked coarse parent without current leaf or integration evidence",
+  "requiredProactiveShape": {"leaves": ["leaf-schema", "leaf-transport"], "openParent": "parent-client", "parentDependencies": ["leaf-schema", "leaf-transport"]},
+  "proactiveMaterializer": "node scripts/materialize-task-shape.ts proactive",
+  "hiddenPrerequisiteCommand": "node scripts/reveal-prerequisite.ts",
+  "hiddenPrerequisite": {"id": "leaf-schema-prerequisite", "affectedLeaf": "leaf-schema", "preservedEvidence": ["evidence-transport"]},
+  "recursiveMaterializer": "node scripts/materialize-task-shape.ts recursive",
+  "sameLeafCommand": "node scripts/run-same-leaf.ts",
+  "finalOracle": "node scripts/check-result.ts"
+}

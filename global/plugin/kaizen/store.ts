@@ -857,6 +857,14 @@ export async function readKaizenInbox(store: KaizenStore, options: { limit?: num
   };
 }
 
+export async function readKaizenSignal(store: KaizenStore, signalRefValue: string): Promise<KaizenSignal> {
+  const selected = safeRef(signalRefValue, "signalRef");
+  if (!/^signal_[a-f0-9]{32}$/u.test(selected)) throw new KaizenError("unsafe-reference", "signalRef must be a privacy-safe signal ref.");
+  const signal = fold(await records(store)).signals.find((item) => item.signalRef === selected);
+  if (signal == null) throw new KaizenError("signal-not-found", "Kaizen signal was not found.");
+  return signal;
+}
+
 export async function captureKaizenSignal(
   store: KaizenStore,
   input: KaizenSignalInput,

@@ -11,6 +11,10 @@ export const GLOBAL_ENGINEERING_QUALITY_MARKERS: readonly string[] = [
   "Zero-trigger work launches no owner",
   "no-current-owner",
   "same-versus-new uncertainty",
+  "one semantic owner",
+  "private owner-local capability",
+  "Direct capability proof",
+  "parent integration proof",
 ];
 
 export const ENGINEERING_QUALITY_SURFACES: readonly {
@@ -23,11 +27,11 @@ export const ENGINEERING_QUALITY_SURFACES: readonly {
   },
   {
     relative: "templates/project/AGENTS.md",
-    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths"],
+    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths", "semantic owner", "private capability", "parent integration"],
   },
   {
     relative: "instructions/reusable-project-agent-instructions.md",
-    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths"],
+    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths", "semantic owner", "private capability", "parent integration"],
   },
   {
     relative: "instructions/universal-development-loop.md",
@@ -35,7 +39,11 @@ export const ENGINEERING_QUALITY_SURFACES: readonly {
   },
   {
     relative: "global/skills/change-ready-sdlc/SKILL.md",
-    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths"],
+    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths", "semantic owner", "private capability", "parent integration"],
+  },
+  {
+    relative: "global/skills/reuse-discovery/SKILL.md",
+    markers: ["semantic owner", "private capability", "lower total lifecycle cost", "Popularity"],
   },
   {
     relative: "global/skills/deep-task-planning/SKILL.md",
@@ -55,7 +63,7 @@ export const ENGINEERING_QUALITY_SURFACES: readonly {
   },
   {
     relative: "global/agents/implementation-worker.md",
-    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths", "named responsibility boundary and change axis", "Owner reshape is in-scope"],
+    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths", "named responsibility boundary", "Owner reshape is in-scope", "semantic owner", "private capability", "parent integration"],
   },
   {
     relative: "instructions/practice-owner-agent-contract.md",
@@ -67,7 +75,7 @@ export const ENGINEERING_QUALITY_SURFACES: readonly {
   },
   {
     relative: "global/principles-of-work.md",
-    markers: ["Hypothetical extensibility is not a seam"],
+    markers: ["Hypothetical extensibility is not a seam", "A semantic owner", "private owner-local capability", "parent integration"],
   },
   {
     relative: "global/agents/sdet-quality-engineer.md",

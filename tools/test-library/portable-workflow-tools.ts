@@ -74,11 +74,18 @@ function installPortableFixtureSurface(fixture: string): void {
     "# Fixture Global Agents",
     "",
     "- Two materially similar local attempts without downstream progress require a causally different mechanism.",
-    "- One evidence-only costly attempt blocks unchanged repetition; unknown gate state remains blocked.",
-    "- The failed invocation remains finalized and non-reusable, but it does not impose a fixed mission-wide attempt ceiling.",
-    "- Preserve the bundle and replay the complete reachable evaluator/finalization chain offline.",
+    "- A failed live/external invocation is finalized and must not be repeated unchanged.",
+    "- Inspect that run's status, stdout/stderr, errors, effects, and cleanup, then change mechanism or stop at the exact blocked boundary.",
+    "- Temporary diagnostic output uses an automatically cleaned temporary directory.",
     "- Record only materially distinct strategies in `history.md`.",
     "- Emit `Pending Strategy History` when compaction cannot write files.",
+    "",
+    "## OpenSpec Change Authoring",
+    "",
+    "artifactProfile: compact | full",
+    "riskDisposition.kind: ordinary-small-exact | material | unknown",
+    "Observable Proof",
+    "Automation Dividend",
     "",
   ]));
   writeText(path.join(fixture, "global", "opencode.json.template"), lines([
@@ -93,7 +100,7 @@ function installPortableFixtureSurface(fixture: string): void {
     '    ["__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts", { "arbiterAgent": "session-completion-arbiter", "auditWindow": { "closePassedAfterMs": 15000, "enabled": false, "mode": "read-only-monitor", "scope": "per-root", "terminal": "powershell-shell" }, "certificateIssuers": ["roadmap-mission-session-executor"], "enabled": true }]',
     "  ],",
     '  "compaction": {',
-    '    "prompt": "Emit Pending Strategy History and write history.md with Live-Attempt Gate: clear | blocked | unknown, Failure Chain, and Terminal Replay Result. Name the first gate-closing offline step and classify a live-only missing observation as bounded evidence capture rather than proof. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change."',
+    '    "prompt": "Start with Original User Goal and Goal Status. End with Session Reflection including what not to repeat and one Next-Session Action. Classify the Live-Attempt Gate clear, blocked, or unknown. Emit Pending Strategy History and write history.md when needed. Never require or invent evidence directories, offline replay, or separate proof reports. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change."',
     "  }",
     "}",
     "",
@@ -424,7 +431,7 @@ export const portableWorkflowToolTests: TestCase[] = [
       assertFailure(missingAttemptControl, "Removed repeated-attempt marker must fail validation.");
       assertOutputContains(missingAttemptControl, "global AGENTS concise live-attempt contract", "Repeated-attempt contract failure must be named.");
 
-      writeText(agentsPath, completeAgents.replace("blocks unchanged repetition", "permits unchanged repetition"));
+      writeText(agentsPath, completeAgents.replace("finalized and must not be repeated unchanged", "finalized and may be repeated unchanged"));
       const missingLiveAttemptGate = invokeValidator(fixture);
       assertFailure(missingLiveAttemptGate, "Removed live-attempt block marker must fail validation.");
       assertOutputContains(
@@ -436,9 +443,9 @@ export const portableWorkflowToolTests: TestCase[] = [
 
       const compactionPath = path.join(fixture, "global", "opencode.json.template");
       const completeCompaction = fs.readFileSync(compactionPath, "utf8");
-      writeText(compactionPath, completeCompaction.replace("Terminal Replay Result", "Replay Result"));
+      writeText(compactionPath, completeCompaction.replace("Next-Session Action", "Next Action"));
       const missingTerminalReplay = invokeValidator(fixture);
-      assertFailure(missingTerminalReplay, "Removed terminal replay marker must fail validation.");
+      assertFailure(missingTerminalReplay, "Removed next-session marker must fail validation.");
       assertOutputContains(
         missingTerminalReplay,
         "compaction stagnation strategy contract",

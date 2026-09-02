@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-compact-ordinary-small",
+  "changeId": "compact-note-title",
+  "capabilityId": "note-title",
+  "acceptedOutcome": "After implementation, notes/title.txt contains exactly Ready.",
+  "operatingEnvelope": "This disposable repository, the compact-note-title planning artifacts, and the local node oracle only.",
+  "nonGoals": ["Implement the title change", "Run the product oracle", "Create reusable automation", "Archive the change", "Use external or protected effects"],
+  "nonDeferrableInvariants": ["Do not edit notes/title.txt during authoring", "Artifact shape does not prove risk", "Only the five schema-required compact planning files are created"],
+  "observableProof": "After later implementation, node scripts/check-title.ts exits zero and reports the exact Ready title; this authoring proof separately requires strict OpenSpec plus propose/apply readiness.",
+  "stopLine": "Stop after the five compact planning files are authored and leave implementation tasks unchecked.",
+  "riskEvidence": "Reviewed exact local reversible text change with no public API, persistence, security, privacy, authorization, concurrency, deployment, remote, destructive, or decision-material boundary.",
+  "optionalMechanisms": {
+    "deliveryHorizon": false,
+    "automationDividend": false,
+    "boundedFalsification": false,
+    "separateClaimScope": false,
+    "strategyHistory": false
+  }
+}

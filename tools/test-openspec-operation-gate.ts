@@ -11,6 +11,7 @@ import {
   runOpenSpecOperationGate,
   type BoundedFalsificationReview,
 } from "./openspec-operation-gate.ts";
+import { parseOpenSpecArtifactMetadata } from "../global/bin/openspec-change/manifest.ts";
 
 type TestCase = { name: string; run: () => void };
 
@@ -27,6 +28,7 @@ const OUTCOME_CAPSULE = [
   "Material Residual Risks",
   "Stop Line",
 ] as const;
+const COMPACT_OUTCOME_CAPSULE = OUTCOME_CAPSULE.filter((field) => field !== "Material Residual Risks");
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -58,6 +60,23 @@ function writeText(filePath: string, text: string): void {
 function proposalWithCapsule(extra = ""): string {
   const fields = OUTCOME_CAPSULE.map((field) => `- **${field}**: fixture value for ${field}.`).join("\n");
   return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n- **Delivery Horizon:** none - fixture is unrelated to a tracked delivery horizon.\n- **Automation Dividend**: exempt - fixture does not introduce repeated automation.\n- **Bounded Falsification Review**: exempt - exact Ordinary Small fixture.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope**: Exact fixture claim at the fixture-boundary proof.\n${extra}`;
+}
+
+function compactProposal(extra = ""): string {
+  const fields = COMPACT_OUTCOME_CAPSULE.map((field) => `- **${field}**: compact fixture value for ${field}.`).join("\n");
+  return `# Proposal\n\n## Why\n\nNeed compact change.\n\n### Outcome Capsule\n\n${fields}\n${extra}`;
+}
+
+function writeArtifactMetadata(repo: string, changeId: string, artifactProfile: "compact" | "full", kind: "material" | "ordinary-small-exact" | "unknown"): void {
+  writeText(path.join(repo, "openspec", "changes", changeId, ".openspec.yaml"), `schema: spec-driven\nartifactProfile: ${artifactProfile}\nriskDisposition:\n  kind: ${kind}\n`);
+}
+
+function writeCompactChange(repo: string, changeId: string, tasks = "- [ ] Do work.", proposal = compactProposal()): void {
+  const changeRoot = path.join(repo, "openspec", "changes", changeId);
+  writeArtifactMetadata(repo, changeId, "compact", "ordinary-small-exact");
+  writeText(path.join(changeRoot, "proposal.md"), proposal);
+  writeText(path.join(changeRoot, "tasks.md"), `# Tasks\n\n${tasks}\n`);
+  writeText(path.join(changeRoot, "specs", "demo", "spec.md"), "# Demo\n");
 }
 
 function validFalsificationReview(overrides: Partial<BoundedFalsificationReview> = {}): BoundedFalsificationReview {
@@ -142,6 +161,123 @@ function spawnGate(repo: string, args: string[]): { status: number; stdout: stri
 }
 
 const tests: TestCase[] = [
+  {
+    name: "OpenSpec artifact metadata keeps profile and risk as independent explicit axes",
+    run: () => {
+      assertEqual(
+        parseOpenSpecArtifactMetadata({ schema: "spec-driven" }),
+        { ok: true, value: { artifactProfile: "legacy", riskDispositionKind: null } },
+        "Both fields absent must normalize to legacy without inferring risk.",
+      );
+      for (const [artifactProfile, kind] of [
+        ["compact", "ordinary-small-exact"],
+        ["full", "ordinary-small-exact"],
+        ["full", "material"],
+        ["full", "unknown"],
+      ] as const) {
+        assertEqual(
+          parseOpenSpecArtifactMetadata({ artifactProfile, riskDisposition: { kind } }),
+          { ok: true, value: { artifactProfile, riskDispositionKind: kind } },
+          `${artifactProfile}/${kind} must preserve both reviewed facts.`,
+        );
+      }
+    },
+  },
+  {
+    name: "OpenSpec artifact metadata rejects partial malformed conflicting and extra risk facts",
+    run: () => {
+      const cases = [
+        [{ artifactProfile: "compact" }, ".openspec.yaml.riskDisposition"],
+        [{ riskDisposition: { kind: "ordinary-small-exact" } }, ".openspec.yaml.artifactProfile"],
+        [{ artifactProfile: "small", riskDisposition: { kind: "ordinary-small-exact" } }, ".openspec.yaml.artifactProfile"],
+        [{ artifactProfile: "full", riskDisposition: "material" }, ".openspec.yaml.riskDisposition"],
+        [{ artifactProfile: "full", riskDisposition: { kind: "maybe" } }, ".openspec.yaml.riskDisposition.kind"],
+        [{ artifactProfile: "compact", riskDisposition: { kind: "ordinary-small-exact", evidence: "reviewed in proposal" } }, ".openspec.yaml.riskDisposition"],
+        [{ artifactProfile: "compact", riskDisposition: { kind: "material" } }, ".openspec.yaml.artifactProfile"],
+        [{ artifactProfile: "compact", riskDisposition: { kind: "unknown" } }, ".openspec.yaml.artifactProfile"],
+      ] as const;
+      for (const [metadata, issuePath] of cases) {
+        const parsed = parseOpenSpecArtifactMetadata(metadata);
+        assert(!parsed.ok && parsed.issues.some((issue) => issue.path === issuePath), `Expected exact metadata issue at ${issuePath}.`);
+      }
+    },
+  },
+  {
+    name: "compact exact gates accept six-field artifacts without no-op mechanism records",
+    run: () => withTempRepo("compact-exact", (repo) => {
+      writeCompactChange(repo, "compact-open");
+      for (const operation of ["propose", "apply"] as const) {
+        const output = runOpenSpecOperationGate(repo, { operation, changeId: "compact-open", generatedAt });
+        assert(output.exitCode === 0 && output.status !== "failed" && output.status !== "blocked" && output.status !== "unknown", `Expected compact ${operation} readiness, got ${output.status}: ${JSON.stringify(output.checks)}.`);
+        for (const id of ["artifact:proposal-claim-scope", "artifact:strategy-history", "artifact:delivery-horizon", "artifact:automation-dividend", "artifact:bounded-falsification-declaration"]) {
+          assert(output.checks.some((item) => item.id === id && item.status === "not-applicable"), `Compact ${operation} must report ${id} as not applicable.`);
+        }
+      }
+      writeCompactChange(repo, "compact-done", "- [x] Done.");
+      const archived = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "compact-done", generatedAt });
+      assert(archived.exitCode === 0 && archived.status === "passed", `Expected compact archive pass, got ${archived.status}.`);
+    }),
+  },
+  {
+    name: "full profile preserves ordinary and material behavior while unknown blocks mutation",
+    run: () => withTempRepo("full-risk", (repo) => {
+      for (const kind of ["ordinary-small-exact", "material"] as const) {
+        const changeId = `full-${kind}`;
+        writeChange(repo, changeId);
+        writeArtifactMetadata(repo, changeId, "full", kind);
+        const output = runOpenSpecOperationGate(repo, { operation: "apply", changeId, generatedAt });
+        assert(output.exitCode === 0 && output.status === "passed", `Expected full/${kind} apply pass, got ${output.status}.`);
+      }
+      writeChange(repo, "full-unknown");
+      writeArtifactMetadata(repo, "full-unknown", "full", "unknown");
+      const proposed = runOpenSpecOperationGate(repo, { operation: "propose", changeId: "full-unknown", generatedAt });
+      assert(proposed.exitCode === 0 && proposed.status === "warning", "Full/unknown proposal should preserve structural authoring with semantic warning.");
+      const applied = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "full-unknown", generatedAt });
+      assert(applied.exitCode === 1 && applied.status === "blocked", "Full/unknown apply must block mutation.");
+      const archived = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "full-unknown", generatedAt });
+      assert(archived.exitCode === 1 && archived.status === "blocked", "Full/unknown archive must block completion mutation.");
+    }),
+  },
+  {
+    name: "operation gates preserve exact metadata diagnostics and reject stale compact",
+    run: () => withTempRepo("profile-negative", (repo) => {
+      writeCompactChange(repo, "partial");
+      writeText(path.join(repo, "openspec", "changes", "partial", ".openspec.yaml"), "schema: spec-driven\nartifactProfile: compact\n");
+      const partial = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "partial", generatedAt });
+      assert(partial.exitCode === 1 && partial.checks.some((item) => item.id === "artifact:profile-risk-metadata" && item.summary.includes("riskDisposition is required")), "Partial metadata must fail for the exact missing counterpart.");
+
+      writeCompactChange(repo, "conflict");
+      writeArtifactMetadata(repo, "conflict", "compact", "material");
+      const conflict = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "conflict", generatedAt });
+      assert(conflict.exitCode === 1 && conflict.checks.some((item) => item.id === "artifact:profile-risk-metadata" && item.summary.includes("conflicts")), "Compact/material must fail before artifact checks.");
+
+      writeCompactChange(repo, "compact-unknown");
+      writeArtifactMetadata(repo, "compact-unknown", "compact", "unknown");
+      const compactUnknown = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "compact-unknown", generatedAt });
+      assert(compactUnknown.exitCode === 1 && compactUnknown.checks.some((item) => item.id === "artifact:profile-risk-metadata" && item.summary.includes("conflicts")), "Compact/unknown must fail before artifact checks.");
+
+      writeCompactChange(repo, "malformed");
+      writeText(path.join(repo, "openspec", "changes", "malformed", ".openspec.yaml"), "schema: spec-driven\nartifactProfile: compact\nriskDisposition: unknown\n");
+      const malformed = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "malformed", generatedAt });
+      assert(malformed.exitCode === 1 && malformed.checks.some((item) => item.id === "artifact:profile-risk-metadata" && item.summary.includes("riskDisposition must be an object")), "Malformed risk metadata must preserve its exact structural cause.");
+
+      writeCompactChange(repo, "stale", "- [ ] Do work.", compactProposal("\n- **Claim Class**: finite-population\n"));
+      const stale = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "stale", generatedAt });
+      assert(stale.exitCode === 1 && stale.checks.some((item) => item.id === "artifact:compact-stale" && item.summary.includes("broad Claim Class")), "An explicit broad claim must make compact readiness stale.");
+    }),
+  },
+  {
+    name: "compact explicit mechanisms retain correlation and reject synthetic exemptions",
+    run: () => withTempRepo("compact-mechanism", (repo) => {
+      writeCompactChange(repo, "required-dividend", "- [ ] 1.1 [automation-dividend] Build helper.", compactProposal("\n- **Automation Dividend**: required - build helper\n"));
+      const required = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "required-dividend", generatedAt });
+      assert(required.exitCode === 0 && required.checks.some((item) => item.id === "artifact:automation-dividend-task" && item.status === "passed"), "Explicit compact required dividend must retain task correlation.");
+
+      writeCompactChange(repo, "synthetic-exempt", "- [ ] Do work.", compactProposal("\n- **Automation Dividend**: exempt - no repetition\n"));
+      const exempt = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "synthetic-exempt", generatedAt });
+      assert(exempt.exitCode === 1 && exempt.checks.some((item) => item.id === "artifact:automation-dividend" && item.summary.includes("omit")), `Compact no-op exemptions must be rejected: ${JSON.stringify(exempt.checks)}.`);
+    }),
+  },
   {
     name: "unknown operation without openspec reports unknown and stable JSON",
     run: () => withTempRepo("unknown-empty", (repo) => {

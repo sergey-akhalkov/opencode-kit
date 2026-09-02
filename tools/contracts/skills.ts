@@ -90,7 +90,7 @@ export const CHANGE_READY_SDLC_CONTINUATION_TOKENS: readonly string[] = [
   "An unchanged candidate and unchanged critical-risk hypothesis receive no equivalent verdict-seeking rerun",
   "No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate",
   "invocation remains finalized and non-reusable",
-  "does not impose a fixed mission-wide attempt ceiling",
+  "Another authorized attempt requires a causal mechanism change or the exact missing observation",
   "adapter-proven terminal cessation",
   "Cancellation acknowledgement alone is not closure",
   "write isolation/revocation",
@@ -479,11 +479,6 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "`Stop Line`",
   "remove, narrow, reuse, local guard, then deferral",
   "Stable Candidate: RC",
-  "Evidence bounds claims",
-  "Claim And Evidence Scope",
-  "behavioral-substitution-qualification",
-  "evidence-sufficiency-reviewer",
-  "blocks only that broad claim",
 ];
 
 /** Exact shift-left cadence markers required on maintained runtime/project mirrors. */
@@ -507,11 +502,10 @@ export const SHIFT_LEFT_REAL_BOUNDARY_SURFACES: readonly string[] = [
 export const GLOBAL_AGENTS_CONCISE_LIVE_ATTEMPT_MARKERS: readonly string[] = [
   "Two materially similar local attempts without downstream progress",
   "causally different mechanism",
-  "blocks unchanged repetition",
-  "invocation remains finalized and non-reusable",
-  "does not impose a fixed mission-wide attempt ceiling",
-  "replay the complete reachable evaluator/finalization chain offline",
-  "unknown gate state remains blocked",
+  "finalized and must not be repeated unchanged",
+  "status, stdout/stderr, errors, effects, and cleanup",
+  "change mechanism or stop at the exact blocked boundary",
+  "automatically cleaned temporary directory",
   "materially distinct strategies",
   "history.md",
   "Pending Strategy History",

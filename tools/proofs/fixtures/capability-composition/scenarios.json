@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "pack": "capability-composition",
+  "claimId": "CCO-001",
+  "authoringScenarios": [
+    {
+      "id": "owner-local-extraction",
+      "class": "capability",
+      "baselineExpectation": "gap-or-pass",
+      "requiredFacts": ["privateCapabilityExists", "ownerDelegates", "noDuplicateImplementation", "directOutput", "parentOutput", "distinctOracles"],
+      "prompt": "Implement the accepted behavior in this disposable project. Keep src/app.mjs as the semantic owner, extract one private normalize capability only if its direct contract and oracle justify it, run the capability directly before the parent, and leave no duplicate implementation. `node scripts/run-normalize.mjs` prints `capability:ALPHA`; `node src/app.mjs` prints `parent:ALPHA`. Do not add a public API, dependency, framework, or task-shaped module."
+    },
+    {
+      "id": "cohesive-direct",
+      "class": "negative-control",
+      "baselineExpectation": "control-pass",
+      "requiredFacts": ["outputCorrect", "singleImplementationFile", "noSpeculativeSurface"],
+      "prompt": "Fix the cohesive greeting owner so `node src/greet.mjs Ada` prints `Hello, Ada`. Keep the implementation direct: do not add a module, wrapper, interface, factory, dependency, or owner launch solely for modularity."
+    },
+    {
+      "id": "mixed-owner-non-expansion",
+      "class": "capability",
+      "baselineExpectation": "gap-or-pass",
+      "requiredFacts": ["greetingWorks", "reportWorks", "mixedOwnerRemoved", "separateCurrentOwners"],
+      "prompt": "src/mixed.mjs currently combines greeting and report behavior. Preserve greeting and add the accepted report column without expanding the mixed owner. `node src/greet.mjs` prints `hello`; `node src/report.mjs` prints `name status`. Keep the smallest cohesive current owners and remove the superseded mixed path."
+    },
+    {
+      "id": "delegated-boundary-preservation",
+      "class": "delegation",
+      "baselineExpectation": "gap-or-pass",
+      "requiredFacts": ["capabilityOutput", "parentOutput", "ownerDelegates", "briefPreservesBoundary", "noPublicSibling"],
+      "prompt": "Implement the private capability and semantic owner in this disposable project, and write brief.md for an isolated implementation-worker. The brief must preserve src/owner.mjs as semantic owner, name src/capability.mjs as the private capability, bound the write scope to those files, and forbid a public or sibling owner. Run the capability directly before `node src/owner.mjs`; they print `capability:ready` and `parent:ready`."
+    },
+    {
+      "id": "leaf-module-independence",
+      "class": "negative-control",
+      "baselineExpectation": "control-pass",
+      "requiredFacts": ["textLeafWorks", "jsonLeafWorks", "parentWorks", "sharedCapability", "noTaskShapedModules"],
+      "prompt": "Complete the two task leaves in tasks.md through one cohesive private format capability, then run the parent report separately. `node scripts/run-format.mjs text` prints `text:ok`; `node scripts/run-format.mjs json` prints `json:{\"status\":\"ok\"}`; `node src/report.mjs` prints `parent:text:ok`. Do not create one module per task or treat task ids as architecture."
+    },
+    {
+      "id": "duplicate-sibling-rejection",
+      "class": "negative-control",
+      "baselineExpectation": "control-pass",
+      "requiredFacts": ["okStatus", "errorStatus", "singleStatusOwner", "noDuplicateSibling"],
+      "prompt": "Extend the current src/status.mjs owner with the accepted error case. `node src/status.mjs ok` prints `OK`; `node src/status.mjs error` prints `ERROR`. Do not add a sibling status implementation or leave the old path duplicated."
+    },
+    {
+      "id": "wrapper-only-rejection",
+      "class": "negative-control",
+      "baselineExpectation": "control-pass",
+      "requiredFacts": ["valueOutput", "singleValueOwner", "noWrapperOnly"],
+      "prompt": "Fix the cohesive value owner so `node src/value.mjs` prints `value:ready`. Do not create a forwarding-only wrapper, one-implementation interface, factory, or navigation-only file."
+    },
+    {
+      "id": "integration-only",
+      "class": "negative-control",
+      "baselineExpectation": "control-pass",
+      "requiredFacts": ["parentOutput", "singleIntegrationOwner", "noFakeComponentOracle"],
+      "prompt": "Implement the inseparable integration case so `node src/app.mjs` prints `integrated:ready`. There is no truthful lower component boundary; keep the cohesive parent direct and do not invent a capability module or fake component oracle."
+    }
+  ],
+  "reuseScenarios": [
+    {
+      "id": "verified-current-capability",
+      "class": "current-repository",
+      "prompt": "Prepare a read-only implementation disposition for the requested normalization behavior using the supplied current sources. Return exact lines `Disposition: <reuse|extend|build-minimal>`, `Selected candidate: <id>`, `Contract fit: <verified|mismatch|unknown>`, `Total cost: <lower|higher|unknown>`, `Popularity only: <yes|no>`, and `Cross-project: <verified|degraded|not-applicable>`. Do not edit, execute, install, fetch, or use remote tools.",
+      "acceptedPopularityOnly": ["no"],
+      "expectedObservation": {
+        "disposition": "reuse",
+        "selectedCandidate": "current-normalizer",
+        "contractFit": "verified",
+        "totalCost": "lower",
+        "popularityOnly": "no",
+        "crossProject": "not-applicable"
+      }
+    },
+    {
+      "id": "established-verified-fit",
+      "class": "ecosystem",
+      "prompt": "Prepare a read-only implementation disposition from the supplied reviewed candidate metadata and source facts. Return exact lines `Disposition: <reuse|extend|build-minimal>`, `Selected candidate: <id>`, `Contract fit: <verified|mismatch|unknown>`, `Total cost: <lower|higher|unknown>`, `Popularity only: <yes|no>`, and `Cross-project: <verified|degraded|not-applicable>`. Do not edit, execute, install, fetch, or use remote tools.",
+      "acceptedPopularityOnly": ["no"],
+      "expectedObservation": {
+        "disposition": "reuse",
+        "selectedCandidate": "maintained-parser",
+        "contractFit": "verified",
+        "totalCost": "lower",
+        "popularityOnly": "no",
+        "crossProject": "not-applicable"
+      }
+    },
+    {
+      "id": "popular-contract-mismatch",
+      "class": "ecosystem-negative-control",
+      "prompt": "Prepare a read-only implementation disposition from the supplied reviewed candidate metadata and source facts. Return exact lines `Disposition: <reuse|extend|build-minimal>`, `Selected candidate: <id>`, `Contract fit: <verified|mismatch|unknown>`, `Total cost: <lower|higher|unknown>`, `Popularity only: <yes|no>`, and `Cross-project: <verified|degraded|not-applicable>`. Do not edit, execute, install, fetch, or use remote tools.",
+      "acceptedPopularityOnly": ["no", "yes"],
+      "expectedObservation": {
+        "disposition": "build-minimal",
+        "selectedCandidate": "local-minimal",
+        "contractFit": "unknown",
+        "totalCost": "lower",
+        "popularityOnly": "no",
+        "crossProject": "degraded"
+      }
+    },
+    {
+      "id": "ecosystem-unavailable",
+      "class": "stopped-layer-control",
+      "prompt": "Prepare a read-only implementation disposition from the supplied reviewed local evidence. Public ecosystem evidence is unavailable in this scenario. Return exact lines `Disposition: <reuse|extend|build-minimal>`, `Selected candidate: <id>`, `Contract fit: <verified|mismatch|unknown>`, `Total cost: <lower|higher|unknown>`, `Popularity only: <yes|no>`, and `Cross-project: <verified|degraded|not-applicable>`. Do not edit, execute, install, fetch, or use remote tools.",
+      "acceptedPopularityOnly": ["no"],
+      "expectedObservation": {
+        "disposition": "build-minimal",
+        "selectedCandidate": "local-minimal",
+        "contractFit": "unknown",
+        "totalCost": "lower",
+        "popularityOnly": "no",
+        "crossProject": "degraded"
+      }
+    }
+  ],
+  "redControls": [
+    {
+      "id": "malformed-seed",
+      "owner": "shared",
+      "scenario": "none",
+      "expectedFailure": "schema"
+    },
+    {
+      "id": "duplicate-owner",
+      "owner": "authoring",
+      "scenario": "owner-local-extraction",
+      "expectedFailure": "noDuplicateImplementation"
+    },
+    {
+      "id": "component-as-parent",
+      "owner": "authoring",
+      "scenario": "owner-local-extraction",
+      "expectedFailure": "parentOutput"
+    },
+    {
+      "id": "wrapper-only",
+      "owner": "authoring",
+      "scenario": "wrapper-only-rejection",
+      "expectedFailure": "noWrapperOnly"
+    },
+    {
+      "id": "popularity-only",
+      "owner": "reuse",
+      "scenario": "popular-contract-mismatch",
+      "expectedFailure": "matchesReviewedObservation"
+    }
+  ]
+}

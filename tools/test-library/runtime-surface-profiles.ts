@@ -436,9 +436,9 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
         const compactionPrompt = typeof compaction.prompt === "string" ? compaction.prompt : "";
         assert(!serializedConfig.includes("__OPENCODE_"), `${profileName} generated config must materialize every placeholder.`);
         assert(!serializedConfig.includes(".staging-"), `${profileName} generated config must not retain staging paths.`);
-        assert(compactionPrompt.includes("Team Advice State"), `${profileName} generated config must retain the compaction team-advice mirror.`);
-        assert(compactionPrompt.includes("Unavailable Material Capabilities"), `${profileName} generated config must retain every canonical Team Advice State field.`);
-        assert(compactionPrompt.includes("does not infer a new team"), `${profileName} generated config must retain the compaction non-inference boundary.`);
+        assert(compactionPrompt.includes("compact, complete fresh-session summary"), `${profileName} generated config must retain the compact handoff contract.`);
+        assert(compactionPrompt.includes("accepted scope"), `${profileName} generated config must retain accepted scope.`);
+        assert(compactionPrompt.includes("exact next action"), `${profileName} generated config must retain the exact continuation action.`);
         for (const relative of ["principles-of-work.md", "opencode.local.instructions.md"]) {
           const expected = path.join(targetRoot, relative).replaceAll("\\", "/");
           assert(serializedConfig.includes(expected), `${profileName} generated config must reference final ${relative}.`);

@@ -16,6 +16,12 @@ export const MAX_LANES = 64;
 export type SchemaIssueCode = "missing" | "extra" | "escape" | "cycle" | "unknown" | "invalid";
 export type SchemaIssue = { code: SchemaIssueCode; path: string; message: string };
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; issues: SchemaIssue[] };
+export type OpenSpecArtifactProfile = "compact" | "full" | "legacy";
+export type OpenSpecRiskDispositionKind = "material" | "ordinary-small-exact" | "unknown";
+export type OpenSpecArtifactMetadata = {
+  artifactProfile: OpenSpecArtifactProfile;
+  riskDispositionKind: OpenSpecRiskDispositionKind | null;
+};
 
 export function digestText(value: string): string {
   return crypto.createHash("sha256").update(value.replaceAll("\r\n", "\n"), "utf8").digest("hex");
@@ -60,6 +66,58 @@ export function readObject(value: unknown, path: string): ParseResult<Record<str
   if (value === undefined) return failIssues([{ code: "missing", path, message: `Invalid input: expected object, received undefined` }]);
   if (!plainRecord(value)) return failIssues([{ code: "invalid", path, message: `Invalid input: expected object, received ${typeof value}` }]);
   return { ok: true, value };
+}
+
+export function parseOpenSpecArtifactMetadata(value: unknown): ParseResult<OpenSpecArtifactMetadata> {
+  const rootPath = ".openspec.yaml";
+  const artifactPath = `${rootPath}.artifactProfile`;
+  const riskPath = `${rootPath}.riskDisposition`;
+  if (!plainRecord(value)) {
+    return failIssues([{ code: "invalid", path: rootPath, message: "OpenSpec change metadata must be an object." }]);
+  }
+
+  const hasArtifactProfile = Object.hasOwn(value, "artifactProfile");
+  const hasRiskDisposition = Object.hasOwn(value, "riskDisposition");
+  if (!hasArtifactProfile && !hasRiskDisposition) {
+    return { ok: true, value: { artifactProfile: "legacy", riskDispositionKind: null } };
+  }
+
+  const issues: SchemaIssue[] = [];
+  if (!hasArtifactProfile) {
+    issues.push({ code: "missing", path: artifactPath, message: "artifactProfile is required when riskDisposition is present." });
+  }
+  if (!hasRiskDisposition) {
+    issues.push({ code: "missing", path: riskPath, message: "riskDisposition is required when artifactProfile is present." });
+  }
+
+  const artifactProfile = value.artifactProfile;
+  if (hasArtifactProfile && artifactProfile !== "compact" && artifactProfile !== "full") {
+    issues.push({ code: "invalid", path: artifactPath, message: "artifactProfile must be compact or full." });
+  }
+
+  let riskDispositionKind: OpenSpecRiskDispositionKind | undefined;
+  if (hasRiskDisposition) {
+    if (!plainRecord(value.riskDisposition)) {
+      issues.push({ code: "invalid", path: riskPath, message: "riskDisposition must be an object with exactly one kind field." });
+    } else {
+      issues.push(...extraKeys(value.riskDisposition, ["kind"], riskPath));
+      if (!Object.hasOwn(value.riskDisposition, "kind")) {
+        issues.push({ code: "missing", path: `${riskPath}.kind`, message: "riskDisposition.kind is required." });
+      } else if (value.riskDisposition.kind !== "ordinary-small-exact" && value.riskDisposition.kind !== "material" && value.riskDisposition.kind !== "unknown") {
+        issues.push({ code: "invalid", path: `${riskPath}.kind`, message: "riskDisposition.kind must be ordinary-small-exact, material, or unknown." });
+      } else {
+        riskDispositionKind = value.riskDisposition.kind;
+      }
+    }
+  }
+
+  if (artifactProfile === "compact" && (riskDispositionKind === "material" || riskDispositionKind === "unknown")) {
+    issues.push({ code: "invalid", path: artifactPath, message: `artifactProfile compact conflicts with riskDisposition.kind ${riskDispositionKind}; use full artifacts.` });
+  }
+  if (issues.length > 0 || (artifactProfile !== "compact" && artifactProfile !== "full") || riskDispositionKind == null) {
+    return failIssues(issues.length > 0 ? issues : [{ code: "invalid", path: rootPath, message: "OpenSpec artifact metadata is incomplete." }]);
+  }
+  return { ok: true, value: { artifactProfile, riskDispositionKind } };
 }
 
 export function safeRelativePath(value: string, label: string): SchemaIssue | undefined {

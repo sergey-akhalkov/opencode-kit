@@ -318,6 +318,7 @@ export function initialRootState(root: Session): RootState {
     grindEnabled,
     guardTurnPending: false,
     frontierError: persistedFrontier.errorCode,
+    frontierReconciliationAttempts: boundedInteger(metadata?.frontierReconciliationAttempts, 0, 0),
     frontierReconciliationRef: stringValue(metadata?.frontierReconciliationRef),
     frontierStatus,
     lastAssistantID: null,

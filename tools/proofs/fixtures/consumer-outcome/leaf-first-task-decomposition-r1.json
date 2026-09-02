@@ -1,0 +1,676 @@
+{
+  "schemaVersion": 1,
+  "id": "leaf-first-task-decomposition-r1",
+  "claimId": "LFTD-001",
+  "maximumClaim": "provider-free structural proof for the eleven reviewed LFTD-001 members, four explicit OpenSpec task controls, and four linked schema-v1 grind-frontier controls under the recorded seed and governed working-tree identity only; reviewed judgments remain fixture data and no configured behavior, universal decomposition quality, optimal task shape, untested population support, installed activation, or deployed-runtime behavior is established",
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/extensions/session-completion-guard/frontier.ts",
+    "global/opencode.json.template",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/leaf-first-task-decomposition.ts",
+    "tools/proofs/session-completion-guard-frontier.ts",
+    "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-r1.json",
+    "tools/proofs/fixtures/session-completion-guard/grind-frontier-v1/grind-frontier-v1.seed.json"
+  ],
+  "limits": {
+    "maxCompactionFields": 8,
+    "maxEventsPerObservation": 16,
+    "maxRedControlsPerScenario": 4,
+    "maxRefsPerField": 12,
+    "maxScenarios": 11
+  },
+  "openSpecControls": [
+    {
+      "id": "proactive-task-authoring",
+      "expectedObservation": {
+        "changedPaths": ["tasks.md"],
+        "dependencyRefs": ["leaf-parse:parent-report", "leaf-render:parent-report"],
+        "events": ["compound-parent-evidenced", "leaf-tasks-authored", "parent-integration-task-authored", "parent-left-open"],
+        "evidenceRefs": [],
+        "historyAppendCount": 0,
+        "parentTaskRef": "parent-report",
+        "parentTaskState": "open",
+        "proposalChanged": false,
+        "scopeChanged": false,
+        "taskRefs": ["leaf-parse", "leaf-render", "parent-report"]
+      },
+      "redControls": [
+        {
+          "id": "parent-authored-complete",
+          "expectedFailures": ["parent-task-state"],
+          "observation": {
+            "changedPaths": ["tasks.md"],
+            "dependencyRefs": ["leaf-parse:parent-report", "leaf-render:parent-report"],
+            "events": ["compound-parent-evidenced", "leaf-tasks-authored", "parent-integration-task-authored", "parent-left-open"],
+            "evidenceRefs": [],
+            "historyAppendCount": 0,
+            "parentTaskRef": "parent-report",
+            "parentTaskState": "checked",
+            "proposalChanged": false,
+            "scopeChanged": false,
+            "taskRefs": ["leaf-parse", "leaf-render", "parent-report"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hidden-prerequisite-correction",
+      "expectedObservation": {
+        "changedPaths": ["design.md", "history.md", "tasks.md"],
+        "dependencyRefs": ["leaf-schema-prerequisite:leaf-schema", "leaf-schema:parent-client", "leaf-transport:parent-client"],
+        "events": ["hidden-prerequisite-observed", "child-authored", "affected-leaf-blocked", "passing-evidence-preserved", "history-attributed", "continue-from-child"],
+        "evidenceRefs": ["evidence-transport"],
+        "historyAppendCount": 1,
+        "parentTaskRef": "parent-client",
+        "parentTaskState": "open",
+        "proposalChanged": false,
+        "scopeChanged": false,
+        "taskRefs": ["leaf-schema-prerequisite", "leaf-schema", "leaf-transport", "parent-client"]
+      },
+      "redControls": [
+        {
+          "id": "recursive-correction-broad-churn",
+          "expectedFailures": ["changed-paths", "evidence-refs", "history-append-count", "proposal-change", "scope-change"],
+          "observation": {
+            "changedPaths": ["design.md", "history.md", "proposal.md", "specs/leaf-first/spec.md", "tasks.md"],
+            "dependencyRefs": ["leaf-schema-prerequisite:leaf-schema", "leaf-schema:parent-client", "leaf-transport:parent-client"],
+            "events": ["hidden-prerequisite-observed", "child-authored", "affected-leaf-blocked", "passing-evidence-preserved", "history-attributed", "continue-from-child"],
+            "evidenceRefs": [],
+            "historyAppendCount": 2,
+            "parentTaskRef": "parent-client",
+            "parentTaskState": "open",
+            "proposalChanged": true,
+            "scopeChanged": true,
+            "taskRefs": ["leaf-schema-prerequisite", "leaf-schema", "leaf-transport", "parent-client"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "same-leaf-no-planning-churn",
+      "expectedObservation": {
+        "changedPaths": [],
+        "dependencyRefs": ["leaf-parser:parent-parser"],
+        "events": ["local-defect-observed", "same-leaf-corrected", "same-oracle-rerun"],
+        "evidenceRefs": ["evidence-existing-sibling"],
+        "historyAppendCount": 0,
+        "parentTaskRef": "parent-parser",
+        "parentTaskState": "open",
+        "proposalChanged": false,
+        "scopeChanged": false,
+        "taskRefs": ["leaf-parser", "parent-parser"]
+      },
+      "redControls": [
+        {
+          "id": "same-leaf-creates-planning-child",
+          "expectedFailures": ["changed-paths", "dependency-refs", "task-refs"],
+          "observation": {
+            "changedPaths": ["tasks.md"],
+            "dependencyRefs": ["leaf-parser-fix:leaf-parser", "leaf-parser:parent-parser"],
+            "events": ["local-defect-observed", "same-leaf-corrected", "same-oracle-rerun"],
+            "evidenceRefs": ["evidence-existing-sibling"],
+            "historyAppendCount": 0,
+            "parentTaskRef": "parent-parser",
+            "parentTaskState": "open",
+            "proposalChanged": false,
+            "scopeChanged": false,
+            "taskRefs": ["leaf-parser-fix", "leaf-parser", "parent-parser"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "checked-parent-reopened",
+      "expectedObservation": {
+        "changedPaths": ["tasks.md"],
+        "dependencyRefs": ["leaf-missing-oracle:parent-coarse"],
+        "events": ["missing-leaf-evidence-observed", "required-child-authored", "coarse-parent-reopened", "continue-from-child"],
+        "evidenceRefs": ["evidence-prior-attempt"],
+        "historyAppendCount": 0,
+        "parentTaskRef": "parent-coarse",
+        "parentTaskState": "open",
+        "proposalChanged": false,
+        "scopeChanged": false,
+        "taskRefs": ["leaf-missing-oracle", "parent-coarse"]
+      },
+      "redControls": [
+        {
+          "id": "coarse-parent-remains-checked",
+          "expectedFailures": ["parent-task-state"],
+          "observation": {
+            "changedPaths": ["tasks.md"],
+            "dependencyRefs": ["leaf-missing-oracle:parent-coarse"],
+            "events": ["missing-leaf-evidence-observed", "required-child-authored", "coarse-parent-reopened", "continue-from-child"],
+            "evidenceRefs": ["evidence-prior-attempt"],
+            "historyAppendCount": 0,
+            "parentTaskRef": "parent-coarse",
+            "parentTaskState": "checked",
+            "proposalChanged": false,
+            "scopeChanged": false,
+            "taskRefs": ["leaf-missing-oracle", "parent-coarse"]
+          }
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "proactive-compound-decomposition",
+      "taskClass": "ordinary",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "decompose",
+        "reason": "Two prerequisites have independent proof and failure boundaries before one report integration oracle."
+      },
+      "expectedObservation": {
+        "action": "decompose",
+        "blockedParentRef": "parent-report",
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": ["leaf-parse", "leaf-render"],
+        "events": ["compoundness-evidenced", "leaves-authored", "parent-blocked", "leaf-parse-proved", "leaf-render-proved", "parent-integration-proved"],
+        "evidenceRefs": ["evidence-parse", "evidence-render", "evidence-report"],
+        "gateRefs": [],
+        "leafRefs": ["leaf-parse", "leaf-render"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle-report-integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["leaf-parse", "leaf-render"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "parent-runs-before-leaf-proof",
+          "expectedFailures": ["event-order"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": "parent-report",
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": ["leaf-parse", "leaf-render"],
+            "events": ["compoundness-evidenced", "parent-integration-proved", "leaf-parse-proved", "leaf-render-proved"],
+            "evidenceRefs": ["evidence-parse", "evidence-render", "evidence-report"],
+            "gateRefs": [],
+            "leafRefs": ["leaf-parse", "leaf-render"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle-report-integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["leaf-parse", "leaf-render"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursive-independent-prerequisite",
+      "taskClass": "openspec",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "decompose",
+        "reason": "A newly observed schema prerequisite has its own proof boundary and blocks only the affected leaf and parent."
+      },
+      "expectedObservation": {
+        "action": "decompose",
+        "blockedParentRef": "parent-client",
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": ["leaf-schema-prerequisite:leaf-schema", "leaf-schema:parent-client", "leaf-transport:parent-client"],
+        "events": ["leaf-schema-started", "independent-prerequisite-observed", "child-authored", "affected-leaf-blocked", "transport-evidence-preserved", "child-proved", "leaf-schema-proved", "parent-integration-proved"],
+        "evidenceRefs": ["evidence-transport", "evidence-schema-prerequisite", "evidence-schema", "evidence-client"],
+        "gateRefs": [],
+        "leafRefs": ["leaf-schema", "leaf-transport", "leaf-schema-prerequisite"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle-client-integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["leaf-transport", "leaf-schema-prerequisite"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "hidden-prerequisite-kept-inside-failing-leaf",
+          "expectedFailures": ["dependency-refs", "event-order", "leaf-refs", "runnable-refs"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": "parent-client",
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": ["leaf-schema:parent-client", "leaf-transport:parent-client"],
+            "events": ["leaf-schema-started", "affected-leaf-retried", "transport-evidence-preserved", "parent-integration-proved"],
+            "evidenceRefs": ["evidence-transport", "evidence-schema-prerequisite", "evidence-schema", "evidence-client"],
+            "gateRefs": [],
+            "leafRefs": ["leaf-schema", "leaf-transport"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle-client-integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["leaf-schema", "leaf-transport"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "same-leaf-local-failure",
+      "taskClass": "ordinary",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "direct",
+        "reason": "The correction and rerun stay inside the same result and oracle boundary."
+      },
+      "expectedObservation": {
+        "action": "direct",
+        "blockedParentRef": null,
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": [],
+        "events": ["local-defect-observed", "same-leaf-corrected", "same-oracle-rerun"],
+        "evidenceRefs": ["evidence-parser-rerun"],
+        "gateRefs": [],
+        "leafRefs": ["leaf-parser"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": null,
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["leaf-parser"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "same-leaf-defect-creates-child",
+          "expectedFailures": ["action"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": null,
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": [],
+            "events": ["local-defect-observed", "same-leaf-corrected", "same-oracle-rerun"],
+            "evidenceRefs": ["evidence-parser-rerun"],
+            "gateRefs": [],
+            "leafRefs": ["leaf-parser"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": null,
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["leaf-parser"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "parent-suppression",
+      "taskClass": "grind",
+      "frontierScenarioId": "leaf-first-parent-suppression",
+      "reviewedJudgment": {
+        "disposition": "decompose",
+        "reason": "The existing schema-v1 dependency keeps the parent non-runnable until its required leaf closes."
+      },
+      "expectedObservation": {
+        "action": "decompose",
+        "blockedParentRef": "item_parent",
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": ["item_leaf"],
+        "events": ["leaf-runnable", "parent-suppressed"],
+        "evidenceRefs": ["evidence_leaf_ready"],
+        "gateRefs": [],
+        "leafRefs": ["item_leaf"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle_parent_integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["item_leaf"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "parent-listed-with-open-leaf",
+          "expectedFailures": ["runnable-refs"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": "item_parent",
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": ["item_leaf"],
+            "events": ["leaf-runnable", "parent-suppressed"],
+            "evidenceRefs": ["evidence_leaf_ready"],
+            "gateRefs": [],
+            "leafRefs": ["item_leaf"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle_parent_integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["item_leaf", "item_parent"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "integration-only-failure",
+      "taskClass": "ordinary",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "parent-local",
+        "reason": "Both leaf oracles remain valid and the defect exists only at the parent integration boundary."
+      },
+      "expectedObservation": {
+        "action": "parent-local",
+        "blockedParentRef": null,
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": ["leaf-storage", "leaf-view"],
+        "events": ["leaf-storage-proved", "leaf-view-proved", "parent-integration-failed", "parent-corrected", "parent-oracle-rerun"],
+        "evidenceRefs": ["evidence-storage", "evidence-view", "evidence-integration-rerun"],
+        "gateRefs": [],
+        "leafRefs": ["leaf-storage", "leaf-view"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle-screen-integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["parent-screen-integration"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "integration-defect-resplits-proved-leaf",
+          "expectedFailures": ["action"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": null,
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": ["leaf-storage", "leaf-view"],
+            "events": ["leaf-storage-proved", "leaf-view-proved", "parent-integration-failed", "parent-corrected", "parent-oracle-rerun"],
+            "evidenceRefs": ["evidence-storage", "evidence-view", "evidence-integration-rerun"],
+            "gateRefs": [],
+            "leafRefs": ["leaf-storage", "leaf-view"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle-screen-integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["parent-screen-integration"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "independent-siblings",
+      "taskClass": "grind",
+      "frontierScenarioId": "leaf-first-independent-siblings",
+      "reviewedJudgment": {
+        "disposition": "decompose",
+        "reason": "Two independent leaves remain runnable while their shared parent waits for both."
+      },
+      "expectedObservation": {
+        "action": "decompose",
+        "blockedParentRef": "item_parent",
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": ["item_leaf_a", "item_leaf_b"],
+        "events": ["independent-leaves-runnable", "parent-suppressed"],
+        "evidenceRefs": ["evidence_leaf_a_ready", "evidence_leaf_b_ready"],
+        "gateRefs": [],
+        "leafRefs": ["item_leaf_a", "item_leaf_b"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle_parent_integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["item_leaf_a", "item_leaf_b"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "independent-sibling-dropped",
+          "expectedFailures": ["runnable-refs"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": "item_parent",
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": ["item_leaf_a", "item_leaf_b"],
+            "events": ["independent-leaves-runnable", "parent-suppressed"],
+            "evidenceRefs": ["evidence_leaf_a_ready", "evidence_leaf_b_ready"],
+            "gateRefs": [],
+            "leafRefs": ["item_leaf_a", "item_leaf_b"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle_parent_integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["item_leaf_a"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "cohesive-ordinary-small",
+      "taskClass": "ordinary",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "direct",
+        "reason": "One cohesive owner and oracle make a task hierarchy pure ceremony."
+      },
+      "expectedObservation": {
+        "action": "direct",
+        "blockedParentRef": null,
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": [],
+        "events": ["cohesive-boundary-confirmed", "direct-execution", "real-oracle-proved"],
+        "evidenceRefs": ["evidence-cohesive-result"],
+        "gateRefs": [],
+        "leafRefs": [],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": null,
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["task-cohesive"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "cohesive-task-forced-into-tree",
+          "expectedFailures": ["action"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": null,
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": [],
+            "events": ["cohesive-boundary-confirmed", "direct-execution", "real-oracle-proved"],
+            "evidenceRefs": ["evidence-cohesive-result"],
+            "gateRefs": [],
+            "leafRefs": [],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": null,
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["task-cohesive"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "grouped-mechanical-edits",
+      "taskClass": "ordinary",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "direct",
+        "reason": "Repeated mechanical edits share one transformation and one batch validation oracle."
+      },
+      "expectedObservation": {
+        "action": "direct",
+        "blockedParentRef": null,
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": [],
+        "events": ["mechanical-group-confirmed", "batch-applied", "group-oracle-proved"],
+        "evidenceRefs": ["evidence-mechanical-batch"],
+        "gateRefs": [],
+        "leafRefs": [],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": null,
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["task-mechanical-batch"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "mechanical-edit-per-file-leaves",
+          "expectedFailures": ["action"],
+          "observation": {
+            "action": "decompose",
+            "blockedParentRef": null,
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": [],
+            "events": ["mechanical-group-confirmed", "batch-applied", "group-oracle-proved"],
+            "evidenceRefs": ["evidence-mechanical-batch"],
+            "gateRefs": [],
+            "leafRefs": [],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": null,
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["task-mechanical-batch"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "owner-protected-gates",
+      "taskClass": "grind",
+      "frontierScenarioId": "leaf-first-owner-gate",
+      "reviewedJudgment": {
+        "disposition": "park-gated",
+        "reason": "A product decision stays explicitly gated while independent accepted work remains runnable."
+      },
+      "expectedObservation": {
+        "action": "park-gated",
+        "blockedParentRef": "item_parent",
+        "checkpointRef": null,
+        "compactionFields": [],
+        "dependencyRefs": ["item_owner"],
+        "events": ["owner-gate-preserved", "independent-sibling-runnable", "parent-suppressed"],
+        "evidenceRefs": ["evidence_owner_options", "evidence_sibling_ready"],
+        "gateRefs": ["gate_owner"],
+        "leafRefs": ["item_owner", "item_sibling"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle_parent_integration",
+        "parkedDecisionRefs": ["decision_owner"],
+        "runnableRefs": ["item_sibling"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "owner-question-preempts-runnable-sibling",
+          "expectedFailures": ["owner-question-count"],
+          "observation": {
+            "action": "park-gated",
+            "blockedParentRef": "item_parent",
+            "checkpointRef": null,
+            "compactionFields": [],
+            "dependencyRefs": ["item_owner"],
+            "events": ["owner-gate-preserved", "independent-sibling-runnable", "parent-suppressed"],
+            "evidenceRefs": ["evidence_owner_options", "evidence_sibling_ready"],
+            "gateRefs": ["gate_owner"],
+            "leafRefs": ["item_owner", "item_sibling"],
+            "ownerQuestionCount": 1,
+            "parentOracleRef": "oracle_parent_integration",
+            "parkedDecisionRefs": ["decision_owner"],
+            "runnableRefs": ["item_sibling"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "compaction-continuity",
+      "taskClass": "openspec",
+      "frontierScenarioId": null,
+      "reviewedJudgment": {
+        "disposition": "preserve",
+        "reason": "Compaction keeps only unresolved leaf and parent execution facts in the existing session summary."
+      },
+      "expectedObservation": {
+        "action": "preserve",
+        "blockedParentRef": "parent-package",
+        "checkpointRef": null,
+        "compactionFields": ["Current Leaf", "Blocked Parent", "Dependency Refs", "Next Oracle", "Evidence Refs"],
+        "dependencyRefs": ["leaf-installer:parent-package"],
+        "events": ["unresolved-state-recorded", "compaction", "same-leaf-resumed"],
+        "evidenceRefs": ["evidence-installer-pending"],
+        "gateRefs": [],
+        "leafRefs": ["leaf-installer"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle-package-integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["leaf-installer"],
+        "suppressionIdentity": null
+      },
+      "redControls": [
+        {
+          "id": "compaction-drops-dependency-and-oracle",
+          "expectedFailures": ["compaction-fields"],
+          "observation": {
+            "action": "preserve",
+            "blockedParentRef": "parent-package",
+            "checkpointRef": null,
+            "compactionFields": ["Current Leaf", "Blocked Parent"],
+            "dependencyRefs": ["leaf-installer:parent-package"],
+            "events": ["unresolved-state-recorded", "compaction", "same-leaf-resumed"],
+            "evidenceRefs": ["evidence-installer-pending"],
+            "gateRefs": [],
+            "leafRefs": ["leaf-installer"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle-package-integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["leaf-installer"],
+            "suppressionIdentity": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "checkpoint-composition",
+      "taskClass": "grind",
+      "frontierScenarioId": "leaf-first-checkpoint-composition",
+      "reviewedJudgment": {
+        "disposition": "compose-checkpoint",
+        "reason": "One due checkpoint selects decomposition under its existing suppression identity without a second process gate or reflection."
+      },
+      "expectedObservation": {
+        "action": "compose-checkpoint",
+        "blockedParentRef": "item_parent",
+        "checkpointRef": "checkpoint_lftd_route",
+        "compactionFields": [],
+        "dependencyRefs": ["item_checkpoint", "item_leaf"],
+        "events": ["checkpoint-due", "decomposition-route-selected", "frontier-corrected-once", "leaf-runnable", "parent-suppressed", "duplicate-reflection-suppressed"],
+        "evidenceRefs": ["evidence_checkpoint_due", "evidence_leaf_ready"],
+        "gateRefs": ["gate_checkpoint"],
+        "leafRefs": ["item_leaf"],
+        "ownerQuestionCount": 0,
+        "parentOracleRef": "oracle_parent_integration",
+        "parkedDecisionRefs": [],
+        "runnableRefs": ["item_checkpoint", "item_leaf"],
+        "suppressionIdentity": "checkpoint_lftd_route"
+      },
+      "redControls": [
+        {
+          "id": "checkpoint-and-decomposition-use-different-identity",
+          "expectedFailures": ["suppression-identity"],
+          "observation": {
+            "action": "compose-checkpoint",
+            "blockedParentRef": "item_parent",
+            "checkpointRef": "checkpoint_lftd_route",
+            "compactionFields": [],
+            "dependencyRefs": ["item_checkpoint", "item_leaf"],
+            "events": ["checkpoint-due", "decomposition-route-selected", "frontier-corrected-once", "leaf-runnable", "parent-suppressed", "duplicate-reflection-suppressed"],
+            "evidenceRefs": ["evidence_checkpoint_due", "evidence_leaf_ready"],
+            "gateRefs": ["gate_checkpoint"],
+            "leafRefs": ["item_leaf"],
+            "ownerQuestionCount": 0,
+            "parentOracleRef": "oracle_parent_integration",
+            "parkedDecisionRefs": [],
+            "runnableRefs": ["item_checkpoint", "item_leaf"],
+            "suppressionIdentity": "checkpoint_lftd_duplicate"
+          }
+        }
+      ]
+    }
+  ]
+}

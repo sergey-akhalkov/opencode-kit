@@ -8,6 +8,19 @@ import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import { loadModelProfile } from "../model-profile.ts";
 import {
+  applyCapabilityCompositionAuthoringControl,
+  capabilityCompositionBaselineExpectation,
+  capabilityCompositionPrompts,
+  capabilityCompositionRedControls,
+  capabilityCompositionScenarioIds,
+  createCompliantCapabilityCompositionFixture,
+  evaluateCapabilityCompositionScenario,
+  isCapabilityCompositionScenario,
+  parseCapabilityCompositionSeed,
+  setupCapabilityCompositionScenario,
+  type CapabilityCompositionScenarioId,
+} from "./lib/capability-composition-scenarios.ts";
+import {
   changeLocalityFollowUps,
   changeLocalityPrompts,
   changeLocalityScenarioIds,
@@ -20,9 +33,9 @@ import {
 
 type CaptureKind = "baseline" | "candidate";
 type RunnerMode = "capture" | "evaluate" | "preflight" | "replay";
-type ProofPack = "tooling" | "change-locality";
+type ProofPack = "tooling" | "change-locality" | "capability-composition";
 type ToolingScenarioId = "mechanical-artifact" | "repeated-cli" | "source-placement";
-type ScenarioId = ToolingScenarioId | ChangeLocalityScenarioId;
+type ScenarioId = ToolingScenarioId | ChangeLocalityScenarioId | CapabilityCompositionScenarioId;
 
 type Arguments = {
   baselineRoot: string | null;
@@ -112,11 +125,15 @@ const TOOLING_SCENARIOS: readonly ToolingScenarioId[] = [
 ];
 
 function scenariosForPack(pack: ProofPack): ScenarioId[] {
-  return pack === "change-locality" ? changeLocalityScenarioIds() : [...TOOLING_SCENARIOS];
+  if (pack === "change-locality") return changeLocalityScenarioIds();
+  if (pack === "capability-composition") return capabilityCompositionScenarioIds();
+  return [...TOOLING_SCENARIOS];
 }
 
 function promptsFor(pack: ProofPack): Record<string, string> {
-  return pack === "change-locality" ? changeLocalityPrompts() : TOOLING_PROMPTS;
+  if (pack === "change-locality") return changeLocalityPrompts();
+  if (pack === "capability-composition") return capabilityCompositionPrompts();
+  return TOOLING_PROMPTS;
 }
 
 const TOOLING_PROMPTS: Record<ToolingScenarioId, string> = {
@@ -181,11 +198,12 @@ function usage(): string {
   return [
     "Usage:",
     "  node tools/proofs/agent-tooling-ergonomics.ts --help",
-    "  node tools/proofs/agent-tooling-ergonomics.ts --mode preflight --evidence-root <new-path> [--pack tooling|change-locality] [--source-root <path>] [--profile quality-independent] [--capture-kind baseline|candidate] [--candidate-id <id>]",
-    "  node tools/proofs/agent-tooling-ergonomics.ts --mode capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--pack tooling|change-locality] [--source-root <path>] [--profile quality-independent] [--scenarios all|id,...]",
-    "  node tools/proofs/agent-tooling-ergonomics.ts --mode evaluate|replay --evidence-root <new-path> --baseline-root <path> [--candidate-root <path>] [--pack tooling|change-locality]",
+    "  node tools/proofs/agent-tooling-ergonomics.ts --mode preflight --evidence-root <new-path> [--pack tooling|change-locality|capability-composition] [--source-root <path>] [--profile quality-independent] [--capture-kind baseline|candidate] [--candidate-id <id>]",
+    "  node tools/proofs/agent-tooling-ergonomics.ts --mode capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--pack tooling|change-locality|capability-composition] [--source-root <path>] [--profile quality-independent] [--scenarios all|id,...]",
+    "  node tools/proofs/agent-tooling-ergonomics.ts --mode evaluate|replay --evidence-root <new-path> --baseline-root <path> [--candidate-root <path>] [--pack tooling|change-locality|capability-composition]",
     "",
     "Pack tooling keeps the original three authoring scenarios. Pack change-locality uses the seven CLC-001 scenarios.",
+    "Pack capability-composition uses the eight CCO-001 authoring scenarios; preflight and replay make zero model calls.",
     "All evidence roots are create-new. Help performs no writes or model calls.",
   ].join("\n");
 }
@@ -213,7 +231,9 @@ function parseScenarioList(value: string | null, pack: ProofPack): ScenarioId[] 
 function argumentsFromCli(): Arguments {
   const help = process.argv.includes("--help") || process.argv.includes("-h");
   const packValue = argumentValue("--pack") ?? "tooling";
-  if (packValue !== "tooling" && packValue !== "change-locality") throw new Error("--pack must be tooling or change-locality");
+  if (packValue !== "tooling" && packValue !== "change-locality" && packValue !== "capability-composition") {
+    throw new Error("--pack must be tooling, change-locality, or capability-composition");
+  }
   if (help) {
     return {
       baselineRoot: null,
@@ -429,6 +449,8 @@ function candidateSourceHashes(sourceRoot: string): Record<string, string | null
     "README.md",
     "package.json",
     "tools/proofs/agent-tooling-ergonomics.ts",
+    "tools/proofs/lib/capability-composition-scenarios.ts",
+    "tools/proofs/fixtures/capability-composition/scenarios.json",
   ].map((relative) => [relative, hashFile(path.join(sourceRoot, relative))]));
 }
 
@@ -450,11 +472,13 @@ function instructionInventory(sourceRoot: string): Record<string, unknown> {
 }
 
 function proofPermission(pack: ProofPack): typeof PROOF_PERMISSION {
-  return pack === "change-locality" ? { ...PROOF_PERMISSION, task: "allow" } : PROOF_PERMISSION;
+  return pack === "change-locality" || pack === "capability-composition" ? { ...PROOF_PERMISSION, task: "allow" } : PROOF_PERMISSION;
 }
 
 function toolPolicy(pack: ProofPack): string[] {
-  return TOOL_POLICY.map((row) => pack === "change-locality" && row === "task: deny" ? "task: allow to observe Practice Owner launches" : row);
+  return TOOL_POLICY.map((row) => (pack === "change-locality" || pack === "capability-composition") && row === "task: deny"
+    ? "task: allow to observe Practice Owner launches"
+    : row);
 }
 
 function proofEnvironment(kitRoot: string, sourceRoot: string, proofRoot: string, profile: string, pack: ProofPack): NodeJS.ProcessEnv {
@@ -486,6 +510,10 @@ function setupScenario(proofRoot: string, scenario: ScenarioId): string {
   writeText(path.join(project, ".gitignore"), "target/\nnode_modules/\n");
   if (isChangeLocalityScenario(scenario)) {
     setupChangeLocalityScenario(project, scenario);
+    return project;
+  }
+  if (isCapabilityCompositionScenario(scenario)) {
+    setupCapabilityCompositionScenario(project, scenario);
     return project;
   }
   if (scenario === "repeated-cli") {
@@ -671,6 +699,7 @@ function evaluateSourcePlacement(project: string): ScenarioOracle {
 
 function evaluateProject(project: string, scenario: ScenarioId): ScenarioOracle {
   if (isChangeLocalityScenario(scenario)) return evaluateChangeLocalityScenario(project, scenario);
+  if (isCapabilityCompositionScenario(scenario)) return evaluateCapabilityCompositionScenario(project, scenario);
   if (scenario === "repeated-cli") return evaluateRepeatedCli(project);
   if (scenario === "mechanical-artifact") return evaluateMechanicalArtifact(project);
   return evaluateSourcePlacement(project);
@@ -679,6 +708,10 @@ function evaluateProject(project: string, scenario: ScenarioId): ScenarioOracle 
 function createCompliantFixture(project: string, scenario: ScenarioId): void {
   if (isChangeLocalityScenario(scenario)) {
     createCompliantChangeLocalityFixture(project, scenario);
+    return;
+  }
+  if (isCapabilityCompositionScenario(scenario)) {
+    createCompliantCapabilityCompositionFixture(project, scenario);
     return;
   }
   if (scenario === "repeated-cli") {
@@ -766,6 +799,28 @@ function preflight(args: Arguments): void {
       if (rejected.pass || !accepted.pass) throw new Error(`Provider-free oracle preflight failed for ${scenario}`);
       rows.push({ accepted: accepted.facts, rejected: rejected.facts, scenario });
     }
+    if (args.pack === "capability-composition") {
+      let malformedRejected = false;
+      try {
+        parseCapabilityCompositionSeed({ claimId: "CCO-001", pack: "capability-composition", schemaVersion: 1 });
+      } catch {
+        malformedRejected = true;
+      }
+      if (!malformedRejected) throw new Error("Malformed capability-composition seed was accepted");
+      rows.push({ control: "malformed-seed", expectedFailure: "schema", rejected: malformedRejected });
+      for (const control of capabilityCompositionRedControls("authoring")) {
+        if (control.owner !== "authoring" || !isCapabilityCompositionScenario(control.scenario)) continue;
+        const controlRoot = path.join(proofRoot, `control-${control.id}`);
+        const project = setupScenario(controlRoot, control.scenario);
+        createCompliantFixture(project, control.scenario);
+        applyCapabilityCompositionAuthoringControl(project, control.id);
+        const rejected = evaluateProject(project, control.scenario);
+        if (rejected.pass || rejected.facts[control.expectedFailure] !== false) {
+          throw new Error(`Capability-composition red control ${control.id} did not fail ${control.expectedFailure}`);
+        }
+        rows.push({ control: control.id, expectedFailure: control.expectedFailure, rejected: rejected.facts, scenario: control.scenario });
+      }
+    }
     writeJson(path.join(args.evidenceRoot, "identity.json"), {
       candidateId: args.candidateId,
       captureKind: args.captureKind,
@@ -848,7 +903,6 @@ function captureScenario(args: Arguments, scenario: ScenarioId): ScenarioBundle 
       "opencode",
       "run",
       "--pure",
-      "--auto",
       "--agent",
       "build",
       "--model",
@@ -998,6 +1052,21 @@ function sourcePlacementControl(bundle: ScenarioBundle): { facts: Record<string,
 }
 
 function recordedOracle(bundle: ScenarioBundle, scenario: ScenarioId): ScenarioOracle {
+  if (scenario === "owner-local-extraction") {
+    const files = new Map(bundle.filesBeforeOracle.map((fact) => [fact.path, fact]));
+    const owner = files.get("src/app.mjs")?.content ?? "";
+    const direct = bundle.oracle.postCommands.find((command) => command.argv.join(" ") === "node scripts/run-normalize.mjs");
+    const parent = bundle.oracle.postCommands.find((command) => command.argv.join(" ") === "node src/app.mjs");
+    const facts = {
+      privateCapabilityExists: [...files.keys()].some((file) => /^src\/[^/]*normalize[^/]*\.mjs$/u.test(file)),
+      ownerDelegates: /import\s+\{\s*normalize\s*\}\s+from\s+'\.\/[^']*normalize[^']*\.mjs'/u.test(owner),
+      noDuplicateImplementation: !/\.trim\(\)\.toUpperCase\(\)/u.test(owner),
+      directOutput: direct?.status === 0 && direct.stdout.trim() === "capability:ALPHA",
+      parentOutput: parent?.status === 0 && parent.stdout.trim() === "parent:ALPHA",
+      distinctOracles: direct != null && parent != null && direct.argv.join(" ") !== parent.argv.join(" "),
+    };
+    return { facts, pass: Object.values(facts).every(Boolean), postCommands: bundle.oracle.postCommands };
+  }
   if (scenario !== "mechanical-artifact") return bundle.oracle;
   const artifact = mechanicalArtifactFacts(bundle.filesBeforeOracle);
   const before = bundle.filesBeforeOracle.find((fact) => fact.path === "data/artifacts.json")?.sha256 ?? null;
@@ -1024,9 +1093,21 @@ function evaluate(args: Arguments, mode: "evaluate" | "replay"): void {
     const after = candidate?.get(scenario) ?? null;
     const beforeOracle = before == null ? null : recordedOracle(before, scenario);
     const afterOracle = after == null ? null : recordedOracle(after, scenario);
-    const baselineExpectation = scenario === "source-placement" ? "control-pass" : "gap";
+    const baselineExpectation = scenario === "source-placement"
+      ? "control-pass"
+      : isCapabilityCompositionScenario(scenario)
+        ? capabilityCompositionBaselineExpectation(scenario)
+        : "gap";
     const control = before == null || scenario !== "source-placement" ? null : sourcePlacementControl(before);
-    const baselineExpectationMet = beforeOracle != null && (baselineExpectation === "gap" ? !beforeOracle.pass : control?.pass === true);
+    const baselineExpectationMet = beforeOracle != null && (
+      baselineExpectation === "gap"
+        ? !beforeOracle.pass
+        : baselineExpectation === "gap-or-pass"
+          ? true
+          : scenario === "source-placement"
+            ? control?.pass === true
+            : beforeOracle.pass
+    );
     const pairMatches = before != null && after != null &&
       before.input.promptSha256 === after.input.promptSha256 &&
       before.environment.model === after.environment.model &&

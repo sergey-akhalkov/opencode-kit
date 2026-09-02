@@ -7,9 +7,23 @@ import { fileURLToPath } from "node:url";
 
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import { loadModelProfile } from "../model-profile.ts";
+import {
+  applyCapabilityCompositionReuseControl,
+  capabilityCompositionRedControls,
+  capabilityCompositionReusePrompts,
+  capabilityCompositionReuseScenarioIds,
+  evaluateCapabilityCompositionReuseObservation,
+  expectedCapabilityCompositionReuseObservation,
+  isCapabilityCompositionReuseScenario,
+  parseCapabilityCompositionObservation,
+  setupCapabilityCompositionReuseScenario,
+  type CapabilityCompositionReuseScenarioId,
+} from "./lib/capability-composition-scenarios.ts";
 
 type Mode = "capture" | "evaluate" | "preflight";
-type Scenario = "local-owner" | "trivial-fix" | "extend-existing-owner";
+type ProofPack = "reuse-discovery" | "capability-composition";
+type LegacyScenario = "local-owner" | "trivial-fix" | "extend-existing-owner";
+type Scenario = LegacyScenario | CapabilityCompositionReuseScenarioId;
 type CaptureKind = "baseline" | "candidate";
 
 type Arguments = {
@@ -19,6 +33,7 @@ type Arguments = {
   captureKind: CaptureKind;
   evidenceRoot: string;
   mode: Mode;
+  pack: ProofPack;
   profile: string;
   scenarios: Scenario[];
 };
@@ -73,13 +88,21 @@ type Bundle = {
   };
 };
 
-const SCENARIOS: readonly Scenario[] = ["local-owner", "trivial-fix", "extend-existing-owner"];
+const LEGACY_SCENARIOS: readonly LegacyScenario[] = ["local-owner", "trivial-fix", "extend-existing-owner"];
 
-const PROMPTS: Record<Scenario, string> = {
+const LEGACY_PROMPTS: Record<LegacyScenario, string> = {
   "local-owner": "Prepare the implementation decision for adding JSONC parsing to the consumer configuration loader. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition and proof plan. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
   "trivial-fix": "Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
   "extend-existing-owner": "Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
 };
+
+function scenariosForPack(pack: ProofPack): Scenario[] {
+  return pack === "capability-composition" ? capabilityCompositionReuseScenarioIds() : [...LEGACY_SCENARIOS];
+}
+
+function promptsFor(pack: ProofPack): Record<string, string> {
+  return pack === "capability-composition" ? capabilityCompositionReusePrompts() : LEGACY_PROMPTS;
+}
 
 const PROOF_PERMISSION = {
   "*": "deny",
@@ -111,10 +134,12 @@ const TOOL_POLICY = [
 function usage(): string {
   return [
     "Usage:",
-    "  node tools/proofs/reuse-discovery.ts --mode preflight|capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--profile quality-independent] [--scenarios local-owner,trivial-fix,extend-existing-owner]",
-    "  node tools/proofs/reuse-discovery.ts --mode evaluate --evidence-root <new-path> --baseline-root <path> --candidate-root <path>",
+    "  node tools/proofs/reuse-discovery.ts --mode preflight|capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--pack reuse-discovery|capability-composition] [--profile quality-independent] [--scenarios all|id,...]",
+    "  node tools/proofs/reuse-discovery.ts --mode evaluate --evidence-root <new-path> --baseline-root <path> [--candidate-root <path>] [--pack reuse-discovery|capability-composition]",
     "",
     "preflight and evaluate make zero model calls. Each capture scenario makes one configured-provider call in a disposable no-product-mutation workspace.",
+    "Pack reuse-discovery keeps local-owner, trivial-fix, and extend-existing-owner.",
+    "Pack capability-composition uses the four CCO-001 reuse-selection scenarios and reviewed local source/metadata fixtures.",
   ].join("\n");
 }
 
@@ -127,12 +152,13 @@ function argumentValue(name: string): string | null {
   return index < 0 ? null : process.argv[index + 1] ?? null;
 }
 
-function parseScenarios(value: string | null): Scenario[] {
-  if (value == null || value === "all") return [...SCENARIOS];
+function parseScenarios(value: string | null, pack: ProofPack): Scenario[] {
+  const available = scenariosForPack(pack);
+  if (value == null || value === "all") return available;
   const values = value.split(",");
-  const selected = values.filter((item): item is Scenario => SCENARIOS.includes(item as Scenario));
+  const selected = values.filter((item): item is Scenario => available.includes(item as Scenario));
   if (selected.length !== values.length || selected.length === 0) {
-    throw new Error(`--scenarios must be all or comma-separated ${SCENARIOS.join(",")}`);
+    throw new Error(`--scenarios must be all or comma-separated ${available.join(",")}`);
   }
   return [...new Set(selected)];
 }
@@ -149,6 +175,8 @@ function parseArguments(): Arguments {
   if (evidenceRoot == null || evidenceRoot.trim() === "") throw new Error("--evidence-root is required");
   const captureKind = argumentValue("--capture-kind") ?? "candidate";
   if (captureKind !== "baseline" && captureKind !== "candidate") throw new Error("--capture-kind must be baseline or candidate");
+  const pack = argumentValue("--pack") ?? "reuse-discovery";
+  if (pack !== "reuse-discovery" && pack !== "capability-composition") throw new Error("--pack must be reuse-discovery or capability-composition");
   return {
     baselineRoot: argumentValue("--baseline-root"),
     candidateId: argumentValue("--candidate-id") ?? `${captureKind}-working-tree`,
@@ -156,8 +184,9 @@ function parseArguments(): Arguments {
     captureKind,
     evidenceRoot: path.resolve(evidenceRoot),
     mode,
+    pack,
     profile: argumentValue("--profile") ?? "quality-independent",
-    scenarios: parseScenarios(argumentValue("--scenarios")),
+    scenarios: parseScenarios(argumentValue("--scenarios"), pack),
   };
 }
 
@@ -249,16 +278,21 @@ function createProducer(root: string, id: "alpha" | "beta"): void {
   commitFixture(root);
 }
 
-function setupScenario(root: string, scenario: Scenario): string {
+function setupScenario(root: string, scenario: Scenario, pack: ProofPack): string {
   const workspace = path.join(root, "workspace");
   fs.mkdirSync(workspace, { recursive: true });
-  createProducer(path.join(workspace, "projects", "alpha"), "alpha");
-  createProducer(path.join(workspace, "projects", "beta"), "beta");
   writeJson(path.join(workspace, "opencode.json"), {
     $schema: "https://opencode.ai/config.json",
     permission: PROOF_PERMISSION,
   });
-  writeText(path.join(workspace, "task.md"), `${PROMPTS[scenario]}\n`);
+  if (isCapabilityCompositionReuseScenario(scenario)) {
+    setupCapabilityCompositionReuseScenario(workspace, scenario);
+    commitFixture(workspace);
+    return workspace;
+  }
+  createProducer(path.join(workspace, "projects", "alpha"), "alpha");
+  createProducer(path.join(workspace, "projects", "beta"), "beta");
+  writeText(path.join(workspace, "task.md"), `${promptsFor(pack)[scenario]}\n`);
   if (scenario === "local-owner") {
     writeText(path.join(workspace, "src", "loader.ts"), "export function loadConfig(value: string): unknown {\n  return JSON.parse(value);\n}\n");
   } else if (scenario === "extend-existing-owner") {
@@ -279,10 +313,27 @@ function sourceHashes(root: string): Record<string, string | null> {
     "README.md",
     "package.json",
     "tools/proofs/reuse-discovery.ts",
+    "tools/proofs/lib/capability-composition-scenarios.ts",
+    "tools/proofs/fixtures/capability-composition/scenarios.json",
   ].map((relative) => [relative, hashFile(path.join(root, relative))]));
 }
 
-function fixtureHashes(workspace: string): Record<string, string | null> {
+function fixtureHashes(workspace: string, pack: ProofPack): Record<string, string | null> {
+  if (pack === "capability-composition") {
+    const files = fs.readdirSync(workspace, { recursive: true })
+      .map(String)
+      .filter((relative) => !relative.replaceAll("\\", "/").split("/").includes(".git"))
+      .filter((relative) => {
+        try {
+          return fs.statSync(path.join(workspace, relative)).isFile();
+        } catch {
+          return false;
+        }
+      })
+      .map((relative) => relative.replaceAll("\\", "/"))
+      .sort();
+    return Object.fromEntries(files.map((relative) => [relative, hashFile(path.join(workspace, relative))]));
+  }
   return Object.fromEntries([
     "task.md",
     "src/jsonc.ts",
@@ -371,7 +422,7 @@ function eventFacts(stdout: string): Bundle["facts"] {
     });
   }
   return {
-    assistantText: assistantText.join(""),
+    assistantText: assistantText.join("\n"),
     elapsedMs: 0,
     eventCount: events.length,
     sessionIds: [...sessionIds].sort(),
@@ -389,14 +440,14 @@ function captureScenario(args: Arguments, scenario: Scenario): Bundle {
   let cleanupError: string | null = null;
   let environment: NodeJS.ProcessEnv | null = null;
   try {
-    const workspace = setupScenario(proofRoot, scenario);
-    const before = fixtureHashes(workspace);
+    const workspace = setupScenario(proofRoot, scenario, args.pack);
+    const before = fixtureHashes(workspace, args.pack);
     const loaded = loadModelProfile(root, args.profile);
     const route = loaded.profile.agent.build;
     const argv = [
       "opencode", "run", "--pure", "--agent", "build", "--model", route.model,
       "--variant", route.variant, "--format", "json", "--dir", workspace,
-      "--title", `reuse-${args.captureKind}-${scenario}`, PROMPTS[scenario],
+      "--title", `reuse-${args.captureKind}-${scenario}`, promptsFor(args.pack)[scenario] ?? "",
     ];
     environment = proofEnvironment(root, proofRoot, args.profile);
     const started = Date.now();
@@ -419,8 +470,8 @@ function captureScenario(args: Arguments, scenario: Scenario): Bundle {
         variant: route.variant,
       },
       facts,
-      input: { prompt: PROMPTS[scenario], scenario },
-      sideEffects: { after: fixtureHashes(workspace), before },
+      input: { prompt: promptsFor(args.pack)[scenario] ?? "", scenario },
+      sideEffects: { after: fixtureHashes(workspace, args.pack), before },
     };
     writeJson(evidenceFile, bundle);
     if (result.status !== 0) throw new Error(`Scenario ${scenario} returned non-zero status ${result.status ?? "unknown"}`);
@@ -478,7 +529,7 @@ function preflight(args: Arguments): void {
   writeJson(outputFile, record);
   let cleanupError: string | null = null;
   try {
-    const workspace = setupScenario(proofRoot, "local-owner");
+    const workspace = setupScenario(proofRoot, args.pack === "capability-composition" ? "verified-current-capability" : "local-owner", args.pack);
     const loaded = loadModelProfile(root, args.profile);
     const route = loaded.profile.agent.build;
     record.route = `${route.model}/${route.variant}`;
@@ -514,6 +565,23 @@ function preflight(args: Arguments): void {
     if (credentialCount(auth.stdout) == null || credentialCount(auth.stdout) === 0) throw new Error("Configured credential store is unavailable");
     if (!(record.loader as Record<string, unknown>).hasReuseDiscovery) throw new Error("reuse-discovery is absent from loaded skill inventory");
     if (!(record.loader as Record<string, unknown>).permissionExact) throw new Error("Resolved permission envelope differs from the proof policy");
+    if (args.pack === "capability-composition") {
+      const rows = capabilityCompositionReuseScenarioIds().map((scenario) => {
+        const observed = expectedCapabilityCompositionReuseObservation(scenario);
+        const evaluated = evaluateCapabilityCompositionReuseObservation(scenario, observed);
+        if (!evaluated.pass) throw new Error(`Provider-free capability-composition reuse row failed: ${scenario}`);
+        return { facts: evaluated.facts, pass: evaluated.pass, scenario };
+      });
+      const control = capabilityCompositionRedControls("reuse").find((row) => row.id === "popularity-only");
+      if (control == null || !isCapabilityCompositionReuseScenario(control.scenario)) throw new Error("Popularity-only red control is unavailable");
+      const redObservation = applyCapabilityCompositionReuseControl(control.scenario, control.id);
+      const red = evaluateCapabilityCompositionReuseObservation(control.scenario, redObservation);
+      if (red.pass || red.facts[control.expectedFailure] !== false) throw new Error("Popularity-only red control did not fail closed");
+      record.providerFree = {
+        control: { expectedFailure: control.expectedFailure, facts: red.facts, id: control.id, pass: red.pass },
+        rows,
+      };
+    }
   } catch (error) {
     record.failure = error instanceof Error ? error.message : String(error);
     throw error;
@@ -570,7 +638,84 @@ function readBundle(root: string, scenario: Scenario): Bundle {
   }
 }
 
+function evaluateCapabilityComposition(args: Arguments): void {
+  if (args.baselineRoot == null) throw new Error("capability-composition evaluate requires --baseline-root");
+  const baselineRoot = path.resolve(args.baselineRoot);
+  const candidateRoot = args.candidateRoot == null ? null : path.resolve(args.candidateRoot);
+  const changedPaths = (bundle: Bundle): string[] => [...new Set([
+    ...Object.keys(bundle.sideEffects.before),
+    ...Object.keys(bundle.sideEffects.after),
+  ])].filter((relative) => bundle.sideEffects.before[relative] !== bundle.sideEffects.after[relative]).sort();
+  const rows = args.scenarios.map((scenario) => {
+    if (!isCapabilityCompositionReuseScenario(scenario)) throw new Error(`Unexpected capability-composition reuse scenario: ${scenario}`);
+    const before = readBundle(baselineRoot, scenario);
+    const after = candidateRoot == null ? null : readBundle(candidateRoot, scenario);
+    const beforeObservation = parseCapabilityCompositionObservation(before.facts.assistantText);
+    const afterObservation = after == null ? null : parseCapabilityCompositionObservation(after.facts.assistantText);
+    const beforeEvaluation = evaluateCapabilityCompositionReuseObservation(scenario, beforeObservation);
+    const afterEvaluation = after == null ? null : evaluateCapabilityCompositionReuseObservation(scenario, afterObservation);
+    const fixtureMatches = after == null ? null : JSON.stringify(before.sideEffects.before) === JSON.stringify(after.sideEffects.before);
+    const pairMatches = after == null ? null : before.input.prompt === after.input.prompt
+      && before.environment.model === after.environment.model
+      && before.environment.profile === after.environment.profile
+      && before.environment.route === after.environment.route
+      && fixtureMatches === true;
+    const beforeChangedPaths = changedPaths(before);
+    const afterChangedPaths = after == null ? null : changedPaths(after);
+    const beforeProductChanges = beforeChangedPaths.filter((relative) => !relative.startsWith(".serena/"));
+    const afterProductChanges = afterChangedPaths?.filter((relative) => !relative.startsWith(".serena/")) ?? null;
+    const baselineObserved = before.command.status === 0
+      && before.cleanup.removed
+      && before.cleanup.error == null
+      && beforeProductChanges.length === 0;
+    const candidateObserved = after == null ? null : after.command.status === 0
+      && after.cleanup.removed
+      && after.cleanup.error == null
+      && afterProductChanges?.length === 0
+      && afterEvaluation?.pass === true
+      && pairMatches === true;
+    return {
+      baseline: {
+        changedPaths: beforeChangedPaths,
+        evaluation: beforeEvaluation,
+        observed: baselineObserved,
+        observation: beforeObservation,
+        productChanges: beforeProductChanges,
+      },
+      candidate: after == null ? null : {
+        changedPaths: afterChangedPaths,
+        evaluation: afterEvaluation,
+        observed: candidateObserved,
+        observation: afterObservation,
+        productChanges: afterProductChanges,
+      },
+      fixtureMatches,
+      pairMatches,
+      scenario,
+    };
+  });
+  const baselineComplete = rows.length === args.scenarios.length && rows.every((row) => row.baseline.observed);
+  const candidateComplete = candidateRoot == null ? null : rows.every((row) => row.candidate?.observed === true);
+  createEvidenceRoot(args.evidenceRoot);
+  const result = {
+    baselineComplete,
+    candidateComplete,
+    modelCalls: 0,
+    note: "Baseline completeness records terminal non-product-mutating captures; only candidates must match reviewed observations. OpenCode .serena metadata remains reported but is not product mutation.",
+    pack: args.pack,
+    rows,
+    schemaVersion: 1,
+  };
+  writeJson(path.join(args.evidenceRoot, "evaluation.json"), result);
+  if (!baselineComplete || candidateComplete === false) throw new Error("Capability-composition reuse behavior evaluation is incomplete");
+  console.log(stableJson({ baselineComplete, candidateComplete, mode: "evaluate", modelCalls: 0, rows: rows.length }).trimEnd());
+}
+
 function evaluate(args: Arguments): void {
+  if (args.pack === "capability-composition") {
+    evaluateCapabilityComposition(args);
+    return;
+  }
   if (args.baselineRoot == null || args.candidateRoot == null) throw new Error("evaluate requires --baseline-root and --candidate-root");
   const baselineRoot = path.resolve(args.baselineRoot);
   const candidateRoot = path.resolve(args.candidateRoot);

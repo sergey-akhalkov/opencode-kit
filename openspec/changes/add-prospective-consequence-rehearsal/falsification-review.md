@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:user-prospective-consequence-rehearsal
+- **Reviewed Request Ref**: event:user-prospective-consequence-rehearsal
+- **Accepted Outcome Ref**: outcome:pcr-pre-authoring-consequence-rehearsal
+- **Candidate Ref**: candidate:pcr-planning-r2
+- **Reviewed Candidate Ref**: candidate:pcr-planning-r2
+- **Decision Surface**: challenge whether physical candidate separation is real, whether continuation identity is sufficient, whether two phases preserve one bounded episode, whether the trigger stays proportional, whether substitution ownership is duplicated, whether answer-free oracles leak the answer, and whether the delayed always-loaded principle has reproduced value.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fa2380801ffejOTnkMSJ9CO6Fd
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: PCR-ISO-01, PCR-INLINE-01
+- **Main Dispositions**: PCR-ISO-01=confirmed, PCR-INLINE-01=confirmed
+- **Correction Ref**: correction:pcr-s5-s6
+- **Invalidated Surfaces**: prompt-path-isolation, material-inline-ordering, pcr-001-population
+- **Terminal Reason**: corrected-r3-needs-focused-record-correlation
+- **Terminal State**: unknown
+- **Unresolved Evidence**: current-candidate-r3-focused-record-correlation, production-implementation-not-run, configured-runtime-proof-not-run, ownership-transfer-pending

@@ -18,6 +18,25 @@ import {
 const root = libraryRoot;
 const validator = validatorPath;
 
+function validGlobalAgents(extra: string): string {
+  return lines([
+    "# Agent Instructions",
+    "",
+    "Follow the Universal Development Loop and prove the observable happy path.",
+    "",
+    "## OpenSpec Change Authoring",
+    "",
+    "artifactProfile: compact | full",
+    "riskDisposition.kind: ordinary-small-exact | material | unknown",
+    "Observable Proof",
+    "Automation Dividend",
+    "history.md",
+    "",
+    extra,
+    "",
+  ]);
+}
+
 export const validatorTests2: TestCase[] = [
   {
     name: "validator rejects missing routing map",
@@ -508,7 +527,7 @@ export const validatorTests2: TestCase[] = [
     run: () => {
       const fixture = newLibraryFixture(`stale-order-${relativePath.replace(/[^a-z0-9]+/gi, "-")}`);
       const file = path.join(fixture, ...relativePath.split("/"));
-      const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "# Agent Instructions\n\nFollow the Universal Development Loop and prove the observable happy path.\n";
+      const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : validGlobalAgents("");
       writeText(file, `${existing}\nAutomated test scenarios are authored before implementation begins.\n`);
       const result = invokeValidator(fixture);
       assertFailure(result, `Stale automated-test ordering in ${relativePath} must fail validation.`);
@@ -523,7 +542,7 @@ export const validatorTests2: TestCase[] = [
     run: () => {
       const fixture = newLibraryFixture(`superseded-order-${relativePath.replace(/[^a-z0-9]+/gi, "-")}`);
       const file = path.join(fixture, ...relativePath.split("/"));
-      const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "# Agent Instructions\n\nFollow the Universal Development Loop and prove the observable happy path.\n";
+      const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : validGlobalAgents("");
       writeText(file, `${existing}\nThe old rule \"automated tests are authored before implementation\" is superseded and must not be followed.\n`);
       const result = invokeValidator(fixture);
       assertSuccess(result, `A clearly superseded negative explanation in ${relativePath} must not fail validation.`);
@@ -589,13 +608,7 @@ export const validatorTests2: TestCase[] = [
     run: () => {
       const fixture = newLibraryFixture(fixtureName);
       const file = path.join(fixture, "global", "AGENTS.md");
-      writeText(file, lines([
-        "# Agent Instructions",
-        "",
-        "Follow the Universal Development Loop and prove the observable happy path.",
-        sentence,
-        "",
-      ]));
+      writeText(file, validGlobalAgents(sentence));
       const result = invokeValidator(fixture);
       assertSuccess(result, "Explicit historical or inactive-rule language must not fail validation.");
       assertOutputExcludes(result, "requires automated test work before observable happy-path proof", "Explicit safe explanatory predicates must suppress only their own stale-order match.");
@@ -718,7 +731,7 @@ export const validatorTests2: TestCase[] = [
     },
   },
   {
-    name: "validator rejects team-advice compaction mirror drift",
+    name: "validator rejects team-advice compaction handoff drift",
     run: () => {
       const fixture = newLibraryFixture("team-advice-compaction-drift");
       writeText(path.join(fixture, "global", "AGENTS.md"), fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8"));
@@ -727,11 +740,11 @@ export const validatorTests2: TestCase[] = [
         fs.readFileSync(path.join(root, "instructions", "practice-owner-agent-contract.md"), "utf8"),
       );
       const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
-      writeText(path.join(fixture, "global", "opencode.json.template"), template.replace("does not infer a new team", "may infer a new team"));
+      writeText(path.join(fixture, "global", "opencode.json.template"), template.replace("exact next action", "approximate next action"));
       const result = invokeValidator(fixture);
-      assertFailure(result, "A drifted compaction mirror must fail validation.");
-      assertOutputContains(result, "team-advice compaction mirror", "Diagnostic should identify the runtime mirror.");
-      assertOutputContains(result, "does not infer a new team", "Diagnostic should identify the missing prohibition.");
+      assertFailure(result, "A drifted compaction handoff must fail validation.");
+      assertOutputContains(result, "team-advice compaction handoff", "Diagnostic should identify the runtime handoff.");
+      assertOutputContains(result, "exact next action", "Diagnostic should identify the missing continuation field.");
     },
   },
   {
@@ -779,7 +792,7 @@ export const validatorTests2: TestCase[] = [
         "  \"$schema\": \"https://opencode.ai/config.json\",",
         "  \"model\": \"openai/gpt-5.6-sol\",",
         "  \"compaction\": {",
-        "    \"prompt\": \"Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change.\"",
+        "    \"prompt\": \"Create a compact, complete fresh-session summary with Original User Goal, Goal Status, accepted scope, Session Reflection, what not to repeat, and the exact next action under Next-Session Action. Classify Live-Attempt Gate clear, blocked, or unknown. Never require or invent evidence directories, offline replay, or separate proof reports. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change.\"",
         "  },",
         "  \"plugin\": [",
         "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
@@ -841,7 +854,7 @@ export const validatorTests2: TestCase[] = [
         "  \"$schema\": \"https://opencode.ai/config.json\",",
         "  \"model\": \"openai/gpt-5.6-sol\",",
         "  \"compaction\": {",
-        "    \"prompt\": \"Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change.\"",
+        "    \"prompt\": \"Create a compact, complete fresh-session summary with Original User Goal, Goal Status, accepted scope, Session Reflection, what not to repeat, and the exact next action under Next-Session Action. Classify Live-Attempt Gate clear, blocked, or unknown. Never require or invent evidence directories, offline replay, or separate proof reports. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change.\"",
         "  },",
         "  \"plugin\": [",
         "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
@@ -869,7 +882,7 @@ export const validatorTests2: TestCase[] = [
         "  \"$schema\": \"https://opencode.ai/config.json\",",
         "  \"model\": \"openai/gpt-5.6-sol\",",
         "  \"compaction\": {",
-        "    \"prompt\": \"Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change.\"",
+        "    \"prompt\": \"Create a compact, complete fresh-session summary with Original User Goal, Goal Status, accepted scope, Session Reflection, what not to repeat, and the exact next action under Next-Session Action. Classify Live-Attempt Gate clear, blocked, or unknown. Never require or invent evidence directories, offline replay, or separate proof reports. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change.\"",
         "  },",
         "  \"plugin\": [",
         "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",

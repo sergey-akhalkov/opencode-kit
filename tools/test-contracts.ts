@@ -328,7 +328,7 @@ function missingTokens(text: string, tokens: readonly string[]): string[] {
 
 const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Intake",
-  "Evidence",
+  "Facts",
   "Baseline Proof",
   "Small Slice",
   "Happy Path",
@@ -356,7 +356,7 @@ const tests: TestCase[] = [
         "Optional final-candidate, delivery, code-quality, or domain review may run after current proof",
         "critical-risks-reported | no-critical-risk | blocked",
         "Reviewer/SDET evidence must never authorize mutation",
-        "Product Candidate mutation invalidates dependent proof",
+        "Product Candidate or relevant environment mutation invalidates dependent proof",
         "may freeze the next `RC<n>`",
         "promote the same RC to stable",
         "external operations remain separately authorized",

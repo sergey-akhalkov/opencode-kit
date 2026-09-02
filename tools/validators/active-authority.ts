@@ -371,9 +371,9 @@ const AGENTS_ROUTING_NO_DOWNGRADE_MARKER =
 const AGENTS_ROUTING_DEVELOPMENT_STAGE_MARKER =
   "Development-Stage: development | MVP | RC<n> | stable";
 const AGENTS_ROUTING_INVOCATION_SAFETY_MARKER =
-  "invocation remains finalized and non-reusable";
+  "failed live/external invocation is finalized and must not be repeated unchanged";
 const AGENTS_ROUTING_MISSION_CONTINUATION_MARKER =
-  "does not impose a fixed mission-wide attempt ceiling";
+  "change mechanism or stop at the exact blocked boundary";
 const AGENTS_ROUTING_SDET_CONTINUATION_MARKER =
   "No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate";
 /**
@@ -677,7 +677,7 @@ const SKILL_OPTIONAL_REVIEWER_MARKER = "Reviewer absence, timeout, malformed out
 const SKILL_CRITICAL_SDET_ACTION_MARKER =
   "Action: critical-risks-reported | no-critical-risk | blocked";
 const SKILL_INVOCATION_SAFETY_MARKER = "invocation remains finalized and non-reusable";
-const SKILL_MISSION_CONTINUATION_MARKER = "does not impose a fixed mission-wide attempt ceiling";
+const SKILL_MISSION_CONTINUATION_MARKER = "Another authorized attempt requires a causal mechanism change or the exact missing observation";
 const SKILL_CRITICAL_SDET_CONTINUATION_MARKER =
   "No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate";
 const SKILL_STAGE_MARKER = "Development-Stage: development | MVP | RC<n> | stable";

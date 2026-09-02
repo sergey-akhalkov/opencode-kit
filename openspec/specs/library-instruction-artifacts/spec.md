@@ -932,38 +932,51 @@ A change to core always-loaded or discovery-visible content SHALL bind before/af
 - **AND** retained evidence records baseline, candidate, runtime, inventory, and exception-seed identities.
 
 ### Requirement: Workflow improvement is explicit and non-blocking
+
 Workflow reflection SHALL remain outside normal product completion scope. Evidence of recurring workflow friction MAY be recorded through an explicit audit, `complain`, the bounded machine-local Kaizen signal path, or a separately proposed change. Compaction and canonical archive handoff MAY emit a strict empty-or-populated Kaizen signal envelope and persist it outside the product worktree. A persisted signal SHALL remain evidence awaiting explicit triage and SHALL NOT become an admitted product task, implementation candidate, lifecycle stage, or authorization merely because it was captured.
 
-Compaction, ordinary handoff, archive harvest, and automation-exempt changes SHALL NOT create mandatory improvement tasks, Git-tracked deferred-candidate ledgers, six-cell matrices, final-history analysis, or another product-completion stage. Archive and harvest status SHALL remain separate, and a missing or failed harvest SHALL not reverse or conceal a completed archive.
+Compaction, ordinary handoff, archive harvest, and changes without a required automation dividend SHALL NOT create mandatory improvement tasks, Git-tracked deferred-candidate ledgers, six-cell matrices, final-history analysis, or another product-completion stage. Archive and harvest status SHALL remain separate, and a missing or failed harvest SHALL not reverse or conceal a completed archive.
 
-A proposal-declared required automation dividend is the sole bounded exception: it is accepted current-change scope established before archive, SHALL harvest exactly one evidenced repeated deterministic sequence through `reuse`, `extend`, or `build-minimal`, and SHALL be completed through a current consumer rather than invented as a final retrospective. Loaded propose/apply/archive instructions SHALL keep this exception synchronized with the canonical agent-workflow-automation contract, SHALL require Material changes to select it, and SHALL preserve explicit Ordinary Small exemption.
+A proposal-declared required automation dividend is the sole bounded exception: it is accepted current-change scope established before archive, SHALL harvest exactly one evidenced repeated deterministic sequence through `reuse`, `extend`, or `build-minimal`, and SHALL be completed through a current consumer rather than invented as a final retrospective. Loaded propose/apply/archive instructions SHALL keep this exception synchronized with the canonical agent-workflow-automation contract, SHALL require Material changes to select it, and SHALL treat valid compact Ordinary Small omission as not applicable without an explicit exemption record.
 
 #### Scenario: Product work completes without process retrospective
+
 - **WHEN** accepted scope, representative proof, applicable validation, required safety gates, and any proposal-declared automation dividend are complete
 - **THEN** the workflow permits normal handoff or archive without a final history analysis
 - **AND** optional process observations do not become unchecked product tasks.
 
 #### Scenario: Required dividend receives a bounded owner
+
 - **WHEN** an eligible proposal declares one evidenced repeated workflow sequence
 - **THEN** apply owns exactly one `[automation-dividend]` task before its first remaining consumer
 - **AND** does not turn other optional observations into current completion scope.
 
+#### Scenario: Compact Ordinary Small omission creates no process task
+
+- **WHEN** a valid compact proposal has `riskDisposition.kind: ordinary-small-exact`, introduces no repeated workflow behavior, and omits the automation-dividend declaration
+- **THEN** apply and archive require no automation task or exemption record
+- **AND** accepted product proof and validation remain independently required.
+
 #### Scenario: Repeated workflow loss receives an explicit owner
+
 - **WHEN** current evidence demonstrates recurring workflow cost that merits repository work
 - **THEN** the agent records it through the explicit feedback, Kaizen triage, or proposal path
 - **AND** the unrelated product change remains unblocked unless that correction is required for its accepted outcome.
 
 #### Scenario: Repeated workflow loss outside an eligible change remains separate
-- **WHEN** current evidence demonstrates recurring workflow cost but the active proposal declares the dividend exempt or another repository owns the correction
+
+- **WHEN** current evidence demonstrates recurring workflow cost but the active proposal has no required dividend or another repository owns the correction
 - **THEN** the agent records it through the explicit feedback or Kaizen signal path
 - **AND** the unrelated product change remains unblocked unless that correction is required for its accepted outcome.
 
 #### Scenario: Compaction preserves a bounded signal
+
 - **WHEN** compaction identifies an evidence-backed workflow irritant during a long root session
 - **THEN** its mandatory Kaizen envelope may carry the bounded structured signal into the machine-local inbox
 - **AND** no transcript, product task, proposal, or completion blocker is created by capture alone.
 
 #### Scenario: Archive harvest fails after archive success
+
 - **WHEN** a complete archive succeeds but its separate Kaizen harvest remains unavailable or incomplete
 - **THEN** handoff reports the exact archive success and harvest status of `unavailable` or `repair-gap` as separate subjects
 - **AND** neither subject is broadened into a claim that the other failed or completed.
@@ -1649,7 +1662,7 @@ The advisor SHALL consume a stable privacy-safe projection of dispatchable artif
 
 The `specialist_catalog` tool SHALL fail closed unless the caller is an attributable `specialist-team-advisor` child and its parentless root can be resolved. The advisor permission map SHALL use the existing wildcard-deny-then-exact-allow pattern. If current OpenCode custom-tool permissions or execution context cannot enforce both facts, provider-free preflight SHALL block behavior/profile mutation rather than exposing a broadly callable catalog.
 
-Semantic retention SHALL use matched same-model baseline/candidate workflows over the `STA-001` maintained population. Evidence SHALL preserve original goal, scenario inputs, active catalog, source/model/profile/environment identities, advisor and child task events, engagement map, main disposition and dispatch, outputs, effects, changed-file manifests, forbidden-effect sentinels, latency/context facts, terminal liveness, cleanup, and provider-free replay. Candidate retention SHALL require every maintained positive and negative oracle rather than compensating a missed or extra route with lower latency or context.
+Semantic checks SHALL use matched same-model baseline/candidate current runs over the `STA-001` maintained population. The evaluator SHALL inspect the original goal, scenario inputs, active catalog, source/model/profile/environment identities, advisor and child task events, engagement map, main disposition and dispatch, outputs, effects, changed-file manifests, forbidden-effect sentinels, latency/context facts, terminal liveness, and cleanup before temporary output is removed. It SHALL NOT require a retained bundle or provider-free replay. Candidate acceptance SHALL require every maintained positive and negative oracle rather than compensating a missed or extra route with lower latency or context.
 
 #### Scenario: Recommendation names an unavailable artifact
 
@@ -1823,3 +1836,116 @@ Candidate retention SHALL require matched installed OpenCode scenarios that obse
 - **WHEN** an installed scenario includes one denied protected effect and one authorized independent item
 - **THEN** the independent item completes while the protected effect remains unexecuted and scoped
 - **AND** candidate evidence contains no permission bypass, synthetic authorization, or broad success claim.
+
+### Requirement: Loaded main performs bounded outcome-preserving delivery checkpoints
+The always-loaded primary-agent authority SHALL contain a compact project-neutral trigger for evidence-backed delivery drag and SHALL route the detailed behavior to the canonical outcome-preserving delivery-checkpoint contract. The trigger SHALL cover materially similar no-progress attempts, materially different failures repeatedly discovered at the same late costly boundary, repeated coarse invalidation of unchanged prerequisites, proposed repetition of a failed costly action after only a local correction, and an observed dominant repeated cost. It SHALL also state the exclusions for elapsed time alone, coarse task counts, one cheap failure, advancing long work, and irreducible required work.
+
+When the trigger is current, main SHALL complete one bounded checkpoint before the next dependent costly action, continue independent accepted work, autonomously adopt an outcome-preserving process correction, and avoid a user question unless the selected route changes accepted product or proof semantics. The loaded contract SHALL reuse current stagnation, Change-Ready, behavioral-substitution, OpenSpec, grind-frontier, compaction, and Kaizen owners rather than duplicating their complete procedures or adding another general optimizer.
+
+#### Scenario: Ordinary project enters a late-discovery loop
+- **WHEN** a primary session in a project without OpenSpec receives current evidence for materially different failures repeatedly discovered only at one costly late boundary
+- **THEN** loaded main performs one bounded delivery checkpoint before another dependent costly action
+- **AND** no project-specific technology, path, task count, or OpenSpec assumption is required for activation.
+
+#### Scenario: Existing stagnation remains owned
+- **WHEN** the current problem is only two materially similar attempts without downstream progress
+- **THEN** the checkpoint reuses the existing stagnation strategy-switch and history contract
+- **AND** does not create a second retry ledger, troubleshooter route, or definition of progress.
+
+#### Scenario: Compaction preserves an unresolved checkpoint
+- **WHEN** a due or executing delivery checkpoint reaches automatic compaction before its selected route reaches the stated oracle
+- **THEN** the compaction summary preserves the checkpoint identity, evidence, route, next action, and suppression condition as current dependency-closure work
+- **AND** optional Kaizen reflection cannot preempt, complete, or reschedule it.
+
+#### Scenario: Long advancing operation stays direct
+- **WHEN** a task is slow but current evidence shows downstream boundary advancement and no supported delivery-drag pattern
+- **THEN** loaded main continues the task without invoking the checkpoint
+- **AND** does not optimize for response frequency, token count, elapsed time, or checklist movement as proxies.
+
+### Requirement: Loaded main performs proportional leaf-first execution
+The canonical always-loaded main authority SHALL require root-to-leaf planning and leaf-to-root execution for current non-trivial compound work. It SHALL define a compact evidence-bearing leaf criterion, require unresolved independent prerequisites before their parent action, preserve direct execution for cohesive Ordinary Small work, and distinguish recursive dependency closure from optional task churn. Maintained planning and project-facing mirrors SHALL carry only their role-specific delta rather than duplicate the detailed capability contract.
+
+Deterministic instruction contracts SHALL verify the presence and composition of the compact activation, parent dependency, proportional-control, scoped-gate, and no-semantic-inference markers. Marker presence SHALL establish structural drift protection only; installed same-model behavior SHALL remain the semantic oracle.
+
+#### Scenario: Loaded main receives a compound task
+- **WHEN** current evidence identifies independently falsifiable required prerequisites before a parent integration action
+- **THEN** loaded main decomposes and proves the prerequisites before selecting the parent
+- **AND** it does not ask the owner to approve agent-owned task structure.
+
+#### Scenario: Loaded main receives one cohesive task
+- **WHEN** current work satisfies the compact leaf criterion and exposes no independent prerequisite
+- **THEN** loaded main uses ordinary direct run-observe-correct
+- **AND** no mandatory tree, report, or decomposition checkpoint is created.
+
+#### Scenario: Static marker exists but behavior stays coarse
+- **WHEN** deterministic instruction validation passes but an installed candidate repeats a compound parent while an unresolved independent child exists
+- **THEN** semantic behavior evaluation fails for that scenario
+- **AND** marker success is not represented as leaf-first runtime proof.
+
+### Requirement: Loaded authority separates semantic ownership from physical source shape
+The complete working-philosophy rule SHALL remain owned by `global/principles-of-work.md`, and `global/AGENTS.md` SHALL contain only its compact operational application and existing trigger routes. Loaded authority SHALL distinguish the one semantic owner of behavior, state, lifecycle, and public contract from the physical files or private modules used to implement that owner.
+
+One semantic owner MAY compose private cohesive capabilities when each extracted capability has a current bounded contract and directly exercisable oracle and the original owner delegates to it or removes the superseded path. Such extraction SHALL NOT be classified as a competing sibling implementation solely because it creates another physical file or module. The authority SHALL still reject duplicate ownership, wrapper-only fragmentation, speculative public APIs, and extraction based only on line count, task count, or hypothetical reuse.
+
+Before extending human-written code, main SHALL proportionally choose among removing or narrowing the capability, reusing a verified capability, directly reshaping a cohesive owner, or extracting or minimally building one owner-local capability justified by a current independent contract and oracle. A task leaf, function, source file, and capability SHALL remain distinct concepts; no one-to-one mapping SHALL be required.
+
+#### Scenario: Private extraction preserves one semantic owner
+- **WHEN** accepted behavior belongs to one current semantic owner but contains a directly testable capability with its own current contract and failure boundary
+- **THEN** main MAY keep the current owner as the coordinator and extract that capability into a private cohesive module
+- **AND** the old path delegates or is removed so no second semantic owner remains.
+
+#### Scenario: Cohesive behavior stays direct
+- **WHEN** accepted behavior has one cohesive owner and no independently useful contract or truthful direct oracle below the parent boundary
+- **THEN** main implements it directly in that owner
+- **AND** creates no module, interface, wrapper, or Practice Owner call solely for modularity compliance.
+
+#### Scenario: Mixed-owner code does not become a private-capability coordinator
+- **WHEN** a touched file contains unrelated semantic owners and the accepted change would add or expand one of those responsibilities
+- **THEN** main does not preserve the mixed file merely by moving implementation details into private modules
+- **AND** follows the existing mixed-responsibility route to extract one cohesive owner or record `split-or-justify`.
+
+#### Scenario: Task decomposition does not dictate file decomposition
+- **WHEN** leaf-first execution produces multiple evidence-bearing tasks whose implementation shares one cohesive capability and owner
+- **THEN** main MAY keep one physical capability for those tasks
+- **AND** does not create one source module per task or treat task cardinality as architecture evidence.
+
+### Requirement: Composable-capability behavior has structural and installed evidence
+Deterministic validation SHALL check only canonical ownership, required operational markers, role routing, proof inventory shape, and forbidden duplicate-owner or numeric-proxy wording. It SHALL NOT infer source responsibilities, score modularity, select a module boundary, rank ecosystem packages, or decide whether component evidence proves integration.
+
+Semantic retention SHALL require matched same-model baseline/candidate workflows in unrelated disposable projects with identical prompts, permissions, fixtures, and environments. The reviewed population SHALL include verified capability reuse, one owner-local private extraction with direct proof, one cohesive direct case, duplicate-sibling and wrapper-only negative controls, delegated boundary preservation, leaf-versus-module independence, and separate component and parent integration observations. Evidence SHALL preserve source/model identity, tool events, changed-file manifests and diffs, direct and integration observations, validation, effects, and cleanup.
+
+#### Scenario: Structural marker cannot prove modular behavior
+- **WHEN** canonical markers and maintained mirrors pass deterministic validation
+- **THEN** the validator reports only structural conformance
+- **AND** installed scenario evidence remains required for the `CCO-001` behavior claim.
+
+#### Scenario: Candidate extracts and proves a current capability
+- **WHEN** the installed candidate receives a reviewed same-owner scenario with one independently observable required capability
+- **THEN** preserved evidence shows one non-duplicating owner-local extraction and a direct capability observation before parent integration
+- **AND** a distinct parent observation proves composition without a speculative public surface.
+
+#### Scenario: Candidate over-fragments the direct control
+- **WHEN** the cohesive direct scenario gains wrapper-only files, one-implementation interfaces, or task-shaped modules without a current contract and oracle
+- **THEN** behavior evaluation rejects that candidate for the scenario
+- **AND** file count or isolated green tests do not override the failure.
+
+### Requirement: Instruction validation distinguishes syntax from prose
+
+Deterministic instruction validators SHALL require exact text only for machine-parsed syntax, stable identifiers, enumerated schema values, or byte-identical generated fragments. Human-readable policy SHALL be validated through structural ownership checks and focused positive and negative behavior fixtures rather than complete-sentence substring mirrors. Independently loaded instruction surfaces MAY repeat the smallest necessary invariant, but SHALL NOT require byte-equivalent prose solely to satisfy validation.
+
+#### Scenario: Equivalent policy wording changes
+
+- **WHEN** canonical human-readable wording changes while its owner, trigger, prohibited behavior, and focused behavior fixtures remain unchanged and green
+- **THEN** deterministic validation passes without requiring the removed sentence
+- **AND** no managed parser-facing token changes silently.
+
+#### Scenario: Artifact behavior disappears behind valid prose
+
+- **WHEN** a candidate retains headings and identifiers but accepts an invalid compact/material combination or rejects a valid compact omission
+- **THEN** focused behavior evaluation rejects the candidate
+- **AND** structural prose validation cannot compensate for the behavioral mismatch.
+
+#### Scenario: Parser-facing token changes
+
+- **WHEN** a candidate changes a machine-parsed artifact-profile value, risk-disposition value, artifact marker, or stable field identifier without updating its parser and fixtures
+- **THEN** deterministic validation fails with the exact parser-facing mismatch.

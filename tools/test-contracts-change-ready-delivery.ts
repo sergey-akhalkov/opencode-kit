@@ -188,7 +188,9 @@ const DELIVERY_TRAJECTORY_ROUTING_SURFACES = [
   {
     relative: "global/AGENTS.md",
     markers: [
-      "Every newly authored OpenSpec proposal declares exactly one `Delivery Horizon`",
+      "artifactProfile: compact | full",
+      "riskDisposition.kind: ordinary-small-exact | material | unknown",
+      "A compact exact proposal omits an unlinked `Delivery Horizon`",
       "Only a current material trigger loads `roadmap-delivery-trajectory`",
       "`archive: archived` independent from `trajectory: not-applicable | none | review-required | unknown`",
       "no archive rewrite, adjacent-skill fallback, or global project freeze",
@@ -197,13 +199,14 @@ const DELIVERY_TRAJECTORY_ROUTING_SURFACES = [
   {
     relative: "global/skills/openspec-propose/SKILL.md",
     markers: [
-      "Before writing any artifact",
+      "Before writing any artifact, main records two independent reviewed facts",
+      "If the selected profile is full",
+      "If compact, omit an unlinked Horizon",
       "`delivery-trajectory-context.ts`",
       "Main, not the helper, evaluates the compact signal",
       "before dependent planning or artifact writes",
       "block only the affected dependent planning",
-      "include exactly one line in its Outcome Capsule",
-      "`- **Delivery Horizon:** none - <concrete reason>`",
+      "`none - <concrete reason>`",
     ],
   },
   {
@@ -332,6 +335,32 @@ const DELIVERY_CHECKPOINT_FORBIDDEN_PHRASES = [
   "ask whether to optimize",
   "skip proof to save time",
   "checkpoint authorizes the action",
+] as const;
+
+const LEAF_FIRST_GLOBAL_MARKERS = [
+  "### Leaf-first dependency execution",
+  "two or more required sub-results can fail, be falsified, or be corrected independently",
+  "plan from the accepted parent toward required leaves and execute and prove from runnable leaves back to the parent",
+  "One evidence-bearing leaf names one bounded result",
+  "Keep cohesive Ordinary Small work and grouped mechanical edits with one owner and one shared oracle direct",
+  "Deterministic tooling never infers semantic compoundness, leaf quality, or decomposition depth from prose, counts, elapsed time, file cardinality, or task numbering",
+  "Every parent depends on every unresolved required leaf",
+  "Leaf evidence proves only that leaf",
+  "distinct parent integration oracle",
+  "same-leaf local failure, an independent prerequisite, a parent integration failure, or an exact existing gate",
+  "block only its dependent cone",
+  "grind `dependsOn`",
+  "never ask the owner to approve agent-owned task structure",
+  "Do not split for hypothetical variation, optional polish, numeric targets, or weaker component proof",
+  "use its unchanged suppression identity for one child/parent correction without another checkpoint, reflection, or strategy record",
+] as const;
+
+const LEAF_FIRST_FORBIDDEN_PHRASES = [
+  "infer compoundness from task size",
+  "one task per file",
+  "ask the owner to approve the task tree",
+  "child proof completes the parent",
+  "decomposition authorizes the protected action",
 ] as const;
 
 const TASK_SEQUENCING_GLOBAL_MARKERS = [
@@ -610,6 +639,95 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
+    name: "contracts: loaded leaf-first execution preserves parent proof and proportional controls",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const planning = fs.readFileSync(path.join(root, "global", "skills", "deep-task-planning", "SKILL.md"), "utf8");
+      const propose = fs.readFileSync(path.join(root, "global", "skills", "openspec-propose", "SKILL.md"), "utf8");
+      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const qualification = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const reusable = fs.readFileSync(path.join(root, "instructions", "reusable-project-agent-instructions.md"), "utf8");
+      const loop = fs.readFileSync(path.join(root, "instructions", "universal-development-loop.md"), "utf8");
+      const projectTemplate = fs.readFileSync(path.join(root, "templates", "project", "AGENTS.md"), "utf8");
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      const compactionTemplate = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+
+      assertTokens(agents, LEAF_FIRST_GLOBAL_MARKERS, "global/AGENTS.md missing canonical leaf-first contract");
+      assertTokens(planning, [
+        "Plan compound accepted work from parent to leaves, then execute and prove from leaves to parent",
+        "Each evidence-bearing leaf identifies one bounded result",
+        "Keep cohesive Ordinary Small work and grouped mechanical edits direct",
+        "never use task/file counts or prose to infer semantic granularity",
+      ], "deep-task-planning missing leaf-first planning delta");
+      assertTokens(propose, [
+        "represent independently falsifiable required prerequisites as evidence-bearing leaves and their integration as a dependent parent",
+        "keep the parent unchecked until its distinct integration oracle passes",
+        "Do not create per-file tasks or numeric granularity rules",
+        "replace exact owner/protected/live gates",
+      ], "OpenSpec propose missing leaf-first authoring delta");
+      assertTokens(apply, [
+        "same-leaf local defect, independent prerequisite, parent integration failure, or exact existing gate",
+        "add or reopen the smallest evidence-bearing child",
+        "A checked parent that omitted a required child or its own integration oracle is reopened",
+        "continue from a dependency-valid leaf without process approval",
+      ], "OpenSpec apply missing recursive leaf correction delta");
+      assertTokens(qualification, [
+        "For a compound Material dependency chain",
+        "smallest evidence-bearing leaves before the next costly, live, or integration action",
+        "then run a distinct parent integration oracle",
+        "blocks only its cone",
+        "no decomposition weakens live-attempt, writer-liveness, protected-action, population, substitution, or critical-risk controls",
+      ], "Change-Ready missing leaf fidelity delta");
+      assertTokens(reusable, [
+        "active global leaf-first dependency contract",
+        "plan parent-to-leaf, execute and prove dependency-valid leaves before their parent",
+        "adds no numeric granularity rule, semantic inference, or owner-question step",
+      ], "Reusable instructions must point to global leaf-first authority");
+      assertTokens(loop, [
+        "for compound work plan parent-to-leaf and execute/prove dependency-valid evidence-bearing leaves before the parent's distinct integration oracle",
+        "cohesive Ordinary Small and same-oracle mechanical work stay direct",
+      ], "Universal loop missing leaf-first small-slice delta");
+      assertTokens(projectTemplate, [
+        "active global leaf-first dependency contract",
+        "prove dependency-valid leaves before their parent and its distinct integration oracle",
+        "adds no task-size threshold, semantic inference, or owner-question rule",
+      ], "Project template must point to global leaf-first authority");
+      assertTokens(arbiter, [
+        "Do not select or complete a parent while any required `dependsOn` item is unresolved",
+        "never treat child evidence as the parent's distinct integration evidence",
+        "one bounded atomic frontier reconciliation",
+        "keep supplied independent siblings runnable",
+        "preserve its supplied process gate and suppression identity",
+        "another checkpoint, process gate, strategy record, or compaction state",
+      ], "Completion arbiter missing leaf-first dependency and evidence separation");
+      assertTokens(compactionTemplate, [
+        "current runnable leaf",
+        "blocked parent",
+        "dependency and gate refs",
+        "next oracle",
+        "evidence refs",
+        "omit completed branches, decomposition analysis, and any second task-tree representation",
+        "single `Delivery Checkpoint State`",
+        "another checkpoint, process gate, strategy record, or compaction block type",
+      ], "Managed compaction template missing compact leaf-first continuity");
+
+      for (const phrase of LEAF_FIRST_FORBIDDEN_PHRASES) {
+        for (const [surface, text] of [["global", agents], ["planning", planning], ["propose", propose], ["apply", apply], ["Change-Ready", qualification]] as const) {
+          assert(!text.includes(phrase), `${surface} leaf-first instruction contains forbidden proxy or weakening: ${phrase}`);
+        }
+      }
+      for (const marker of [
+        "One evidence-bearing leaf names one bounded result",
+        "Leaf evidence proves only that leaf",
+        "same-leaf local failure, an independent prerequisite, a parent integration failure, or an exact existing gate",
+        "Do not split for hypothetical variation, optional polish, numeric targets, or weaker component proof",
+      ]) {
+        const weakened = agents.replaceAll(marker, "weakened leaf-first wording");
+        assert(weakened !== agents && missingTokens(weakened, LEAF_FIRST_GLOBAL_MARKERS).includes(marker), `Removing leaf-first marker must fail closed: ${marker}`);
+      }
+    },
+  },
+  {
     name: "contracts: OpenSpec and compaction preserve one unresolved delivery checkpoint",
     run: () => {
       const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
@@ -625,10 +743,12 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "`Next Oracle`",
         "`Suppression Condition`",
         "current dependency-closure work",
-        "optional Kaizen reflection",
+        "Kaizen reflection",
       ];
       assertTokens(agents, compactionMarkers, "global authority missing delivery-checkpoint compaction state");
       assertTokens(template, compactionMarkers, "managed compaction template missing delivery-checkpoint state");
+      assertTokens(agents.toLowerCase(), ["optional kaizen reflection"], "global authority makes checkpoint Kaizen reflection mandatory");
+      assertTokens(template.toLowerCase(), ["optional kaizen reflection"], "managed compaction template makes checkpoint Kaizen reflection mandatory");
       assertTokens(apply, [
         "Reconcile any current `Delivery Checkpoint State`",
         "except when the same suppression identity is already carried by a due `Delivery Checkpoint State`",
@@ -648,6 +768,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       ], "global compaction authority does not resolve duplicate history or next-action precedence");
       assertTokens(template, [
         "If the same suppression identity is carried by a due `Delivery Checkpoint State`, omit the duplicate pending-history entry",
+        "When a due or executing outcome-preserving delivery checkpoint has not reached its selected oracle, preserve only one block",
         "make `Next-Session Action` name the same `Next Action`",
         "that `Next Action` is the first gate-closing offline step",
       ], "managed compaction template does not resolve duplicate history or next-action precedence");

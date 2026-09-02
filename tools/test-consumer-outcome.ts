@@ -39,8 +39,15 @@ import {
   stableJson,
   verifyFixtureSeed,
 } from "./proofs/consumer-outcome/contracts.ts";
-import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, replayEvaluation } from "./proofs/consumer-outcome/evaluate.ts";
-import { loadDeliveryCheckpointConfiguredPack, loadDeliveryCheckpointPack, parseDeliveryCheckpointPack } from "./proofs/consumer-outcome/delivery-checkpoint.ts";
+import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, evaluateDisposableInputs, gateCurrent } from "./proofs/consumer-outcome/evaluate.ts";
+import { loadDeliveryCheckpointConfiguredPack, loadDeliveryCheckpointPack, materializeDeliveryCheckpointBundle, parseDeliveryCheckpointPack } from "./proofs/consumer-outcome/delivery-checkpoint.ts";
+import { loadLeafFirstPack, materializeLeafFirstBundle, parseLeafFirstPack } from "./proofs/consumer-outcome/leaf-first-task-decomposition.ts";
+import { evaluateLeafFirstConfiguredDiagnostic, loadLeafFirstConfiguredPack, parseLeafFirstConfiguredPack } from "./proofs/consumer-outcome/leaf-first-task-decomposition-configured.ts";
+import {
+  evaluateOrdinarySmallClosureConfiguredDiagnostic,
+  loadOrdinarySmallClosureConfiguredPack,
+  parseOrdinarySmallClosureConfiguredPack,
+} from "./proofs/consumer-outcome/ordinary-small-closure-configured.ts";
 import {
   deliveryCheckpointContinuityPreflight,
   evaluateDeliveryCheckpointContinuity,
@@ -48,7 +55,7 @@ import {
   sealDeliveryCheckpointContinuityBundle,
   type DeliveryCheckpointContinuityBundle,
 } from "./proofs/consumer-outcome/delivery-checkpoint-continuity.ts";
-import { loadDeliveryTrajectoryConfiguredPack, loadDeliveryTrajectoryPack, selectDeliveryTrajectoryConfiguredScenario } from "./proofs/consumer-outcome/delivery-trajectory.ts";
+import { loadDeliveryTrajectoryConfiguredPack, loadDeliveryTrajectoryPack, materializeDeliveryTrajectoryBundle, selectDeliveryTrajectoryConfiguredScenario } from "./proofs/consumer-outcome/delivery-trajectory.ts";
 import { evaluateTeamAdviceContinuity, loadTeamAdviceContinuityFixture, sealTeamAdviceContinuityBundle, teamAdviceContinuityPreflight, type TeamAdviceContinuityBundle, type TeamAdviceContinuitySample } from "./proofs/consumer-outcome/team-advice-continuity.ts";
 import { evaluateTeamAdvisingPack, loadTeamAdvisingPack, redactTeamBundlePrivacy, sanitizeTeamEvidenceText, sealTeamBundle, sealTeamSample, selectTeamAdvisingPack, type TeamBundle, type TeamSampleEvidence } from "./proofs/consumer-outcome/team-advising.ts";
 import { projectBundles, selectComplexityConfiguredPack, selectFoundationPack } from "./proofs/consumer-outcome-regression.ts";
@@ -268,6 +275,402 @@ function invokeCli(args: string[], cwd = root, environment: NodeJS.ProcessEnv = 
 
 const tests: TestCase[] = [
   {
+    name: "leaf-first pack materializes reviewed judgments and linked frontier controls provider-free",
+    run() {
+      const directory = tempDir("leaf-first-task-decomposition");
+      const evidenceRoot = path.join(directory, "materialized");
+      try {
+        const loaded = loadLeafFirstPack(root);
+        const sourceBefore = governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths).governedDigest;
+        assert(loaded.pack.claimId === "LFTD-001" && loaded.pack.scenarios.length === 11, "leaf-first population identity");
+        assert(loaded.pack.scenarios.map((scenario) => scenario.id).join(",") === [
+          "proactive-compound-decomposition",
+          "recursive-independent-prerequisite",
+          "same-leaf-local-failure",
+          "parent-suppression",
+          "integration-only-failure",
+          "independent-siblings",
+          "cohesive-ordinary-small",
+          "grouped-mechanical-edits",
+          "owner-protected-gates",
+          "compaction-continuity",
+          "checkpoint-composition",
+        ].join(","), "leaf-first scenario order");
+        assert(loaded.pack.scenarios.filter((scenario) => scenario.frontierScenarioId != null).length === 4, "leaf-first frontier population");
+        assert(loaded.pack.openSpecControls.map((control) => control.id).join(",") === "proactive-task-authoring,hidden-prerequisite-correction,same-leaf-no-planning-churn,checked-parent-reopened", "leaf-first OpenSpec control population");
+        const hiddenPrerequisite = loaded.pack.openSpecControls.find((control) => control.id === "hidden-prerequisite-correction")!;
+        assert(hiddenPrerequisite.expectedObservation.changedPaths.join(",") === "design.md,history.md,tasks.md" && hiddenPrerequisite.expectedObservation.historyAppendCount === 1, "leaf-first recursive OpenSpec delta");
+        assert(hiddenPrerequisite.expectedObservation.evidenceRefs.join(",") === "evidence-transport" && hiddenPrerequisite.expectedObservation.proposalChanged === false && hiddenPrerequisite.expectedObservation.scopeChanged === false, "leaf-first recursive preservation controls");
+        const sameLeaf = loaded.pack.openSpecControls.find((control) => control.id === "same-leaf-no-planning-churn")!;
+        assert(sameLeaf.expectedObservation.changedPaths.length === 0 && sameLeaf.expectedObservation.historyAppendCount === 0, "leaf-first same-leaf planning no-op");
+        const reopened = loaded.pack.openSpecControls.find((control) => control.id === "checked-parent-reopened")!;
+        assert(reopened.expectedObservation.parentTaskState === "open" && reopened.expectedObservation.taskRefs.includes("leaf-missing-oracle"), "leaf-first checked parent reopening");
+        assert(loaded.pack.scenarios.find((scenario) => scenario.id === "compaction-continuity")?.expectedObservation.compactionFields.join(",") === "Current Leaf,Blocked Parent,Dependency Refs,Next Oracle,Evidence Refs", "leaf-first compaction fields");
+        assert(loaded.pack.scenarios.find((scenario) => scenario.id === "checkpoint-composition")?.expectedObservation.suppressionIdentity === "checkpoint_lftd_route", "leaf-first checkpoint suppression identity");
+
+        const help = invokeCli(["--help"]);
+        const shortHelp = invokeCli(["-h"]);
+        assert(help.status === 0 && shortHelp.status === 0 && help.stdout === shortHelp.stdout, "leaf-first help must be effect-free and stable");
+        assert(help.stdout.includes("leaf-first-task-decomposition freezes eleven reviewed LFTD-001 members, four explicit OpenSpec task controls") && help.stdout.includes("without scoring"), "leaf-first help inventory");
+        const preflight = invokeCli(["--mode", "preflight", "--pack", "leaf-first-task-decomposition", "--source-ref", "working-tree"]);
+        assert(preflight.status === 0, preflight.stderr || preflight.stdout);
+        const preflightOutput = JSON.parse(preflight.stdout) as Record<string, unknown>;
+        assert(preflightOutput.status === "ready" && preflightOutput.memberCount === 11 && preflightOutput.openSpecControlCount === 4 && preflightOutput.frontierScenarioCount === 4, preflight.stdout);
+        assert(preflightOutput.modelCalls === 0 && preflightOutput.processCalls === 0 && preflightOutput.providerCalls === 0, "leaf-first preflight effects");
+
+        const materialized = invokeCli([
+          "--mode", "materialize",
+          "--pack", "leaf-first-task-decomposition",
+          "--source-ref", "working-tree",
+          "--candidate-id", "lftd-provider-free-test",
+          "--evidence-root", evidenceRoot,
+        ]);
+        assert(materialized.status === 0, materialized.stderr || materialized.stdout);
+        const output = JSON.parse(materialized.stdout) as {
+          evaluation?: {
+            frontierRows?: Array<{ status?: unknown }>;
+            rows?: Array<{ expected?: unknown; observed?: unknown; oracleMatched?: unknown }>;
+            status?: unknown;
+          };
+          liveCalls?: unknown;
+          pointerMutated?: unknown;
+          sourceDigest?: unknown;
+        };
+        assert(output.evaluation?.status === "passed" && output.evaluation.rows?.length === 30, materialized.stdout);
+        assert(output.evaluation.rows.filter((row) => row.expected === "pass" && row.observed === "passed" && row.oracleMatched === true).length === 15, "leaf-first green rows");
+        assert(output.evaluation.rows.filter((row) => row.expected === "fail" && row.observed === "failed" && row.oracleMatched === true).length === 15, "leaf-first deliberate red rows");
+        assert(output.evaluation.frontierRows?.length === 4 && output.evaluation.frontierRows.every((row) => row.status === "passed"), "leaf-first linked frontier rows");
+        assert(output.liveCalls === 0 && output.pointerMutated === false && output.sourceDigest === sourceBefore, "leaf-first materialization effects and identity");
+        assert(!fs.existsSync(evidenceRoot), "leaf-first CLI must remove temporary output");
+
+        const disposableInputRoot = path.join(directory, "disposable-input");
+        materializeLeafFirstBundle({
+          candidateId: "lftd-provider-free-disposable-input",
+          evidenceRoot: disposableInputRoot,
+          gitRef: "working-tree",
+          repoRoot: root,
+        });
+        const bundlePath = path.join(disposableInputRoot, "bundle.json");
+        const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8")) as Record<string, unknown>;
+        const effects = bundle.effects as Record<string, unknown>;
+        const cleanup = bundle.cleanup as Record<string, unknown>;
+        assert(effects.providerCalls === 0 && effects.networkCalls === 0 && effects.processCalls === 0 && effects.sourceWrites === 0 && effects.remoteEffects === 0, "leaf-first bundle effects");
+        assert(cleanup.status === "complete" && cleanup.terminal === true && cleanup.persistentTemporaryFiles === 0, "leaf-first cleanup");
+        const replayArgs = ["--mode", "evaluate", "--pack", "leaf-first-task-decomposition", "--baseline", bundlePath];
+        const replayA = invokeCli(replayArgs);
+        const replayB = invokeCli(replayArgs);
+        assert(replayA.status === 0 && replayB.status === 0 && replayA.stdout === replayB.stdout, replayA.stderr || replayB.stderr || replayA.stdout || replayB.stdout);
+        const replayOutput = JSON.parse(replayA.stdout) as { evaluation?: { rows?: unknown[]; status?: unknown }; liveCalls?: unknown };
+        assert(replayOutput.evaluation?.status === "passed" && replayOutput.evaluation.rows?.length === 30 && replayOutput.liveCalls === 0, replayA.stdout);
+        assert(governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths).governedDigest === sourceBefore, "leaf-first proof must not mutate governed source");
+
+        const rawSeed = JSON.parse(fs.readFileSync(path.join(root, "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-r1.json"), "utf8")) as Record<string, unknown>;
+        const malformed = structuredClone(rawSeed);
+        delete malformed.claimId;
+        let malformedError: unknown;
+        try {
+          parseLeafFirstPack(malformed);
+        } catch (error) {
+          malformedError = error;
+        }
+        assert(malformedError instanceof ContractError, "leaf-first malformed seed must fail closed");
+        const overflow = structuredClone(rawSeed) as { limits: { maxEventsPerObservation: number } };
+        overflow.limits.maxEventsPerObservation = 33;
+        let overflowError: unknown;
+        try {
+          parseLeafFirstPack(overflow);
+        } catch (error) {
+          overflowError = error;
+        }
+        assert(overflowError instanceof ContractError, "leaf-first bound overflow must fail closed");
+        const helperSource = fs.readFileSync(path.join(root, "tools/proofs/consumer-outcome/leaf-first-task-decomposition.ts"), "utf8");
+        for (const forbidden of ["Date.now", "performance.now", "similarityScore", "qualityScore", "compoundnessScore", "leafScore"]) {
+          assert(!helperSource.includes(forbidden), `leaf-first helper must not contain ${forbidden}`);
+        }
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+      assert(!fs.existsSync(directory), "leaf-first focused-test fixture must be removed");
+    },
+  },
+  {
+    name: "ordinary-small configured compact fixture proves proportional artifacts and gates",
+    run() {
+      const directory = tempDir("ordinary-small-configured");
+      const fixtureRoot = path.join(directory, "fixture");
+      try {
+        const loaded = loadOrdinarySmallClosureConfiguredPack(root);
+        const scenario = loaded.pack.scenarios[0];
+        assert(loaded.pack.id === "ordinary-small-closure-configured-r1" && loaded.pack.configuredProviderRequestBound === 1, "configured ordinary-small pack identity and bound");
+        assert(scenario.id === "configured-compact-ordinary-small" && scenario.shape === "openspec-backed", "configured ordinary-small scenario identity");
+        fs.cpSync(path.join(root, scenario.fixturePath), fixtureRoot, { recursive: true });
+        const changeRoot = path.join(fixtureRoot, "openspec", "changes", "compact-note-title");
+        fs.mkdirSync(path.join(changeRoot, "specs", "note-title"), { recursive: true });
+        const artifacts: Record<string, string> = {
+          ".openspec.yaml": "schema: spec-driven\nartifactProfile: compact\nriskDisposition:\n  kind: ordinary-small-exact\n",
+          "design.md": "## Context\n\nThe note title is a local reversible text value.\n\n## Decision\n\nSet it to `Ready` during implementation and prove it with the existing local oracle.\n",
+          "proposal.md": "## Why\n\nThe disposable note title needs one exact ready state.\n\n### Outcome Capsule\n\n- **Outcome**: Set the local note title to `Ready`.\n- **Operating Envelope**: This disposable repository and local text oracle only.\n- **Non-Goals**: No remote, deployment, reusable automation, or archive behavior.\n- **Non-Deferrable Invariants**: Authoring does not mutate the title and artifact shape does not prove risk.\n- **Observable Proof**: After implementation, `node scripts/check-title.ts` exits zero.\n- **Stop Line**: Stop after the local title and its oracle pass.\n\n## What Changes\n\n- Change the local note title from `Draft` to `Ready`.\n\n## Capabilities\n\n### New Capabilities\n\n- `note-title`: Require the disposable note title to be ready.\n",
+          "specs/note-title/spec.md": "## ADDED Requirements\n\n### Requirement: Note title is ready\n\nThe disposable note title SHALL contain exactly `Ready`.\n\n#### Scenario: Ready title passes\n\n- **WHEN** the local title oracle reads `notes/title.txt`\n- **THEN** it observes exactly `Ready`.\n",
+          "tasks.md": "## 1. Note Title\n\n- [ ] 1.1 Set `notes/title.txt` to `Ready` and run `node scripts/check-title.ts`.\n",
+        };
+        for (const [relative, content] of Object.entries(artifacts)) {
+          const target = path.join(changeRoot, relative);
+          fs.mkdirSync(path.dirname(target), { recursive: true });
+          fs.writeFileSync(target, content, "utf8");
+        }
+        const validation = runPortableCommand(fixtureRoot, scenario.validationArgv, { capture: true, timeoutMs: 60_000 });
+        assert(validation.status === 0 && validation.stdout.includes("is valid"), validation.stderr || validation.stdout);
+        const proof = spawnSync(process.execPath, scenario.proofExpectations.argv.slice(1), {
+          cwd: fixtureRoot,
+          encoding: "utf8",
+          env: { ...process.env, OPENCODE_CONFIG_DIR: path.join(root, "global") },
+          timeout: 60_000,
+        });
+        assert(proof.status === 0 && proof.stdout.includes('"artifactProfile":"compact"') && proof.stdout.includes('"proposalCapsuleFieldCount":6'), proof.stderr || proof.stdout);
+        const changes = scenario.expectedOutcome.stateFiles.map((relative) => ({
+          after: { sha256: sha256(fs.readFileSync(path.join(fixtureRoot, relative))), text: fs.readFileSync(path.join(fixtureRoot, relative), "utf8") },
+          before: null,
+          path: relative,
+        }));
+        const route = "openai/gpt-5.6-sol/xhigh";
+        const diagnostic: Record<string, unknown> = {
+          candidateId: "sosc-configured-test",
+          changes,
+          cleanup: { complete: true, fixtureRemoved: true, processesRemoved: true, sessionsRemoved: true },
+          environment: {
+            configuredRoute: route,
+            openCode: { sha256: "a".repeat(64), version: "1.18.25" },
+            resolvedRoute: route,
+            runtimeManifest: [{ path: "candidate-config/AGENTS.md", sha256: "b".repeat(64) }],
+            startupFacts: { hostConfigLoaded: false, ripgrepDownloadRequested: false },
+          },
+          proof: { status: 0, stdout: proof.stdout },
+          providerRequestCount: 1,
+          runtimeErrors: [],
+          scenarioDigest: loaded.digest,
+          scenarioId: scenario.id,
+          session: { messages: { toolCalls: [{ name: "skill", input: { name: "openspec-propose" } }, { name: "read" }, { name: "edit" }] } },
+          sourceIdentity: governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths),
+          terminalClassification: "completed-observation",
+          validation: { status: 0 },
+        };
+        const evaluation = evaluateOrdinarySmallClosureConfiguredDiagnostic(root, loaded, diagnostic);
+        assert(evaluation.status === "passed" && evaluation.failures.length === 0 && evaluation.modelCalls === 1 && evaluation.forbiddenEffectCount === 0, stableJson(evaluation));
+        const historyDiagnostic = structuredClone(diagnostic) as { changes: Array<Record<string, unknown>> };
+        historyDiagnostic.changes.push({ after: { text: "# Strategy History\n" }, before: null, path: "openspec/changes/compact-note-title/history.md" });
+        assert(evaluateOrdinarySmallClosureConfiguredDiagnostic(root, loaded, historyDiagnostic as unknown as Record<string, unknown>).failures.includes("fixture-write-set"), "configured compact extra history control");
+        const questionDiagnostic = structuredClone(diagnostic) as { session: { messages: { toolCalls: Array<{ name: string }> } } };
+        questionDiagnostic.session.messages.toolCalls.push({ name: "question" });
+        assert(evaluateOrdinarySmallClosureConfiguredDiagnostic(root, loaded, questionDiagnostic as unknown as Record<string, unknown>).failures.includes("prohibited-tool"), "configured compact question control");
+
+        const rawPack = JSON.parse(fs.readFileSync(path.join(root, "tools/proofs/fixtures/consumer-outcome/ordinary-small-closure-configured-r1.json"), "utf8")) as Record<string, unknown>;
+        const malformed = structuredClone(rawPack);
+        delete malformed.configuredProviderRequestBound;
+        let malformedError: unknown;
+        try {
+          parseOrdinarySmallClosureConfiguredPack(malformed);
+        } catch (error) {
+          malformedError = error;
+        }
+        assert(malformedError instanceof ContractError, "configured ordinary-small malformed seed must fail closed");
+        const missingLiveInputs = invokeCli([
+          "--mode", "preflight", "--pack", "ordinary-small-closure", "--source-ref", "working-tree", "--session-mode", "configured", "--scenarios", "configured-compact-ordinary-small",
+        ]);
+        assert(missingLiveInputs.status === 1 && missingLiveInputs.stderr.includes("requires --opencode and --candidate-config-dir"), missingLiveInputs.stderr || missingLiveInputs.stdout);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+      assert(!fs.existsSync(directory), "configured ordinary-small focused-test fixture must be removed");
+    },
+  },
+  {
+    name: "leaf-first configured ordinary fixture and evaluator preserve leaf-parent proof boundaries",
+    run() {
+      const directory = tempDir("leaf-first-configured");
+      const fixtureRoot = path.join(directory, "fixture");
+      try {
+        const loaded = loadLeafFirstConfiguredPack(root);
+        const scenario = loaded.pack.scenarios[0];
+        assert(loaded.pack.id === "leaf-first-task-decomposition-configured-r1", "configured leaf-first pack identity");
+        assert(loaded.pack.runtimeProfile === "core" && loaded.pack.profile === "quality-independent", "configured leaf-first profile identity");
+        assert(loaded.pack.configuredProviderRequestBound === 1 && scenario.id === "configured-ordinary-leaf-first", "configured leaf-first request and scenario bounds");
+        const expectedResult = scenario.expectedResult as unknown as Record<string, unknown>;
+        assert(expectedResult.parentAfterLeaves === true && expectedResult.parentProof === "distinct", "configured leaf-first parent proof contract");
+        assert(expectedResult.cohesiveMode === "direct" && expectedResult.sameLeafMode === "direct-correct", "configured leaf-first proportional controls");
+        assert(expectedResult.mechanicalMode === "grouped-direct" && expectedResult.integrationMode === "parent-local-correct", "configured leaf-first mechanical and integration controls");
+
+        fs.cpSync(path.join(root, scenario.fixturePath), fixtureRoot, { recursive: true });
+        fs.writeFileSync(path.join(fixtureRoot, "work", "leaf-a.txt"), "alpha-ready\n", "utf8");
+        let command = spawnSync(process.execPath, ["scripts/observe.ts", "leaf-a"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        fs.writeFileSync(path.join(fixtureRoot, "work", "leaf-b.txt"), "beta-ready\n", "utf8");
+        command = spawnSync(process.execPath, ["scripts/observe.ts", "leaf-b"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        command = spawnSync(process.execPath, ["scripts/observe.ts", "parent"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        fs.writeFileSync(path.join(fixtureRoot, "work", "cohesive.txt"), "cohesive-ready\n", "utf8");
+        command = spawnSync(process.execPath, ["scripts/observe.ts", "cohesive"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        const localFailure = spawnSync(process.execPath, ["scripts/observe.ts", "same-leaf"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(localFailure.status !== 0 && localFailure.stderr.includes("same-leaf actionable local cause"), localFailure.stderr || localFailure.stdout);
+        fs.writeFileSync(path.join(fixtureRoot, "work", "same-leaf.txt"), "local-fixed\n", "utf8");
+        command = spawnSync(process.execPath, ["scripts/observe.ts", "same-leaf"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        fs.writeFileSync(path.join(fixtureRoot, "work", "mechanical-a.txt"), "mechanical-ready\n", "utf8");
+        fs.writeFileSync(path.join(fixtureRoot, "work", "mechanical-b.txt"), "mechanical-ready\n", "utf8");
+        command = spawnSync(process.execPath, ["scripts/observe.ts", "grouped-mechanical"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        const integrationFailure = spawnSync(process.execPath, ["scripts/observe.ts", "integration-only"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(integrationFailure.status !== 0 && integrationFailure.stderr.includes("integration-only actionable parent cause"), integrationFailure.stderr || integrationFailure.stdout);
+        fs.writeFileSync(path.join(fixtureRoot, "work", "integration-parent.txt"), "integrated-fixed\n", "utf8");
+        command = spawnSync(process.execPath, ["scripts/observe.ts", "integration-only"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        const proof = spawnSync(process.execPath, ["scripts/check-result.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(proof.status === 0 && proof.stdout.includes('"parentAfterLeaves":true') && proof.stdout.includes('"mechanicalMode":"grouped-direct"') && proof.stdout.includes('"integrationMode":"parent-local-correct"') && proof.stdout.includes('"taskArtifactCount":0'), proof.stderr || proof.stdout);
+
+        const route = "openai/gpt-5.6-sol/xhigh";
+        const changes = scenario.expectedOutcome.stateFiles.map((relative) => ({
+          after: { sha256: sha256(fs.readFileSync(path.join(fixtureRoot, relative))), text: fs.readFileSync(path.join(fixtureRoot, relative), "utf8") },
+          before: null,
+          path: relative,
+        }));
+        const diagnostic: Record<string, unknown> = {
+          candidateId: "lftd-configured-test",
+          changes,
+          cleanup: { complete: true, fixtureRemoved: true, processesRemoved: true, sessionsRemoved: true },
+          environment: {
+            configuredRoute: route,
+            openCode: { sha256: "a".repeat(64), version: "1.18.25" },
+            resolvedRoute: route,
+            runtimeManifest: [{ path: "candidate-config/AGENTS.md", sha256: "b".repeat(64) }],
+            startupFacts: { hostConfigLoaded: false, ripgrepDownloadRequested: false },
+          },
+          proof: { status: 0, stdout: proof.stdout },
+          providerRequestCount: 1,
+          runtimeErrors: [],
+          scenarioDigest: loaded.digest,
+          scenarioId: scenario.id,
+          session: { messages: { toolCalls: [{ name: "read" }, { name: "edit" }, { name: "bash" }] } },
+          sourceIdentity: governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths),
+          terminalClassification: "completed-observation",
+          validation: { status: 0 },
+        };
+        const evaluation = evaluateLeafFirstConfiguredDiagnostic(root, loaded, diagnostic);
+        assert(evaluation.status === "passed" && evaluation.failures.length === 0 && evaluation.modelCalls === 1, stableJson(evaluation));
+        const questionDiagnostic = structuredClone(diagnostic) as { session: { messages: { toolCalls: Array<{ name: string }> } } };
+        questionDiagnostic.session.messages.toolCalls.push({ name: "question" });
+        assert(evaluateLeafFirstConfiguredDiagnostic(root, loaded, questionDiagnostic as unknown as Record<string, unknown>).failures.includes("prohibited-tool"), "configured leaf-first question control");
+        const reorderedDiagnostic = structuredClone(diagnostic) as { changes: Array<{ after: { text: string }; path: string }> };
+        const events = reorderedDiagnostic.changes.find((row) => row.path === "result/events.json")!;
+        events.after.text = `${JSON.stringify(["leaf-a-proof:passed", "parent-integration-proof:passed", "leaf-b-proof:passed"])}\n`;
+        assert(evaluateLeafFirstConfiguredDiagnostic(root, loaded, reorderedDiagnostic as unknown as Record<string, unknown>).failures.includes("event-order"), "configured leaf-first parent-before-leaf control");
+
+        const rawPack = JSON.parse(fs.readFileSync(path.join(root, "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-configured-r1.json"), "utf8")) as Record<string, unknown>;
+        const malformed = structuredClone(rawPack);
+        delete malformed.configuredProviderRequestBound;
+        let malformedError: unknown;
+        try {
+          parseLeafFirstConfiguredPack(malformed);
+        } catch (error) {
+          malformedError = error;
+        }
+        assert(malformedError instanceof ContractError, "configured leaf-first malformed seed must fail closed");
+        const help = invokeCli(["--help"]);
+        assert(help.status === 0 && help.stdout.includes("configured ordinary/OpenSpec lanes permit one request each"), "configured leaf-first help inventory");
+        const missingLiveInputs = invokeCli([
+          "--mode", "preflight", "--pack", "leaf-first-task-decomposition", "--source-ref", "working-tree", "--session-mode", "configured", "--scenarios", "configured-ordinary-leaf-first",
+        ]);
+        assert(missingLiveInputs.status === 1 && missingLiveInputs.stderr.includes("requires --opencode and --candidate-config-dir"), missingLiveInputs.stderr || missingLiveInputs.stdout);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+      assert(!fs.existsSync(directory), "configured leaf-first focused-test fixture must be removed");
+    },
+  },
+  {
+    name: "leaf-first configured OpenSpec fixture preserves recursive task and evidence scope",
+    run() {
+      const directory = tempDir("leaf-first-configured-openspec");
+      const fixtureRoot = path.join(directory, "fixture");
+      try {
+        const loaded = loadLeafFirstConfiguredPack(root);
+        const scenario = loaded.pack.scenarios[1];
+        assert(loaded.pack.scenarios.map((row) => row.id).join(",") === "configured-ordinary-leaf-first,configured-openspec-leaf-first", "configured leaf-first scenario order");
+        assert(scenario.id === "configured-openspec-leaf-first" && scenario.shape === "openspec-backed", "configured OpenSpec scenario identity");
+        const expectedResult = scenario.expectedResult as unknown as Record<string, unknown>;
+        assert(expectedResult.parentState === "open" && expectedResult.historyAppendCount === 1 && expectedResult.proposalChanged === false, "configured OpenSpec result contract");
+        fs.cpSync(path.join(root, scenario.fixturePath), fixtureRoot, { recursive: true });
+        const changeRoot = path.join(fixtureRoot, "openspec", "changes", "leaf-first-fixture");
+        const initialTasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
+        assert(initialTasks.includes("- [x] 1.1"), "configured OpenSpec fixture must seed a checked coarse parent");
+        let command = spawnSync(process.execPath, ["scripts/materialize-task-shape.ts", "proactive"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        command = spawnSync(process.execPath, ["scripts/check-proactive.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        command = spawnSync(process.execPath, ["scripts/reveal-prerequisite.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        command = spawnSync(process.execPath, ["scripts/materialize-task-shape.ts", "recursive"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        const localFailure = spawnSync(process.execPath, ["scripts/run-same-leaf.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(localFailure.status !== 0 && localFailure.stderr.includes("same-leaf actionable local cause"), localFailure.stderr || localFailure.stdout);
+        fs.writeFileSync(path.join(fixtureRoot, "work", "same-leaf.txt"), "local-fixed\n", "utf8");
+        command = spawnSync(process.execPath, ["scripts/run-same-leaf.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(command.status === 0, command.stderr || command.stdout);
+        const proof = spawnSync(process.execPath, ["scripts/check-result.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(proof.status === 0 && proof.stdout.includes('"historyAppendCount":1') && proof.stdout.includes('"proposalChanged":false'), proof.stderr || proof.stdout);
+        const repeatedProof = spawnSync(process.execPath, ["scripts/check-result.ts"], { cwd: fixtureRoot, encoding: "utf8", timeout: 60_000 });
+        assert(repeatedProof.status === 0 && repeatedProof.stdout === proof.stdout, repeatedProof.stderr || repeatedProof.stdout);
+        const validation = runPortableCommand(fixtureRoot, scenario.validationArgv, { capture: true, timeoutMs: 60_000 });
+        assert(validation.status === 0 && validation.stdout.includes("is valid"), validation.stderr || validation.stdout);
+
+        const route = "openai/gpt-5.6-sol/xhigh";
+        const diagnostic: Record<string, unknown> = {
+          candidateId: "lftd-configured-openspec-test",
+          changes: scenario.expectedOutcome.stateFiles.map((relative) => {
+            const afterText = fs.readFileSync(path.join(fixtureRoot, relative), "utf8");
+            const beforeText = relative === "openspec/changes/leaf-first-fixture/tasks.md" ? initialTasks : null;
+            return {
+              after: { sha256: sha256(afterText), text: afterText },
+              before: beforeText == null ? null : { sha256: sha256(beforeText), text: beforeText },
+              path: relative,
+            };
+          }),
+          cleanup: { complete: true, fixtureRemoved: true, processesRemoved: true, sessionsRemoved: true },
+          environment: {
+            configuredRoute: route,
+            openCode: { sha256: "a".repeat(64), version: "1.18.25" },
+            resolvedRoute: route,
+            runtimeManifest: [{ path: "candidate-config/AGENTS.md", sha256: "b".repeat(64) }],
+            startupFacts: { hostConfigLoaded: false, ripgrepDownloadRequested: false },
+          },
+          proof: { status: 0, stdout: proof.stdout },
+          providerRequestCount: 1,
+          runtimeErrors: [],
+          scenarioDigest: loaded.digest,
+          scenarioId: scenario.id,
+          session: { messages: { toolCalls: [{ name: "skill" }, { name: "skill" }, { name: "read" }, { name: "edit" }, { name: "bash" }] } },
+          sourceIdentity: governedSourceIdentity(root, "working-tree", loaded.pack.governedSourcePaths),
+          terminalClassification: "completed-observation",
+          validation: { status: 0 },
+        };
+        const evaluation = evaluateLeafFirstConfiguredDiagnostic(root, loaded, diagnostic);
+        assert(evaluation.status === "passed" && evaluation.failures.length === 0 && evaluation.scenarioId === scenario.id, stableJson(evaluation));
+        const missingSkill = structuredClone(diagnostic) as { session: { messages: { toolCalls: Array<{ name: string }> } } };
+        missingSkill.session.messages.toolCalls = missingSkill.session.messages.toolCalls.filter((tool) => tool.name !== "skill");
+        assert(evaluateLeafFirstConfiguredDiagnostic(root, loaded, missingSkill as unknown as Record<string, unknown>).failures.includes("required-skill-path"), "configured OpenSpec skill-route control");
+        const broadChurn = structuredClone(diagnostic) as { changes: Array<Record<string, unknown>> };
+        broadChurn.changes.push({ after: { sha256: "c".repeat(64), text: "mutated" }, before: null, path: "openspec/changes/leaf-first-fixture/proposal.md" });
+        assert(evaluateLeafFirstConfiguredDiagnostic(root, loaded, broadChurn as unknown as Record<string, unknown>).failures.includes("fixture-write-set"), "configured OpenSpec proposal-churn control");
+        const oracleRead = structuredClone(diagnostic) as { session: { messages: { toolCalls: Array<Record<string, unknown>> } } };
+        oracleRead.session.messages.toolCalls.push({ input: { filePath: "expected/final-tasks.md" }, name: "read" });
+        assert(evaluateLeafFirstConfiguredDiagnostic(root, loaded, oracleRead as unknown as Record<string, unknown>).failures.includes("oracle-source-read"), "configured OpenSpec oracle-source read control");
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+      assert(!fs.existsSync(directory), "configured OpenSpec focused-test fixture must be removed");
+    },
+  },
+  {
     name: "delivery-checkpoint pack materializes reviewed judgments provider-free and rejects red controls",
     run() {
       const directory = tempDir("delivery-checkpoint");
@@ -331,7 +734,15 @@ const tests: TestCase[] = [
         assert(output.evaluation.continuityRows?.filter((row) => row.expected === "fail" && row.observed === "failed" && row.oracleMatched === true).length === 7, "delivery-checkpoint continuity deliberate red rows");
         assert(output.evaluation.costArithmetic?.find((row) => row.scenarioId === "dominant-repeated-setup")?.totalCostUnits === 825, "delivery-checkpoint explicit cost arithmetic");
         assert(output.liveCalls === 0 && output.pointerMutated === false && output.sourceDigest === sourceBefore, "delivery-checkpoint materialization effects and identity");
-        const bundlePath = path.join(evidenceRoot, "bundle.json");
+        assert(!fs.existsSync(evidenceRoot), "delivery-checkpoint CLI must remove temporary output");
+        const disposableInputRoot = path.join(directory, "disposable-input");
+        materializeDeliveryCheckpointBundle({
+          candidateId: "opdc-provider-free-disposable-input",
+          evidenceRoot: disposableInputRoot,
+          gitRef: "working-tree",
+          repoRoot: root,
+        });
+        const bundlePath = path.join(disposableInputRoot, "bundle.json");
         const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8")) as Record<string, unknown>;
         const effects = bundle.effects as Record<string, unknown>;
         const cleanup = bundle.cleanup as Record<string, unknown>;
@@ -347,11 +758,14 @@ const tests: TestCase[] = [
         const replayOutput = JSON.parse(replayA.stdout) as { evaluation?: { rows?: unknown[]; status?: unknown }; liveCalls?: unknown };
         assert(replayOutput.evaluation?.status === "passed" && replayOutput.evaluation.rows?.length === 24 && replayOutput.liveCalls === 0, replayA.stdout);
 
+        fs.mkdirSync(evidenceRoot, { recursive: true });
+        fs.writeFileSync(path.join(evidenceRoot, "sentinel.txt"), "preserve", "utf8");
         const existingRoot = invokeCli([
           "--mode", "materialize", "--pack", "delivery-checkpoint", "--source-ref", "working-tree",
           "--candidate-id", "opdc-existing-root-test", "--evidence-root", evidenceRoot,
         ]);
         assert(existingRoot.status === 1 && existingRoot.stderr.includes("must be create-new"), existingRoot.stderr || existingRoot.stdout);
+        assert(fs.readFileSync(path.join(evidenceRoot, "sentinel.txt"), "utf8") === "preserve", "existing output must not be deleted");
         const stalePath = path.join(directory, "stale.json");
         bundle.bundleDigest = "0".repeat(64);
         fs.writeFileSync(stalePath, `${JSON.stringify(bundle)}\n`, "utf8");
@@ -598,8 +1012,17 @@ const tests: TestCase[] = [
         const baselineOutput = JSON.parse(baseline.stdout) as { evaluation?: { rows?: unknown[]; status?: unknown }; liveCalls?: unknown; pointerMutated?: unknown; sourceDigest?: unknown };
         assert(baselineOutput.evaluation?.status === "passed" && baselineOutput.evaluation.rows?.length === 13, baseline.stdout);
         assert(baselineOutput.liveCalls === 0 && baselineOutput.pointerMutated === false, baseline.stdout);
+        assert(!fs.existsSync(baselineRoot), "delivery-trajectory CLI must remove temporary output");
 
-        const baselinePath = path.join(baselineRoot, "bundle.json");
+        const baselineInputRoot = path.join(directory, "baseline-input");
+        materializeDeliveryTrajectoryBundle({
+          arm: "baseline",
+          candidateId: "delivery-trajectory-baseline-input",
+          evidenceRoot: baselineInputRoot,
+          gitRef: "working-tree",
+          repoRoot: root,
+        });
+        const baselinePath = path.join(baselineInputRoot, "bundle.json");
         const candidate = invokeCli([
           "--mode", "capture",
           "--pack", "delivery-trajectory",
@@ -619,8 +1042,18 @@ const tests: TestCase[] = [
         assert(candidateOutput.evaluation?.inputDifference?.matchedExceptNamedDifference === true, candidate.stdout);
         assert(candidateOutput.liveCalls === 0 && candidateOutput.pointerMutated === false, candidate.stdout);
         assert(candidateOutput.sourceDigest === baselineOutput.sourceDigest, "delivery-trajectory source identity");
+        assert(!fs.existsSync(candidateRoot), "delivery-trajectory candidate CLI must remove temporary output");
 
-        const candidatePath = path.join(candidateRoot, "bundle.json");
+        const candidateInputRoot = path.join(directory, "candidate-input");
+        materializeDeliveryTrajectoryBundle({
+          arm: "candidate",
+          baselinePath,
+          candidateId: "delivery-trajectory-candidate-test",
+          evidenceRoot: candidateInputRoot,
+          gitRef: "working-tree",
+          repoRoot: root,
+        });
+        const candidatePath = path.join(candidateInputRoot, "bundle.json");
         const replayArgs = [
           "--mode", "evaluate",
           "--pack", "delivery-trajectory",
@@ -655,6 +1088,8 @@ const tests: TestCase[] = [
 
         const configured = invokeCli(["--mode", "preflight", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--session-mode", "configured"]);
         assert(configured.status === 1 && configured.stderr.includes("requires --opencode and --candidate-config-dir"), configured.stderr || configured.stdout);
+        fs.mkdirSync(baselineRoot, { recursive: true });
+        fs.writeFileSync(path.join(baselineRoot, "sentinel.txt"), "preserve", "utf8");
         const existingRoot = invokeCli([
           "--mode", "baseline",
           "--pack", "delivery-trajectory",
@@ -663,6 +1098,7 @@ const tests: TestCase[] = [
           "--evidence-root", baselineRoot,
         ]);
         assert(existingRoot.status === 1 && existingRoot.stderr.includes("must be create-new"), existingRoot.stderr || existingRoot.stdout);
+        assert(fs.readFileSync(path.join(baselineRoot, "sentinel.txt"), "utf8") === "preserve", "existing trajectory output must not be deleted");
       } finally {
         fs.rmSync(directory, { force: true, recursive: true });
       }
@@ -1144,7 +1580,7 @@ const tests: TestCase[] = [
         repoRoot: root,
         sourceIdentity,
       }, diagnostic);
-      assert(bundle.inventory.join(",") === "bundle.json,diagnostic.json" && bundle.samples.length === 1, "server capture bundle inventory");
+      assert(bundle.inventory.join(",") === "diagnostic.json" && bundle.samples.length === 1, "server capture temporary inventory");
       assert(bundle.samples[0]?.command.status === 0 && bundle.samples[0]?.cleanup.complete, "server capture terminal facts");
       assert(bundle.samples[0]?.friction.configuredProviderRequestCount === 1 && bundle.samples[0]?.friction.totalToolCallCount === 3, "server capture request and tool counts");
       assert(bundle.samples[0]?.permissions.violations.length === 0, "apply_patch must satisfy the logical edit permission");
@@ -1485,14 +1921,13 @@ const tests: TestCase[] = [
         assert(firstPayload.liveCalls === 0 && secondPayload.liveCalls === 0, "status-scope replay must remain provider-free");
         assert(firstPayload.evaluation.digest === secondPayload.evaluation.digest, "status-scope terminal evaluation must be deterministic");
         assert(firstPayload.evaluation.evaluation.status === "passed-no-regression", JSON.stringify(firstPayload.evaluation));
-        const resultPath = path.join(directory, "terminal-replay.json");
-        const improvement = invokeCli(["--mode", "evaluate", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement", "--result-path", resultPath]);
+        const improvementArgs = ["--mode", "evaluate", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement"];
+        const improvement = invokeCli(improvementArgs);
         assert(improvement.status === 0, improvement.stderr || improvement.stdout);
         const improvementPayload = JSON.parse(improvement.stdout) as Record<string, any>;
         assert(improvementPayload.liveCalls === 0 && improvementPayload.evaluation.evaluation.status === "passed-improvement", JSON.stringify(improvementPayload));
-        assert(fs.readFileSync(resultPath, "utf8") === `${improvement.stdout.trim()}\n`, "result path must seal the emitted replay bytes");
-        const duplicate = invokeCli(["--mode", "evaluate", "--pack", "status-scope", "--baseline", lossyBaselinePath, "--candidate", candidatePath, "--expectation", "improvement", "--result-path", resultPath]);
-        assert(duplicate.status === 1 && duplicate.stderr.includes("create-new path already exists"), "result path must fail closed on overwrite");
+        const duplicate = invokeCli(improvementArgs);
+        assert(duplicate.status === 0 && duplicate.stdout === improvement.stdout, "disposable evaluation must be byte-stable without a result file");
       } finally {
         fs.rmSync(directory, { force: true, recursive: true });
       }
@@ -2094,12 +2529,16 @@ const tests: TestCase[] = [
       const evaluated = evaluateDecisionGapPack({ baseline, candidate, expectation: "no-regression", pack: loaded.pack });
       assert(evaluated.evaluation.status === "passed-no-regression", evaluated.evaluation.reasons.join(","));
       assert(evaluated.complexityOracles?.length === 2 && evaluated.complexityOracles.every((row) => row.passed), "complexity reviewed oracles");
+      const baselineInput = path.join(parent, "baseline-input.json");
+      const candidateInput = path.join(parent, "candidate-input.json");
+      fs.writeFileSync(baselineInput, stableJson(baseline), "utf8");
+      fs.writeFileSync(candidateInput, stableJson(candidate), "utf8");
 
       const replayArgs = [
         "--mode", "evaluate",
         "--pack", "complexity",
-        "--baseline", path.join(baselineRoot, "bundle.json"),
-        "--candidate", path.join(candidateRoot, "bundle.json"),
+        "--baseline", baselineInput,
+        "--candidate", candidateInput,
       ];
       const first = invokeCli(replayArgs);
       const second = invokeCli(replayArgs);
@@ -2116,7 +2555,7 @@ const tests: TestCase[] = [
         "--pack", "complexity",
         "--candidate-id", "blocked-configured-capture",
         "--evidence-root", blockedRoot,
-        "--baseline", path.join(baselineRoot, "bundle.json"),
+        "--baseline", baselineInput,
         "--source-ref", "working-tree",
         "--session-mode", "configured",
       ]);
@@ -2279,7 +2718,7 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "replay is deterministic and tamper fails closed",
+    name: "disposable evaluation is deterministic and tamper fails closed",
     run: () => {
       const manifest = loadManifest(root).manifest;
       const samples = [
@@ -2287,25 +2726,25 @@ const tests: TestCase[] = [
         ...[1, 2, 3].map((sampleIndex) => sample({ arm: "baseline", sampleIndex, scenarioId: "openspec-add-json-output" })),
       ];
       const bundle = bundleOf(samples);
-      const dir = tempDir("replay");
-      const file = path.join(dir, "bundle.json");
+      const dir = tempDir("evaluation");
+      const file = path.join(dir, "input.json");
       fs.writeFileSync(file, stableJson(bundle));
-      const first = replayEvaluation({ baselinePath: file, expectation: "baseline-establishment", manifest });
-      const second = replayEvaluation({ baselinePath: file, expectation: "baseline-establishment", manifest });
-      assert(first.digest === second.digest, "replay digest must match");
+      const first = evaluateDisposableInputs({ baselinePath: file, expectation: "baseline-establishment", manifest });
+      const second = evaluateDisposableInputs({ baselinePath: file, expectation: "baseline-establishment", manifest });
+      assert(first.digest === second.digest, "evaluation digest must match");
       const before = fs.readFileSync(file, "utf8");
       const tampered = JSON.parse(before) as CaptureBundle;
       tampered.samples[0].friction.ownerQuestionCount = 9;
       fs.writeFileSync(file, stableJson(tampered));
       let failed = false;
       try {
-        replayEvaluation({ baselinePath: file, expectation: "baseline-establishment", manifest });
+        evaluateDisposableInputs({ baselinePath: file, expectation: "baseline-establishment", manifest });
       } catch (error) {
         failed = error instanceof ContractError;
       }
       assert(failed, "tamper must fail closed");
       fs.writeFileSync(file, before);
-      assert(fs.readFileSync(file, "utf8") === before, "replay must not rewrite a restored bundle");
+      assert(fs.readFileSync(file, "utf8") === before, "evaluation must not rewrite restored disposable input");
       fs.rmSync(dir, { force: true, recursive: true });
     },
   },
@@ -2371,19 +2810,22 @@ const tests: TestCase[] = [
       assert(bundle.samples.every((row) => row.cleanup.complete), bundle.samples.map((row) => row.cleanup.error).join(","));
       const evaluation = evaluateBundle({ baseline: bundle, expectation: "baseline-establishment", manifest: loaded.manifest });
       assert(evaluation.status === "baseline-established", evaluation.reasons.join(","));
-      const replayDir = tempDir("capture-replay");
-      const copy = path.join(replayDir, "bundle.json");
-      fs.copyFileSync(path.join(evidence, "bundle.json"), copy);
-      const first = replayEvaluation({ baselinePath: copy, expectation: "baseline-establishment", manifest: loaded.manifest });
-      const second = replayEvaluation({ baselinePath: copy, expectation: "baseline-establishment", manifest: loaded.manifest });
+      const replayDir = tempDir("capture-evaluate");
+      const copy = path.join(replayDir, "input.json");
+      fs.writeFileSync(copy, stableJson(bundle), "utf8");
+      const first = evaluateDisposableInputs({ baselinePath: copy, expectation: "baseline-establishment", manifest: loaded.manifest });
+      const second = evaluateDisposableInputs({ baselinePath: copy, expectation: "baseline-establishment", manifest: loaded.manifest });
       assert(first.digest === second.digest, "captured replay digest");
       const current = gateCurrent({
         currentSource: sourceIdentity,
         manifest: loaded.manifest,
         pointer: {
+          baselineMedians: evaluation.baselineMedians,
           baselineVersion: "b1",
-          bundlePath: path.relative(root, path.join(evidence, "bundle.json")).replaceAll("\\", "/"),
-          environmentDigest: digestOf(bundle.samples[0].environmentIdentity),
+          environmentDigests: Object.fromEntries(loaded.manifest.scenarios.map((scenario) => [
+            scenario.id,
+            digestOf(bundle.samples.find((sample) => sample.scenarioId === scenario.id)!.environmentIdentity),
+          ])),
           evaluatorDigest: evaluatorDigest(),
           priorBaselineReference: null,
           reason: "test",
@@ -2392,7 +2834,6 @@ const tests: TestCase[] = [
           sourceDigest: sourceIdentity.governedDigest,
           status: "accepted",
         },
-        repoRoot: root,
       });
       assert(current.status === "baseline-current", current.reasons.join(","));
       fs.rmSync(evidence, { force: true, recursive: true });
@@ -2425,11 +2866,13 @@ const tests: TestCase[] = [
       });
       assert(evaluation.evaluation.status === "passed-no-regression", evaluation.evaluation.reasons.join(","));
       assert(evaluation.decisionOracles.length === 8 && evaluation.decisionOracles.every((row) => row.passed), "all explicit decision oracles must pass");
+      const disposableInput = path.join(evidence, "input.json");
+      fs.writeFileSync(disposableInput, stableJson(bundle), "utf8");
       const replay = invokeCli([
         "--mode", "evaluate",
         "--pack", "claim-evidence",
-        "--baseline", path.join(evidence, "bundle.json"),
-        "--candidate", path.join(evidence, "bundle.json"),
+        "--baseline", disposableInput,
+        "--candidate", disposableInput,
         "--expectation", "no-regression",
       ]);
       assert(replay.status === 0, replay.stderr || replay.stdout);
@@ -2481,18 +2924,22 @@ const tests: TestCase[] = [
       assert(baseline.samples.length === 2 && candidate.samples.length === 2, "shift-left pack must capture two samples per arm");
       assert([...baseline.samples, ...candidate.samples].every((row) => row.cleanup.complete && row.cleanup.sessionsRemoved), "shift-left capture cleanup");
       assert([...baseline.samples, ...candidate.samples].every((row) => row.friction.configuredProviderRequestCount === 0), "harness capture must use zero configured-provider requests");
+      const baselineInput = path.join(parent, "baseline-input.json");
+      const candidateInput = path.join(parent, "candidate-input.json");
+      fs.writeFileSync(baselineInput, stableJson(baseline), "utf8");
+      fs.writeFileSync(candidateInput, stableJson(candidate), "utf8");
 
       const first = invokeCli([
         "--mode", "evaluate",
         "--pack", "shift-left",
-        "--baseline", path.join(baselineRoot, "bundle.json"),
-        "--candidate", path.join(candidateRoot, "bundle.json"),
+        "--baseline", baselineInput,
+        "--candidate", candidateInput,
       ]);
       const second = invokeCli([
         "--mode", "evaluate",
         "--pack", "shift-left",
-        "--baseline", path.join(baselineRoot, "bundle.json"),
-        "--candidate", path.join(candidateRoot, "bundle.json"),
+        "--baseline", baselineInput,
+        "--candidate", candidateInput,
       ]);
       assert(first.status === 0 && second.status === 0, first.stderr || second.stderr || first.stdout || second.stdout);
       const firstPayload = JSON.parse(first.stdout) as { evaluation: { decisionOracles: Array<{ passed: boolean }>; digest: string; evaluation: { status: string }; maximumClaim: string }; liveCalls: number };
@@ -2673,7 +3120,8 @@ const tests: TestCase[] = [
       assert(bundle.samples.length === 1 && bundle.samples[0]?.cleanup.complete, "missing outcome must retain one terminal, cleaned-up sample");
       assert(bundle.samples[0]?.proof.status === 1, "missing decision checker must retain its non-zero proof exit");
       assert(!bundle.samples[0]?.files.some((file) => file.path === "decision.json"), "missing decision must remain an explicit absent state file");
-      assert(fs.existsSync(path.join(evidence, "bundle.json")), "negative sample must be sealed before handoff");
+      assert(!fs.existsSync(path.join(evidence, "bundle.json")), "negative sample must not create a retained bundle");
+      assert(bundle.samples[0]?.hashes.sample === digestOf({ ...bundle.samples[0], hashes: { sample: "" } }), "negative sample must be sealed in memory before evaluation");
       const { hashes: _hashes, ...baselineDraft } = structuredClone(bundle.samples[0]!);
       const baselineDecision = stableJson({
         caseId: "mismatch-unique-recovery",
@@ -2718,22 +3166,23 @@ const tests: TestCase[] = [
     run: () => {
       const manifest = loadManifest(root).manifest;
       const current = source("aaa");
+      const baselineMedians = Object.fromEntries(manifest.scenarios.map((scenario) => [scenario.id, emptyFriction()]));
+      const environmentDigests = Object.fromEntries(manifest.scenarios.map((scenario) => [scenario.id, "e".repeat(64)]));
       const stale = gateCurrent({
         currentSource: source("bbb"),
         manifest,
         pointer: {
+          baselineMedians,
           baselineVersion: "b1",
-          bundlePath: "missing.json",
-          environmentDigest: "e",
+          environmentDigests,
           evaluatorDigest: evaluatorDigest(),
           priorBaselineReference: null,
           reason: "first",
-          scenarioDigest: "scenario",
+          scenarioDigest: digestOf(manifest),
           schemaVersion: 1,
           sourceDigest: "aaa",
           status: "accepted",
         },
-        repoRoot: root,
       });
       assert(stale.status === "blocked" || stale.status === "stale-evidence", stale.status);
       parseCandidateRequest({ candidateId: "c1", expectation: "improvement", sourceRoot: root });

@@ -87,6 +87,7 @@ export class GuardStatusReporter {
         paused: state.paused,
         continuationCycles: state.continuationCycles,
         frontierError: state.frontierError,
+        frontierReconciliationAttempts: state.frontierReconciliationAttempts ?? 0,
         frontierReconciliationRef: state.frontierReconciliationRef,
         frontierStatus: state.frontierStatus,
         workFrontier: persistedWorkFrontier,
@@ -132,6 +133,7 @@ export class GuardStatusReporter {
         guard.paused === state.paused &&
         guard.continuationCycles === state.continuationCycles &&
         guard.frontierError === state.frontierError &&
+        guard.frontierReconciliationAttempts === (state.frontierReconciliationAttempts ?? 0) &&
         guard.frontierReconciliationRef === state.frontierReconciliationRef &&
         guard.frontierStatus === state.frontierStatus &&
         (preserveInvalidFrontier || JSON.stringify(guard.workFrontier) === JSON.stringify(state.workFrontier)) &&

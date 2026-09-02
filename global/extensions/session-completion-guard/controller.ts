@@ -27,6 +27,7 @@ import {
   grindControlPart,
 } from "./grind-control.ts";
 import {
+  FrontierValidationError,
   GRIND_FRONTIER_INPUT_SCHEMA,
   GRIND_FRONTIER_TOOL,
   materializeWorkFrontier,
@@ -76,6 +77,15 @@ import type {
 import { buildContinuation, parseCompletionVerdictText } from "./verdict.ts";
 type LogLevel = "debug" | "error" | "info" | "warn";
 const MAX_AUTONOMOUS_QUESTION_REFS = 1_024;
+const MAX_FRONTIER_RECONCILIATION_TURNS = 3;
+const FRONTIER_REJECTION_CODE = /\b(?:dependency-cycle|duplicate-[A-Za-z0-9-]+|inconsistent-[A-Za-z0-9-]+|invalid-[A-Za-z0-9-]+|limit-[A-Za-z0-9-]+|missing-[A-Za-z0-9-]+|stale-generation|unsupported-[A-Za-z0-9-]+|unresolved-[A-Za-z0-9-]+)\b/;
+
+function frontierRejectionCode(error: unknown): string {
+  if (error instanceof FrontierValidationError) return error.code;
+  const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  return message.match(FRONTIER_REJECTION_CODE)?.[0] ?? "frontier-tool-rejected";
+}
+
 class ArbiterPromptTimeoutError extends Error {
   readonly timeoutMs: number;
 
@@ -147,6 +157,7 @@ export class SessionCompletionController {
   private readonly ptyFallback: PtyFallbackScheduler;
   private readonly status: GuardStatusReporter;
   private readonly frontierWrites = new Set<string>();
+  private readonly frontierReconciliationErrors = new Map<string, { code: string; reconciliationRef: string }>();
   private configuredPermission: ReturnType<typeof configuredPermissionClass> = "unspecified";
   private disposed = false;
   private permissionDiagnosticLogged = false;
@@ -260,6 +271,7 @@ export class SessionCompletionController {
       const previous = {
         continuationCycles: state.continuationCycles,
         frontierError: state.frontierError,
+        frontierReconciliationAttempts: state.frontierReconciliationAttempts,
         frontierReconciliationRef: state.frontierReconciliationRef,
         frontierStatus: state.frontierStatus,
         lastAuditedRevision: state.lastAuditedRevision,
@@ -274,6 +286,7 @@ export class SessionCompletionController {
       state.workFrontier = assessment.frontier;
       state.frontierStatus = "current";
       state.frontierError = null;
+      state.frontierReconciliationAttempts = 0;
       state.frontierReconciliationRef = null;
       state.lastAuditedRevision = null;
       state.lastProgressFingerprint = assessment.frontier.progressFingerprint;
@@ -285,6 +298,7 @@ export class SessionCompletionController {
         await this.status.persist(state);
         throw new Error("grind_frontier persistence did not converge");
       }
+      this.frontierReconciliationErrors.delete(state.root.id);
       const metadata = {
         frontierState: assessment.frontierState,
         openGateRefs: assessment.openGateRefs,
@@ -295,9 +309,20 @@ export class SessionCompletionController {
       };
       context.metadata({ title: "Grind work frontier", metadata });
       return { title: "Grind work frontier", metadata, output: `${JSON.stringify(metadata, null, 2)}\n` };
+    } catch (error) {
+      this.noteFrontierRejection(state, error);
+      throw error;
     } finally {
       this.frontierWrites.delete(state.root.id);
     }
+  }
+
+  private noteFrontierRejection(state: RootState, error: unknown): void {
+    if (state.frontierStatus === "invalid" || state.frontierReconciliationRef == null) return;
+    this.frontierReconciliationErrors.set(state.root.id, {
+      code: frontierRejectionCode(error),
+      reconciliationRef: state.frontierReconciliationRef,
+    });
   }
 
   private async reconcileRoots(): Promise<void> {
@@ -509,6 +534,9 @@ export class SessionCompletionController {
     if (state.frontierStatus !== "invalid") {
       state.frontierStatus = state.workFrontier == null ? "absent" : "stale";
       state.frontierError = null;
+      state.frontierReconciliationAttempts = 0;
+      state.frontierReconciliationRef = null;
+      this.frontierReconciliationErrors.delete(state.root.id);
       state.lastAuditedRevision = null;
     }
     if (isExplicitHumanStop(text)) {
@@ -541,7 +569,9 @@ export class SessionCompletionController {
       }
       state.frontierError = null;
       state.frontierStatus = state.workFrontier == null ? "absent" : "unverified";
+      state.frontierReconciliationAttempts = 0;
       state.frontierReconciliationRef = null;
+      this.frontierReconciliationErrors.delete(state.root.id);
       await this.status.set(state, "frontier-reconciling", "Grind enabled; work frontier reconciliation required", "success");
       return;
     }
@@ -563,12 +593,21 @@ export class SessionCompletionController {
     }
     const type = stringValue(event.type);
     const properties = record(event.properties) ?? {};
-    const sessionID = stringValue(properties.sessionID) ?? stringValue(record(properties.info)?.id);
+    const part = record(properties.part);
+    const sessionID = stringValue(properties.sessionID) ?? stringValue(record(properties.info)?.id) ?? stringValue(part?.sessionID);
     if (type === "session.deleted" && sessionID != null) {
       this.clearRoot(sessionID);
       return;
     }
     if (sessionID == null) return;
+    if (type === "message.part.updated" && part?.type === "tool" && part.tool === GRIND_FRONTIER_TOOL) {
+      const toolState = record(part.state);
+      if (toolState?.status === "error") {
+        const state = await this.tryRoot(sessionID);
+        if (state != null && state.root.id === sessionID) this.noteFrontierRejection(state, toolState.error);
+      }
+      return;
+    }
     if ((type === "question.replied" || type === "question.v2.replied")) {
       await this.onQuestionReplied(sessionID, stringValue(properties.requestID));
       return;
@@ -676,13 +715,45 @@ export class SessionCompletionController {
     state.frontierStatus = reason === "missing" ? "absent" : "stale";
     state.frontierError = null;
     state.lastAuditedRevision = null;
-    if (state.frontierReconciliationRef === reconciliationRef) {
+    const sameReconciliation = state.frontierReconciliationRef === reconciliationRef;
+    if (sameReconciliation && state.guardTurnPending) {
       await this.status.set(state, "frontier-reconciling", `Work frontier ${reason}; awaiting the bounded reconciliation turn`, "warning");
       return;
     }
+    if (!sameReconciliation) {
+      state.frontierReconciliationAttempts = 0;
+      this.frontierReconciliationErrors.delete(state.root.id);
+    }
+    const attempts = state.frontierReconciliationAttempts ?? 0;
+    const priorRejection = sameReconciliation
+      ? this.frontierReconciliationErrors.get(state.root.id)
+      : null;
+    const previousError = priorRejection?.reconciliationRef === reconciliationRef
+      ? priorRejection.code
+      : sameReconciliation
+        ? "frontier-not-updated"
+        : null;
+    if (sameReconciliation && attempts >= MAX_FRONTIER_RECONCILIATION_TURNS) {
+      state.frontierError = `frontier-reconciliation-exhausted:${previousError ?? "unknown"}`;
+      state.restartRecoveryAction = "frontier-reconciliation-exhausted";
+      await this.status.set(
+        state,
+        "error",
+        `Work frontier ${reason}; bounded reconciliation exhausted after ${attempts} turns (${previousError ?? "unknown"})`,
+        "error",
+      );
+      return;
+    }
     state.frontierReconciliationRef = reconciliationRef;
-    state.restartRecoveryAction = `frontier-${reason}`;
-    await this.status.set(state, "frontier-reconciling", `Work frontier ${reason}; starting one bounded reconciliation turn`, "warning");
+    state.frontierReconciliationAttempts = attempts + 1;
+    this.frontierReconciliationErrors.delete(state.root.id);
+    state.restartRecoveryAction = previousError == null ? `frontier-${reason}` : `frontier-correction:${previousError}`;
+    await this.status.set(
+      state,
+      "frontier-reconciling",
+      `Work frontier ${reason}; starting bounded reconciliation turn ${state.frontierReconciliationAttempts}/${MAX_FRONTIER_RECONCILIATION_TURNS}`,
+      "warning",
+    );
     const context = restoredPromptContext(state.root, state.promptContext);
     const payload = {
       schemaVersion: 1,
@@ -691,7 +762,10 @@ export class SessionCompletionController {
       basisHumanRef: inspection.revision.humanRef,
       taskStateDigest: inspection.revision.todoDigest,
       expectedGeneration: state.workFrontier?.frontierGeneration ?? 0,
-      instruction: "Reconcile the current accepted work into one complete bounded grind_frontier input. Use only explicit current requirements, task state, decisions, and evidence. Call grind_frontier exactly once; do not ask a question, dispatch work, infer protected authority, or claim completion.",
+      attempt: state.frontierReconciliationAttempts,
+      attemptLimit: MAX_FRONTIER_RECONCILIATION_TURNS,
+      previousError,
+      instruction: "Reconcile the current accepted work into one complete bounded grind_frontier input. Use only explicit current requirements, task state, decisions, and evidence. Call grind_frontier and do not stop until it succeeds. If rejected, correct only the invalid representation from the tool error without changing accepted semantics, then retry in this same turn; use at most three grind_frontier calls in this turn. Do not ask a question, dispatch work, infer protected authority, or claim completion.",
     };
     state.guardTurnPending = true;
     await ensureNoError(this.client.session.promptAsync({
@@ -704,7 +778,7 @@ export class SessionCompletionController {
         type: "text",
         synthetic: true,
         text: `<grind_frontier_reconciliation>\n${JSON.stringify(payload, null, 2)}\n</grind_frontier_reconciliation>`,
-        metadata: { provenance: "completion-guard", reconciliationRef },
+        metadata: { provenance: "completion-guard", reconciliationRef, attempt: state.frontierReconciliationAttempts },
       }],
     }) as Promise<unknown>, "session.promptAsync frontier reconciliation");
   }
@@ -858,7 +932,9 @@ export class SessionCompletionController {
     if (state.frontierStatus !== "current") {
       state.frontierStatus = "current";
       state.frontierError = null;
+      state.frontierReconciliationAttempts = 0;
       state.frontierReconciliationRef = null;
+      this.frontierReconciliationErrors.delete(state.root.id);
       state.restartRecoveryAction = "frontier-verified";
       await this.status.persist(state);
     }
@@ -1814,6 +1890,7 @@ export class SessionCompletionController {
       this.cancelAudit(state);
       this.leases.clearRoot(state.root.id);
       this.ptyFallback.clearRoot(state.root.id);
+      this.frontierReconciliationErrors.delete(state.root.id);
       this.roots.delete(state.root.id);
     }
   }

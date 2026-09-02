@@ -437,6 +437,329 @@
       }
     },
     {
+      "id": "leaf-first-checkpoint-composition",
+      "context": {
+        "rootSessionRef": "session_leaf_checkpoint",
+        "latestHumanRef": "human_leaf_checkpoint",
+        "taskStateDigest": "8888888888888888888888888888888888888888888888888888888888888888",
+        "currentGeneration": 12
+      },
+      "input": {
+        "expectedGeneration": 12,
+        "acceptedOutcomeRef": "outcome_leaf_first",
+        "items": [
+          {
+            "id": "item_checkpoint",
+            "requirementRefs": ["requirement_checkpoint_route"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_checkpoint_due"]
+          },
+          {
+            "id": "item_leaf",
+            "requirementRefs": ["requirement_leaf"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_leaf_ready"]
+          },
+          {
+            "id": "item_parent",
+            "requirementRefs": ["requirement_parent"],
+            "status": "pending",
+            "dependsOn": ["item_checkpoint", "item_leaf"],
+            "gateRefs": ["gate_checkpoint"],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_checkpoint",
+            "kind": "process",
+            "status": "open",
+            "affectedItemRefs": ["item_parent"],
+            "resumeCondition": "The checkpoint route and required leaf reach their separate oracles.",
+            "evidenceRefs": ["evidence_checkpoint_due"]
+          }
+        ],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_leaf_checkpoint"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 13,
+        "runnableItemRefs": ["item_checkpoint", "item_leaf"],
+        "openGateRefs": ["gate_checkpoint"],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "leaf-first-hidden-prerequisite",
+      "context": {
+        "rootSessionRef": "session_leaf_hidden",
+        "latestHumanRef": "human_leaf_hidden",
+        "taskStateDigest": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+        "currentGeneration": 16
+      },
+      "input": {
+        "expectedGeneration": 16,
+        "acceptedOutcomeRef": "outcome_leaf_first",
+        "items": [
+          {
+            "id": "item_hidden_leaf",
+            "requirementRefs": ["requirement_hidden_leaf"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_hidden_observed"]
+          },
+          {
+            "id": "item_parent",
+            "requirementRefs": ["requirement_parent"],
+            "status": "pending",
+            "dependsOn": ["item_hidden_leaf"],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_prior_parent_attempt"]
+          },
+          {
+            "id": "item_sibling",
+            "requirementRefs": ["requirement_sibling"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_sibling_ready"]
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_leaf_hidden"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 17,
+        "runnableItemRefs": ["item_hidden_leaf", "item_sibling"],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "leaf-first-independent-siblings",
+      "context": {
+        "rootSessionRef": "session_leaf_siblings",
+        "latestHumanRef": "human_leaf_siblings",
+        "taskStateDigest": "9999999999999999999999999999999999999999999999999999999999999999",
+        "currentGeneration": 13
+      },
+      "input": {
+        "expectedGeneration": 13,
+        "acceptedOutcomeRef": "outcome_leaf_first",
+        "items": [
+          {
+            "id": "item_leaf_a",
+            "requirementRefs": ["requirement_leaf_a"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_leaf_a_ready"]
+          },
+          {
+            "id": "item_leaf_b",
+            "requirementRefs": ["requirement_leaf_b"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_leaf_b_ready"]
+          },
+          {
+            "id": "item_parent",
+            "requirementRefs": ["requirement_parent"],
+            "status": "pending",
+            "dependsOn": ["item_leaf_a", "item_leaf_b"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_leaf_siblings"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 14,
+        "runnableItemRefs": ["item_leaf_a", "item_leaf_b"],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "leaf-first-owner-gate",
+      "context": {
+        "rootSessionRef": "session_leaf_owner",
+        "latestHumanRef": "human_leaf_owner",
+        "taskStateDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "currentGeneration": 14
+      },
+      "input": {
+        "expectedGeneration": 14,
+        "acceptedOutcomeRef": "outcome_leaf_first",
+        "items": [
+          {
+            "id": "item_owner",
+            "requirementRefs": ["requirement_owner_decision"],
+            "status": "blocked",
+            "dependsOn": [],
+            "gateRefs": ["gate_owner"],
+            "evidenceRefs": ["evidence_owner_options"]
+          },
+          {
+            "id": "item_parent",
+            "requirementRefs": ["requirement_parent"],
+            "status": "pending",
+            "dependsOn": ["item_owner"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          },
+          {
+            "id": "item_sibling",
+            "requirementRefs": ["requirement_sibling"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_sibling_ready"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_owner",
+            "kind": "product-decision",
+            "status": "open",
+            "affectedItemRefs": ["item_owner"],
+            "resumeCondition": "The owner selects the product behavior.",
+            "evidenceRefs": ["evidence_owner_options"]
+          }
+        ],
+        "parkedDecisions": [
+          {
+            "id": "decision_owner",
+            "questionRef": "question_owner",
+            "affectedItemRefs": ["item_owner"],
+            "optionInvariantItemRefs": ["item_sibling"],
+            "decisionPoint": "Select the product behavior after independent accepted work drains.",
+            "evidenceRefs": ["evidence_owner_options"]
+          }
+        ],
+        "progressFingerprint": "progress_leaf_owner"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 15,
+        "runnableItemRefs": ["item_sibling"],
+        "openGateRefs": ["gate_owner"],
+        "parkedDecisionRefs": ["decision_owner"]
+      }
+    },
+    {
+      "id": "leaf-first-parent-own-proof",
+      "context": {
+        "rootSessionRef": "session_leaf_parent_proof",
+        "latestHumanRef": "human_leaf_parent_proof",
+        "taskStateDigest": "dcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc",
+        "currentGeneration": 17
+      },
+      "input": {
+        "expectedGeneration": 17,
+        "acceptedOutcomeRef": "outcome_leaf_first",
+        "items": [
+          {
+            "id": "item_leaf",
+            "requirementRefs": ["requirement_leaf"],
+            "status": "complete",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_leaf_passed"]
+          },
+          {
+            "id": "item_parent",
+            "requirementRefs": ["requirement_parent"],
+            "status": "pending",
+            "dependsOn": ["item_leaf"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_leaf_parent_proof"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 18,
+        "runnableItemRefs": ["item_parent"],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "leaf-first-parent-suppression",
+      "context": {
+        "rootSessionRef": "session_leaf_parent",
+        "latestHumanRef": "human_leaf_parent",
+        "taskStateDigest": "abababababababababababababababababababababababababababababababab",
+        "currentGeneration": 18
+      },
+      "input": {
+        "expectedGeneration": 18,
+        "acceptedOutcomeRef": "outcome_leaf_first",
+        "items": [
+          {
+            "id": "item_leaf",
+            "requirementRefs": ["requirement_leaf"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_leaf_ready"]
+          },
+          {
+            "id": "item_parent",
+            "requirementRefs": ["requirement_parent"],
+            "status": "pending",
+            "dependsOn": ["item_leaf"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_leaf_parent"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 19,
+        "runnableItemRefs": ["item_leaf"],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
       "id": "malformed",
       "context": {
         "rootSessionRef": "session_malformed",

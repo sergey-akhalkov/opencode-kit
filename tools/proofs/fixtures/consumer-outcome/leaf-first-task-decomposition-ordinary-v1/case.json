@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "configured-ordinary-leaf-first",
+  "acceptedOutcome": "Prove both independent release prerequisites before the release-bundle integration while preserving direct handling for cohesive, same-leaf, grouped-mechanical, and integration-only controls.",
+  "operatingEnvelope": "This disposable ordinary repository with local reads, edits, and node commands only.",
+  "nonGoals": ["OpenSpec authoring", "grind projection", "checkpoint creation", "protected or remote effects"],
+  "parent": {
+    "id": "release-bundle",
+    "dependencies": ["leaf-a", "leaf-b"],
+    "oracle": "node scripts/observe.ts parent"
+  },
+  "leaves": [
+    {"id": "leaf-a", "owner": "work/leaf-a.txt", "requiredValue": "alpha-ready", "oracle": "node scripts/observe.ts leaf-a"},
+    {"id": "leaf-b", "owner": "work/leaf-b.txt", "requiredValue": "beta-ready", "oracle": "node scripts/observe.ts leaf-b"}
+  ],
+  "controls": [
+    {"id": "cohesive", "owner": "work/cohesive.txt", "requiredValue": "cohesive-ready", "oracle": "node scripts/observe.ts cohesive", "expectedMode": "direct"},
+    {"id": "same-leaf", "owner": "work/same-leaf.txt", "requiredValue": "local-fixed", "oracle": "node scripts/observe.ts same-leaf", "expectedMode": "fail-once-correct-and-rerun-direct"},
+    {"id": "grouped-mechanical", "owners": ["work/mechanical-a.txt", "work/mechanical-b.txt"], "requiredValue": "mechanical-ready", "oracle": "node scripts/observe.ts grouped-mechanical", "expectedMode": "grouped-direct"},
+    {"id": "integration-only", "leafOwners": ["work/integration-left.txt", "work/integration-right.txt"], "parentOwner": "work/integration-parent.txt", "requiredValue": "integrated-fixed", "oracle": "node scripts/observe.ts integration-only", "expectedMode": "fail-once-correct-parent-and-rerun"}
+  ],
+  "finalOracle": "node scripts/check-result.ts"
+}

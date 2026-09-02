@@ -1,12 +1,30 @@
 {
   "schemaVersion": 1,
   "status": "accepted",
-  "baselineVersion": "v1",
-  "sourceDigest": "669af62ac54df36f78d84e99b7bbef388e10d5227d25fd45eae56ce86320a3e5",
-  "environmentDigest": "d8d8d07cbdb0c75c358a5811b393b7fd091674ecb9f10ff402e2f092309dc771",
-  "scenarioDigest": "f8ea029257ce14a3cbbba22ee9e21acf0469f70998685ed488fea4a76af61c1c",
-  "evaluatorDigest": "86340f819cf2fb22b5a56caecf9e244ae915c6cb1682181fee34d069426bda40",
-  "bundlePath": "tools/proofs/fixtures/consumer-outcome/evidence/baseline-accepted/bundle.json",
-  "priorBaselineReference": null,
-  "reason": "First accepted staged-source baseline from HEAD ca43ba441c92dd56f2c751f4583aef41e5c765de after six configured-primary samples and provider-free privacy sanitization."
+  "baselineVersion": "v2",
+  "baselineMedians": {
+    "ordinary-small-greeting": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 0,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 5
+    },
+    "openspec-add-json-output": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 2,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 27
+    }
+  },
+  "sourceDigest": "ddd33b869b05cbe515049b88a5b32f4e9eb8c31b463da5749d64e71158582b9f",
+  "environmentDigests": {
+    "ordinary-small-greeting": "8324127ff8e05e8670d7e49675e8a3b48567aded5e93fdb71cef3534d740310a",
+    "openspec-add-json-output": "144a7f44f4c2041372da7be0451a3e367146d9a4f5a053034a141fb85737553e"
+  },
+  "scenarioDigest": "c44a1065e3089ecd90ab42c693d2078996359985bbdd19126ca2a25b32fcc223",
+  "evaluatorDigest": "baa086c9d97433310b7fce19ce69030a47b585bd4341c354f348a4f5502baaad",
+  "priorBaselineReference": "v1",
+  "reason": "Established by the current-run v2 baseline; temporary diagnostics were removed by the owning invocation."
 }

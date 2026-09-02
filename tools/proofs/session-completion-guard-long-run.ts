@@ -17,6 +17,7 @@ import {
   type ArbiterCompletionEvidence,
 } from "../../global/extensions/session-completion-guard/arbiter-evidence.ts";
 import { SessionCompletionController } from "../../global/extensions/session-completion-guard/controller.ts";
+import { materializeWorkFrontier } from "../../global/extensions/session-completion-guard/frontier.ts";
 import { AsyncLeaseRegistry } from "../../global/extensions/session-completion-guard/leases.ts";
 import {
   initialRootState,
@@ -968,7 +969,22 @@ async function proveFailureClasses(directory: string) {
 async function proveDuplicateRetryChildren(directory: string) {
   const rootID = "session_guard_duplicate_retry";
   const rootRef = hashRef("session", rootID);
-  const root = session(rootID, directory, undefined, 0, { completionGuard: { grindEnabled: true } });
+  const workFrontier = materializeWorkFrontier({
+    acceptedOutcomeRef: "outcome_duplicate_retry",
+    expectedGeneration: 0,
+    gates: [],
+    items: [{
+      dependsOn: [],
+      evidenceRefs: ["evidence_duplicate_retry"],
+      gateRefs: [],
+      id: "item_duplicate_retry",
+      requirementRefs: ["requirement_duplicate_retry"],
+      status: "complete",
+    }],
+    parkedDecisions: [],
+    progressFingerprint: "progress_duplicate_retry",
+  }, { basisHumanRef: "none", currentGeneration: 0, taskStateDigest: stableDigest([]) }).frontier;
+  const root = session(rootID, directory, undefined, 0, { completionGuard: { grindEnabled: true, workFrontier } });
   const child = (id: string) => session(id, directory, rootID, 1, {
     completionGuard: { auditID: "audit-duplicate", attempt: 1, inspectedRevision: "revision", kind: "completion", rootSessionRef: rootRef, status: "retrying" },
   });

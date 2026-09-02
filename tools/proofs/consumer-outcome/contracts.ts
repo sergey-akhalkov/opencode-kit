@@ -399,9 +399,9 @@ export type CaptureBundle = {
 };
 
 export type BaselinePointer = {
+  baselineMedians: Record<string, FrictionVector> | null;
   baselineVersion: string | null;
-  bundlePath: string | null;
-  environmentDigest: string | null;
+  environmentDigests: Record<string, string> | null;
   evaluatorDigest: string | null;
   priorBaselineReference: string | null;
   reason: string | null;
@@ -463,9 +463,9 @@ const PERMISSION_KEYS = ["allow", "deny"] as const;
 const CLEANUP_KEYS = ["fixtureRemoved", "processesRemoved", "sessionsRemoved"] as const;
 const CANDIDATE_KEYS = ["candidateId", "expectation", "sourceRoot"] as const;
 const POINTER_KEYS = [
+  "baselineMedians",
   "baselineVersion",
-  "bundlePath",
-  "environmentDigest",
+  "environmentDigests",
   "evaluatorDigest",
   "priorBaselineReference",
   "reason",
@@ -740,6 +740,11 @@ export function posixPath(value: string): string {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value != null && typeof value === "object" && !Array.isArray(value);
+}
+
+function requireRecord(value: unknown, label: string): Record<string, unknown> {
+  if (!isRecord(value)) throw new ContractError(label, `${label} must be an object`);
+  return value;
 }
 
 export function requireExactKeys(value: unknown, keys: readonly string[], label: string): Record<string, unknown> {
@@ -1428,10 +1433,26 @@ export function parseBaselinePointer(value: unknown): BaselinePointer {
     if (current == null) return null;
     return requireString(current, `baselinePointer.${field}`);
   };
+  const baselineMedians = record.baselineMedians == null
+    ? null
+    : Object.fromEntries(Object.entries(requireRecord(record.baselineMedians, "baselinePointer.baselineMedians")).map(([scenarioId, value]) => {
+      const friction = requireExactKeys(value, FRICTION_FIELDS, `baselinePointer.baselineMedians.${scenarioId}`);
+      return [scenarioId, Object.fromEntries(FRICTION_FIELDS.map((field) => [
+        field,
+        requireInteger(friction[field], `baselinePointer.baselineMedians.${scenarioId}.${field}`, 0, Number.MAX_SAFE_INTEGER),
+      ])) as FrictionVector];
+    }));
+  const environmentDigests = record.environmentDigests == null
+    ? null
+    : Object.fromEntries(Object.entries(requireRecord(record.environmentDigests, "baselinePointer.environmentDigests")).map(([scenarioId, value]) => {
+      const digest = requireString(value, `baselinePointer.environmentDigests.${scenarioId}`);
+      if (!/^[a-f0-9]{64}$/.test(digest)) throw new ContractError(`baselinePointer.environmentDigests.${scenarioId}`, "environment digest must be lowercase sha256");
+      return [scenarioId, digest];
+    }));
   return {
+    baselineMedians,
     baselineVersion: optional("baselineVersion"),
-    bundlePath: optional("bundlePath"),
-    environmentDigest: optional("environmentDigest"),
+    environmentDigests,
     evaluatorDigest: optional("evaluatorDigest"),
     priorBaselineReference: optional("priorBaselineReference"),
     reason: optional("reason"),
@@ -1677,9 +1698,9 @@ export function assertPrivacySafe(text: string, label: string): void {
 
 export function emptyBaselinePointer(): BaselinePointer {
   return {
+    baselineMedians: null,
     baselineVersion: null,
-    bundlePath: null,
-    environmentDigest: null,
+    environmentDigests: null,
     evaluatorDigest: null,
     priorBaselineReference: null,
     reason: null,

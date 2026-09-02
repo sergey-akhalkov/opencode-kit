@@ -31,7 +31,7 @@
       "class": "core",
       "anchors": [
         { "path": "global/principles-of-work.md", "marker": "Evidence Bounds Claims" },
-        { "path": "global/AGENTS.md", "marker": "evidence-sufficiency-reviewer" }
+        { "path": "global/skills/behavioral-substitution-qualification/SKILL.md", "marker": "evidence-sufficiency-reviewer" }
       ],
       "maintenanceSurfaces": ["global/agents/evidence-sufficiency-reviewer.md"],
       "profiles": ["core", "all"],

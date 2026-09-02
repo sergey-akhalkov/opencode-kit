@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "leaf-first-task-decomposition-configured-r1",
+  "profile": "quality-independent",
+  "runtimeProfile": "core",
+  "configuredProviderRequestBound": 1,
+  "maximumClaim": "configured loaded-main observations for one reviewed LFTD-001 ordinary-root happy path plus cohesive, same-leaf, grouped-mechanical, and integration-only controls and one reviewed prescribed OpenSpec authoring/apply path that reopens a checked coarse parent in two disposable repositories under the exact recorded candidate, model, profile, source, fixture, and environment only; each selected scenario is bounded to one request and supports only its current-run rows, not universal trigger quality, optimal decomposition, untested population support, active user-process activation, or deployed-runtime behavior",
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/model-profiles/quality-independent.json",
+    "profiles/core.json",
+    "tools/model-profile.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/leaf-first-task-decomposition-configured.ts",
+    "tools/proofs/consumer-outcome/leaf-first-task-decomposition.ts",
+    "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-configured-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-openspec-v1",
+    "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-ordinary-v1",
+    "tools/proofs/lib/opencode-proof-client.ts",
+    "tools/proofs/lib/proof-process-cleanup.ts",
+    "tools/runtime-surface-profile.ts"
+  ],
+  "scenarios": [
+    {
+      "id": "configured-ordinary-leaf-first",
+      "shape": "ordinary-small",
+      "fixtureId": "configured-ordinary-leaf-first",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-ordinary-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "scripts/check-result.ts",
+          "scripts/observe.ts",
+          "work/cohesive.txt",
+          "work/integration-left.txt",
+          "work/integration-parent.txt",
+          "work/integration-right.txt",
+          "work/leaf-a.txt",
+          "work/leaf-b.txt",
+          "work/mechanical-a.txt",
+          "work/mechanical-b.txt",
+          "work/same-leaf.txt"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this ordinary non-OpenSpec fixture. Read case.json as the complete accepted scenario and apply the loaded leaf-first dependency instructions. Determine execution order from the declared dependencies, owners, modes, and oracles rather than treating this request as a task plan. Complete the parent scenario, then the controls in their listed order. Preserve distinct leaf and parent proof, keep cohesive and same-leaf work direct, keep the two mechanical files grouped under their one oracle, and when the integration-only oracle exposes its seeded parent-local cause correct only that parent owner and rerun without reopening its current leaves. Do not create planning, task, checkpoint, or reflection artifacts; ask no question; invoke no skill or subagent; and take no protected, credential, network, install, commit, remote, or outside-fixture action. Use only local reads, local edits, and the exact node commands in case.json. Finish by running node scripts/check-result.ts once, then report the result briefly.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": [
+          "result/cohesive.json",
+          "result/events.json",
+          "result/grouped-mechanical.json",
+          "result/integration-only.json",
+          "result/leaf-a.json",
+          "result/leaf-b.json",
+          "result/parent.json",
+          "result/same-leaf.json",
+          "work/cohesive.txt",
+          "work/integration-parent.txt",
+          "work/leaf-a.txt",
+          "work/leaf-b.txt",
+          "work/mechanical-a.txt",
+          "work/mechanical-b.txt",
+          "work/same-leaf.txt"
+        ],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "scripts/check-result.ts"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": [
+          "\"cohesiveMode\":\"direct\"",
+          "\"eventCount\":11",
+          "\"integrationMode\":\"parent-local-correct\"",
+          "\"leafProofCount\":2",
+          "\"mechanicalMode\":\"grouped-direct\"",
+          "\"parentAfterLeaves\":true",
+          "\"parentProof\":\"distinct\"",
+          "\"sameLeafMode\":\"direct-correct\"",
+          "\"status\":\"passed\"",
+          "\"taskArtifactCount\":0"
+        ]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read"],
+        "deny": ["external_directory", "question", "skill", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {
+        "status": "passed",
+        "cohesiveMode": "direct",
+        "eventCount": 11,
+        "integrationMode": "parent-local-correct",
+        "leafProofCount": 2,
+        "mechanicalMode": "grouped-direct",
+        "parentAfterLeaves": true,
+        "parentProof": "distinct",
+        "sameLeafMode": "direct-correct",
+        "taskArtifactCount": 0
+      }
+    },
+    {
+      "id": "configured-openspec-leaf-first",
+      "shape": "openspec-backed",
+      "fixtureId": "configured-openspec-leaf-first",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/leaf-first-task-decomposition-openspec-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "expected/final-design.md",
+          "expected/final-history.md",
+          "expected/final-tasks.md",
+          "expected/proactive-tasks.md",
+          "openspec/changes/leaf-first-fixture/.openspec.yaml",
+          "openspec/changes/leaf-first-fixture/design.md",
+          "openspec/changes/leaf-first-fixture/history.md",
+          "openspec/changes/leaf-first-fixture/ownership.json",
+          "openspec/changes/leaf-first-fixture/proposal.md",
+          "openspec/changes/leaf-first-fixture/specs/fixture-client/spec.md",
+          "openspec/changes/leaf-first-fixture/tasks.md",
+          "scripts/check-proactive.ts",
+          "scripts/check-result.ts",
+          "scripts/events.ts",
+          "scripts/materialize-task-shape.ts",
+          "scripts/reveal-prerequisite.ts",
+          "scripts/run-same-leaf.ts",
+          "work/same-leaf.txt"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this OpenSpec fixture. Load the openspec-propose skill and then the openspec-apply-change skill. Read case.json and the active leaf-first-fixture change. The checked coarse task has no truthful leaf or parent evidence: select the proactive materializer declared in case.json, then run node scripts/check-proactive.ts. Next run node scripts/reveal-prerequisite.ts; treat its observed schema-input condition as an independent child of only the affected schema leaf and parent, then select the recursive materializer declared in case.json. These reviewed fixture commands apply only the explicit task delta; they do not infer task semantics. Preserve proposal.md, specifications, ownership.json, accepted scope, existing evidence-transport, and the distinct parent oracle. Run node scripts/run-same-leaf.ts once against the seeded local defect, inspect the actionable failure, correct only work/same-leaf.txt to local-fixed, and rerun the same command without task or history churn. Do not read files under expected/; they are oracle-owned, not implementation inputs. Do not check any task or run parent integration. Do not archive, ask a question, delegate, take a protected action, access credentials/network/external paths, commit, install, or mutate the source worktree. Finish by running node scripts/check-result.ts once, then report briefly.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["archive", "commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": [
+          "openspec/changes/leaf-first-fixture/design.md",
+          "openspec/changes/leaf-first-fixture/history.md",
+          "openspec/changes/leaf-first-fixture/tasks.md",
+          "result/events.json",
+          "result/final.json",
+          "result/hidden-prerequisite.json",
+          "result/proactive.json",
+          "result/same-leaf.json",
+          "work/same-leaf.txt"
+        ],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["openspec", "validate", "leaf-first-fixture", "--strict"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": [
+          "\"changedPlanningPaths\":[\"design.md\",\"history.md\",\"tasks.md\"]",
+          "\"coarseParentReopened\":true",
+          "\"dependencyRefCount\":3",
+          "\"eventCount\":8",
+          "\"historyAppendCount\":1",
+          "\"parentState\":\"open\"",
+          "\"proposalChanged\":false",
+          "\"sameLeafMode\":\"direct-correct\"",
+          "\"scopeChanged\":false",
+          "\"status\":\"passed\"",
+          "\"taskRefCount\":4"
+        ]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read", "skill:openspec-apply-change", "skill:openspec-propose"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {
+        "changedPlanningPaths": ["design.md", "history.md", "tasks.md"],
+        "coarseParentReopened": true,
+        "dependencyRefCount": 3,
+        "eventCount": 8,
+        "historyAppendCount": 1,
+        "parentState": "open",
+        "proposalChanged": false,
+        "sameLeafMode": "direct-correct",
+        "scopeChanged": false,
+        "status": "passed",
+        "taskRefCount": 4
+      }
+    }
+  ]
+}

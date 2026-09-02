@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "tool": "beads",
+  "license": "MIT",
+  "release": {
+    "version": "1.2.2",
+    "buildCommit": "6c124203e771",
+    "platform": "windows",
+    "architecture": "amd64",
+    "archive": {
+      "fileName": "beads_1.2.2_windows_amd64.zip",
+      "url": "https://github.com/gastownhall/beads/releases/download/v1.2.2/beads_1.2.2_windows_amd64.zip",
+      "sha256": "1f00c29cd9599e182a4a4e829f5210daca2da14155920aee2836d8bc613b2feb"
+    },
+    "executable": {
+      "fileName": "bd.exe",
+      "bytes": 145740800,
+      "sha256": "b1f3609fea1d9f0f19b2ed49098b3628acfa6ca115aa28b01a1ee178c3a214de"
+    }
+  },
+  "capabilities": {
+    "version": "supported",
+    "help": "supported",
+    "metricsOff": "supported",
+    "projectInitEmbedded": "supported",
+    "projectWhere": "supported",
+    "configList": "supported",
+    "projectInfo": "supported",
+    "projectStatus": "supported",
+    "featureListAllMetadata": "supported",
+    "featureCreateAtomicCorrelation": "supported",
+    "dependencyAdd": "supported",
+    "ready": "supported",
+    "featureShow": "supported",
+    "featureUpdateExact": "supported",
+    "featureAssign": "supported",
+    "featureClaim": "spike-only",
+    "featureClose": "supported",
+    "featureReopen": "supported",
+    "featureHistory": "supported",
+    "doctorEmbedded": "unsupported",
+    "sqlEmbedded": "unsupported",
+    "workLeases": "unsupported",
+    "eventsJournal": "unsupported",
+    "federation": "unsupported",
+    "httpServer": "unsupported"
+  },
+  "initialization": {
+    "mode": "embedded",
+    "requiredFlags": [
+      "--json",
+      "--non-interactive",
+      "--prefix",
+      "--sandbox",
+      "--setup-exclude",
+      "--skip-agents",
+      "--skip-hooks"
+    ],
+    "disallowedFlags": [
+      "--ignore-schema-skew",
+      "--stealth"
+    ],
+    "requiredTrackedFiles": [
+      {
+        "path": ".gitignore",
+        "sha256": "9788c26633ae340b1647c267f66c010ca0ded0b3bb039e887497ffeccccc6553"
+      }
+    ],
+    "allowedCreatedPaths": [
+      ".beads"
+    ],
+    "allowedModifiedPaths": [
+      ".git/config",
+      ".git/info/exclude"
+    ],
+    "allowedGitConfig": [
+      {
+        "key": "beads.role",
+        "value": "maintainer"
+      }
+    ],
+    "forbiddenEffects": [
+      "agent-instruction",
+      "auto-export",
+      "auto-stage",
+      "external-path-write",
+      "git-hook",
+      "git-remote",
+      "metrics-enabled",
+      "tracked-file-change"
+    ],
+    "metrics": "disabled",
+    "schemaSkew": "reject"
+  }
+}

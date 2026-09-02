@@ -14,11 +14,11 @@ Propose a new change - create the change and generate all artifacts in one step.
 
 Use this skill when the user asks to propose or author a new OpenSpec change and wants every apply-required artifact generated. It authors planning controls only; implementation still follows the Universal Development Loop happy path and runtime-proof sequence.
 
-I'll create a change with artifacts:
+I'll create a change with profile-required artifacts:
 - proposal.md (what & why)
 - design.md (how)
 - tasks.md (implementation steps)
-- history.md (materially distinct attempted strategies)
+- history.md only after a materially distinct strategy event
 
 When ready to implement, run /opsx-apply
 
@@ -56,7 +56,9 @@ When ready to implement, run /opsx-apply
 
    Before drafting the first candidate, work from the original accepted request rather than the scaffold: identify the observable success boundary, current envelope/non-goals, strongest coherent-wrong-outcome path, silent owner-decision path, missing-oracle path, likely late implementation invalidation, and strongest unnecessary-scope candidate. Use those hypotheses to improve the artifacts. Persist only decision-relevant outcomes; never persist raw private request text, hidden reasoning, or a reviewer transcript.
 
-   Before writing any artifact, select exactly one proposal declaration: an existing validated project Horizon id, or `none - <concrete reason>`. Never infer membership. For a linked proposal with a prior successful archive in the same Horizon, identify the latest explicitly linked archive and run `node "<global-source>/bin/delivery-trajectory-context.ts" --root "<project-root>" --horizon "<horizon-id>" --archive "<archive-id>" --format json` from the exact active global source. Main, not the helper, evaluates the compact signal from those facts. If it is `review-required`, load `roadmap-delivery-trajectory` once for the current evidence tuple and consume or create its matching terminal receipt before dependent planning or artifact writes. If it is `unknown`, obtain the smallest safe discriminating observation or block only the affected dependent planning; another Horizon, unrelated work, and safe evidence collection remain available.
+   Before writing any artifact, main records two independent reviewed facts in `.openspec.yaml`: `artifactProfile: compact | full` and `riskDisposition.kind: ordinary-small-exact | material | unknown`. The `riskDisposition` object contains exactly `kind`; keep supporting evidence in reviewed planning prose or its source, never as another metadata key. Compact is available only for a bounded exact Ordinary Small increment with no broad claim or decision-material surface. Material or unknown risk selects full; unknown remains structurally authorable but semantically unknown and cannot authorize apply/archive mutation. Do not infer either axis from prose, paths, diffs, file/task counts, model output, or helper scoring. Both fields absent is legacy compatibility only, not a new-authoring option.
+
+   If the selected profile is full, select exactly one proposal declaration: an existing validated project Horizon id, or `none - <concrete reason>`. If compact, omit an unlinked Horizon and declare only an existing validated Horizon id when the change is explicitly linked. Never infer membership. For a linked proposal with a prior successful archive in the same Horizon, identify the latest explicitly linked archive and run `node "<global-source>/bin/delivery-trajectory-context.ts" --root "<project-root>" --horizon "<horizon-id>" --archive "<archive-id>" --format json` from the exact active global source. Main, not the helper, evaluates the compact signal from those facts. If it is `review-required`, load `roadmap-delivery-trajectory` once for the current evidence tuple and consume or create its matching terminal receipt before dependent planning or artifact writes. If it is `unknown`, obtain the smallest safe discriminating observation or block only the affected dependent planning; another Horizon, unrelated work, and safe evidence collection remain available.
 
    Loop through artifacts in dependency order (artifacts with no pending dependencies first):
 
@@ -72,9 +74,10 @@ When ready to implement, run /opsx-apply
       - Read any completed dependency files for context
       - Create the artifact file using `template` as the structure and write it to `resolvedOutputPath`
       - Apply `context` and `rules` as constraints - but do NOT copy them into the file
-      - For each newly authored proposal, include exactly one line in its Outcome Capsule: `- **Delivery Horizon:** <horizon-id>` for an existing validated project Horizon, or `- **Delivery Horizon:** none - <concrete reason>`. Never infer Horizon membership from names, files, dates, capabilities, task text, or semantic similarity. Legacy proposals remain readable without retroactive linkage.
-      - Keep one change-level `Claim And Evidence Scope` owner. An Ordinary Small exact case uses one concise line naming the exact claim and proof boundary. A declared broad class uses the explicit fields supplied by the proposal rule; do not infer the class from prose or repeat the complete record in design/spec/tasks.
-      - In proposal.md, declare exactly one `Bounded Falsification Review`: `required - <decision surface>` for decision-material work, or `exempt - <Ordinary Small reason>` only after main reviews that exact exemption. Deterministic tooling validates shape, not materiality or task fit.
+      - A compact proposal contains `Outcome`, `Operating Envelope`, `Non-Goals`, `Non-Deferrable Invariants`, `Observable Proof`, and `Stop Line`; its Observable Proof is the exact claim boundary. A full proposal retains the complete seven-field capsule including `Material Residual Risks`.
+      - Keep one change-level broad `Claim And Evidence Scope` owner only under full artifacts. A declared broad class uses the explicit fields supplied by the proposal rule; do not infer the class from prose or repeat the complete record in design/spec/tasks.
+      - Under compact exact, omit absent Horizon, dividend, bounded-falsification, separate claim-scope, and no-event history records rather than declaring `none` or `exempt`. An explicitly present mechanism keeps its existing parser and correlation rules. Under full, retain the current declarations: bounded falsification is `required - <decision surface>` for decision-material work or a reviewed compatible exemption; Material automation dividend is required; Horizon is an explicit id or `none - <reason>`.
+      - When authoring tasks, represent independently falsifiable required prerequisites as evidence-bearing leaves and their integration as a dependent parent. Give each leaf one bounded result/owner-or-effect boundary/earliest sufficient oracle/failure-cleanup envelope, keep the parent unchecked until its distinct integration oracle passes, and keep same-leaf corrections, cohesive Ordinary Small work, and grouped mechanical edits direct. Do not create per-file tasks or numeric granularity rules, infer semantics in deterministic tooling, weaken accepted proof, or replace exact owner/protected/live gates.
       - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all `applyRequires` artifacts are complete**
@@ -86,13 +89,13 @@ When ready to implement, run /opsx-apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-5. **Create strategy history**
+5. **Preserve strategy history when observed**
 
-   Create `<changeRoot>/history.md` with `# Strategy History`. Record only materially distinct strategies actually considered or tried while preparing this change. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy has been tried, retain the heading and state that no attempts are recorded yet; do not invent history.
+   Create or append `<changeRoot>/history.md` only after a materially distinct strategy was considered, attempted, rejected, superseded, or preserved for retry continuity. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy event occurred, omit the file; full profile selection alone does not manufacture an empty history.
 
 6. **Run the bounded falsification episode**
 
-   Read the proposal declaration. If it is `exempt`, create no `falsification-review.md`; the reviewed reason remains semantic main-owned input. If it is `required`:
+   Read current metadata and the proposal declaration. For compact plus current `ordinary-small-exact` with no decision-material surface, omit both the declaration and `falsification-review.md`; report the episode as not applicable. For a full reviewed exemption, create no `falsification-review.md`; the reason remains semantic main-owned input. If full declares `required`:
    - Reuse a current terminal record only when the original request, candidate, decision surface, and decision-changing evidence are unchanged. Never launch an equivalent challenge for confidence.
    - Otherwise launch one fresh `implementation-readiness-reviewer`. Supply the original accepted request and success boundary separately from the candidate, plus the apply-required artifacts, envelope, non-goals, invariants, proof boundary, and relevant evidence. Require the six attack classes, explicit permission for `no-material-finding`, and the role's read-only/no-question/no-nested-agent/non-authorizing boundary.
    - Main independently reproduces and dispositions only rows containing a current accepted outcome or non-deferrable invariant, reachable current-envelope scenario, concrete consequence, exact evidence, current-scope justification, and smallest correction. Optional, future, style, polish, and unproven rows create no work.
@@ -116,8 +119,8 @@ After completing all artifacts and all three readiness checks, summarize:
 - Change name and location
 - List of artifacts created with brief descriptions
 - `Structural artifact readiness: passed | failed`
-- `Bounded falsification: exempt | no-material-finding | corrected-and-closed | unknown`
-- `Semantic implementation readiness: ready | unknown`; emit `ready` only for a reviewed exemption or current closed episode, never from deterministic checks alone
+- `Bounded falsification: not-applicable | exempt | no-material-finding | corrected-and-closed | unknown`
+- `Semantic implementation readiness: ready | unknown`; emit `ready` only for current compact exact with no decision-material surface, a reviewed full exemption, or a current closed episode, never from deterministic checks alone
 - Prompt: "Run `/opsx-apply` or ask me to implement to start working on the tasks."
 - Lifecycle: planning artifacts alone remain `Development-Stage: development`; never emit an RC or stable claim from this command
 
@@ -131,12 +134,12 @@ Return the change/location, three readiness outcomes, blockers or `none`, and `D
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
-- Create `history.md` before readiness checks and never manufacture attempted strategies
+- Create `history.md` only after a materially distinct strategy event and never manufacture attempted strategies or an empty file
 - Do not append a mandatory final retrospective or process-improvement task; keep optional workflow reflection outside product completion scope
 - Do not collapse structural artifact readiness and semantic implementation readiness into one `Ready for implementation` phrase
 - Do not claim semantic implementation readiness until structural checks pass and the reviewed exemption or current required episode is terminal
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.
-- Declare exactly one `Automation Dividend`: Material `required - <candidate>`; Ordinary Small may `exempt - <reason>`. Do not infer the mode.
-- Declare exactly one `Bounded Falsification Review`; no empty record for an exemption, raw request persistence, duplicate generic review, or deterministic semantic inference.
+- For compact exact, omit a non-applicable `Automation Dividend`; declare `required - <candidate>` only when repeated-use behavior is introduced or extended. Full Material requires it; full/legacy retain their current compatible contract. Do not infer eligibility.
+- For compact exact with no decision-material surface, omit `Bounded Falsification Review`; full retains the current required-or-reviewed-exemption contract. Create no empty exemption record, raw request persistence, duplicate generic review, or deterministic semantic inference.
 - If the selected runtime surface lacks `roadmap-delivery-trajectory` or its exact `delivery-trajectory-context.ts` helper closure, report trajectory capability unavailable and do not substitute complexity, next-step, audit, campaign, or another source.

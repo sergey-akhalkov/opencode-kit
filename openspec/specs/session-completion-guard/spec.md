@@ -548,7 +548,13 @@ Each grind-enabled root SHALL expose one plugin-owned `grind_frontier` tool as t
 #### Scenario: Frontier human or task basis is stale
 - **WHEN** a structurally valid frontier differs from the latest non-synthetic human requirement ref or current trusted task-state digest
 - **THEN** the guard performs no ordinary question, work continuation, completion, waiting, or protected effect from that frontier
-- **AND** issues at most one reconciliation-only continuation with only the `grind_frontier` tool enabled.
+- **AND** keeps at most one reconciliation-only continuation in flight while permitting a finite controller-owned correction sequence when a completed turn does not persist a current frontier.
+
+#### Scenario: First reconciliation candidate is rejected
+- **WHEN** a reconciliation turn omits `grind_frontier` or its first candidate is rejected by tool-schema or frontier validation
+- **THEN** the guard preserves the last valid frontier unchanged and automatically issues a bounded correction turn for the same human/task basis
+- **AND** the correction receives only a safe cause code, may repair representation without changing accepted semantics, survives controller restart within the finite attempt budget, and clears its recovery state after a valid atomic frontier update
+- **AND** repeated failure exhausts visibly without an unbounded provider loop or ordinary continuation from absent or stale state.
 
 #### Scenario: Frontier candidate is cyclic or malformed
 - **WHEN** a tool candidate contains a cycle, missing reference, stale expected generation, unsupported schema, or enforced-bound overflow
@@ -626,3 +632,58 @@ New audits SHALL use the current frontier and verdict schema. A retained older-s
 - **WHEN** a newly loaded guard inspects an enabled unpaused root whose metadata predates the frontier schema
 - **THEN** it requests one bounded main-owned frontier reconciliation and suppresses completion and product-decision verdicts until current state exists
 - **AND** does not infer dependencies from assistant summaries in plugin code.
+
+### Requirement: Grind delivery checkpoints remain task scoped and non-product
+After the task-scoped frontier capability is current, a grind-enabled primary session SHALL represent a due outcome-preserving delivery checkpoint as a bounded process item or process-gate dependency attached only to the affected costly work items. Main SHALL supply the semantic trigger, evidence refs, affected items, selected checkpoint action, and suppression identity; deterministic frontier code SHALL validate only structure, correlation, dependencies, gate state, and readiness and SHALL NOT infer delivery drag, cost dominance, or optimization quality.
+
+A due runnable checkpoint SHALL complete before its dependent costly item becomes runnable. Independent accepted items SHALL remain runnable and mandatory. An incomplete checkpoint, unavailable safe optimization, or process budget SHALL NOT become `product_decision_required`; only a separately established material product or proof-scope decision may use that path after the controller-derived runnable set is empty.
+
+#### Scenario: Checkpoint precedes one costly item
+- **WHEN** main submits a current frontier with one pending process checkpoint that is a dependency of a costly item
+- **THEN** the controller derives the checkpoint, not its dependent costly item, as runnable
+- **AND** completion arbitration cannot select the costly item until the checkpoint is complete and every other gate is satisfied.
+
+#### Scenario: Independent sibling drains first
+- **WHEN** one lane has a due delivery checkpoint and an independent authorized sibling item is runnable
+- **THEN** the controller keeps the sibling in the runnable set and prevents global waiting or product-decision handoff
+- **AND** sibling completion does not satisfy the checkpoint or clear its dependent lane.
+
+#### Scenario: Main omits a current due checkpoint
+- **WHEN** supplied completion evidence establishes an unresolved delivery-checkpoint requirement but the current frontier omits or marks it complete without its stated oracle
+- **THEN** the arbiter requests one bounded main-owned frontier reconciliation rather than selecting dependent costly work or completion
+- **AND** deterministic code does not synthesize the missing semantic checkpoint from prose.
+
+#### Scenario: No safe optimization is currently available
+- **WHEN** the checkpoint is complete with `irreducible` or `unknown` evidence and the existing costly route remains safe and authorized
+- **THEN** main may satisfy the process item and make the original route eligible under its unchanged gates
+- **AND** the guard does not ask the owner to approve process continuation.
+
+#### Scenario: Optimization requires a product decision
+- **WHEN** the only proposed faster route changes accepted product behavior or proof scope while the original accepted route remains available
+- **THEN** the checkpoint does not block or replace the original route solely to force the faster choice
+- **AND** any parked decision follows the existing product-decision contract only when it is actually required by remaining accepted work.
+
+### Requirement: Grind frontiers preserve leaf-first parent dependencies
+For a grind-enabled root, main SHALL reconcile accepted leaf and parent work into the existing bounded frontier so each parent item depends on every required child item. A newly discovered independent prerequisite SHALL appear as a new or reopened child with current requirement and evidence refs before the affected parent can be selected again. The controller SHALL continue to derive readiness only from explicit status, dependency, and gate facts and SHALL NOT infer semantic decomposition quality, compoundness, or leaf completion from task prose.
+
+The completion arbiter SHALL reject continuation or completion that selects a parent with an unresolved child, treats child evidence as parent proof, or stops while a dependency-valid child or independent sibling remains runnable. A due delivery checkpoint represented as a process item SHALL compose with the child dependency update and SHALL NOT create a second process gate for the same suppression identity.
+
+#### Scenario: Parent is not runnable before every child
+- **WHEN** a frontier parent depends on two children and only one child is complete
+- **THEN** the controller excludes the parent from runnable refs and retains the incomplete child when its gates permit
+- **AND** no arbiter verdict may select or complete the parent.
+
+#### Scenario: New child replaces a coarse runnable parent
+- **WHEN** current evidence shows that a previously runnable parent contains an unresolved independent prerequisite
+- **THEN** main atomically reconciles the frontier with the new child and parent dependency under the current generation
+- **AND** the parent remains unavailable until the child reaches complete with current evidence.
+
+#### Scenario: Independent sibling remains runnable
+- **WHEN** the new child is blocked by a scoped gate and another accepted item is outside its dependency cone
+- **THEN** the controller keeps the independent item runnable and mandatory
+- **AND** its success neither clears the child gate nor completes the parent.
+
+#### Scenario: Frontier schema remains unchanged
+- **WHEN** leaf-first state is projected through item ids, `dependsOn`, status, gate refs, requirement refs, and evidence refs
+- **THEN** deterministic frontier validation and readiness derivation use the existing schema
+- **AND** no hierarchy field, semantic task parser, or model-derived controller edge is required.

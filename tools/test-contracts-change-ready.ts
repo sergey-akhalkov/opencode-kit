@@ -25,6 +25,7 @@ import {
   OUTCOME_AUTHORITY_SCOPE_MARKERS,
   OUTCOME_AUTHORITY_SCOPE_SURFACES,
 } from "./contracts/reviewer-binding.ts";
+import { OPENSPEC_ARTIFACT_INSTRUCTION_SURFACES } from "./contracts/openspec.ts";
 import {
   ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES,
   ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES,
@@ -306,7 +307,7 @@ export const changeReadyContractTests: TestCase[] = [
         ...CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS,
         ...CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS,
         ...CHANGE_READY_SDLC_CONTINUATION_TOKENS,
-        "After current Runtime Proof, capture a readable Product Candidate Reference plus Proof Runner, Evaluator, Environment Identity, and Raw Evidence Bundle identities when applicable, then set `Development-Stage: MVP`",
+        "After current Runtime Proof, record a readable Product Candidate Reference, environment identity, invocation, and observed result in the session handoff, then set `Development-Stage: MVP`",
         "repeat affected Runtime Proof lanes to restore `MVP`",
         "RC numbering starts at RC1 and never resets within the root",
         "next complete qualification freezes `RC<n+1>`",
@@ -704,26 +705,25 @@ export const changeReadyContractTests: TestCase[] = [
       const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
       const instructionSpec = fs.readFileSync(path.join(root, "openspec", "specs", "library-instruction-artifacts", "spec.md"), "utf8");
       assert((principles.match(/\*\*Evidence Bounds Claims:\*\*/g) ?? []).length === 1, "Principles must contain one canonical Evidence Bounds Claims entry.");
-      assertTokens(agents, [
-        "Evidence bounds claims",
-        "Claim And Evidence Scope",
-        "behavioral-substitution-qualification",
-        "evidence-sufficiency-reviewer",
-        "blocks only that broad claim",
-      ], "Always-loaded claim-evidence trigger drifted");
+      assert(!agents.includes("## Claim And Evidence Scope"), "Always-loaded authority must not duplicate the change-local claim record.");
+      assert(!agents.includes("## Evidence Bounds Claims"), "Always-loaded authority must not duplicate the canonical principle.");
       assertTokens(skill, BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT, "Substitution skill closure contract drifted");
       assertTokens(reviewer, EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT, "Evidence-sufficiency reviewer contract drifted");
       assert(qualification.includes("load `behavioral-substitution-qualification`"), "Change-Ready must reference the focused substitution owner.");
       assert(apply.includes("load `behavioral-substitution-qualification`"), "OpenSpec apply must reference the focused substitution owner.");
       assertTokens(propose, [
-        "schema-valid development claim record",
+        "`Claim And Evidence Scope` owner only under full artifacts",
+        "artifactProfile: compact | full",
+        "riskDisposition.kind: ordinary-small-exact | material | unknown",
+        "Observable Proof",
         "--operation apply",
         "Structural artifact readiness",
         "Semantic implementation readiness",
         "implementation-readiness-reviewer",
         "no-material-finding",
         "no unchanged, optional, or confidence-seeking third challenge",
-        "Never invent evidence",
+        "materially distinct strategy event",
+        "history.md",
       ], "OpenSpec propose broad-claim apply-readiness contract drifted");
       assert(!propose.includes("Create artifacts in sequence until apply-ready"), "OpenSpec propose must not collapse artifact completion into implementation readiness.");
       assert(!readme.includes("create one apply-ready OpenSpec change"), "README must not collapse structural and semantic readiness.");
@@ -764,6 +764,34 @@ export const changeReadyContractTests: TestCase[] = [
       for (const forbidden of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
         assert(!reviewer.includes(forbidden), `Evidence-sufficiency reviewer exposes forbidden authority: ${forbidden}`);
       }
+    },
+  },
+  {
+    name: "contracts: OpenSpec artifact instructions validate stable syntax without sentence mirrors",
+    run: () => {
+      for (const surface of OPENSPEC_ARTIFACT_INSTRUCTION_SURFACES) {
+        const text = fs.readFileSync(path.join(root, surface.relative), "utf8");
+        assertEqual(
+          missingTokens(text, surface.markers).join("|"),
+          "",
+          `OpenSpec artifact instruction structure drifted: ${surface.relative}`,
+        );
+      }
+
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const equivalentProse = agents.replace(
+        "Deterministic tooling validates explicit shape and correlation only.",
+        "Deterministic checks inspect only supplied schema shape and correlations.",
+      );
+      assert(equivalentProse !== agents, "Equivalent-prose control must alter human-readable policy wording.");
+      const agentsMarkers = OPENSPEC_ARTIFACT_INSTRUCTION_SURFACES.find((surface) => surface.relative === "global/AGENTS.md")?.markers ?? [];
+      assertEqual(missingTokens(equivalentProse, agentsMarkers).join("|"), "", "Equivalent human-readable OpenSpec policy must retain structural validity.");
+
+      const parserTokenDefect = agents.replace("riskDisposition.kind: ordinary-small-exact | material | unknown", "risk class");
+      assert(
+        missingTokens(parserTokenDefect, agentsMarkers).includes("riskDisposition.kind: ordinary-small-exact | material | unknown"),
+        "Removing a parser-facing risk-disposition token must fail structural validation.",
+      );
     },
   },
   {

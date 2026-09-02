@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:continuous-reusable-value-request
+- **Reviewed Request Ref**: event:continuous-reusable-value-request
+- **Accepted Outcome Ref**: outcome:crvd-001
+- **Candidate Ref**: candidate:crvd-planning-r2
+- **Reviewed Candidate Ref**: candidate:crvd-planning-r2
+- **Decision Surface**: challenge output-as-value substitution, speculative helper pressure, missing first-consumer or parent proof, test-only liveness, false or blanket roots, stale baseline acceptance, last-consumer escape, dynamic/public overclaim, unsupported portable enforcement, documentation-freshness overclaim, noisy progress-fact behavior, and unnecessary registry/framework scope.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fa2566cb2ffeq1pqtg9wTDpLns
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 1
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: none
+- **Main Dispositions**: none
+- **Correction Ref**: none
+- **Invalidated Surfaces**: none
+- **Terminal Reason**: no-material-finding
+- **Terminal State**: closed
+- **Unresolved Evidence**: knip-runtime-fit,production-root-set,baseline-need,typescript-unused-local-fit,dynamic-consumer-coverage,proof-family-fit,active-owner-transfer

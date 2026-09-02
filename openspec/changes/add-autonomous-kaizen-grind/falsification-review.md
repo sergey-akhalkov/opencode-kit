@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:message_0c5a65a905c1
+- **Reviewed Request Ref**: event:message_0c5a65a905c1
+- **Accepted Outcome Ref**: outcome:KZG-001
+- **Candidate Ref**: candidate:add-autonomous-kaizen-grind-r2
+- **Reviewed Candidate Ref**: candidate:add-autonomous-kaizen-grind-r2
+- **Decision Surface**: persistence migration and sole-authority cutover, all-watermark drainage, project/kit ownership routing, same-project visible-session propose/apply execution, controller/campaign/mission writer separation, takeover and disable closure, Scheduled Task deployment/recovery, explicit provider and local-commit authority, dirty/unregistered/protected fail-closed behavior, and exclusion of remote or multi-repository mutation.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fa2b32fe2ffeTMRik0dcGNiBbN
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: KZG-IR-01
+- **Main Dispositions**: KZG-IR-01=confirmed
+- **Correction Ref**: correction:kzg-root-identity-r2
+- **Invalidated Surfaces**: lifecycle-root-contract,launcher-environment-contract,persistence-proof-boundary
+- **Terminal Reason**: corrected-and-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: sqlite-wal-runtime-proof,managed-ui-session-identity,v1-writer-quiescence,windows-missed-run-logon,commit-hook-signing,dirty-project-stall,provider-budget-pause

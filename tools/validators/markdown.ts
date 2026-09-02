@@ -58,7 +58,7 @@ export function validateUniversalDevelopmentLoopSingleSource(
 
   const stepNames = [
     "Intake",
-    "Evidence",
+    "Facts",
     "Baseline Proof",
     "Small Slice",
     "Happy Path",

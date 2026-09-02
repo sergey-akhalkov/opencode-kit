@@ -21,6 +21,7 @@ import {
   workflowContractDiagnostics,
 } from "./workflow-contracts.ts";
 import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "../runtime-surface-profile.ts";
+import { OPENSPEC_ARTIFACT_INSTRUCTION_SURFACES } from "../contracts/openspec.ts";
 
 /**
  * Read a model-facing Markdown instruction surface with structured operative scan.
@@ -99,7 +100,7 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     if (text != null) {
       for (const required of [
         "Intake",
-        "Evidence",
+        "Facts",
         "Baseline Proof",
         "Small Slice",
         "Happy Path",
@@ -275,6 +276,15 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     }
   }
 
+  for (const surface of OPENSPEC_ARTIFACT_INSTRUCTION_SURFACES) {
+    const candidate = path.join(root, surface.relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const marker of surface.markers) {
+      requireTextContains(ctx, text, marker, "OpenSpec artifact instruction structure", candidate);
+    }
+  }
+
   const boundedFalsificationWorkflowMarkers: Array<{ relative: string; markers: string[] }> = [
     {
       relative: "global/skills/openspec-propose/SKILL.md",
@@ -359,7 +369,7 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
         ctx.addError(`Compaction prompt retains removed product-task expansion '${forbidden}': ${compactionTemplate}`);
       }
     }
-    for (const marker of ["optional evidence outside product completion scope", "must not create or schedule product work", "separately owned change"]) {
+    for (const marker of ["Session Reflection", "what not to repeat", "separate proof reports"]) {
       requireTextContains(ctx, text, marker, "compaction reflection separation", compactionTemplate);
     }
   }
@@ -404,24 +414,8 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
         teamAdvicePracticeContract,
       );
     }
-    for (const marker of [
-      "Team Advice State",
-      "Advisor Task Ref",
-      "Candidate Ref",
-      "Catalog Ref",
-      "Main Disposition",
-      "Active Work Packages",
-      "Terminal Work Packages",
-      "Pending Activation Evidence",
-      "Specialist Liveness",
-      "Integration State",
-      "Unavailable Material Capabilities",
-      "Reconsultation Condition",
-      "otherwise omit the section",
-      "does not infer a new team",
-      "does not reconsult solely because compaction occurred",
-    ]) {
-      requireTextContains(ctx, compactionTemplateText, marker, "team-advice compaction mirror", compactionTemplate);
+    for (const marker of ["compact, complete fresh-session summary", "accepted scope", "exact next action"]) {
+      requireTextContains(ctx, compactionTemplateText, marker, "team-advice compaction handoff", compactionTemplate);
     }
   }
 
@@ -551,13 +545,14 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
   if (fileExists(configTemplatePath)) {
     const configTemplateText = readText(configTemplatePath);
     for (const marker of [
-      "Pending Strategy History",
-      "history.md",
-      "Live-Attempt Gate: clear | blocked | unknown",
-      "Failure Chain",
-      "Terminal Replay Result",
-      "first gate-closing offline step",
-      "bounded evidence capture rather than proof",
+      "Original User Goal",
+      "Goal Status",
+      "Session Reflection",
+      "Next-Session Action",
+      "Live-Attempt Gate clear, blocked, or unknown",
+      "Never require or invent evidence directories",
+      "offline replay",
+      "separate proof reports",
     ]) {
       requireTextContains(ctx, configTemplateText, marker, "compaction stagnation strategy contract", configTemplatePath);
     }

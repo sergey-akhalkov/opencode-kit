@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "leaf-first-fixture",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "fixture-client",
+      "requirements": ["Schema and transport leaves precede the distinct client integration oracle"]
+    }
+  ],
+  "writeRoots": ["work", "result"],
+  "dependencies": [],
+  "transfers": []
+}

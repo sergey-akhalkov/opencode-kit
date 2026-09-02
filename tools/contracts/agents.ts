@@ -137,7 +137,7 @@ export const EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "Paths/Observation Boundary",
   "Real Oracle",
   "Unresolved Observations",
-  "Evidence References",
+  "exact evidence references",
   "Maximum Supported Claim",
   "Current Disposition: supported | narrowed | blocked | unknown",
   "Ordinary Small exact-case work does not require this role",
