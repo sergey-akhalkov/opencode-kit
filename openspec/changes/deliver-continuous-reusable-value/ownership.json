@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "changeId": "deliver-continuous-reusable-value",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "continuous-reusable-value-delivery",
+      "requirements": [
+        "Value readiness is grounded in a real consumer boundary",
+        "The first consumer creates foundation value and later consumers confirm reuse",
+        "Discovery remains federated and proportional",
+        "Value progress facts expose delivery without creating a checkpoint protocol",
+        "Supported reachability is production-scoped and last-consumer removal retires dead code",
+        "Reachability configuration and legacy findings are exact and fail closed",
+        "Knowledge-value freshness has a bounded observable ceiling",
+        "Portable automatic assurance uses a verified native mechanism or remains unknown",
+        "Structural and installed evidence prove different claims"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Continuous value has one canonical philosophy owner and compact loaded application",
+        "Installed behavior proves proportional continuous-value decisions"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Foundation value extends capability proof through production consumption and reachability",
+        "Last-consumer changes close the supported capability dependency",
+        "Value progress facts preserve evidence topology and root incompleteness",
+        "Portable reachability assurance is scoped to project capability"
+      ]
+    },
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Production reachability has one deterministic validation owner",
+        "Production roots are explicit reviewed seed data",
+        "Accepted reachability debt is exact, justified, and self-cleaning",
+        "Current repository enforcement begins only after complete characterization",
+        "Production-reachability fixtures exercise the finite supported surface",
+        "Local declaration coverage is added only after current characterization"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "global/principles-of-work.md",
+    "global/AGENTS.md",
+    "global/skills/change-ready-sdlc",
+    "instructions/universal-development-loop.md",
+    "instructions/reusable-project-agent-instructions.md",
+    "package.json",
+    "package-lock.json",
+    "config/production-reachability.json",
+    "config/production-reachability-baseline.json",
+    "tools/validators/production-reachability.ts",
+    "tools/production-reachability.ts",
+    "tools/test-production-reachability.ts",
+    "tools/validate-library.ts",
+    "tools/pre-push-validate.ts",
+    "tools/test-pre-push-validate.ts",
+    "tools/test-library-validation-scripts.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/reuse-discovery.ts",
+    "tools/proofs/lib/capability-composition-scenarios.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-reuse-discovery.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts.ts",
+    "tools/validators/devkit-contract.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "make-team-advice-evidence-triggered",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/skills/change-ready-sdlc" },
+        { "type": "write-root", "path": "instructions/reusable-project-agent-instructions.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/validators/devkit-contract.ts" }
+      ],
+      "transferCondition": "MTAET is archived with terminal writers and the current loaded-main, Change-Ready, project-mirror, consumer-outcome, contract, and validator owners are reread before exact transfer"
+    },
+    {
+      "changeId": "add-prospective-consequence-rehearsal",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/principles-of-work.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/skills/change-ready-sdlc" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/validators/devkit-contract.ts" }
+      ],
+      "transferCondition": "PCR is archived after MTAET with terminal writers and the current canonical-principle, loaded-main, Change-Ready, consumer-outcome, contract, and validator owners are reread before exact transfer"
+    }
+  ],
+  "transfers": []
+}

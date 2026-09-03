@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { runPortableCommand } from "../../global/bin/portable-process.ts";
+import { runPortableCommand } from "../portable-process.ts";
 import {
   acquireBeadsBridgeWriterLease,
   inspectBeadsBridgeCoordination,
@@ -17,7 +17,7 @@ import type {
 } from "./beads-bridge-registration.ts";
 import { BeadsAdapterError, buildBeadsAdapterInvocation, runBeadsAdapter } from "./beads-vendor-adapter.ts";
 import type { BeadsAdapterDependencies, BeadsAdapterResponse } from "./beads-vendor-adapter.ts";
-import { loadBeadsReleaseManifest, validateBeadsInitializationObservation } from "./beads-release.ts";
+import { loadBeadsReleaseManifest, validateBeadsInitializationObservation, validateBeadsTrackedFilePrerequisite } from "./beads-release.ts";
 
 type FileIdentity = { bytes: number; sha256: string };
 type TreeIdentity = { exists: boolean; bytes: number; files: number; sha256: string | null };
@@ -415,7 +415,8 @@ function snapshotDrift(expected: GitSnapshot, actual: GitSnapshot, includeStore:
 function validateBefore(registration: BeadsBridgeRegistration, before: GitSnapshot): void {
   const manifest = loadBeadsReleaseManifest();
   for (const required of manifest.initialization.requiredTrackedFiles) {
-    if (before.tracked[required.path]?.sha256 !== required.sha256) throw new Error(`Tracked '${required.path}' does not match the reviewed digest.`);
+    if (before.tracked[required.path] == null) throw new Error(`Tracked '${required.path}' is absent.`);
+    validateBeadsTrackedFilePrerequisite(required, fs.readFileSync(path.resolve(registration.projectRoot, required.path), "utf8"));
   }
   const empty = sha256("");
   if (before.indexSha256 !== empty || before.worktreeSha256 !== empty || before.statusSha256 !== empty) throw new Error("Project must be clean before enablement.");

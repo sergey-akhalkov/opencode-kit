@@ -175,9 +175,56 @@ function validateBehavioralSubstitutionSkill(
 }
 
 const OPENSPEC_STAY_QUIET = /do not use|use only|not for ordinary|without mentioning/i;
+const BEADS_PORTFOLIO_SKILL_NAME = "beads-portfolio-bridge";
+const BEADS_EXPLICIT_REQUEST = /(?:^|[^A-Za-z0-9])(?:beads|bd)(?:$|[^A-Za-z0-9])/iu;
+const BEADS_PORTFOLIO_REQUEST = /\bportfolio\b/iu;
+const BEADS_PORTFOLIO_OPERATION = /\b(?:status|coordination)\b/iu;
 
 export function descriptionSelectsOpenSpecSkill(description: string, request: string): boolean {
   return /openspec/i.test(request) && description.includes("OpenSpec") && OPENSPEC_STAY_QUIET.test(description);
+}
+
+export function descriptionSelectsBeadsSkill(description: string, request: string, registrationEnabled = false): boolean {
+  const exactDescription = description.includes("Use ONLY")
+    && description.includes("verified enabled Beads registration")
+    && description.includes("portfolio status or coordination")
+    && description.includes("stay quiet for ordinary OpenSpec, Kaizen, grind, implementation, review, and task work");
+  return exactDescription && (
+    BEADS_EXPLICIT_REQUEST.test(request)
+    || (registrationEnabled && BEADS_PORTFOLIO_REQUEST.test(request) && BEADS_PORTFOLIO_OPERATION.test(request))
+  );
+}
+
+function validateBeadsPortfolioSkill(
+  ctx: ValidationContext,
+  file: string,
+  text: string,
+  description: string | null,
+): void {
+  const requiredDescription = [
+    "Use ONLY",
+    "Beads",
+    "`bd`",
+    "verified enabled Beads registration",
+    "portfolio status or coordination",
+    "stay quiet for ordinary OpenSpec, Kaizen, grind, implementation, review, and task work",
+  ];
+  for (const marker of requiredDescription) {
+    if (!description?.includes(marker)) ctx.addError(`beads-portfolio-bridge description missing exact trigger marker '${marker}': ${file}`);
+  }
+  for (const marker of [
+    "## Stay Quiet",
+    "beads-vendor-adapter.ts",
+    "beads-project-lifecycle.ts",
+    "beads-kaizen-orchestrator.ts",
+    "Never execute arbitrary `bd` arguments",
+    "`bd prime`",
+    "`bd setup opencode`",
+    "vendor-managed `AGENTS.md`",
+    "never successful activation",
+  ]) {
+    if (!text.includes(marker)) ctx.addError(`beads-portfolio-bridge missing boundary marker '${marker}': ${file}`);
+  }
 }
 
 function validateDiscoveryDescription(
@@ -244,6 +291,9 @@ export function validateSkills(ctx: ValidationContext, root: string): string[] {
     }
     if (folderName === BEHAVIORAL_SUBSTITUTION_SKILL_NAME) {
       validateBehavioralSubstitutionSkill(ctx, root, file, text);
+    }
+    if (folderName === BEADS_PORTFOLIO_SKILL_NAME) {
+      validateBeadsPortfolioSkill(ctx, file, text, description);
     }
   }
 

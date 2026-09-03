@@ -22,7 +22,7 @@ The capability SHALL treat online documentation, release notes, and generated ve
 ### Requirement: Project activation is explicit, bounded, and local
 The bridge SHALL remain disabled until one exact machine-local registration enables one canonical Git root, one semantic owner class from `current-project | opencode-kit`, one derived privacy-safe project ref, and one unique safe Beads prefix. This increment SHALL accept at most one enabled project registration. Activation SHALL use embedded project-local Dolt and non-interactive initialization with agent-file and Git-hook setup skipped, auto-export and auto-staging disabled, and no configured remote, shared server, federation, or global `BEADS_DIR`.
 
-Before and after activation, the bridge SHALL inspect the canonical root, tracked Git bytes, index, worktree, hooks, remotes, relevant Git config, `.git/info/exclude`, and created `.beads` paths. It SHALL accept only the reviewed local Beads data and exclude effects and SHALL fail closed on an unexpected tracked, hook, remote, config, instruction, or external-path mutation.
+Before activation, the bridge SHALL require the exact observed Beads/Dolt ignore block within the project's existing tracked `.gitignore` without requiring or replacing the project's complete file identity. Before and after activation, the bridge SHALL inspect the canonical root, whole tracked Git bytes, index, worktree, hooks, remotes, relevant Git config, `.git/info/exclude`, and created `.beads` paths. It SHALL accept only the reviewed local Beads data and exclude effects and SHALL fail closed on an unexpected tracked, hook, remote, config, instruction, or external-path mutation.
 
 #### Scenario: One clean project is enabled
 - **WHEN** the disposable spike passed and an explicit registration selects one clean canonical Git root and unused prefix
@@ -40,7 +40,7 @@ Before and after activation, the bridge SHALL inspect the canonical root, tracke
 - **AND** rollback removes only attributable matching effects while preserving drift and unrelated work.
 
 ### Requirement: The vendor adapter exposes bounded Beads operations rather than lifecycle orchestration
-The vendor adapter SHALL invoke the pinned executable directly without a shell and with an explicit canonical working directory. It SHALL expose only closed Beads operations required by project check/enable/disable, bounded list/ready/show, atomic create-feature, exact update-feature, assign-feature, and close-feature. Inputs SHALL use closed schemas and privacy-safe refs; output SHALL be bounded, schema-versioned JSON with executable/root identity, exit status, safe stdout/stderr facts, side effects, and diagnostics.
+The vendor adapter SHALL invoke the pinned executable directly without a shell and with an explicit canonical working directory. It SHALL expose only closed Beads operations required by project check/enable/disable, bounded list/ready/show, atomic create-feature, exact add-dependency/update-feature, assign-feature, and close-feature. Inputs SHALL use closed schemas and privacy-safe refs; output SHALL be bounded, schema-versioned JSON with executable/root identity, exit status, safe stdout/stderr facts, side effects, and diagnostics.
 
 The adapter SHALL NOT install or roll back the executable/profile, select Kaizen eligibility, write a Kaizen lifecycle transition, decide OpenSpec terminal state, accept arbitrary argv or shell fragments, pass through raw issue payloads, invoke remote operations, install hooks or agent setup, run `bd prime` or `bd setup opencode`, activate MCP, perform destructive repair, or emit unbounded output. The workstation owner SHALL own binary install/check/rollback and the Kaizen owner SHALL own promote/link/terminal orchestration that calls the adapter. Read-only status and check SHALL remain provider-free and SHALL not mutate project or Beads state.
 
@@ -90,7 +90,7 @@ The Beads feature SHALL hold privacy-safe signal, decision, project, and later O
 - **AND** count, source cardinality, and agent statements do not change priority, readiness, admission, or mutation authority automatically.
 
 ### Requirement: Dependencies and readiness are coarse portfolio projections
-The bridge SHALL use Beads dependencies, parent/child relations, duplicate/supersede relations, and readiness only for admitted coarse portfolio work. It SHALL NOT mirror OpenSpec tasks, `grind_frontier` items or gates, Campaign waves, Mission slices, validation steps, or runtime proof records into Beads.
+The bridge SHALL use only the pinned `blocks`, `parent-child`, and `supersedes` dependency types for admitted coarse portfolio work. A `supersedes` relation SHALL require an explicit evidence-confirmed semantic-identity predicate; the bridge SHALL NOT infer duplicates. It SHALL NOT mirror OpenSpec tasks, `grind_frontier` items or gates, Campaign waves, Mission slices, validation steps, or runtime proof records into Beads.
 
 A Beads-ready item SHALL remain advisory until the current root independently establishes accepted scope, protected gates, current project identity, OpenSpec state, and source-writer authority. A blocked or stale Beads item SHALL not relabel an independently current OpenSpec or writer state.
 

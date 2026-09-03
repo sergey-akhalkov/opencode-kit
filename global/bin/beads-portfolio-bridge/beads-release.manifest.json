@@ -62,6 +62,7 @@
     ],
     "requiredTrackedFiles": [
       {
+        "content": "\n# Beads / Dolt files (added by bd init)\n.dolt/\n*.db\n.beads-credential-key\n.beads/proxieddb/\n",
         "path": ".gitignore",
         "sha256": "9788c26633ae340b1647c267f66c010ca0ded0b3bb039e887497ffeccccc6553"
       }

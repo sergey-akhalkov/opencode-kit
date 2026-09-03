@@ -6,6 +6,8 @@ import { pathToFileURL } from "node:url";
 export const RUNTIME_SURFACE_PROFILE_SCHEMA_VERSION = 1;
 export const RUNTIME_SURFACE_CONFIG_MODES = ["ask", "all-compatibility"] as const;
 export const REQUIRED_RUNTIME_SURFACE_PROFILE_NAMES = ["all", "core"] as const;
+export const BEADS_PORTFOLIO_SKILL = "beads-portfolio-bridge";
+export const BEADS_PORTFOLIO_HELPER_DIRECTORY = "global/bin/beads-portfolio-bridge";
 
 export const CORE_SKILLS = [
   "behavioral-substitution-qualification",
@@ -81,6 +83,12 @@ export const CORE_FILES = [
 ].sort(compareLocale);
 
 export const CORE_DIRECTORIES = ["global/plugin"] as const;
+
+export const CORE_BEADS_SKILLS = [BEADS_PORTFOLIO_SKILL, ...CORE_SKILLS].sort(compareLocale);
+export const CORE_BEADS_AGENTS = [...CORE_AGENTS];
+export const CORE_BEADS_COMMANDS = [...CORE_COMMANDS];
+export const CORE_BEADS_FILES = [...CORE_FILES];
+export const CORE_BEADS_DIRECTORIES = [BEADS_PORTFOLIO_HELPER_DIRECTORY, ...CORE_DIRECTORIES].sort(compareLocale);
 
 export const ALL_COMPATIBILITY_DIRECTORIES = [
   "global/bin",
@@ -468,14 +476,21 @@ export function inspectRuntimeSurfaceProfiles(
     .map((entry) => entry.name)
     .sort(compareLocale);
   const profileNames = profileFiles.map((file) => path.basename(file, ".json"));
-  for (const required of REQUIRED_RUNTIME_SURFACE_PROFILE_NAMES) {
+  const skillSet = new Set(skillNames);
+  const beadsSourcePresent = skillSet.has(BEADS_PORTFOLIO_SKILL)
+    || fs.existsSync(path.join(root, ...BEADS_PORTFOLIO_HELPER_DIRECTORY.split("/")));
+  const requiredProfileNames = beadsSourcePresent
+    ? [...REQUIRED_RUNTIME_SURFACE_PROFILE_NAMES, "core-beads"]
+    : [...REQUIRED_RUNTIME_SURFACE_PROFILE_NAMES];
+  for (const required of requiredProfileNames) {
     if (!profileNames.includes(required)) {
-      errors.push(`Install profiles must contain profiles/core.json and profiles/all.json.`);
+      errors.push(beadsSourcePresent
+        ? `Install profiles with Beads source must contain profiles/core.json, profiles/core-beads.json, and profiles/all.json.`
+        : `Install profiles must contain profiles/core.json and profiles/all.json.`);
       break;
     }
   }
 
-  const skillSet = new Set(skillNames);
   const agentSet = new Set(agentNames);
   const commandSet = new Set(commandNames);
   const complete = kitHasNamedCoreCatalog(skillNames, agentNames);
@@ -549,6 +564,22 @@ export function inspectRuntimeSurfaceProfiles(
       );
       if (loaded.profile.configMode !== "ask") {
         errors.push(`profiles/core.json configMode must be ask: ${file}`);
+      }
+    }
+    const containsBeadsSurface = loaded.profile.skills.includes(BEADS_PORTFOLIO_SKILL)
+      || loaded.profile.directories.some((entry) => entry === BEADS_PORTFOLIO_HELPER_DIRECTORY || entry.startsWith(`${BEADS_PORTFOLIO_HELPER_DIRECTORY}/`))
+      || loaded.profile.files.some((entry) => entry.startsWith(`${BEADS_PORTFOLIO_HELPER_DIRECTORY}/`));
+    if (containsBeadsSurface && name !== "core-beads" && name !== "all") {
+      errors.push(`Beads runtime artifacts require the concrete full profiles/core-beads.json identity: ${file}`);
+    }
+    if (name === "core-beads" && complete) {
+      reportSetMismatch(errors, "profiles/core-beads.json skills must equal core plus the Beads skill.", loaded.profile.skills, CORE_BEADS_SKILLS, file);
+      reportSetMismatch(errors, "profiles/core-beads.json agents must match core.", loaded.profile.agents, CORE_BEADS_AGENTS, file);
+      reportSetMismatch(errors, "profiles/core-beads.json commands must match core.", loaded.profile.commands, CORE_BEADS_COMMANDS, file);
+      reportSetMismatch(errors, "profiles/core-beads.json files must match core.", loaded.profile.files, CORE_BEADS_FILES, file);
+      reportSetMismatch(errors, "profiles/core-beads.json directories must equal core plus the Beads helper closure.", loaded.profile.directories, CORE_BEADS_DIRECTORIES, file);
+      if (loaded.profile.configMode !== "ask") {
+        errors.push(`profiles/core-beads.json configMode must be ask: ${file}`);
       }
     }
     profiles.set(name, loaded.profile);
@@ -778,7 +809,7 @@ export function readbackRuntimeSurfaceTree(
   return errors;
 }
 
-export type RuntimeSurfaceInstallKind = "all" | "core" | "none" | "unknown" | "unprofiled";
+export type RuntimeSurfaceInstallKind = "all" | "core" | "core-beads" | "none" | "unknown" | "unprofiled";
 
 export type RuntimeSurfaceInstallPlan = {
   additions: string[];
@@ -818,7 +849,7 @@ export function inspectRuntimeSurfaceInstall(options: {
     if (fs.existsSync(manifestPath) && fs.statSync(manifestPath).isFile()) {
       try {
         const parsed = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as { profile?: unknown };
-        if (parsed.profile === "core" || parsed.profile === "all") {
+        if (parsed.profile === "core" || parsed.profile === "core-beads" || parsed.profile === "all") {
           currentKind = parsed.profile;
           currentOwners = profileOwners(options.root, parsed.profile);
         } else {

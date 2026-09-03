@@ -72,6 +72,18 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
+    name: "validator rejects specialist team advisor with weakened unrestricted-runtime role boundary",
+    run: () => {
+      const fixture = newLibraryFixture("specialist-team-advisor-role-boundary");
+      const advisorPath = addSpecialistTeamAdvisorFixture(fixture);
+      const advisor = fs.readFileSync(advisorPath, "utf8");
+      writeText(advisorPath, advisor.replace("Broad runtime tool availability does not widen your role authority", "The runtime determines role authority"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Advisor role authority must remain narrower than broad runtime permissions.");
+      assertOutputContains(result, "specialist-team-advisor non-reviewer contract", "Validation should name the advisor role contract.");
+    },
+  },
+  {
     name: "validator accepts valid fixture",
     run: () => {
       const fixture = newLibraryFixture("valid");

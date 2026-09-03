@@ -27,6 +27,9 @@ export type BoundedFalsificationDisposition =
   | "future-scope"
   | "optional"
   | "polish";
+export type BoundedFalsificationProtocolMode = "single-stage" | "pre-authoring-separated";
+export type BoundedFalsificationCandidateState = "absent" | "present" | "unknown";
+export type BoundedFalsificationContinuity = "not-applicable" | "verified" | "unknown";
 
 export type BoundedFalsificationReview = {
   originalRequestRef: string;
@@ -38,6 +41,11 @@ export type BoundedFalsificationReview = {
   reviewerAgent: "implementation-readiness-reviewer";
   reviewerSessionRef: string;
   effectiveModel: string;
+  protocolMode: BoundedFalsificationProtocolMode;
+  contextReconstructionRef: string;
+  candidateStateAtReconstruction: BoundedFalsificationCandidateState;
+  initialComparisonContinuity: BoundedFalsificationContinuity;
+  correctedReviewFreshness: BoundedFalsificationContinuity;
   challengeCount: number;
   attackClasses: Array<{ id: BoundedFalsificationAttackClass; status: BoundedFalsificationAttackState }>;
   materialFindings: string[];
@@ -50,7 +58,7 @@ export type BoundedFalsificationReview = {
 };
 
 export type BoundedFalsificationReviewInspection =
-  | { status: "ok"; value: BoundedFalsificationReview; semanticReadiness: "unknown" }
+  | { status: "ok"; value: BoundedFalsificationReview; protocolFields: "declared" | "legacy-projected"; semanticReadiness: "unknown" }
   | { status: "invalid"; reason: string; semanticReadiness: "unknown" };
 
 const DECLARATION = /^\s*-\s+\*\*Bounded Falsification Review\*\*:\s*(.*)$/gmu;
@@ -60,6 +68,9 @@ const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]*$/u;
 const SAFE_REF = /^(?:artifact|candidate|correction|event|evidence|outcome|session):[A-Za-z0-9][A-Za-z0-9._/#-]*$/u;
 const MODEL_REF = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/u;
 const ATTACK_STATES = new Set<BoundedFalsificationAttackState>(["attempted", "not-applicable", "unknown"]);
+const PROTOCOL_MODES = new Set<BoundedFalsificationProtocolMode>(["single-stage", "pre-authoring-separated"]);
+const CANDIDATE_STATES = new Set<BoundedFalsificationCandidateState>(["absent", "present", "unknown"]);
+const CONTINUITY_STATES = new Set<BoundedFalsificationContinuity>(["not-applicable", "verified", "unknown"]);
 const DISPOSITIONS = new Set<BoundedFalsificationDisposition>([
   "confirmed",
   "falsified",
@@ -76,7 +87,7 @@ function attackField(id: BoundedFalsificationAttackClass): string {
   return `Attack Class ${id}`;
 }
 
-const REVIEW_FIELDS = new Set([
+const BASE_REVIEW_FIELDS = [
   "Original Request Ref",
   "Reviewed Request Ref",
   "Accepted Outcome Ref",
@@ -95,7 +106,15 @@ const REVIEW_FIELDS = new Set([
   "Terminal Reason",
   "Terminal State",
   "Unresolved Evidence",
-]);
+] as const;
+const PROTOCOL_REVIEW_FIELDS = [
+  "Protocol Mode",
+  "Context Reconstruction Ref",
+  "Candidate State At Reconstruction",
+  "Initial Comparison Continuity",
+  "Corrected Review Freshness",
+] as const;
+const REVIEW_FIELDS = new Set([...BASE_REVIEW_FIELDS, ...PROTOCOL_REVIEW_FIELDS]);
 
 export function parseBoundedFalsificationDeclaration(proposalText: string): BoundedFalsificationDeclaration {
   const matches = [...proposalText.matchAll(DECLARATION)].map((match) => (match[1] ?? "").trim());
@@ -108,7 +127,7 @@ export function parseBoundedFalsificationDeclaration(proposalText: string): Boun
   return { status: "ok", mode: parsed[1] as BoundedFalsificationMode, text: parsed[2] ?? "" };
 }
 
-function parseFields(text: string): { status: "ok"; fields: Map<string, string> } | { status: "invalid"; reason: string } {
+function parseFields(text: string): { status: "ok"; fields: Map<string, string>; protocolFieldsDeclared: boolean } | { status: "invalid"; reason: string } {
   if (!/^# Bounded Falsification Review\s*$/mu.test(text)) {
     return { status: "invalid", reason: "falsification-review.md must contain the '# Bounded Falsification Review' heading." };
   }
@@ -129,11 +148,16 @@ function parseFields(text: string): { status: "ok"; fields: Map<string, string> 
     }
     fields.set(name, value);
   }
-  const missing = [...REVIEW_FIELDS].filter((field) => !fields.has(field));
+  const missing = BASE_REVIEW_FIELDS.filter((field) => !fields.has(field));
   if (missing.length > 0) {
     return { status: "invalid", reason: `falsification-review.md is missing required field(s): ${missing.join(", ")}.` };
   }
-  return { status: "ok", fields };
+  const declaredProtocolFields = PROTOCOL_REVIEW_FIELDS.filter((field) => fields.has(field));
+  if (declaredProtocolFields.length !== 0 && declaredProtocolFields.length !== PROTOCOL_REVIEW_FIELDS.length) {
+    const missingProtocolFields = PROTOCOL_REVIEW_FIELDS.filter((field) => !fields.has(field));
+    return { status: "invalid", reason: `Protocol fields must be all present or all omitted for legacy readback; missing: ${missingProtocolFields.join(", ")}.` };
+  }
+  return { status: "ok", fields, protocolFieldsDeclared: declaredProtocolFields.length === PROTOCOL_REVIEW_FIELDS.length };
 }
 
 function parseRef(value: string, field: string, allowNone = false): string | { reason: string } {
@@ -189,6 +213,35 @@ export function inspectBoundedFalsificationReview(text: string): BoundedFalsific
   const effectiveModel = value("Effective Model");
   if (effectiveModel !== "unknown" && !MODEL_REF.test(effectiveModel)) {
     return { status: "invalid", reason: "Effective Model must be 'unknown' or a provider/model identity.", semanticReadiness: "unknown" };
+  }
+
+  let protocolMode: BoundedFalsificationProtocolMode = "single-stage";
+  let contextReconstructionRef = "none";
+  let candidateStateAtReconstruction: BoundedFalsificationCandidateState = "unknown";
+  let initialComparisonContinuity: BoundedFalsificationContinuity = "not-applicable";
+  let correctedReviewFreshness: BoundedFalsificationContinuity = "not-applicable";
+  if (parsed.protocolFieldsDeclared) {
+    protocolMode = value("Protocol Mode") as BoundedFalsificationProtocolMode;
+    if (!PROTOCOL_MODES.has(protocolMode)) {
+      return { status: "invalid", reason: "Protocol Mode must be single-stage or pre-authoring-separated.", semanticReadiness: "unknown" };
+    }
+    const parsedReconstructionRef = parseRef(value("Context Reconstruction Ref"), "Context Reconstruction Ref", true);
+    if (typeof parsedReconstructionRef !== "string") {
+      return { status: "invalid", reason: parsedReconstructionRef.reason, semanticReadiness: "unknown" };
+    }
+    contextReconstructionRef = parsedReconstructionRef;
+    candidateStateAtReconstruction = value("Candidate State At Reconstruction") as BoundedFalsificationCandidateState;
+    if (!CANDIDATE_STATES.has(candidateStateAtReconstruction)) {
+      return { status: "invalid", reason: "Candidate State At Reconstruction must be absent, present, or unknown.", semanticReadiness: "unknown" };
+    }
+    initialComparisonContinuity = value("Initial Comparison Continuity") as BoundedFalsificationContinuity;
+    if (!CONTINUITY_STATES.has(initialComparisonContinuity)) {
+      return { status: "invalid", reason: "Initial Comparison Continuity must be not-applicable, verified, or unknown.", semanticReadiness: "unknown" };
+    }
+    correctedReviewFreshness = value("Corrected Review Freshness") as BoundedFalsificationContinuity;
+    if (!CONTINUITY_STATES.has(correctedReviewFreshness)) {
+      return { status: "invalid", reason: "Corrected Review Freshness must be not-applicable, verified, or unknown.", semanticReadiness: "unknown" };
+    }
   }
 
   const challengeText = value("Challenge Count");
@@ -281,10 +334,34 @@ export function inspectBoundedFalsificationReview(text: string): BoundedFalsific
   if (terminalState === "unknown" && unresolvedEvidence.length === 0) {
     return { status: "invalid", reason: "Terminal State unknown requires Unresolved Evidence.", semanticReadiness: "unknown" };
   }
+  if (parsed.protocolFieldsDeclared) {
+    if (protocolMode === "single-stage" && contextReconstructionRef !== "none") {
+      return { status: "invalid", reason: "Protocol Mode single-stage requires Context Reconstruction Ref none.", semanticReadiness: "unknown" };
+    }
+    if (protocolMode === "single-stage" && initialComparisonContinuity !== "not-applicable") {
+      return { status: "invalid", reason: "Protocol Mode single-stage requires Initial Comparison Continuity not-applicable.", semanticReadiness: "unknown" };
+    }
+    if (protocolMode === "pre-authoring-separated" && terminalState === "closed" && contextReconstructionRef === "none") {
+      return { status: "invalid", reason: "A closed pre-authoring-separated record requires a non-none Context Reconstruction Ref.", semanticReadiness: "unknown" };
+    }
+    if (protocolMode === "pre-authoring-separated" && terminalState === "closed" && candidateStateAtReconstruction !== "absent") {
+      return { status: "invalid", reason: "A closed pre-authoring-separated record requires Candidate State At Reconstruction absent.", semanticReadiness: "unknown" };
+    }
+    if (protocolMode === "pre-authoring-separated" && terminalState === "closed" && initialComparisonContinuity !== "verified") {
+      return { status: "invalid", reason: "A closed pre-authoring-separated record requires Initial Comparison Continuity verified.", semanticReadiness: "unknown" };
+    }
+    if (challengeCount < 2 && correctedReviewFreshness === "verified") {
+      return { status: "invalid", reason: "Corrected Review Freshness verified requires Challenge Count 2.", semanticReadiness: "unknown" };
+    }
+    if (challengeCount === 2 && terminalState === "closed" && correctedReviewFreshness !== "verified") {
+      return { status: "invalid", reason: "A closed Challenge Count 2 record requires Corrected Review Freshness verified.", semanticReadiness: "unknown" };
+    }
+  }
 
   return {
     status: "ok",
     semanticReadiness: "unknown",
+    protocolFields: parsed.protocolFieldsDeclared ? "declared" : "legacy-projected",
     value: {
       originalRequestRef,
       reviewedRequestRef,
@@ -295,6 +372,11 @@ export function inspectBoundedFalsificationReview(text: string): BoundedFalsific
       reviewerAgent,
       reviewerSessionRef,
       effectiveModel,
+      protocolMode,
+      contextReconstructionRef,
+      candidateStateAtReconstruction,
+      initialComparisonContinuity,
+      correctedReviewFreshness,
       challengeCount,
       attackClasses,
       materialFindings,
@@ -321,6 +403,11 @@ export function formatBoundedFalsificationReview(review: BoundedFalsificationRev
     `- **Reviewer Agent**: ${review.reviewerAgent}`,
     `- **Reviewer Session Ref**: ${review.reviewerSessionRef}`,
     `- **Effective Model**: ${review.effectiveModel}`,
+    `- **Protocol Mode**: ${review.protocolMode}`,
+    `- **Context Reconstruction Ref**: ${review.contextReconstructionRef}`,
+    `- **Candidate State At Reconstruction**: ${review.candidateStateAtReconstruction}`,
+    `- **Initial Comparison Continuity**: ${review.initialComparisonContinuity}`,
+    `- **Corrected Review Freshness**: ${review.correctedReviewFreshness}`,
     `- **Challenge Count**: ${review.challengeCount}`,
     ...review.attackClasses.map((item) => `- **${attackField(item.id)}**: ${item.status}`),
     `- **Material Findings**: ${formatList(review.materialFindings)}`,

@@ -2,9 +2,9 @@
 
 See `proposal.md` for the routing problem and MTAET-001 claim boundary. Current loaded Team Advice authority has two useful but poorly separated paths: an objective trivial owner-local bypass, and a broad non-trivial-root advisor trigger. The first is too narrow; the second serializes an advisor call even when one current owner, selected route, and representative proof are already established. An earlier combined plan replaced that with the circular sentence that main did not need advice to decide advice had no value. This design instead makes direct eligibility a conjunction of current observable mission facts.
 
-Team routing is independent from artifact-shape/risk semantics now owned by `streamline-ordinary-small-closure` (SOSC). It is also independent from OPDC, LFTD, CCO, Change-Ready, and exact Practice Owner routing. Because all five active changes overlap loaded main, mirrors, validators, or proof roots and the ownership inventory resolves only direct pairs, this change remains mutation-disabled and declares direct dependencies on OPDC, LFTD, CCO, and SOSC.
+Team routing is independent from artifact-shape/risk semantics owned by archived `streamline-ordinary-small-closure` (SOSC). It is also independent from OPDC, LFTD, CCO, Change-Ready, and exact Practice Owner routing. OPDC, LFTD, CCO, and SOSC are archived in the selected order; the current ownership inventory resolves every declared direct pair and selects this change as the mutation-enabled owner while the dependent PCR change remains disabled.
 
-The current fidelity rung is reviewed planning and existing provider-free STA-001 behavior. The next real boundary after ownership transfer is one provider-free objective-predicate fixture, followed by one installed direct scenario. No external, remote, deployment, install, credential, destructive, or consumer-project effect is authorized. Configured proof uses current-run status, stdout/stderr, events, effects, diagnostics, and cleanup only; it SHALL NOT retain a replay corpus or repository evidence bundle. Proof-owned roots, sessions, processes, and temporary output are automatically cleaned.
+The current fidelity rung is conflict-free transferred ownership and existing provider-free STA-001 behavior. The next real boundary is one provider-free objective-predicate fixture, followed by one installed direct scenario. No external, remote, deployment, install, credential, destructive, or consumer-project effect is authorized. Configured proof uses current-run status, stdout/stderr, events, effects, diagnostics, and cleanup only; it SHALL NOT retain a replay corpus or repository evidence bundle. Proof-owned roots, sessions, processes, and temporary output are automatically cleaned.
 
 ## Goals / Non-Goals
 
@@ -14,7 +14,7 @@ The current fidelity rung is reviewed planning and existing provider-free STA-00
 - Activate one advisor map only for a concrete unresolved team-selection fact.
 - Make `direct` mean advisor omission only, with no lifecycle or safety bypass.
 - Preserve exact Practice Owner activation without advisor discovery.
-- Keep catalog access least-privilege and catalog failure scoped.
+- Keep catalog access technically fail-closed by attributable advisor/root identity and catalog failure scoped, while preserving the current unrestricted host permission policy and role-text authority boundary.
 - Preserve mission continuity and reconsult only after material topology change.
 - Prove the shortest direct path before positive advisor and bypass controls.
 
@@ -83,7 +83,7 @@ This avoids routing every material practice through another model call and prese
 
 ### 5. Catalog access and failure remain scoped
 
-The current privacy-safe catalog and least-privilege advisor permission shape are reused. Only an attributable advisor child with a resolvable parentless root may call `specialist_catalog`. Deterministic tooling validates schema, availability references, stable ordering, privacy, caller identity, and permission shape. It does not evaluate direct eligibility or choose a team.
+The current privacy-safe catalog is reused under the current unrestricted host permission policy. The advisor remains role-bounded and non-authorizing even though the local runtime technically grants broad tools. Only an attributable advisor child with a resolvable parentless root may receive `specialist_catalog` data. Deterministic tooling validates schema, availability references, stable ordering, privacy, caller/root identity, the explicit unrestricted runtime identity, and required role prohibitions. It does not evaluate direct eligibility or choose a team.
 
 If the catalog is unavailable, only the accepted item that requires a catalog-backed package choice becomes unknown or blocked. Any independent item with a complete direct predicate continues. A mission-wide `Team Advice: unknown` state is not created when no advice exists.
 
@@ -99,17 +99,19 @@ The automation dividend extends the maintained STA-001 seed/evaluator and exact 
 
 Proof order:
 
-1. Provider-free predicate, catalog, permission, and deliberate-red controls.
+1. Provider-free predicate, catalog attribution/privacy, runtime-permission identity, role-boundary, and deliberate-red controls.
 2. Actual installed direct scenario with zero advisor/catalog calls, representative runtime proof, and cleanup.
 3. Installed competing-route, unavailable-capability, independent-evidence, and isolation controls.
 4. Exact Practice Owner and Material/LFTD/OPDC/CCO/OpenSpec non-bypass controls.
 5. Mission continuity, catalog outage scoping, and finite MTAET-001 readback.
 
+The configured catalog-outage member substitutes only the generated proof copy's catalog API handle with `null`, reaching the production plugin's existing `catalog-api-unavailable` branch. Production source and all other loaded identities remain unchanged. Component tests establish the branch's `unknown`, empty-entry, and privacy-safe result; the configured member separately observes advisor disposition, the independent direct sibling, effects, and cleanup. The maximum substitution claim is this one API-unavailable branch in the recorded model/profile/source/environment, not arbitrary catalog faults or general equivalence.
+
 After a failed configured run, inspect exact invocation, identity, exit status, stdout/stderr, events, effects, and cleanup. Another equivalent call requires a causal mechanism change or exact missing observation. Current-run diagnostics determine the decision; no retained replay path is created.
 
-### 8. Acquire exact ownership after all predecessors
+### 8. Exact ownership follows all predecessors
 
-This change remains `mutationEnabled=false`. Before apply, OPDC must archive, then LFTD, then CCO, then SOSC, with terminal writers and current manifests/source/runtime identities reread at every transfer. The ownership manifest declares direct dependencies on every overlapping change because transitive dependencies do not resolve pairwise inventory conflicts. Exactly one change may mutate each root.
+This change is `mutationEnabled=true` after OPDC, LFTD, CCO, and SOSC archived in order with terminal writers and exact transfers. Apply still rereads current manifests, source/runtime identities, and scoped diffs before production mutation. The ownership manifest declares direct dependencies on every overlapping predecessor because transitive dependencies do not resolve pairwise inventory conflicts. Exactly one active change may mutate each root.
 
 Alternative rejected: edit apparently free advisor files while shared loaded-main or proof roots remain owned elsewhere. That would create a mixed candidate and make installed routing evidence uninterpretable.
 
@@ -127,10 +129,10 @@ Alternative rejected: edit apparently free advisor files while shared loaded-mai
 
 ## Migration Plan
 
-1. Wait for OPDC, LFTD, CCO, and SOSC to archive in order with terminal writers; reread exact ownership and loaded source before transfer.
+1. Confirm OPDC, LFTD, CCO, and SOSC remain archived with terminal writers and reread exact transferred ownership plus loaded source before production mutation.
 2. Extend STA-001 with explicit direct-predicate and non-bypass seed facts plus deliberate red controls.
 3. Update loaded Team Advice authority, project mirrors, advisor description, and continuity text without copying downstream contract bodies.
-4. Keep existing catalog schema and permissions, adding only exact structural checks required by the objective boundary.
+4. Keep the existing unrestricted host permission policy and catalog schema, adding only exact role-boundary and catalog caller/root checks required by the objective boundary.
 5. Run provider-free controls, then the installed direct path, then advisor-positive and non-bypass controls.
 6. Remove only superseded complete-sentence mirrors after replacement red/green discrimination is observed.
 7. Roll back by restoring the previous broad non-trivial-root advisor trigger; catalog and exact Practice Owner routes remain intact throughout.

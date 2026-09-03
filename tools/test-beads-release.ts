@@ -12,12 +12,14 @@ import {
   requireBeadsCapability,
   validateBeadsInitializationObservation,
   validateBeadsReleaseCandidate,
-} from "./windows/beads-release.ts";
-import type { BeadsInitializationObservation, BeadsReleaseCandidate } from "./windows/beads-release.ts";
+  validateBeadsTrackedFilePrerequisite,
+} from "../global/bin/beads-portfolio-bridge/beads-release.ts";
+import type { BeadsInitializationObservation, BeadsReleaseCandidate } from "../global/bin/beads-portfolio-bridge/beads-release.ts";
 
 const archiveSha256 = "1f00c29cd9599e182a4a4e829f5210daca2da14155920aee2836d8bc613b2feb";
 const executableSha256 = "b1f3609fea1d9f0f19b2ed49098b3628acfa6ca115aa28b01a1ee178c3a214de";
 const trackedIgnoreSha256 = "9788c26633ae340b1647c267f66c010ca0ded0b3bb039e887497ffeccccc6553";
+const trackedIgnoreContent = "\n# Beads / Dolt files (added by bd init)\n.dolt/\n*.db\n.beads-credential-key\n.beads/proxieddb/\n";
 
 function candidate(overrides: Partial<BeadsReleaseCandidate> = {}): BeadsReleaseCandidate {
   return {
@@ -38,7 +40,7 @@ function observation(overrides: Partial<BeadsInitializationObservation> = {}): B
   return {
     flags: ["--json", "--non-interactive", "--prefix", "--sandbox", "--setup-exclude", "--skip-agents", "--skip-hooks"],
     ignoreSchemaSkew: false,
-    trackedFileDigests: { ".gitignore": trackedIgnoreSha256 },
+    trackedFileDigests: { ".gitignore": "a".repeat(64) },
     createdPaths: [".beads"],
     modifiedPaths: [".git/config", ".git/info/exclude"],
     gitConfig: { "beads.role": "maintainer" },
@@ -60,7 +62,7 @@ test("loads the exact reviewed Beads release and closed capability matrix", () =
   assert.equal(manifest.release.executable.fileName, "bd.exe");
   assert.equal(manifest.release.executable.bytes, 145740800);
   assert.equal(manifest.release.executable.sha256, executableSha256);
-  assert.deepEqual(manifest.initialization.requiredTrackedFiles, [{ path: ".gitignore", sha256: trackedIgnoreSha256 }]);
+  assert.deepEqual(manifest.initialization.requiredTrackedFiles, [{ content: trackedIgnoreContent, path: ".gitignore", sha256: trackedIgnoreSha256 }]);
   assert.deepEqual(manifest.initialization.allowedCreatedPaths, [".beads"]);
   assert.deepEqual(manifest.initialization.allowedModifiedPaths, [".git/config", ".git/info/exclude"]);
   assert.deepEqual(manifest.initialization.allowedGitConfig, [{ key: "beads.role", value: "maintainer" }]);
@@ -106,10 +108,13 @@ test("rejects unreviewed and unavailable capabilities while containing spike-onl
 
 test("enforces the prepared ignore, exact flags, effect paths, and schema-skew refusal", () => {
   const manifest = loadBeadsReleaseManifest();
+  const required = manifest.initialization.requiredTrackedFiles[0]!;
+  assert.doesNotThrow(() => validateBeadsTrackedFilePrerequisite(required, `existing-rule\r\n${trackedIgnoreContent.replaceAll("\n", "\r\n")}`));
+  assert.throws(() => validateBeadsTrackedFilePrerequisite(required, "existing-rule\n"), /reviewed prerequisite block/u);
   assert.doesNotThrow(() => validateBeadsInitializationObservation(manifest, observation()));
   assert.throws(
-    () => validateBeadsInitializationObservation(manifest, observation({ trackedFileDigests: { ".gitignore": "0".repeat(64) } })),
-    /reviewed '.gitignore' digest/u,
+    () => validateBeadsInitializationObservation(manifest, observation({ trackedFileDigests: {} })),
+    /observed '.gitignore' digest/u,
   );
   assert.throws(
     () => validateBeadsInitializationObservation(manifest, observation({ flags: observation().flags.filter((flag) => flag !== "--skip-hooks") })),
@@ -149,6 +154,21 @@ test("rejects malformed or broadened manifest shape", () => {
   assert.throws(() => parseBeadsReleaseManifest({ ...raw, capabilities }), /capabilities must contain exactly/u);
   const initialization = { ...(raw.initialization as Record<string, unknown>), allowedCreatedPaths: ["../escape"] };
   assert.throws(() => parseBeadsReleaseManifest({ ...raw, initialization }), /without parent traversal/u);
+  const requiredTrackedFiles = [{ ...((raw.initialization as Record<string, unknown>).requiredTrackedFiles as Array<Record<string, unknown>>)[0], content: "wrong\n" }];
+  assert.throws(
+    () => parseBeadsReleaseManifest({ ...raw, initialization: { ...(raw.initialization as Record<string, unknown>), requiredTrackedFiles } }),
+    /content must match/u,
+  );
+  const legacyTrackedFiles = requiredTrackedFiles.map(({ content: _content, ...tracked }) => tracked);
+  const legacy = parseBeadsReleaseManifest({
+    ...raw,
+    initialization: { ...(raw.initialization as Record<string, unknown>), requiredTrackedFiles: legacyTrackedFiles },
+  });
+  assert.equal(legacy.initialization.requiredTrackedFiles[0]?.content, null);
+  assert.throws(
+    () => validateBeadsTrackedFilePrerequisite(legacy.initialization.requiredTrackedFiles[0]!, trackedIgnoreContent),
+    /no current reviewed content prerequisite/u,
+  );
 });
 
 test("rejects unsafe manifest paths and preserves the JSON parse cause", () => {

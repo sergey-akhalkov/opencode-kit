@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,7 +54,7 @@ export type BeadsReleaseManifest = {
     mode: "embedded";
     requiredFlags: string[];
     disallowedFlags: string[];
-    requiredTrackedFiles: Array<{ path: string; sha256: string }>;
+    requiredTrackedFiles: Array<{ content: string | null; path: string; sha256: string }>;
     allowedCreatedPaths: string[];
     allowedModifiedPaths: string[];
     allowedGitConfig: Array<{ key: string; value: string }>;
@@ -139,10 +140,28 @@ function repositoryRelative(value: unknown, label: string): string {
   return selected;
 }
 
-function trackedFile(value: unknown, label: string): { path: string; sha256: string } {
+function trackedFile(value: unknown, label: string): { content: string | null; path: string; sha256: string } {
   const input = record(value, label);
-  exactKeys(input, ["path", "sha256"], label);
-  return { path: repositoryRelative(input.path, `${label}.path`), sha256: digest(input.sha256, `${label}.sha256`) };
+  const legacy = input.content == null;
+  exactKeys(input, legacy ? ["path", "sha256"] : ["content", "path", "sha256"], label);
+  const content = legacy ? null : text(input.content, `${label}.content`);
+  const sha256 = digest(input.sha256, `${label}.sha256`);
+  if (content != null && crypto.createHash("sha256").update(content, "utf8").digest("hex") !== sha256) {
+    throw new Error(`${label}.content must match ${label}.sha256.`);
+  }
+  return { content, path: repositoryRelative(input.path, `${label}.path`), sha256 };
+}
+
+export function validateBeadsTrackedFilePrerequisite(
+  required: BeadsReleaseManifest["initialization"]["requiredTrackedFiles"][number],
+  actualContent: string,
+): void {
+  if (required.content == null) throw new Error(`Tracked '${required.path}' has no current reviewed content prerequisite.`);
+  const normalizedActual = actualContent.replaceAll("\r\n", "\n");
+  const normalizedRequired = required.content.replaceAll("\r\n", "\n");
+  if (!normalizedActual.includes(normalizedRequired)) {
+    throw new Error(`Tracked '${required.path}' does not contain the reviewed prerequisite block.`);
+  }
 }
 
 function gitConfig(value: unknown, label: string): { key: string; value: string } {
@@ -290,8 +309,9 @@ export function validateBeadsInitializationObservation(
   for (const disallowed of policy.disallowedFlags) if (actualFlags.has(disallowed)) throw new Error(`Beads initialization flag '${disallowed}' is forbidden.`);
 
   for (const required of policy.requiredTrackedFiles) {
-    if (observation.trackedFileDigests[required.path] !== required.sha256) {
-      throw new Error(`Beads initialization requires the reviewed '${required.path}' digest.`);
+    const observed = observation.trackedFileDigests[required.path];
+    if (typeof observed !== "string" || !SHA256.test(observed)) {
+      throw new Error(`Beads initialization requires an observed '${required.path}' digest.`);
     }
   }
   const allowedCreated = new Set(policy.allowedCreatedPaths);

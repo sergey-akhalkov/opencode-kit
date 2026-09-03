@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "name": "core-beads",
+  "description": "Explicit full runtime surface: the complete core profile plus the on-demand Beads portfolio bridge skill and its deterministic closed helper closure.",
+  "configMode": "ask",
+  "agents": [
+    "code-quality-reviewer",
+    "evidence-sufficiency-reviewer",
+    "execution-safety-reviewer",
+    "foundation-integrity-reviewer",
+    "implementation-readiness-reviewer",
+    "implementation-worker",
+    "instruction-artifact-reviewer",
+    "openspec-architecture-reviewer",
+    "sdet-quality-engineer",
+    "specialist-team-advisor",
+    "test-coverage-reviewer",
+    "troubleshooter"
+  ],
+  "commands": [
+    "kaizen-status",
+    "kaizen-triage",
+    "opsx-apply",
+    "opsx-archive",
+    "opsx-propose"
+  ],
+  "directories": [
+    "global/bin/beads-portfolio-bridge",
+    "global/plugin"
+  ],
+  "files": [
+    "global/AGENTS.md",
+    "global/bin/complexity-foraging-contract.ts",
+    "global/bin/complexity-foraging-inventory.ts",
+    "global/bin/delivery-trajectory-context.ts",
+    "global/bin/openspec-archive.ts",
+    "global/bin/openspec-change/claims.ts",
+    "global/bin/openspec-change/delivery-horizon.ts",
+    "global/bin/openspec-change/gate.ts",
+    "global/bin/openspec-change/inventory.ts",
+    "global/bin/openspec-change/manifest.ts",
+    "global/bin/openspec-change/ownership.ts",
+    "global/bin/openspec-change/state.ts",
+    "global/bin/portable-process.ts",
+    "global/extensions/specialist-catalog.ts",
+    "global/extensions/unrestricted-agent-tools.ts",
+    "global/opencode.json.template",
+    "global/opencode.local.instructions.example.md",
+    "global/principles-of-work.md"
+  ],
+  "skills": [
+    "beads-portfolio-bridge",
+    "behavioral-substitution-qualification",
+    "change-ready-sdlc",
+    "complain",
+    "complexity-management",
+    "foundation-integrity-recovery",
+    "next-step",
+    "openspec-abandon-change",
+    "openspec-apply-change",
+    "openspec-archive-change",
+    "openspec-propose",
+    "reuse-discovery",
+    "roadmap-delivery-trajectory"
+  ]
+}

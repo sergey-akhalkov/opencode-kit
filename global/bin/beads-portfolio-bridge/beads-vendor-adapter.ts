@@ -2,16 +2,18 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { runPortableCommand } from "../../global/bin/portable-process.ts";
+import { runPortableCommand } from "../portable-process.ts";
 import {
   loadBeadsReleaseManifest,
   requireBeadsCapability,
+  validateBeadsTrackedFilePrerequisite,
 } from "./beads-release.ts";
 import type { BeadsCapability, BeadsReleaseManifest } from "./beads-release.ts";
-import type { PortableCommandOptions, PortableCommandResult } from "../../global/bin/portable-process.ts";
+import type { PortableCommandOptions, PortableCommandResult } from "../portable-process.ts";
 
 type JsonRecord = Record<string, unknown>;
 type BridgeOwnerClass = "current-project" | "opencode-kit";
+export type BeadsRelationType = "blocks" | "parent-child" | "supersedes";
 type BridgeMetadata = {
   bridgeSchemaVersion: 1;
   kaizenSignalRef?: string;
@@ -42,6 +44,7 @@ export type BeadsAdapterRequest = CommonRequest & (
     externalRef: string;
     metadata: Required<Pick<BridgeMetadata, "bridgeSchemaVersion" | "kaizenSignalRef" | "decisionRef" | "projectRef" | "ownerClass">>;
   }
+  | { operation: "add-dependency"; id: string; dependsOnId: string; relationType: BeadsRelationType }
   | { operation: "update-feature"; id: string; specId: string; changeRef: string }
   | { operation: "assign-feature"; id: string; assignee: string; taskRef: string; sessionRef: string }
   | { operation: "close-feature"; id: string; reason: string }
@@ -50,6 +53,7 @@ export type BeadsAdapterRequest = CommonRequest & (
 export type BeadsIssueFact = {
   id: string;
   status: string;
+  closeReason: string | null;
   priority: number;
   issueType: "feature";
   assignee: string | null;
@@ -99,6 +103,7 @@ export type BeadsAdapterResponse = {
   result:
     | { kind: "project"; initialized: true; prefix: string | null }
     | { kind: "project-disable-check"; canDisable: true; summary: BeadsStatusSummary }
+    | { kind: "dependency"; issueId: string; dependsOnId: string; relationType: BeadsRelationType; status: "added" }
     | { kind: "issues"; items: BeadsIssueFact[]; truncated: boolean };
   diagnostics: { messages: string[] };
 };
@@ -127,7 +132,6 @@ export class BeadsAdapterError extends Error {
 
 export type BeadsAdapterDependencies = {
   inspectExecutable?: (file: string, manifest: BeadsReleaseManifest) => { bytes: number; sha256: string };
-  inspectTrackedFile?: (file: string) => { sha256: string };
   runCommand?: (root: string, argv: readonly string[], options: PortableCommandOptions) => PortableCommandResult;
 };
 
@@ -169,6 +173,7 @@ const INPUT_KEYS: Record<BeadsAdapterRequest["operation"], readonly string[]> = 
   ready: ["limit", "correlation"],
   show: ["id"],
   "create-feature": ["title", "externalRef", "metadata"],
+  "add-dependency": ["id", "dependsOnId", "relationType"],
   "update-feature": ["id", "specId", "changeRef"],
   "assign-feature": ["id", "assignee", "taskRef", "sessionRef"],
   "close-feature": ["id", "reason"],
@@ -177,6 +182,7 @@ const STATUS_VALUES = new Set(["open", "in_progress", "blocked", "deferred", "cl
 const SAFE_REF = /^[A-Za-z][A-Za-z0-9:._-]{0,127}$/u;
 const ISSUE_ID = /^[A-Za-z][A-Za-z0-9_-]{0,63}(?:\.[A-Za-z0-9_-]{1,32})*$/u;
 const PREFIX = /^[A-Za-z][A-Za-z0-9_]{1,15}$/u;
+const RELATION_TYPES = new Set<BeadsRelationType>(["blocks", "parent-child", "supersedes"]);
 const MAX_VENDOR_OUTPUT_BYTES = 250_000;
 const MAX_DIAGNOSTIC_BYTES = 2_000;
 
@@ -285,6 +291,11 @@ function parseRequest(value: unknown): BeadsAdapterRequest {
         externalRef: safeRef(input.externalRef, "externalRef"),
         metadata: parseMetadata(input.metadata, "metadata", true) as Required<Pick<BridgeMetadata, "bridgeSchemaVersion" | "kaizenSignalRef" | "decisionRef" | "projectRef" | "ownerClass">>,
       };
+    case "add-dependency": {
+      const relationType = boundedText(input.relationType, "relationType", 32) as BeadsRelationType;
+      if (!RELATION_TYPES.has(relationType)) throw new Error("relationType is outside the closed Beads relation set.");
+      return { ...common, operation, id: issueId(input.id), dependsOnId: issueId(input.dependsOnId), relationType };
+    }
     case "update-feature":
       return {
         ...common,
@@ -364,6 +375,11 @@ function planBeadsAdapterInvocation(value: unknown): PlannedBeadsAdapterInvocati
       capability = "featureCreateAtomicCorrelation";
       sideEffectKind = "beads-write";
       break;
+    case "add-dependency":
+      argv = [...writeGlobals, "dep", "add", request.id, request.dependsOnId, "--type", request.relationType];
+      capability = "dependencyAdd";
+      sideEffectKind = "beads-write";
+      break;
     case "update-feature":
       argv = [...writeGlobals, "update", request.id, "--spec-id", request.specId, "--set-metadata", `changeRef=${request.changeRef}`];
       capability = "featureUpdateExact";
@@ -432,11 +448,7 @@ function inspectExecutable(file: string, manifest: BeadsReleaseManifest): { byte
   return { bytes: stat.size, sha256 };
 }
 
-function resolveProjectRoot(
-  request: BeadsAdapterRequest,
-  manifest: BeadsReleaseManifest,
-  inspectTrackedFile: (file: string) => { sha256: string } = (file) => ({ sha256: digestFile(file) }),
-): string {
+function resolveProjectRoot(request: BeadsAdapterRequest, manifest: BeadsReleaseManifest): string {
   const stat = fs.lstatSync(request.projectRoot, { throwIfNoEntry: false });
   if (stat == null || !stat.isDirectory() || stat.isSymbolicLink()) throw new Error("project root is not a regular directory");
   const root = fs.realpathSync.native(request.projectRoot);
@@ -449,9 +461,10 @@ function resolveProjectRoot(
     for (const tracked of manifest.initialization.requiredTrackedFiles) {
       const file = path.resolve(root, tracked.path);
       const fileStat = fs.lstatSync(file, { throwIfNoEntry: false });
-      if (fileStat == null || !fileStat.isFile() || fileStat.isSymbolicLink() || inspectTrackedFile(file).sha256 !== tracked.sha256) {
+      if (fileStat == null || !fileStat.isFile() || fileStat.isSymbolicLink() || fileStat.size > 1_000_000) {
         throw new Error("reviewed tracked initialization prerequisite is absent or drifted");
       }
+      validateBeadsTrackedFilePrerequisite(tracked, fs.readFileSync(file, "utf8"));
     }
   } else if (beads == null || !beads.isDirectory() || beads.isSymbolicLink()) {
     throw new Error("project Beads state is absent or indirect");
@@ -577,11 +590,20 @@ function outputMetadata(value: unknown): BridgeMetadata {
   return metadata;
 }
 
-function dependencyFacts(value: unknown): BeadsIssueFact["dependencies"] {
+function dependencyFacts(value: unknown, ownerId: string): BeadsIssueFact["dependencies"] {
   if (value == null) return [];
   if (!Array.isArray(value) || value.length > 100) throw new Error("Beads dependency output is invalid or unbounded.");
   return value.map((item) => {
     const dep = record(item, "Beads dependency");
+    if (dep.id == null) {
+      if (dep.issue_id !== ownerId) throw new Error("Beads dependency edge does not match its owning issue.");
+      return {
+        id: issueId(dep.depends_on_id),
+        status: null,
+        issueType: null,
+        dependencyType: optionalString(dep.type, "dependency.type"),
+      };
+    }
     return {
       id: issueId(dep.id),
       status: optionalString(dep.status, "dependency.status"),
@@ -593,12 +615,14 @@ function dependencyFacts(value: unknown): BeadsIssueFact["dependencies"] {
 
 function issueFact(value: unknown): BeadsIssueFact {
   const issue = record(value, "Beads issue");
+  const id = issueId(issue.id);
   const status = boundedText(issue.status, "issue.status", 32);
   if (!STATUS_VALUES.has(status)) throw new Error("Beads issue status is unsupported.");
   if (issue.issue_type !== "feature") throw new Error("Beads issue output is not a feature.");
   return {
-    id: issueId(issue.id),
+    id,
     status,
+    closeReason: optionalString(issue.close_reason, "issue.close_reason"),
     priority: integer(issue.priority, "issue.priority", 0, 4),
     issueType: "feature",
     assignee: optionalSafeRef(issue.assignee, "issue.assignee"),
@@ -607,8 +631,20 @@ function issueFact(value: unknown): BeadsIssueFact {
     metadata: outputMetadata(issue.metadata),
     dependencyCount: nonNegative(issue.dependency_count),
     dependentCount: nonNegative(issue.dependent_count),
-    dependencies: dependencyFacts(issue.dependencies),
+    dependencies: dependencyFacts(issue.dependencies, id),
   };
+}
+
+function dependencyMutationFact(value: unknown, request: Extract<BeadsAdapterRequest, { operation: "add-dependency" }>): Extract<BeadsAdapterResponse["result"], { kind: "dependency" }> {
+  const relation = record(value, "Beads dependency mutation");
+  if (relation.schema_version !== 1 || relation.status !== "added") throw new Error("Beads dependency mutation status is unsupported.");
+  const issueIdValue = issueId(relation.issue_id);
+  const dependsOnId = issueId(relation.depends_on_id);
+  const relationType = boundedText(relation.type, "dependency.type", 32) as BeadsRelationType;
+  if (issueIdValue !== request.id || dependsOnId !== request.dependsOnId || relationType !== request.relationType) {
+    throw new Error("Beads dependency mutation output does not match the request.");
+  }
+  return { kind: "dependency", issueId: issueIdValue, dependsOnId, relationType, status: "added" };
 }
 
 function issueRows(value: unknown, operation: BeadsAdapterRequest["operation"]): unknown[] {
@@ -651,12 +687,14 @@ function responseResult(
     return { kind: "project", initialized: true, prefix };
   }
   if (plan.request.operation === "project-enable") {
-    record(parsed, "Beads init output");
+    const store = fs.lstatSync(path.join(root, ".beads"), { throwIfNoEntry: false });
+    if (store == null || !store.isDirectory() || store.isSymbolicLink()) throw new Error("Beads init did not create a direct project store.");
     return { kind: "project", initialized: true, prefix: plan.request.prefix };
   }
   if (plan.request.operation === "project-disable") {
     return { kind: "project-disable-check", canDisable: true, summary: statusSummary(parsed) };
   }
+  if (plan.request.operation === "add-dependency") return dependencyMutationFact(parsed, plan.request);
   const rows = issueRows(parsed, plan.operation);
   if (rows.length > 100) throw new Error("Beads issue output exceeded the item bound.");
   return {
@@ -685,7 +723,7 @@ export function runBeadsAdapter(value: unknown, dependencies: BeadsAdapterDepend
   let root: string;
   try {
     identity = (dependencies.inspectExecutable ?? inspectExecutable)(plan.request.executablePath, manifest);
-    root = resolveProjectRoot(plan.request, manifest, dependencies.inspectTrackedFile);
+    root = resolveProjectRoot(plan.request, manifest);
   } catch (cause) {
     throw new BeadsAdapterError("Beads executable or project identity check failed.", "identity-mismatch", { cause });
   }
@@ -708,7 +746,12 @@ export function runBeadsAdapter(value: unknown, dependencies: BeadsAdapterDepend
   let parsed: unknown;
   let projected: BeadsAdapterResponse["result"];
   try {
-    parsed = parseJson(result.stdout);
+    if (plan.request.operation === "project-enable") {
+      if (Buffer.byteLength(result.stdout) > MAX_VENDOR_OUTPUT_BYTES || result.stdout.includes("<truncated>")) {
+        throw new BeadsAdapterError("Beads output exceeded the adapter bound.", "output-too-large");
+      }
+      parsed = {};
+    } else parsed = parseJson(result.stdout);
     projected = responseResult(plan, parsed, root, result.stderr);
   } catch (cause) {
     const code = cause instanceof BeadsAdapterError ? cause.code : "invalid-vendor-output";

@@ -25,7 +25,7 @@ assert.equal(typeof result.reconsultationCondition, "string");
 if (caseRecord.caseId === "trivial-owner-local-direct") {
   assert.equal(fs.readFileSync("note.txt", "utf8"), "the local note\n");
 }
-if (caseRecord.caseId === "isolated-production-delegation") {
+if (caseRecord.caseId === "unresolved-isolation-delegation") {
   assert.equal(fs.readFileSync("worker/output.txt", "utf8"), "worker-ok\n");
 }
 

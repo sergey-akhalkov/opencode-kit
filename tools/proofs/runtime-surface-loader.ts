@@ -5,7 +5,10 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import {
+  BEADS_PORTFOLIO_HELPER_DIRECTORY,
+  BEADS_PORTFOLIO_SKILL,
   CORE_PLUGIN_FILES,
   CORE_SKILLS,
   DELIVERY_TRAJECTORY_HELPER_FILES,
@@ -19,6 +22,9 @@ import {
 export type LoaderSkill = { location: string; name: string };
 
 export type LoaderEvaluation = {
+  beadsHelperFiles: string[];
+  beadsSkillCount: number;
+  beadsSurfaceExpected: boolean;
   extraCoreSkills: string[];
   hiddenParentHits: string[];
   missingCoreSkills: string[];
@@ -64,6 +70,8 @@ export type LoaderSurfaceEvaluation = LoaderEvaluation & {
 export type MissionLoaderEvaluation = {
   advisorAgentName: string;
   advisorStatus: number | null;
+  beadsHelperFiles: string[];
+  beadsSkillCount: number;
   agentListStatus: number | null;
   catalogPluginCount: number;
   commandNames: string[];
@@ -80,6 +88,15 @@ export type MissionLoaderEvaluation = {
   stagingPathCount: number;
   status: "failed" | "passed";
   unresolvedPlaceholderCount: number;
+};
+
+export type BeadsSkillRoutingEvaluation = {
+  cleanup: "complete" | "unknown";
+  explicit: { sessionIds: string[]; skillNames: string[]; status: number | null };
+  ordinary: { sessionIds: string[]; skillNames: string[]; status: number | null };
+  projectEntriesUnchanged: boolean;
+  sessionDeleteStatuses: Array<{ sessionID: string; status: number | null }>;
+  status: "failed" | "passed";
 };
 
 const DOMAIN_SKILLS = [
@@ -100,6 +117,14 @@ const DOMAIN_AGENTS = [
 ] as const;
 
 const AUTO_DISCOVERED_CORE_PLUGIN_FILES = ["plugin/graphify-project-context.ts"] as const;
+const BEADS_HELPER_FILES = [
+  "beads-bridge-registration.ts",
+  "beads-kaizen-orchestrator.ts",
+  "beads-project-lifecycle.ts",
+  "beads-release.manifest.json",
+  "beads-release.ts",
+  "beads-vendor-adapter.ts",
+] as const;
 
 function usage(): string {
   return [
@@ -111,7 +136,8 @@ function usage(): string {
     "Options:",
     "  --candidate-id <id>     Evidence candidate id.",
     "  --evidence-root <path>  Create-new evidence directory. Required with --candidate-id.",
-    "  --profile <core|all>     Generated profile to inspect. Defaults to core.",
+    "  --profile <core|core-beads|all|source>  Generated profile or unprofiled full source to inspect. Defaults to core.",
+    "  --verify-skill-routing  Run two bounded synthetic core-beads trigger checks.",
     "  --help, -h              Show this help. No effects.",
   ].join("\n");
 }
@@ -120,11 +146,12 @@ function repositoryRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 }
 
-function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: string | null; profile: "all" | "core" } | null {
+function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: string | null; profile: "all" | "core" | "core-beads" | "source"; verifySkillRouting: boolean } | null {
   if (args.includes("--help") || args.includes("-h")) return null;
   let candidateId: string | null = null;
   let evidenceRoot: string | null = null;
-  let profile: "all" | "core" = "core";
+  let profile: "all" | "core" | "core-beads" | "source" = "core";
+  let verifySkillRouting = false;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
     const value = args[index + 1];
@@ -134,9 +161,11 @@ function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: 
     } else if (arg === "--evidence-root" && value != null) {
       evidenceRoot = path.resolve(value);
       index++;
-    } else if (arg === "--profile" && (value === "all" || value === "core")) {
+    } else if (arg === "--profile" && (value === "all" || value === "core" || value === "core-beads" || value === "source")) {
       profile = value;
       index++;
+    } else if (arg === "--verify-skill-routing") {
+      verifySkillRouting = true;
     } else {
       throw new Error(`Unknown or incomplete option: ${arg}`);
     }
@@ -144,7 +173,10 @@ function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: 
   if ((candidateId == null) !== (evidenceRoot == null)) {
     throw new Error("--candidate-id and --evidence-root must be supplied together.");
   }
-  return { candidateId, evidenceRoot, profile };
+  if (verifySkillRouting && profile !== "core-beads") {
+    throw new Error("--verify-skill-routing requires --profile core-beads.");
+  }
+  return { candidateId, evidenceRoot, profile, verifySkillRouting };
 }
 
 export function extractJson(text: string): unknown {
@@ -200,12 +232,24 @@ export function evaluateLoaderSkills(
   skills: LoaderSkill[],
   generatedRoot: string,
   sourceGlobal: string,
+  profile: "core" | "core-beads" = "core",
 ): LoaderEvaluation {
   const skillNames = [...new Set(skills.map((skill) => skill.name))].sort((left, right) => left.localeCompare(right));
   const generated = path.resolve(generatedRoot);
   const parentSkills = path.join(path.resolve(sourceGlobal), "skills");
-  const missingCoreSkills = CORE_SKILLS.filter((name) => !skillNames.includes(name));
-  const extraCoreSkills = DOMAIN_SKILLS.filter((name) => skillNames.includes(name));
+  const expectedSkills = profile === "core-beads" ? [...CORE_SKILLS, BEADS_PORTFOLIO_SKILL] : [...CORE_SKILLS];
+  const missingCoreSkills = expectedSkills.filter((name) => !skillNames.includes(name));
+  const extraCoreSkills = [
+    ...DOMAIN_SKILLS.filter((name) => skillNames.includes(name)),
+    ...(profile === "core" && skillNames.includes(BEADS_PORTFOLIO_SKILL) ? [BEADS_PORTFOLIO_SKILL] : []),
+  ];
+  const beadsSkillCount = skills.filter((skill) => skill.name === BEADS_PORTFOLIO_SKILL).length;
+  const beadsHelperRoot = path.join(generated, ...BEADS_PORTFOLIO_HELPER_DIRECTORY.slice("global/".length).split("/"));
+  const beadsHelperFiles = BEADS_HELPER_FILES.filter((name) => fs.existsSync(path.join(beadsHelperRoot, name)));
+  const beadsSurfaceExpected = profile === "core-beads";
+  const beadsSurfaceValid = beadsSurfaceExpected
+    ? beadsSkillCount === 1 && beadsHelperFiles.length === BEADS_HELPER_FILES.length
+    : beadsSkillCount === 0 && !fs.existsSync(beadsHelperRoot);
   const hiddenParentHits = skills
     .filter((skill) => {
       const location = path.resolve(skill.location);
@@ -215,10 +259,13 @@ export function evaluateLoaderSkills(
     .sort((left, right) => left.localeCompare(right));
   return {
     extraCoreSkills: [...extraCoreSkills],
+    beadsHelperFiles: [...beadsHelperFiles],
+    beadsSkillCount,
+    beadsSurfaceExpected,
     hiddenParentHits,
     missingCoreSkills: [...missingCoreSkills],
     skillNames,
-    status: missingCoreSkills.length === 0 && extraCoreSkills.length === 0 && hiddenParentHits.length === 0
+    status: missingCoreSkills.length === 0 && extraCoreSkills.length === 0 && hiddenParentHits.length === 0 && beadsSurfaceValid
       ? "passed"
       : "failed",
   };
@@ -277,8 +324,9 @@ export function evaluateLoaderSurface(
   advisorStatus: number | null,
   configStatus: number | null,
   agentListStatus: number | null,
+  profile: "core" | "core-beads" = "core",
 ): LoaderSurfaceEvaluation {
-  const skillEvaluation = evaluateLoaderSkills(skills, generatedRoot, sourceGlobal);
+  const skillEvaluation = evaluateLoaderSkills(skills, generatedRoot, sourceGlobal, profile);
   const canonicalOpenSpecSkills = ["openspec-apply-change", "openspec-archive-change", "openspec-propose"];
   const missingCanonicalOpenSpecSkills = canonicalOpenSpecSkills.filter((name) => !skillEvaluation.skillNames.includes(name));
   const expectedPermissions: Array<[string, string, string]> = [
@@ -332,7 +380,13 @@ export function evaluateLoaderSurface(
   }
   if (advisor.name !== "specialist-team-advisor") permissionFailures.push(`advisor-name=${advisor.name}`);
   if (advisor.mode !== "subagent") permissionFailures.push(`advisor-mode=${advisor.mode}`);
-  if (!advisor.prompt.includes("Call `specialist_catalog` exactly once") || !advisor.prompt.includes("You never dispatch")) {
+  if (
+    !advisor.prompt.includes("Call `specialist_catalog` exactly once")
+    || !advisor.prompt.includes("You never dispatch")
+    || !advisor.prompt.includes("Broad runtime tool availability does not widen your role authority")
+    || !advisor.prompt.includes("Use only `read`, `glob`, `grep`, and `specialist_catalog`")
+    || !advisor.prompt.includes("never invoke mutation, question, task, skill, shell, network, remote, or protected-effect tools")
+  ) {
     permissionFailures.push("advisor-prompt-markers-missing");
   }
   const pluginPaths = missionPluginPaths(config, generatedRoot);
@@ -342,6 +396,7 @@ export function evaluateLoaderSurface(
   const extraCoreAgents = DOMAIN_AGENTS.filter((name) => listedAgentNames.includes(name));
   const principles = fs.readFileSync(path.join(generatedRoot, "principles-of-work.md"), "utf8");
   const routing = fs.readFileSync(path.join(generatedRoot, "AGENTS.md"), "utf8");
+  const behavioralSubstitution = fs.readFileSync(path.join(generatedRoot, "skills", "behavioral-substitution-qualification", "SKILL.md"), "utf8");
   const practiceOwnerContract = fs.readFileSync(path.join(path.dirname(sourceGlobal), "instructions", "practice-owner-agent-contract.md"), "utf8");
   const configAgents = generatedConfig.agent && typeof generatedConfig.agent === "object" && !Array.isArray(generatedConfig.agent)
     ? generatedConfig.agent as Record<string, unknown>
@@ -406,13 +461,15 @@ export function evaluateLoaderSurface(
       : "<missing>",
   };
   const authorityMarkers = {
-    compactionTeamAdviceMirror: compactionPrompt.includes("Team Advice State")
-      && teamAdviceStateFields.every((field) => compactionPrompt.includes(field))
-      && compactionPrompt.includes("does not infer a new team")
-      && compactionPrompt.includes("does not reconsult solely because compaction occurred"),
+    compactionTeamAdviceMirror: compactionPrompt.includes("Original User Goal")
+      && routing.includes("`Team Advice State` section")
+      && teamAdviceStateFields.every((field) => routing.includes(field))
+      && routing.includes("infers a new team")
+      && routing.includes("reconsults solely because compaction, propose-to-apply transition, package completion, or ordinary progress occurred"),
     debugConfigExposesCompactionPrompt: typeof debugCompactionAgent.prompt === "string",
     evidenceBoundsPrinciple: principles.includes("**Evidence Bounds Claims:**"),
-    claimRoutingTrigger: routing.includes("behavioral-substitution-qualification") && routing.includes("evidence-sufficiency-reviewer"),
+    claimRoutingTrigger: routing.includes("behavioral-substitution-qualification")
+      && behavioralSubstitution.includes("evidence-sufficiency-reviewer"),
     complexityRoutingTrigger: routing.includes("Proportional context-efficient architecture")
       && routing.includes("`complexity-management`")
       && routing.includes("`codebase-audit-loop`")
@@ -422,10 +479,17 @@ export function evaluateLoaderSurface(
       && practiceOwnerContract.includes("The non-owner team advisor follows its separate parentless-root mission trigger")
       && practiceOwnerContract.includes("never satisfies or suppresses a matched practice trigger"),
     teamAdviceRoutingTrigger: routing.includes("## Team Advice")
-      && routing.includes("trivial owner-local action with known representative proof")
-      && routing.includes("obtain one fresh `specialist-team-advisor` map")
+      && routing.includes("one known semantic owner")
+      && routing.includes("one already selected execution route")
+      && routing.includes("one representative proof boundary")
+      && routing.includes("no unresolved maintained-route choice")
+      && routing.includes("no unavailable required capability")
+      && routing.includes("no unique independent-evidence need")
+      && routing.includes("no unresolved delegation or isolation boundary")
+      && routing.includes("concrete team-selection uncertainty")
+      && routing.includes("Obtain one fresh bounded advisor map")
       && routing.includes("Main retains the mission spine")
-      && routing.includes("`main-alone` is a successful advisory result")
+      && routing.includes("`main-alone` is a successful result only after a concrete uncertainty activated advice")
       && routing.includes("Reconsult once only after a material topology change"),
     teamAdviceStateContract: routing.includes("`Team Advice State` section")
       && teamAdviceStateFields.every((field) => routing.includes(field))
@@ -490,7 +554,135 @@ function runOpenCode(cwd: string, args: string[], env: NodeJS.ProcessEnv): { sta
   };
 }
 
-export function captureCoreLoaderSurface(root: string): {
+function skillRoutingFacts(stdout: string): { sessionIds: string[]; skillNames: string[] } {
+  const sessionIds = new Set<string>();
+  const skillNames = new Set<string>();
+  for (const line of stdout.split(/\r?\n/u)) {
+    if (!line.trim().startsWith("{")) continue;
+    let event: unknown;
+    try {
+      event = JSON.parse(line) as unknown;
+    } catch {
+      continue;
+    }
+    const visit = (value: unknown): void => {
+      if (Array.isArray(value)) {
+        for (const child of value) visit(child);
+        return;
+      }
+      if (value == null || typeof value !== "object") return;
+      const record = value as Record<string, unknown>;
+      if (typeof record.sessionID === "string") sessionIds.add(record.sessionID);
+      if (record.tool === "skill") {
+        const state = record.state != null && typeof record.state === "object" && !Array.isArray(record.state)
+          ? record.state as Record<string, unknown>
+          : null;
+        const input = state?.input != null && typeof state.input === "object" && !Array.isArray(state.input)
+          ? state.input as Record<string, unknown>
+          : record.input != null && typeof record.input === "object" && !Array.isArray(record.input)
+            ? record.input as Record<string, unknown>
+            : null;
+        if (typeof input?.name === "string") skillNames.add(input.name);
+      }
+      for (const child of Object.values(record)) visit(child);
+    };
+    visit(event);
+  }
+  return { sessionIds: [...sessionIds].sort(), skillNames: [...skillNames].sort() };
+}
+
+export function captureBeadsSkillRouting(root: string): BeadsSkillRoutingEvaluation {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), "runtime-surface-beads-routing-"));
+  const generatedRoot = path.join(work, "core-beads");
+  const projectRoot = path.join(work, "unrelated-app");
+  const runtimeRoot = path.join(work, "xdg");
+  const sessionDeleteStatuses: Array<{ sessionID: string; status: number | null }> = [];
+  let evaluation: BeadsSkillRoutingEvaluation | null = null;
+  try {
+    fs.mkdirSync(projectRoot, { recursive: true });
+    fs.writeFileSync(path.join(projectRoot, "README.md"), "# Synthetic routing fixture\n");
+    const beforeEntries = fs.readdirSync(projectRoot).sort();
+    materializeRuntimeSurfaceProfile({ profileName: "core-beads", root, targetRoot: generatedRoot });
+    fs.copyFileSync(
+      path.join(generatedRoot, "opencode.local.instructions.example.md"),
+      path.join(generatedRoot, "opencode.local.instructions.md"),
+    );
+    const env = isolatedEnv(generatedRoot, runtimeRoot);
+    const authSource = path.join(process.env.XDG_DATA_HOME ?? path.join(os.homedir(), ".local", "share"), "opencode", "auth.json");
+    const authTarget = path.join(env.XDG_DATA_HOME!, "opencode", "auth.json");
+    if (!fs.existsSync(authSource)) throw new Error("OpenCode authentication is unavailable for the synthetic routing proof.");
+    fs.mkdirSync(path.dirname(authTarget), { recursive: true });
+    fs.copyFileSync(authSource, authTarget);
+    fs.chmodSync(authTarget, 0o600);
+    env.OPENCODE_CONFIG_CONTENT = JSON.stringify({
+      agent: { build: { steps: 6 } },
+      permission: {
+        "*": "deny",
+        skill: "allow",
+      },
+    });
+    const invoke = (title: string, prompt: string) => {
+      const result = runPortableCommand(root, [
+        "opencode",
+        "run",
+        "--agent",
+        "build",
+        "--model",
+        "openai/gpt-5.6-sol",
+        "--variant",
+        "minimal",
+        "--format",
+        "json",
+        "--dir",
+        projectRoot,
+        "--title",
+        title,
+        prompt,
+      ], { capture: true, env, timeoutMs: 180_000 });
+      const facts = skillRoutingFacts(result.stdout);
+      for (const sessionID of facts.sessionIds) {
+        const deleted = runPortableCommand(root, ["opencode", "session", "delete", sessionID], { capture: true, env, timeoutMs: 30_000 });
+        sessionDeleteStatuses.push({ sessionID, status: deleted.status });
+        if (deleted.status !== 0 || deleted.cleanupState === "unknown") {
+          throw new Error(`Synthetic routing session cleanup failed for ${sessionID}.`);
+        }
+      }
+      if (result.cleanupState === "unknown") throw new Error(`Synthetic routing process closure is unknown for ${title}.`);
+      if (result.status !== 0) {
+        throw new Error(`Synthetic routing process ${title} exited ${result.status ?? "unknown"}: ${(result.stderr || result.stdout).slice(0, 500)}`);
+      }
+      return { facts, result };
+    };
+    const ordinary = invoke(
+      "beads-routing-ordinary",
+      "Synthetic read-only routing check: explain which OpenSpec apply control owns an ordinary implementation task. Do not edit files or perform external operations.",
+    );
+    const explicit = invoke(
+      "beads-routing-explicit",
+      "Synthetic read-only routing check: explicitly load the Beads portfolio bridge skill and report only its missing installation or registration prerequisites. Do not install, enable, edit, or perform external operations.",
+    );
+    const projectEntriesUnchanged = JSON.stringify(fs.readdirSync(projectRoot).sort()) === JSON.stringify(beforeEntries);
+    const passed = !ordinary.facts.skillNames.includes(BEADS_PORTFOLIO_SKILL)
+      && explicit.facts.skillNames.filter((name) => name === BEADS_PORTFOLIO_SKILL).length === 1
+      && projectEntriesUnchanged;
+    evaluation = {
+      cleanup: "unknown",
+      explicit: { ...explicit.facts, status: explicit.result.status },
+      ordinary: { ...ordinary.facts, status: ordinary.result.status },
+      projectEntriesUnchanged,
+      sessionDeleteStatuses,
+      status: passed ? "passed" : "failed",
+    };
+  } finally {
+    fs.rmSync(work, { recursive: true, force: true });
+    if (evaluation != null) evaluation.cleanup = fs.existsSync(work) ? "unknown" : "complete";
+  }
+  if (evaluation == null) throw new Error("Synthetic routing proof did not produce an evaluation.");
+  if (evaluation.cleanup !== "complete") evaluation.status = "failed";
+  return evaluation;
+}
+
+export function captureCoreLoaderSurface(root: string, profile: "core" | "core-beads" = "core"): {
   cleanup: () => void;
   agentListStatus: number | null;
   agentStatus: number | null;
@@ -502,12 +694,12 @@ export function captureCoreLoaderSurface(root: string): {
   skillStatus: number | null;
 } {
   const work = fs.mkdtempSync(path.join(os.tmpdir(), "runtime-surface-loader-"));
-  const generatedRoot = path.join(work, "core");
+  const generatedRoot = path.join(work, profile);
   const projectRoot = path.join(work, "unrelated-app");
   const runtimeRoot = path.join(work, "xdg");
   fs.mkdirSync(projectRoot, { recursive: true });
   fs.writeFileSync(path.join(projectRoot, "README.md"), "# Unrelated fixture\n");
-  materializeRuntimeSurfaceProfile({ profileName: "core", root, targetRoot: generatedRoot });
+  materializeRuntimeSurfaceProfile({ profileName: profile, root, targetRoot: generatedRoot });
   fs.copyFileSync(
     path.join(generatedRoot, "opencode.local.instructions.example.md"),
     path.join(generatedRoot, "opencode.local.instructions.md"),
@@ -553,6 +745,7 @@ export function captureCoreLoaderSurface(root: string): {
     advisor.status,
     config.status,
     agentList.status,
+    profile,
   );
   return {
     agentListStatus: agentList.status,
@@ -580,7 +773,7 @@ function missionPluginPaths(config: Record<string, unknown>, generatedRoot: stri
   });
 }
 
-export function captureMissionLoaderSurface(root: string): {
+export function captureMissionLoaderSurface(root: string, profile: "all" | "source" = "all"): {
   cleanup: () => void;
   evaluation: MissionLoaderEvaluation;
   generatedRoot: string;
@@ -588,16 +781,21 @@ export function captureMissionLoaderSurface(root: string): {
   skillStatus: number | null;
 } {
   const work = fs.mkdtempSync(path.join(os.tmpdir(), "runtime-surface-loader-all-"));
-  const generatedRoot = path.join(root, "global", ".runtime-profiles", `proof-loader-${process.pid}-${crypto.randomBytes(4).toString("hex")}`);
+  const sourceMode = profile === "source";
+  const generatedRoot = sourceMode
+    ? path.join(root, "global")
+    : path.join(root, "global", ".runtime-profiles", `proof-loader-${process.pid}-${crypto.randomBytes(4).toString("hex")}`);
   const projectRoot = path.join(work, "unrelated-app");
   const runtimeRoot = path.join(work, "xdg");
   fs.mkdirSync(projectRoot, { recursive: true });
   fs.writeFileSync(path.join(projectRoot, "README.md"), "# Unrelated fixture\n");
-  materializeRuntimeSurfaceProfile({ profileName: "all", root, targetRoot: generatedRoot });
-  fs.copyFileSync(
-    path.join(generatedRoot, "opencode.local.instructions.example.md"),
-    path.join(generatedRoot, "opencode.local.instructions.md"),
-  );
+  if (!sourceMode) {
+    materializeRuntimeSurfaceProfile({ profileName: "all", root, targetRoot: generatedRoot });
+    fs.copyFileSync(
+      path.join(generatedRoot, "opencode.local.instructions.example.md"),
+      path.join(generatedRoot, "opencode.local.instructions.md"),
+    );
+  }
   const env = isolatedEnv(generatedRoot, runtimeRoot, true);
   const configResult = runOpenCode(projectRoot, ["debug", "config"], env);
   if (configResult.status !== 0) {
@@ -608,7 +806,7 @@ export function captureMissionLoaderSurface(root: string): {
   const config = extractJson(configResult.stdout) as Record<string, unknown>;
   const pluginPaths = missionPluginPaths(config, generatedRoot);
   const requiredPlugins = [
-    ...ROADMAP_MISSION_PLUGIN_FILES,
+    ...ROADMAP_MISSION_PLUGIN_FILES.filter((relative) => !sourceMode || relative !== "extensions/opencode-pty-bridge.ts"),
     SPECIALIST_CATALOG_PLUGIN_FILE,
     UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE,
   ];
@@ -647,6 +845,9 @@ export function captureMissionLoaderSurface(root: string): {
     const generatedRelative = relative.slice("global/".length);
     return !fs.existsSync(path.join(generatedRoot, ...generatedRelative.split("/")));
   });
+  const beadsSkillCount = skills.filter((entry) => entry.name === BEADS_PORTFOLIO_SKILL).length;
+  const beadsHelperRoot = path.join(generatedRoot, ...BEADS_PORTFOLIO_HELPER_DIRECTORY.slice("global/".length).split("/"));
+  const beadsHelperFiles = BEADS_HELPER_FILES.filter((name) => fs.existsSync(path.join(beadsHelperRoot, name)));
   const command = config.command != null && typeof config.command === "object" && !Array.isArray(config.command)
     ? config.command as Record<string, unknown>
     : {};
@@ -660,6 +861,8 @@ export function captureMissionLoaderSurface(root: string): {
   const evaluation: MissionLoaderEvaluation = {
     advisorAgentName: advisorAgent.name,
     advisorStatus: advisor.status,
+    beadsHelperFiles: [...beadsHelperFiles],
+    beadsSkillCount,
     agentListStatus: agentList.status,
     catalogPluginCount,
     commandNames,
@@ -683,6 +886,8 @@ export function captureMissionLoaderSurface(root: string): {
         && missingPlugins.length === 0
         && missingSelectedAgents.length === 0
         && missingSelectedSkills.length === 0
+        && beadsSkillCount === 1
+        && beadsHelperFiles.length === BEADS_HELPER_FILES.length
         && missingTrajectoryClosure.length === 0
         && missingCommands.length === 0
         && stagingPathCount === 0
@@ -694,8 +899,8 @@ export function captureMissionLoaderSurface(root: string): {
   return {
     cleanup: () => {
       fs.rmSync(work, { recursive: true, force: true });
-      fs.rmSync(generatedRoot, { recursive: true, force: true });
-      if (fs.existsSync(work) || fs.existsSync(generatedRoot)) throw new Error("Disposable loader root still exists after cleanup.");
+      if (!sourceMode) fs.rmSync(generatedRoot, { recursive: true, force: true });
+      if (fs.existsSync(work) || (!sourceMode && fs.existsSync(generatedRoot))) throw new Error("Disposable loader root still exists after cleanup.");
     },
     evaluation,
     generatedRoot,
@@ -715,38 +920,44 @@ if (isMainModule()) {
     console.log(usage());
     process.exit(0);
   }
-  const captured = options.profile === "all"
-    ? captureMissionLoaderSurface(repositoryRoot())
-    : captureCoreLoaderSurface(repositoryRoot());
-  let cleanupComplete = false;
-  let exitCode = 1;
-  try {
-    captured.cleanup();
-    cleanupComplete = true;
-    if (options.evidenceRoot != null && options.candidateId != null) {
-      fs.mkdirSync(options.evidenceRoot, { recursive: true });
-      const raw = {
-        cleanup: "complete",
-        candidateId: options.candidateId,
-        evaluation: captured.evaluation,
-        profile: options.profile,
-        agentStatus: "agentStatus" in captured ? captured.agentStatus : null,
-        advisorStatus: "advisorStatus" in captured ? captured.advisorStatus : null,
-        configStatus: "configStatus" in captured ? captured.configStatus : captured.evaluation.configStatus,
-        skillStatus: "skillStatus" in captured ? captured.skillStatus : null,
-        tool: "opencode-dev-kit-runtime-surface-loader",
-      };
-      fs.writeFileSync(path.join(options.evidenceRoot, "raw.json"), `${JSON.stringify(raw, null, 2)}\n`, { flag: "wx" });
-      fs.writeFileSync(
-        path.join(options.evidenceRoot, "evaluation.json"),
-        `${JSON.stringify({ digest: crypto.createHash("sha256").update(JSON.stringify(raw)).digest("hex"), status: captured.evaluation.status }, null, 2)}\n`,
-        { flag: "wx" },
-      );
+  if (options.verifySkillRouting) {
+    const evaluation = captureBeadsSkillRouting(repositoryRoot());
+    console.log(JSON.stringify(evaluation, null, 2));
+    process.exitCode = evaluation.status === "passed" ? 0 : 1;
+  } else {
+    const captured = options.profile === "all" || options.profile === "source"
+      ? captureMissionLoaderSurface(repositoryRoot(), options.profile)
+      : captureCoreLoaderSurface(repositoryRoot(), options.profile);
+    let cleanupComplete = false;
+    let exitCode = 1;
+    try {
+      captured.cleanup();
+      cleanupComplete = true;
+      if (options.evidenceRoot != null && options.candidateId != null) {
+        fs.mkdirSync(options.evidenceRoot, { recursive: true });
+        const raw = {
+          cleanup: "complete",
+          candidateId: options.candidateId,
+          evaluation: captured.evaluation,
+          profile: options.profile,
+          agentStatus: "agentStatus" in captured ? captured.agentStatus : null,
+          advisorStatus: "advisorStatus" in captured ? captured.advisorStatus : null,
+          configStatus: "configStatus" in captured ? captured.configStatus : captured.evaluation.configStatus,
+          skillStatus: "skillStatus" in captured ? captured.skillStatus : null,
+          tool: "opencode-dev-kit-runtime-surface-loader",
+        };
+        fs.writeFileSync(path.join(options.evidenceRoot, "raw.json"), `${JSON.stringify(raw, null, 2)}\n`, { flag: "wx" });
+        fs.writeFileSync(
+          path.join(options.evidenceRoot, "evaluation.json"),
+          `${JSON.stringify({ digest: crypto.createHash("sha256").update(JSON.stringify(raw)).digest("hex"), status: captured.evaluation.status }, null, 2)}\n`,
+          { flag: "wx" },
+        );
+      }
+      console.log(JSON.stringify(captured.evaluation, null, 2));
+      exitCode = captured.evaluation.status === "passed" ? 0 : 1;
+    } finally {
+      if (!cleanupComplete) captured.cleanup();
     }
-    console.log(JSON.stringify(captured.evaluation, null, 2));
-    exitCode = captured.evaluation.status === "passed" ? 0 : 1;
-  } finally {
-    if (!cleanupComplete) captured.cleanup();
+    process.exitCode = exitCode;
   }
-  process.exitCode = exitCode;
 }

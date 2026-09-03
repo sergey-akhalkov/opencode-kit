@@ -297,6 +297,10 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
         "Structural artifact readiness",
         "Semantic implementation readiness",
         "no unchanged, optional, or confidence-seeking third challenge",
+        "Before `openspec new change`",
+        "no `task_id` and no current candidate",
+        "exact returned child",
+        "same still-current frozen reconstruction",
       ],
     },
     {
@@ -383,7 +387,14 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     if (globalAgentsText != null) {
       for (const marker of [
         "## Team Advice",
-        "trivial owner-local action with known representative proof",
+        "one known semantic owner",
+        "one already selected execution route",
+        "one representative proof boundary",
+        "no unresolved maintained-route choice",
+        "no unavailable required capability",
+        "no unique independent-evidence need",
+        "no unresolved delegation or isolation boundary",
+        "concrete team-selection uncertainty",
         "specialist-team-advisor",
         "Main retains the mission spine",
         "main-alone",
@@ -403,6 +414,9 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
         "Reconsultation Condition",
       ]) {
         requireTextContains(ctx, globalAgentsText, marker, "team-advice canonical contract", teamAdviceGlobalAgents);
+      }
+      if (globalAgentsText.includes("one trivial owner-local action with known representative proof")) {
+        ctx.addError(`Team Advice retains the superseded trivial-only bypass: ${teamAdviceGlobalAgents}`);
       }
     }
     if (practiceContractText != null) {

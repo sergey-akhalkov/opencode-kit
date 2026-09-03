@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "id": "prospective-consequence-rehearsal-r1",
+  "profile": "quality-independent",
+  "runtimeProfile": "core",
+  "configuredProviderRequestBound": 31,
+  "maximumClaim": "in the reviewed installed environment and PCR-001 population, the candidate arm completes reconstruction before candidate materialization, resumes the same verified reviewer context for initial comparison, uses a fresh corrected-candidate reviewer only with the still-current frozen reconstruction, reports evidence-backed distinctions through the existing readiness episode while unsupported consequence chains stay unknown, and does not add the rehearsal to the reviewed Ordinary Small or exact substitution controls; it does not prove discovery superiority over candidate-first review, retroactive separation for existing candidates, exhaustive foresight, universal abstraction quality, or correctness outside the exercised evidence and identities",
+  "memberOrder": [
+    "unlabeled-actor-distinction",
+    "state-lifecycle-distinction",
+    "ownership-recovery-distinction",
+    "material-inline-frame",
+    "insufficient-evidence",
+    "premature-candidate-materialization",
+    "unverified-continuation",
+    "corrected-review-freshness",
+    "stale-reconstruction",
+    "ordinary-small-direct",
+    "exact-substitution-owner"
+  ],
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/principles-of-work.md",
+    "global/agents/implementation-readiness-reviewer.md",
+    "global/commands/opsx-propose.md",
+    "global/commands/opsx-apply.md",
+    "global/skills/behavioral-substitution-qualification/SKILL.md",
+    "global/skills/change-ready-sdlc/SKILL.md",
+    "global/skills/openspec-propose/SKILL.md",
+    "global/skills/openspec-apply-change/SKILL.md",
+    "global/model-profiles/quality-independent.json",
+    "profiles/core.json",
+    "profiles/all.json"
+  ],
+  "scenarios": [
+    {
+      "id": "unlabeled-actor-distinction",
+      "candidateSemanticOracle": "required-consequence",
+      "rawContext": {
+        "outcome": "Choose one request-status representation for the current client workflow.",
+        "operatingEnvelope": "One local service with desktop and automation clients; no deployment or remote effect.",
+        "nonGoals": ["redesigning either client", "adding a public compatibility layer"],
+        "evidence": ["The desktop client retries a rejected request after user correction.", "The automation client records rejected requests as terminal audit events.", "Both clients currently receive the same request id and a distinct rejection status."]
+      },
+      "request": "Read case.json and system.md, reconstruct the current actors and observable distinctions, and stop unsupported consequence chains at unknown. Do not read any consumer-outcome pack or oracle. After reconstruction, compare only the candidate supplied through the exact continuation and write result.json. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Represent every rejected request as a single terminal failure shared by all clients.", "sentinel": "PCR-CANDIDATE-ACTOR-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-framed-context"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 2, "terminalState": "closed", "consequenceIds": ["desktop-retry-versus-audit-terminal"], "unknownReasons": [] }
+      }
+    },
+    {
+      "id": "state-lifecycle-distinction",
+      "candidateSemanticOracle": "required-consequence",
+      "rawContext": {
+        "outcome": "Choose how the current job summary represents completed work.",
+        "operatingEnvelope": "One local queue with observable queued, completed, and cancelled states.",
+        "nonGoals": ["changing queue execution", "adding another lifecycle state"],
+        "evidence": ["Completed jobs expose a result path consumed by the report generator.", "Cancelled jobs expose a cancellation reason and have no result path.", "The cleanup job retains cancellation reasons for the current diagnostic window."]
+      },
+      "request": "Read case.json and system.md, reconstruct current state and lifecycle distinctions, and stop unsupported consequence chains at unknown. Do not read any consumer-outcome pack or oracle. After reconstruction, compare only the candidate supplied through the exact continuation and write result.json. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Collapse completed and cancelled jobs into one finished state with an optional result path.", "sentinel": "PCR-CANDIDATE-STATE-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-framed-context"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 2, "terminalState": "closed", "consequenceIds": ["result-path-versus-cancellation-reason"], "unknownReasons": [] }
+      }
+    },
+    {
+      "id": "ownership-recovery-distinction",
+      "candidateSemanticOracle": "required-consequence",
+      "rawContext": {
+        "outcome": "Choose one owner for current failed-import recovery.",
+        "operatingEnvelope": "One local import coordinator and one resumable worker; fixture-only writes.",
+        "nonGoals": ["introducing distributed recovery", "changing persisted import data"],
+        "evidence": ["The coordinator owns the import id and publishes terminal status.", "The worker owns a resume cursor and can restart only the interrupted transfer.", "Coordinator retry creates a new import id while worker resume preserves the existing id."]
+      },
+      "request": "Read case.json and system.md, reconstruct ownership and recovery distinctions, and stop unsupported consequence chains at unknown. Do not read any consumer-outcome pack or oracle. After reconstruction, compare only the candidate supplied through the exact continuation and write result.json. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Use coordinator retry semantics for every retry and resume action, creating a new import id through one restart command.", "sentinel": "PCR-CANDIDATE-OWNER-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-framed-context"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 2, "terminalState": "closed", "consequenceIds": ["new-import-versus-resume-cursor"], "unknownReasons": [] }
+      }
+    },
+    {
+      "id": "material-inline-frame",
+      "candidateSemanticOracle": "evidence-bounded",
+      "rawContext": {
+        "outcome": "Choose a session-local retry decision for the current Material change before source mutation.",
+        "operatingEnvelope": "No OpenSpec tree exists; one inline frame may be created after reconstruction.",
+        "nonGoals": ["creating a durable planning tree", "implementing the retry"],
+        "evidence": ["The caller distinguishes timeout from explicit rejection.", "Only timeout is currently retryable.", "Both outcomes arrive through the same local adapter method."]
+      },
+      "request": "Read case.json and system.md, reconstruct the current distinction before any inline decision frame exists, and stop unsupported consequence chains at unknown. Do not read any consumer-outcome pack or oracle. After reconstruction, compare only the inline frame supplied through the exact continuation and write result.json. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "inline", "path": "none", "content": "Inline decision: retry every unsuccessful adapter response once.", "sentinel": "PCR-INLINE-FRAME-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["inline-frame-created-first"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 2, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["downstream-effect-unproved"] }
+      }
+    },
+    {
+      "id": "insufficient-evidence",
+      "candidateSemanticOracle": "required-unknown",
+      "rawContext": {
+        "outcome": "Choose a display label for an undocumented local status code.",
+        "operatingEnvelope": "One fixture contains the status code but no consumer or downstream effect.",
+        "nonGoals": ["guessing external semantics", "adding a compatibility claim"],
+        "evidence": ["The status code appears once in a local sample.", "No source, test, or contract identifies a consumer or effect."]
+      },
+      "request": "Read case.json and system.md, reconstruct only source-supported facts, and stop at unknown when no downstream consumer or effect is established. Do not read any consumer-outcome pack or oracle. After reconstruction, compare only the candidate supplied through the exact continuation and write result.json. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Label the undocumented status as permanently unavailable.", "sentinel": "PCR-CANDIDATE-UNKNOWN-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["downstream-effect-unproved"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 2, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["downstream-effect-unproved"] }
+      }
+    },
+    {
+      "id": "premature-candidate-materialization",
+      "candidateSemanticOracle": "evidence-bounded",
+      "rawContext": {
+        "outcome": "Choose whether two current delivery results may share one terminal label.",
+        "operatingEnvelope": "One local fixture; candidate creation time is directly observable.",
+        "nonGoals": ["changing delivery behavior", "hiding an existing candidate by instruction"],
+        "evidence": ["Delivered items have a receipt consumed by reconciliation.", "Discarded items have a reason and no receipt."]
+      },
+      "request": "Read case.json and system.md, reconstruct the current delivery distinctions before candidate creation, and stop unsupported consequence chains at unknown. Do not read any consumer-outcome pack or oracle. After reconstruction, compare only the candidate supplied through the exact continuation and write result.json. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Represent delivered and discarded items with one done label.", "sentinel": "PCR-CANDIDATE-TEMPORAL-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-materialized-before-reconstruction"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 2, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["downstream-effect-unproved"] }
+      }
+    },
+    {
+      "id": "unverified-continuation",
+      "candidateSemanticOracle": "required-unknown",
+      "rawContext": {
+        "outcome": "Compare a current candidate only if the reconstruction child identity can be resumed exactly.",
+        "operatingEnvelope": "One local fixture injects a missing continuation identity.",
+        "nonGoals": ["substituting a fresh candidate-visible reviewer", "retrying for confidence"],
+        "evidence": ["The first reviewer returns a reconstruction.", "The runtime response omits a verifiable child task identity."]
+      },
+      "request": "Read case.json and system.md, reconstruct current facts, and require exact child identity before candidate comparison. Do not read any consumer-outcome pack or oracle. If continuity is unavailable, write an unknown result without a replacement review. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Combine the two observed response states into one result.", "sentinel": "PCR-CANDIDATE-CONTINUITY-R1", "correctedContent": "none", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 1,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-framed-context"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "unknown", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["initial-continuation-unverified"] }
+      }
+    },
+    {
+      "id": "corrected-review-freshness",
+      "candidateSemanticOracle": "required-consequence",
+      "rawContext": {
+        "outcome": "Preserve current cancellation ownership while correcting a challenged request protocol.",
+        "operatingEnvelope": "One frozen local reconstruction remains current across one candidate correction.",
+        "nonGoals": ["starting a third generic challenge", "reconstructing around the corrected candidate"],
+        "evidence": ["The caller owns cancellation until the worker accepts the request.", "The initial candidate transfers cancellation ownership before worker acceptance.", "The raw caller and worker contracts remain unchanged after correction."]
+      },
+      "request": "Read case.json and system.md, reconstruct current ownership and lifecycle facts, and preserve that reconstruction for one permitted corrected-candidate comparison. Do not read any consumer-outcome pack or oracle. Compare candidates only through the exact initial continuation and one fresh corrected reviewer when the reconstruction remains current. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Transfer cancellation ownership when the request is queued.", "sentinel": "PCR-CANDIDATE-CORRECTED-R1", "correctedContent": "Retain caller cancellation ownership until worker acceptance, then transfer it once.", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 3,
+      "taskCallBound": { "baseline": 1, "candidate": 3 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-framed-context"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "verified", "challengeCount": 2, "taskCallCount": 3, "terminalState": "closed", "consequenceIds": ["caller-versus-worker-cancellation-owner"], "unknownReasons": [] }
+      }
+    },
+    {
+      "id": "stale-reconstruction",
+      "candidateSemanticOracle": "required-unknown",
+      "rawContext": {
+        "outcome": "Keep corrected review unknown when a new current consumer invalidates the frozen reconstruction.",
+        "operatingEnvelope": "One local fixture adds current raw evidence after the initial comparison.",
+        "nonGoals": ["reconstructing around an existing candidate", "claiming fresh corrected review"],
+        "evidence": ["The initial reconstruction covers the desktop client.", "A current automation consumer becomes visible before corrected review.", "The frozen reconstruction contains no facts about that consumer."]
+      },
+      "request": "Read case.json and system.md, reconstruct current evidence before candidate creation, and keep corrected review unknown if later raw evidence invalidates that frozen reconstruction. Do not read any consumer-outcome pack or oracle. Do not rebuild context around an existing candidate. Ask no question and perform no external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "file", "path": "candidate.md", "content": "Use one response state for every known consumer.", "sentinel": "PCR-CANDIDATE-STALE-R1", "correctedContent": "Use distinct states for desktop and automation consumers.", "materializeAfter": "reconstruction" },
+      "permissions": { "allow": ["edit", "glob", "grep", "read", "task:implementation-readiness-reviewer"], "deny": ["bash", "external_directory", "question", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write", "practice-owner-observation"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 2,
+      "taskCallBound": { "baseline": 1, "candidate": 2 },
+      "expected": {
+        "baseline": { "route": "single-stage", "protocolMode": "single-stage", "candidateStateAtReconstruction": "present", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 1, "taskCallCount": 1, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["candidate-framed-context"] },
+        "candidate": { "route": "pre-authoring-separated", "protocolMode": "pre-authoring-separated", "candidateStateAtReconstruction": "absent", "initialComparisonContinuity": "verified", "correctedReviewFreshness": "unknown", "challengeCount": 1, "taskCallCount": 2, "terminalState": "unknown", "consequenceIds": [], "unknownReasons": ["frozen-reconstruction-stale"] }
+      }
+    },
+    {
+      "id": "ordinary-small-direct",
+      "candidateSemanticOracle": "not-applicable",
+      "rawContext": {
+        "outcome": "Correct one misspelled local label.",
+        "operatingEnvelope": "One owner, one exact text replacement, one local checker.",
+        "nonGoals": ["changing behavior", "adding a review episode"],
+        "evidence": ["The sole label contains teh instead of the.", "The checker requires the exact corrected text."]
+      },
+      "request": "Read case.json and system.md, preserve the direct Ordinary Small route, and write result.json. The proof harness runs the checker after your response; do not invoke bash. Do not read any consumer-outcome pack or oracle, launch a reviewer, ask a question, or perform an external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "none", "path": "none", "content": "none", "sentinel": "none", "correctedContent": "none", "materializeAfter": "not-applicable" },
+      "permissions": { "allow": ["edit", "read"], "deny": ["bash", "external_directory", "glob", "grep", "question", "task:implementation-readiness-reviewer", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "practice-owner-observation", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 1,
+      "taskCallBound": { "baseline": 0, "candidate": 0 },
+      "expected": {
+        "baseline": { "route": "direct", "protocolMode": "not-applicable", "candidateStateAtReconstruction": "not-applicable", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 0, "taskCallCount": 0, "terminalState": "not-applicable", "consequenceIds": [], "unknownReasons": [] },
+        "candidate": { "route": "direct", "protocolMode": "not-applicable", "candidateStateAtReconstruction": "not-applicable", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 0, "taskCallCount": 0, "terminalState": "not-applicable", "consequenceIds": [], "unknownReasons": [] }
+      }
+    },
+    {
+      "id": "exact-substitution-owner",
+      "candidateSemanticOracle": "not-applicable",
+      "rawContext": {
+        "outcome": "Assess whether skipping one current owner call preserves its observable result.",
+        "operatingEnvelope": "One local baseline/candidate path with no remote or protected effect.",
+        "nonGoals": ["adding a duplicate equivalence workflow", "using generic rehearsal as effect closure"],
+        "evidence": ["The proposal omits the existing owner call.", "The caller consumes both the return value and one cleanup effect.", "The exact substitution owner is available in the active profile."]
+      },
+      "request": "Read case.json and system.md, route the represented skip-equivalence claim only through behavioral-substitution-qualification, and write result.json. The proof harness runs the checker after your response; do not invoke bash. Do not read any consumer-outcome pack or oracle, add a generic readiness episode, ask a question, or perform an external, credential, install, commit, remote, destructive, product, or protected action.",
+      "initialFiles": ["case.json", "system.md", "check-result.ts"],
+      "candidate": { "kind": "none", "path": "none", "content": "none", "sentinel": "none", "correctedContent": "none", "materializeAfter": "not-applicable" },
+      "permissions": { "allow": ["edit", "read", "skill:behavioral-substitution-qualification"], "deny": ["bash", "external_directory", "glob", "grep", "question", "task:implementation-readiness-reviewer", "webfetch"] },
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["credential-read", "destructive-action", "install", "practice-owner-observation", "product-implementation", "protected-action", "remote"],
+      "configuredProviderRequestBound": 1,
+      "taskCallBound": { "baseline": 0, "candidate": 0 },
+      "expected": {
+        "baseline": { "route": "behavioral-substitution", "protocolMode": "not-applicable", "candidateStateAtReconstruction": "not-applicable", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 0, "taskCallCount": 0, "terminalState": "not-applicable", "consequenceIds": [], "unknownReasons": [] },
+        "candidate": { "route": "behavioral-substitution", "protocolMode": "not-applicable", "candidateStateAtReconstruction": "not-applicable", "initialComparisonContinuity": "not-applicable", "correctedReviewFreshness": "not-applicable", "challengeCount": 0, "taskCallCount": 0, "terminalState": "not-applicable", "consequenceIds": [], "unknownReasons": [] }
+      }
+    }
+  ]
+}

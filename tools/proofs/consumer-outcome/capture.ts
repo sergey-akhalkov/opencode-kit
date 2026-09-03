@@ -6,15 +6,18 @@ import { type PortableCommandResult, runPortableCommand } from "../../../global/
 import { loadModelProfile, type ModelProfile } from "../../model-profile.ts";
 import {
   type DiagnosticProofEvidence,
+  type ProofRoute,
   type ProofServerHandle,
   assertProofRouteAvailable,
   configuredProofServerEnvironment,
+  createRoutedProofSessions,
   installedOpenCodeIdentity,
   proofClient,
   proofErrorFacts,
   proofServerLogs,
   proofServerStartupFacts,
   proofServerStartupFailure,
+  requestData,
   runDiagnosticProofSession,
   seedProofModelsCatalog,
   startProofServer,
@@ -51,6 +54,14 @@ import {
   stableJson,
   writeNewFile,
 } from "./contracts.ts";
+import {
+  parseProspectiveConsequenceObservation,
+  sealProspectiveConsequenceRehearsalLane,
+  type ProspectiveConsequenceObservation,
+  type ProspectiveConsequenceRehearsalLane,
+  type ProspectiveConsequenceRehearsalPack,
+  type ProspectiveConsequenceScenario,
+} from "./prospective-consequence-rehearsal.ts";
 
 export type CaptureFailureKind = "none" | "model" | "tool" | "validation" | "evidence" | "timeout" | "cleanup";
 export type SessionMode = "harness" | "configured";
@@ -115,7 +126,7 @@ const CONFIGURED_PERMISSION = {
   webfetch: "deny",
 } as const;
 
-function configuredPermission(scenario: RegressionManifest["scenarios"][number]): Record<string, unknown> {
+function configuredPermission(scenario: { id: string; permissions: { allow: string[] } }): Record<string, unknown> {
   const permission: Record<string, unknown> = { ...CONFIGURED_PERMISSION };
   const taskAgents: string[] = [];
   const skills: string[] = [];
@@ -1007,4 +1018,919 @@ async function captureSample(
     error: cleanupError,
   };
   return sealSample(draft);
+}
+
+export type ProspectiveConsequenceTaskStage = "single-stage" | "reconstruction" | "initial-comparison" | "corrected-comparison";
+
+export type ProspectiveConsequenceTaskResult = {
+  childRef: string | null;
+  configuredProviderRequests?: number;
+  environmentIdentity?: { modelId: string; runtimeVersion: string; sourceDigest: string };
+  modelVisiblePrompt?: string;
+  modelVisibleToolResults: string[];
+  observation: ProspectiveConsequenceObservation | null;
+  observedEffects?: string[];
+  role: string | null;
+  status: number | null;
+  stderr: string;
+  stdout: string;
+  taskInvocations?: Array<{
+    childRef: string | null;
+    resumeRef: string | null;
+    role: string | null;
+    status: number | null;
+    stderr: string;
+    stdout: string;
+  }>;
+  taskObserved?: boolean;
+};
+
+export type ProspectiveConsequenceTaskAdapter = {
+  cleanup: () => ProspectiveConsequenceCleanup | Promise<ProspectiveConsequenceCleanup>;
+  invoke: (input: {
+    candidate: string | null;
+    fixtureRoot: string;
+    frozenReconstructionRef: string | null;
+    prompt: string;
+    resumeRef: string | null;
+    scenarioId: string;
+    stage: ProspectiveConsequenceTaskStage;
+  }) => ProspectiveConsequenceTaskResult | Promise<ProspectiveConsequenceTaskResult>;
+};
+
+type ProspectiveConsequenceCleanup = {
+  error: string | null;
+  processesRemoved: boolean | null;
+  sessionsRemoved: boolean | null;
+};
+
+export type ProspectiveConsequenceCapture = {
+  arm: Arm;
+  candidateMaterialization: {
+    correctedCreated: boolean;
+    created: boolean;
+    kind: ProspectiveConsequenceScenario["candidate"]["kind"];
+    path: string;
+  };
+  candidateStateAtReconstruction: "absent" | "present" | "unknown";
+  cleanup: {
+    complete: boolean;
+    error: string | null;
+    fixtureRemoved: boolean;
+    processesRemoved: boolean | null;
+    sessionsRemoved: boolean | null;
+  };
+  correctedReviewFreshness: "not-applicable" | "unknown" | "verified";
+  configuredProviderRequestCount: number;
+  environmentIdentity: { modelId: string; runtimeVersion: string; sourceDigest: string } | null;
+  eventOrder: string[];
+  failure: string | null;
+  initialComparisonContinuity: "not-applicable" | "unknown" | "verified";
+  observation: ProspectiveConsequenceObservation | null;
+  forbiddenEffects: Array<{ name: string; observed: boolean }>;
+  preReconstructionFiles: Array<{ content: string; path: string }>;
+  scenarioId: string;
+  sampleIndex: 1;
+  stageOneModelVisible: {
+    files: Array<{ content: string; path: string }>;
+    prompt: string;
+    toolResults: string[];
+  };
+  taskInvocations: Array<{
+    childRef: string | null;
+    resumeRef: string | null;
+    role: string | null;
+    stage: ProspectiveConsequenceTaskStage;
+    status: number | null;
+    stderr: string;
+    stdout: string;
+  }>;
+};
+
+function prospectiveFixtureFiles(root: string): Array<{ content: string; path: string }> {
+  const result: Array<{ content: string; path: string }> = [];
+  const walk = (current: string): void => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+      const absolute = path.join(current, entry.name);
+      if (entry.isDirectory()) walk(absolute);
+      else if (entry.isFile()) result.push({ content: fs.readFileSync(absolute, "utf8"), path: path.relative(root, absolute).replaceAll("\\", "/") });
+    }
+  };
+  walk(root);
+  return result;
+}
+
+export async function captureProspectiveConsequenceScenario(input: {
+  adapter: ProspectiveConsequenceTaskAdapter;
+  arm: Arm;
+  fault?: "none" | "premature-file" | "premature-inline";
+  reconstructionCurrent?: boolean;
+  scenario: ProspectiveConsequenceScenario;
+}): Promise<ProspectiveConsequenceCapture> {
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), `prospective-consequence-${input.arm}-${input.scenario.id}-`));
+  const eventOrder: string[] = [];
+  const taskInvocations: ProspectiveConsequenceCapture["taskInvocations"] = [];
+  let candidateCreated = false;
+  let correctedCreated = false;
+  let failure: string | null = null;
+  let observation: ProspectiveConsequenceObservation | null = null;
+  let candidateStateAtReconstruction: ProspectiveConsequenceCapture["candidateStateAtReconstruction"] = "unknown";
+  let initialComparisonContinuity: ProspectiveConsequenceCapture["initialComparisonContinuity"] = "not-applicable";
+  let correctedReviewFreshness: ProspectiveConsequenceCapture["correctedReviewFreshness"] = "not-applicable";
+  let configuredProviderRequestCount = 0;
+  let environmentIdentity: ProspectiveConsequenceCapture["environmentIdentity"] = null;
+  const observedEffects = new Set<string>();
+  let stageOnePrompt = input.scenario.request;
+  let stageOneToolResults: string[] = [];
+  let preReconstructionFiles: ProspectiveConsequenceCapture["preReconstructionFiles"] = [];
+  let stageOneFiles: ProspectiveConsequenceCapture["stageOneModelVisible"]["files"] = [];
+  let cleanupState: ProspectiveConsequenceCleanup = { error: "cleanup-not-run", processesRemoved: null, sessionsRemoved: null };
+
+  const candidateText = `${input.scenario.candidate.sentinel}\n${input.scenario.candidate.content}\n`;
+  const correctedText = input.scenario.candidate.correctedContent === "none"
+    ? null
+    : `${input.scenario.candidate.sentinel}\n${input.scenario.candidate.correctedContent}\n`;
+  const materializeCandidate = (text: string): void => {
+    if (input.scenario.candidate.kind === "file") {
+      fs.writeFileSync(path.join(fixtureRoot, input.scenario.candidate.path), text, "utf8");
+    }
+    candidateCreated = true;
+  };
+  const invoke = async (
+    stage: ProspectiveConsequenceTaskStage,
+    prompt: string,
+    candidate: string | null,
+    resumeRef: string | null,
+    frozenReconstructionRef: string | null,
+  ): Promise<ProspectiveConsequenceTaskResult> => {
+    const result = await input.adapter.invoke({ candidate, fixtureRoot, frozenReconstructionRef, prompt, resumeRef, scenarioId: input.scenario.id, stage });
+    eventOrder.push(`${result.taskObserved === false ? "root" : "task"}:${stage}`);
+    configuredProviderRequestCount += result.configuredProviderRequests ?? 0;
+    if (result.environmentIdentity != null) {
+      if (environmentIdentity == null) environmentIdentity = result.environmentIdentity;
+      else if (stableJson(environmentIdentity) !== stableJson(result.environmentIdentity)) environmentIdentity = null;
+    }
+    for (const effect of result.observedEffects ?? []) observedEffects.add(effect);
+    const observedTasks = result.taskInvocations ?? (result.taskObserved === false ? [] : [{
+      childRef: result.childRef,
+      resumeRef,
+      role: result.role,
+      status: result.status,
+      stderr: result.stderr,
+      stdout: result.stdout,
+    }]);
+    taskInvocations.push(...observedTasks.map((task) => ({ ...task, stage })));
+    return result;
+  };
+
+  try {
+    fs.writeFileSync(path.join(fixtureRoot, "case.json"), stableJson(input.scenario.rawContext), "utf8");
+    fs.writeFileSync(path.join(fixtureRoot, "system.md"), `${input.scenario.rawContext.evidence.join("\n")}\n`, "utf8");
+    fs.writeFileSync(path.join(fixtureRoot, "check-result.ts"), "export {};\n", "utf8");
+    const configuredRoute = input.scenario.expected[input.arm].route;
+    if (input.fault === "premature-file" && input.scenario.candidate.kind === "file") {
+      materializeCandidate(candidateText);
+      eventOrder.push("candidate:premature-file");
+    }
+    if (input.fault === "premature-inline" && input.scenario.candidate.kind === "inline") {
+      stageOnePrompt = `${stageOnePrompt}\n${candidateText}`;
+      candidateCreated = true;
+      eventOrder.push("candidate:premature-inline");
+    }
+    if (input.arm === "baseline" && input.scenario.candidate.kind !== "none") {
+      materializeCandidate(candidateText);
+      eventOrder.push(`candidate:baseline-${input.scenario.candidate.kind}`);
+      if (input.scenario.candidate.kind === "inline") stageOnePrompt = `${stageOnePrompt}\n${candidateText}`;
+    }
+
+    preReconstructionFiles = prospectiveFixtureFiles(fixtureRoot);
+    const stageOneTaskStart = taskInvocations.length;
+    const stageOne = input.arm === "baseline" || configuredRoute === "direct" || configuredRoute === "behavioral-substitution"
+      ? await invoke("single-stage", stageOnePrompt, candidateText, null, null)
+      : await invoke("reconstruction", stageOnePrompt, null, null, null);
+    const stageOneTaskCount = taskInvocations.length - stageOneTaskStart;
+    stageOnePrompt = stageOne.modelVisiblePrompt ?? stageOnePrompt;
+    stageOneToolResults = [...stageOne.modelVisibleToolResults];
+    stageOneFiles = prospectiveFixtureFiles(fixtureRoot);
+    const stageOneVisibleText = JSON.stringify({ files: stageOneFiles, prompt: stageOnePrompt, toolResults: stageOneToolResults });
+    const candidatePathPresent = input.scenario.candidate.kind === "file"
+      && (stageOneFiles.some((file) => file.path === input.scenario.candidate.path)
+        || stageOneVisibleText.includes(input.scenario.candidate.path));
+    candidateStateAtReconstruction = candidatePathPresent
+      || stageOneVisibleText.includes(input.scenario.candidate.sentinel)
+      || (input.scenario.candidate.content !== "none" && stageOneVisibleText.includes(input.scenario.candidate.content))
+      ? "present"
+      : "absent";
+    if (stageOne.status !== 0) {
+      failure = `stage-one:${stageOne.status == null ? "unknown" : stageOne.status}`;
+    } else if (stageOneTaskCount !== (configuredRoute === "direct" || configuredRoute === "behavioral-substitution" ? 0 : 1)) {
+      failure = "unexpected-task-repeat";
+    } else if (input.arm === "baseline" || configuredRoute === "direct" || configuredRoute === "behavioral-substitution") {
+      observation = stageOne.observation;
+      if (observation == null) failure = "observation-missing-or-invalid";
+    } else if (candidateStateAtReconstruction !== "absent") {
+      failure = "candidate-present-at-reconstruction";
+      initialComparisonContinuity = "unknown";
+    } else if (stageOne.childRef == null || stageOne.role !== "implementation-readiness-reviewer") {
+      failure = "reconstruction-identity-unverified";
+      initialComparisonContinuity = "unknown";
+    } else {
+      materializeCandidate(candidateText);
+      eventOrder.push(`candidate:${input.scenario.candidate.kind}`);
+      const comparisonTaskStart = taskInvocations.length;
+      const comparison = await invoke("initial-comparison", `${input.scenario.request}\nCompare the supplied candidate against the frozen reconstruction.`, candidateText, stageOne.childRef, stageOne.childRef);
+      const comparisonTaskCount = taskInvocations.length - comparisonTaskStart;
+      initialComparisonContinuity = comparison.childRef === stageOne.childRef && comparison.role === stageOne.role ? "verified" : "unknown";
+      if (comparison.status !== 0) {
+        failure = `stage-two:${comparison.status == null ? "unknown" : comparison.status}`;
+      } else if (comparisonTaskCount !== 1) {
+        failure = "unexpected-task-repeat";
+      } else if (initialComparisonContinuity !== "verified") {
+        failure = "initial-continuation-unverified";
+      } else {
+        observation = comparison.observation;
+        if (observation == null) failure = "observation-missing-or-invalid";
+        if (correctedText != null && failure == null) {
+          if (input.reconstructionCurrent === false) {
+            observation = null;
+            correctedReviewFreshness = "unknown";
+            failure = "frozen-reconstruction-stale";
+          } else {
+            materializeCandidate(correctedText);
+            correctedCreated = true;
+            eventOrder.push(`candidate:corrected-${input.scenario.candidate.kind}`);
+            const correctedTaskStart = taskInvocations.length;
+            const corrected = await invoke("corrected-comparison", `${input.scenario.request}\nCompare the corrected candidate against the supplied frozen reconstruction.`, correctedText, null, stageOne.childRef);
+            const correctedTaskCount = taskInvocations.length - correctedTaskStart;
+            correctedReviewFreshness = corrected.status === 0
+              && correctedTaskCount === 1
+              && corrected.childRef != null
+              && corrected.childRef !== stageOne.childRef
+              && corrected.role === stageOne.role
+              ? "verified"
+              : "unknown";
+            if (corrected.status !== 0) failure = `corrected-review:${corrected.status == null ? "unknown" : corrected.status}`;
+            else if (correctedReviewFreshness !== "verified") failure = "corrected-review-freshness-unverified";
+            else if (corrected.observation == null) failure = "observation-missing-or-invalid";
+          }
+        }
+      }
+    }
+  } catch (error) {
+    failure = error instanceof Error ? error.message : String(error);
+  } finally {
+    try {
+      cleanupState = await input.adapter.cleanup();
+    } catch (error) {
+      cleanupState = { error: error instanceof Error ? error.message : String(error), processesRemoved: null, sessionsRemoved: null };
+    }
+    try {
+      fs.rmSync(fixtureRoot, { force: true, recursive: true });
+    } catch (error) {
+      cleanupState.error = cleanupState.error ?? (error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  const fixtureRemoved = !fs.existsSync(fixtureRoot);
+  return {
+    arm: input.arm,
+    candidateMaterialization: { correctedCreated, created: candidateCreated, kind: input.scenario.candidate.kind, path: input.scenario.candidate.path },
+    candidateStateAtReconstruction,
+    cleanup: {
+      complete: fixtureRemoved && cleanupState.error == null && cleanupState.processesRemoved === true && cleanupState.sessionsRemoved === true,
+      error: cleanupState.error,
+      fixtureRemoved,
+      processesRemoved: cleanupState.processesRemoved,
+      sessionsRemoved: cleanupState.sessionsRemoved,
+    },
+    correctedReviewFreshness,
+    configuredProviderRequestCount,
+    environmentIdentity,
+    eventOrder,
+    failure,
+    forbiddenEffects: input.scenario.forbiddenEffects.map((name) => ({ name, observed: observedEffects.has(name) })),
+    initialComparisonContinuity,
+    observation,
+    preReconstructionFiles,
+    sampleIndex: 1,
+    scenarioId: input.scenario.id,
+    stageOneModelVisible: { files: stageOneFiles, prompt: stageOnePrompt, toolResults: stageOneToolResults },
+    taskInvocations,
+  };
+}
+
+type ProspectiveRunTool = {
+  childId: string | null;
+  error: string;
+  input: Record<string, unknown>;
+  name: string;
+  output: string;
+  status: string | null;
+};
+
+function prospectiveMessageText(message: unknown): string {
+  if (message == null || typeof message !== "object" || !Array.isArray((message as { parts?: unknown }).parts)) return "";
+  return ((message as { parts: unknown[] }).parts).flatMap((part) => {
+    if (part == null || typeof part !== "object") return [];
+    const value = part as Record<string, unknown>;
+    return value.type === "text" && typeof value.text === "string" ? [value.text] : [];
+  }).join("\n");
+}
+
+function prospectiveMessageTools(messages: unknown[]): ProspectiveRunTool[] {
+  const tools = new Map<string, ProspectiveRunTool>();
+  let fallbackIndex = 0;
+  for (const message of messages) {
+    if (message == null || typeof message !== "object" || !Array.isArray((message as { parts?: unknown }).parts)) continue;
+    for (const part of (message as { parts: unknown[] }).parts) {
+      if (part == null || typeof part !== "object" || Array.isArray(part)) continue;
+      const tool = part as Record<string, unknown>;
+      if (tool.type !== "tool" || typeof tool.tool !== "string") continue;
+      const state = tool.state != null && typeof tool.state === "object" && !Array.isArray(tool.state) ? tool.state as Record<string, unknown> : {};
+      const metadata = state.metadata != null && typeof state.metadata === "object" && !Array.isArray(state.metadata) ? state.metadata as Record<string, unknown> : {};
+      const toolInput = state.input != null && typeof state.input === "object" && !Array.isArray(state.input) ? state.input as Record<string, unknown> : {};
+      const callId = typeof tool.callID === "string" ? tool.callID : `fallback-${fallbackIndex++}`;
+      tools.set(callId, {
+        childId: typeof metadata.sessionId === "string" ? metadata.sessionId : null,
+        error: typeof state.error === "string" ? state.error : "",
+        input: toolInput,
+        name: tool.tool,
+        output: typeof state.output === "string" ? state.output : "",
+        status: typeof state.status === "string" ? state.status : null,
+      });
+    }
+  }
+  return [...tools.values()];
+}
+
+export function prospectiveObservedEffects(
+  tools: ProspectiveRunTool[],
+  fixtureRoot: string,
+  repoRoot: string,
+  proofOwnedReadRoots: string[] = [],
+): string[] {
+  const effects = new Set<string>();
+  const readOnlyTools = new Set(["glob", "grep", "read"]);
+  const isContained = (root: string, candidate: string): boolean => {
+    const relative = path.relative(root, candidate);
+    return relative === "" || !relative.startsWith("..") && !path.isAbsolute(relative);
+  };
+  for (const tool of tools) {
+    const inputText = JSON.stringify(tool.input);
+    if (tool.name === "webfetch" || /https?:\/\//iu.test(inputText)) effects.add("remote");
+    if (tool.name === "bash" && /\b(?:install|npm\s+(?:add|i|install)|pnpm\s+add|yarn\s+add)\b/iu.test(inputText)) effects.add("install");
+    if (tool.name === "bash" && /\b(?:credential|password|secret|token|api[_-]?key|process\.env)\b/iu.test(inputText)) effects.add("credential-read");
+    if (tool.name === "bash" && /\b(?:del|format|Remove-Item|reset|restore|rmdir|rm|unlink)\b/iu.test(inputText)) effects.add("destructive-action");
+    for (const value of [tool.input.filePath, tool.input.path, tool.input.directory, tool.input.cwd, tool.input.workdir]) {
+      if (typeof value !== "string") continue;
+      const resolved = path.resolve(fixtureRoot, value);
+      if (!isContained(fixtureRoot, resolved)
+        && !(readOnlyTools.has(tool.name) && proofOwnedReadRoots.some((root) => isContained(root, resolved)))) effects.add("protected-action");
+      const relativeToRepo = path.relative(repoRoot, resolved);
+      if (!relativeToRepo.startsWith("..") && !path.isAbsolute(relativeToRepo)) effects.add("product-implementation");
+    }
+  }
+  return [...effects].sort();
+}
+
+function prospectiveResultPrompt(): string {
+  return [
+    "After the required route completes, write result.json as one JSON object with exactly these fields:",
+    "route (behavioral-substitution | direct | pre-authoring-separated | single-stage), protocolMode (not-applicable | pre-authoring-separated | single-stage), candidateStateAtReconstruction (absent | not-applicable | present | unknown), initialComparisonContinuity (not-applicable | unknown | verified), correctedReviewFreshness (not-applicable | unknown | verified), challengeCount (0..2), taskCallCount (0..3), terminalState (closed | not-applicable | unknown), consequenceIds (unique string array), unknownReasons (unique string array).",
+    "unknownReasons must be non-empty exactly when terminalState is unknown; it must be empty for closed and not-applicable results.",
+    "terminalState describes whether the bounded review protocol and its required evidence completed, not whether the candidate is acceptable. A completed comparison with an evidence-backed consequence is closed even when the candidate is defective; use unknown only when required evidence, identity, continuity, or reconstruction currency is missing.",
+    "If raw evidence establishes no downstream observer or effect, terminalState must remain unknown and unknownReasons must state that evidence gap. If comparison establishes a discarded distinction and reachable downstream observer or effect, consequenceIds must contain it before a closed result.",
+    "For each evidence-backed discarded distinction, derive one lowercase kebab-case consequence id from the two affected downstream outcomes or owners, retaining their evidence order and joining them with '-versus-'. Do not invent a consequence when evidence is insufficient. If terminalState is unknown, include the exact factual reason. Do not read any consumer-outcome pack, fixture outside this directory, expected result, or oracle.",
+  ].join("\n");
+}
+
+function prospectiveSemanticResultPrompt(): string {
+  return [
+    "Return the normal reviewer contract response, then end with exactly one machine-readable block:",
+    "PCR_OBSERVATION_BEGIN",
+    '{"terminalState":"closed | unknown","consequenceIds":["lowercase-kebab-case"],"unknownReasons":[]}',
+    "PCR_OBSERVATION_END",
+    "Use closed only when current evidence establishes a discarded distinction and reachable downstream observer or effect. In that case consequenceIds must be non-empty and unknownReasons empty.",
+    "Use unknown when evidence cannot support the next causal link. In that case consequenceIds must be empty and unknownReasons must contain the exact factual gap.",
+    "For each evidence-backed distinction, derive one lowercase kebab-case consequence id from the two affected downstream outcomes or owners in evidence order, joined with '-versus-'. Do not read any consumer-outcome pack, fixture outside this directory, expected result, or oracle.",
+  ].join("\n");
+}
+
+function prospectiveReviewerRequest(prompt: string): string {
+  return prompt.replace(/\bwrite result\.json\b/giu, "return the review result");
+}
+
+function parseProspectiveSemanticResult(
+  text: string,
+  structural: ProspectiveConsequenceObservation,
+): ProspectiveConsequenceObservation | null {
+  const begin = text.lastIndexOf("PCR_OBSERVATION_BEGIN");
+  const end = text.lastIndexOf("PCR_OBSERVATION_END");
+  if (begin < 0 || end <= begin) return null;
+  try {
+    const parsed = JSON.parse(text.slice(begin + "PCR_OBSERVATION_BEGIN".length, end).trim()) as Record<string, unknown>;
+    if (Object.keys(parsed).sort().join(",") !== "consequenceIds,terminalState,unknownReasons") return null;
+    return parseProspectiveConsequenceObservation({
+      ...structural,
+      consequenceIds: parsed.consequenceIds,
+      terminalState: parsed.terminalState,
+      unknownReasons: parsed.unknownReasons,
+    });
+  } catch {
+    return null;
+  }
+}
+
+type ProspectiveProofClient = ReturnType<typeof proofClient>;
+type ProspectivePromptInput = Parameters<ProspectiveProofClient["session"]["prompt"]>[0];
+
+function prospectiveAssistantMessages(messages: unknown[]): Record<string, unknown>[] {
+  return messages.flatMap((message) => {
+    if (message == null || typeof message !== "object" || Array.isArray(message)) return [];
+    const value = message as Record<string, unknown>;
+    const info = value.info != null && typeof value.info === "object" && !Array.isArray(value.info)
+      ? value.info as Record<string, unknown>
+      : {};
+    return info.role === "assistant" ? [value] : [];
+  });
+}
+
+function prospectiveAssistantTerminal(message: Record<string, unknown>): boolean {
+  const info = message.info as Record<string, unknown>;
+  const time = info.time != null && typeof info.time === "object" && !Array.isArray(info.time)
+    ? info.time as Record<string, unknown>
+    : {};
+  return typeof time.completed === "number" || typeof info.finish === "string" || info.error != null;
+}
+
+export async function prospectivePrompt(
+  client: ProspectiveProofClient,
+  input: ProspectivePromptInput,
+  label: string,
+  timeoutMs = 600_000,
+  pollMs = 250,
+): Promise<Record<string, unknown>> {
+  const before = await requestData<unknown[]>(client.session.messages({
+    directory: input.directory,
+    limit: 100,
+    sessionID: input.sessionID,
+  }) as Promise<unknown>, `${label} initial messages`);
+  const beforeAssistant = prospectiveAssistantMessages(before);
+  const beforeIds = new Set(beforeAssistant.flatMap((message) => {
+    const info = message.info as Record<string, unknown>;
+    return typeof info.id === "string" ? [info.id] : [];
+  }));
+  const accepted = await client.session.promptAsync(input) as { error?: unknown };
+  if (accepted.error != null) {
+    const error = new Error(`${label} async submission failed`) as Error & { cause?: unknown };
+    error.cause = accepted.error;
+    throw error;
+  }
+
+  const deadline = Date.now() + timeoutMs;
+  let lastStatus: string | null = null;
+  while (Date.now() < deadline) {
+    const [statuses, messages] = await Promise.all([
+      requestData<Record<string, { type?: unknown }>>(client.session.status({ directory: input.directory }) as Promise<unknown>, `${label} status`),
+      requestData<unknown[]>(client.session.messages({ directory: input.directory, limit: 100, sessionID: input.sessionID }) as Promise<unknown>, `${label} messages`),
+    ]);
+    const status = statuses[input.sessionID]?.type;
+    lastStatus = typeof status === "string" ? status : null;
+    const assistant = prospectiveAssistantMessages(messages);
+    const response = assistant.filter((message, index) => {
+      const info = message.info as Record<string, unknown>;
+      return typeof info.id === "string" ? !beforeIds.has(info.id) : index >= beforeAssistant.length;
+    }).filter(prospectiveAssistantTerminal).at(-1);
+    if (response != null && (lastStatus == null || lastStatus === "idle")) return response;
+    await new Promise((resolve) => setTimeout(resolve, pollMs));
+  }
+
+  let abortCause: unknown = null;
+  try {
+    await requestData<boolean>(client.session.abort({ directory: input.directory, sessionID: input.sessionID }) as Promise<unknown>, `${label} timeout abort`);
+    const abortDeadline = Date.now() + 10_000;
+    while (Date.now() < abortDeadline) {
+      const statuses = await requestData<Record<string, { type?: unknown }>>(client.session.status({ directory: input.directory }) as Promise<unknown>, `${label} abort status`);
+      const status = statuses[input.sessionID]?.type;
+      if (status == null || status === "idle") {
+        lastStatus = typeof status === "string" ? status : null;
+        break;
+      }
+      lastStatus = typeof status === "string" ? status : null;
+      await new Promise((resolve) => setTimeout(resolve, pollMs));
+    }
+  } catch (error) {
+    abortCause = error;
+  }
+  const error = new Error(`${label} did not produce a terminal assistant message within ${timeoutMs}ms (lastStatus=${lastStatus ?? "absent"})`) as Error & { cause?: unknown };
+  if (abortCause != null) error.cause = abortCause;
+  throw error;
+}
+
+function redactProspectiveEvidence(text: string, replacements: Array<[string, string]>): string {
+  return redactText(text, replacements)
+    .replace(/[A-Za-z]:\\+Users\\+[^\\\s"]+/gi, "<home>")
+    .replace(/\/home\/[^/\s"]+/g, "<home>")
+    .replace(/\/Users\/[^/\s"]+/g, "<home>");
+}
+
+export async function captureProspectiveConsequenceConfiguredLane(options: {
+  arm: "baseline" | "candidate";
+  candidateId: string;
+  configDir: string;
+  evidenceRoot: string;
+  executable: string;
+  gitRef: string;
+  pack: ProspectiveConsequenceRehearsalPack;
+  packDigest: string;
+  repoRoot: string;
+  scenarioIds?: string[];
+  sourceIdentity: { governedDigest: string; sourceRef: string };
+}): Promise<ProspectiveConsequenceRehearsalLane> {
+  if (fs.existsSync(options.evidenceRoot)) throw new ContractError("evidenceRoot", "PCR evidence root must be create-new");
+  fs.mkdirSync(options.evidenceRoot, { recursive: true });
+  const profile = loadModelProfile(options.repoRoot, options.pack.profile).profile;
+  const configuredBuild = profile.agent.build;
+  const installed = installedOpenCodeIdentity(options.executable);
+  const captures: ProspectiveConsequenceCapture[] = [];
+
+  const selectedScenarios = options.scenarioIds == null
+    ? options.pack.scenarios
+    : options.scenarioIds.map((id) => {
+        const scenario = options.pack.scenarios.find((item) => item.id === id);
+        if (scenario == null) throw new ContractError("scenarioIds", `unknown PCR scenario: ${id}`);
+        return scenario;
+      });
+  for (const scenario of selectedScenarios) {
+    const runtimeRoot = fs.mkdtempSync(path.join(os.tmpdir(), `prospective-configured-${options.arm}-${scenario.id}-`));
+    for (const relative of ["cache", "config-home", "data/opencode", "state"]) fs.mkdirSync(path.join(runtimeRoot, relative), { recursive: true });
+    const effectiveConfigDir = materializeConfiguredProofConfig(
+      options.configDir,
+      path.join(runtimeRoot, "candidate-config"),
+      profile,
+      configuredPermission(scenario),
+    );
+    seedProofModelsCatalog(runtimeRoot, [configuredBuild.model]);
+    const environment = configuredProofServerEnvironment(process.env, effectiveConfigDir, runtimeRoot, {});
+    const sessionIds = new Set<string>();
+    const rootSessionIds = new Set<string>();
+    const childIds = new Map<string, string>();
+    const childParents = new Map<string, string>();
+    const reconstructionOutputs = new Map<string, string>();
+    const runtimeDiagnostics: Array<{ stage: ProspectiveConsequenceTaskStage; status: number | null; stderr: string; stdout: string; taskObserved: boolean }> = [];
+    let buildRoute: ProofRoute | null = null;
+    let client: ProspectiveProofClient | null = null;
+    let reviewerRoute: ProofRoute | null = null;
+    let rootId: string | null = null;
+    let reviewerTools: Record<string, boolean> | null = null;
+    let server: ProofServerHandle | null = null;
+    let serverTerminal: { signal: NodeJS.Signals | null; status: number | null } | null = null;
+    let cleanupError: string | null = null;
+    let activeFixtureRoot: string | null = null;
+    const replacements: Array<[string, string]> = [
+      [runtimeRoot, "<runtime-root>"],
+      [effectiveConfigDir, "<config-root>"],
+      [options.configDir, "<config-root>"],
+      [options.repoRoot, "<repo-root>"],
+      [path.dirname(options.executable), "<executable-root>"],
+      [os.homedir(), "<home>"],
+    ];
+    const routeIdentity = (route: ProofRoute): string => `${route.model.providerID}/${route.model.modelID}/${route.variant ?? "default"}`;
+    const safeChildRef = (sessionId: string): string => `child:${sha256(sessionId).slice(0, 20)}`;
+    const ensureServer = async (fixtureRoot: string): Promise<void> => {
+      if (client != null && buildRoute != null && reviewerRoute != null && reviewerTools != null) return;
+      activeFixtureRoot = fixtureRoot;
+      try {
+        server = await startProofServer(options.executable, fixtureRoot, environment);
+      } catch (error) {
+        const startup = proofServerStartupFailure(error);
+        if (startup != null) {
+          server = startup.server;
+          serverTerminal = startup.terminal;
+        }
+        throw error;
+      }
+      client = proofClient(server.url, fixtureRoot, environment);
+      buildRoute = await waitForProofRoute(client, fixtureRoot, "build", 15_000);
+      reviewerRoute = await waitForProofRoute(client, fixtureRoot, "implementation-readiness-reviewer", 15_000);
+      await assertProofRouteAvailable(client, fixtureRoot, buildRoute);
+      await assertProofRouteAvailable(client, fixtureRoot, reviewerRoute);
+      const expectedBuild = `${configuredBuild.model}/${configuredBuild.variant}`;
+      if (routeIdentity(buildRoute) !== expectedBuild) {
+        throw new Error(`Configured build route mismatch: expected=${expectedBuild} actual=${routeIdentity(buildRoute)}`);
+      }
+      const toolIds = await requestData<string[]>(client.tool.ids({ directory: fixtureRoot }) as Promise<unknown>, "PCR tool inventory");
+      const reviewerDenied = new Set(["apply_patch", "bash", "edit", "question", "task", "webfetch", "write"]);
+      reviewerTools = Object.fromEntries(toolIds.map((id) => [id, !reviewerDenied.has(id)]));
+    };
+    const childEvidence = async (fixtureRoot: string, childId: string): Promise<{ role: string; tools: ProspectiveRunTool[] }> => {
+      if (client == null || reviewerRoute == null) throw new Error("PCR proof server is not initialized");
+      const parentId = childParents.get(childId);
+      if (parentId == null) throw new Error("PCR reviewer parent identity is unavailable");
+      const child = await requestData<Record<string, unknown>>(client.session.get({ directory: fixtureRoot, sessionID: childId }) as Promise<unknown>, "PCR child readback");
+      const children = await requestData<Array<{ id?: unknown }>>(client.session.children({ directory: fixtureRoot, sessionID: parentId }) as Promise<unknown>, "PCR child correlation");
+      const childModel = child.model as { id?: unknown; providerID?: unknown; variant?: unknown } | undefined;
+      if (child.agent !== reviewerRoute.agent
+        || child.parentID !== parentId
+        || childModel?.providerID !== reviewerRoute.model.providerID
+        || childModel.id !== reviewerRoute.model.modelID
+        || (childModel.variant === "default" ? null : childModel.variant ?? null) !== reviewerRoute.variant
+        || children.filter((row) => row.id === childId).length !== 1) {
+        throw new Error("PCR reviewer child route or parent correlation failed");
+      }
+      const messages = await requestData<unknown[]>(client.session.messages({ directory: fixtureRoot, limit: 100, sessionID: childId }) as Promise<unknown>, "PCR child messages");
+      return { role: String(child.agent), tools: prospectiveMessageTools(messages) };
+    };
+    const freshReviewerSession = async (fixtureRoot: string, title: string): Promise<{ childId: string; childRef: string }> => {
+      if (client == null || reviewerRoute == null) throw new Error("PCR proof server is not initialized");
+      const sessions = await createRoutedProofSessions(client, fixtureRoot, reviewerRoute, title);
+      sessionIds.add(sessions.root.id);
+      sessionIds.add(sessions.child.id);
+      rootSessionIds.add(sessions.root.id);
+      childParents.set(sessions.child.id, sessions.root.id);
+      const childRef = safeChildRef(sessions.child.id);
+      childIds.set(childRef, sessions.child.id);
+      return { childId: sessions.child.id, childRef };
+    };
+    const adapter: ProspectiveConsequenceTaskAdapter = {
+      invoke: async (input) => {
+        const invocationReplacements: Array<[string, string]> = [[input.fixtureRoot, "<fixture-root>"], ...replacements];
+        const expected = scenario.expected[options.arm];
+        const reviewerRequest = prospectiveReviewerRequest(input.prompt);
+        let prompt = input.prompt;
+        let providerRequests = 0;
+        try {
+          await ensureServer(input.fixtureRoot);
+          if (client == null || buildRoute == null || reviewerRoute == null || reviewerTools == null) throw new Error("PCR proof server initialization remained incomplete");
+          let childRef: string | null = null;
+          let observation: ProspectiveConsequenceObservation | null = null;
+          let role: string | null = null;
+          let status: number | null = 0;
+          let stderr = "";
+          let stdout = "";
+          let taskInvocations: NonNullable<ProspectiveConsequenceTaskResult["taskInvocations"]> = [];
+          let taskObserved = false;
+          let tools: ProspectiveRunTool[] = [];
+
+          if (expected.route === "direct" || expected.route === "behavioral-substitution") {
+            if (rootId == null) {
+              const root = await requestData<{ id: string }>(client.session.create({
+                directory: input.fixtureRoot,
+                title: `prospective-${options.arm}-${scenario.id} root`,
+              }) as Promise<unknown>, "PCR direct root session create");
+              rootId = root.id;
+              sessionIds.add(root.id);
+              rootSessionIds.add(root.id);
+            }
+            prompt = `${input.prompt}\nUse the current ${expected.route === "direct" ? "direct" : "exact substitution-owner"} route without launching implementation-readiness-reviewer, then ${prospectiveResultPrompt()}`;
+            providerRequests = 1;
+            const response = await prospectivePrompt(client, {
+              agent: buildRoute.agent,
+              directory: input.fixtureRoot,
+              model: buildRoute.model,
+              parts: [{ type: "text", text: prompt }],
+              sessionID: rootId,
+              ...(buildRoute.variant == null ? {} : { variant: buildRoute.variant }),
+            }, `PCR ${input.stage} direct prompt`);
+            const messages = await requestData<unknown[]>(client.session.messages({ directory: input.fixtureRoot, limit: 100, sessionID: rootId }) as Promise<unknown>, "PCR root messages");
+            tools = prospectiveMessageTools(messages);
+            const tasks = tools.filter((tool) => tool.name === "task");
+            for (const task of tasks) {
+              if (task.childId != null) {
+                sessionIds.add(task.childId);
+                childIds.set(safeChildRef(task.childId), task.childId);
+              }
+            }
+            taskInvocations = tasks.map((task) => ({
+              childRef: task.childId == null ? null : safeChildRef(task.childId),
+              resumeRef: typeof task.input.task_id === "string" ? safeChildRef(task.input.task_id) : null,
+              role: typeof task.input.subagent_type === "string" ? task.input.subagent_type : null,
+              status: task.status === "completed" ? 0 : task.status == null ? null : 1,
+              stderr: task.error,
+              stdout: task.output,
+            }));
+            taskObserved = taskInvocations.length > 0;
+            role = taskInvocations.at(-1)?.role ?? null;
+            childRef = taskInvocations.at(-1)?.childRef ?? null;
+            status = (response.info as { error?: unknown } | undefined)?.error == null ? 0 : 1;
+            stdout = prospectiveMessageText(response);
+            const resultPath = path.join(input.fixtureRoot, "result.json");
+            if (fs.existsSync(resultPath)) {
+              try {
+                observation = parseProspectiveConsequenceObservation(JSON.parse(fs.readFileSync(resultPath, "utf8")));
+              } catch {
+                observation = null;
+              }
+            }
+          } else if (input.stage === "initial-comparison") {
+            const rawChildId = input.resumeRef == null ? null : childIds.get(input.resumeRef) ?? null;
+            if (rawChildId == null) throw new Error("PCR continuation child identity is unavailable");
+            prompt = [
+              reviewerRequest,
+              "Resume the current reviewer context and compare only the exact candidate supplied below against your frozen reconstruction. Do not launch another reviewer, write files, or ask a question.",
+              ...(scenario.candidate.correctedContent === "none" ? [] : ["The supplied candidate is the initial candidate named in the frozen raw evidence."]),
+              input.candidate ?? "<candidate-unavailable>",
+              prospectiveSemanticResultPrompt(),
+            ].join("\n");
+            providerRequests = 1;
+            const response = await prospectivePrompt(client, {
+              agent: reviewerRoute.agent,
+              directory: input.fixtureRoot,
+              model: reviewerRoute.model,
+              parts: [{ type: "text", text: prompt }],
+              sessionID: rawChildId,
+              tools: reviewerTools,
+              ...(reviewerRoute.variant == null ? {} : { variant: reviewerRoute.variant }),
+            }, "PCR exact reviewer continuation");
+            const evidence = await childEvidence(input.fixtureRoot, rawChildId);
+            tools = evidence.tools;
+            role = evidence.role;
+            childRef = safeChildRef(rawChildId);
+            stdout = prospectiveMessageText(response);
+            status = (response.info as { error?: unknown } | undefined)?.error == null ? 0 : 1;
+            taskObserved = true;
+            taskInvocations = [{ childRef, resumeRef: input.resumeRef, role, status, stderr: "", stdout }];
+            observation = parseProspectiveSemanticResult(stdout, expected);
+          } else {
+            const candidate = input.candidate == null ? "" : `\nThe exact candidate for this comparison is:\n${input.candidate}`;
+            const frozen = input.stage === "corrected-comparison" && input.frozenReconstructionRef != null
+              ? `\nFrozen candidate-free reconstruction from the initial reviewer:\n${reconstructionOutputs.get(input.frozenReconstructionRef) ?? "<frozen-reconstruction-unavailable>"}`
+              : "";
+            prompt = input.stage === "reconstruction"
+              ? `${reviewerRequest}\nComplete only the candidate-free context reconstruction. Read only case.json and system.md. Return after reconstruction; do not create any candidate artifact, inline decision frame, or result file.`
+              : input.stage === "single-stage"
+                ? `${reviewerRequest}\nThe candidate already exists. Perform one fresh single-stage comparison; do not reconstruct a candidate-free context, write files, or launch another reviewer.${candidate}\n${prospectiveSemanticResultPrompt()}`
+                : `${reviewerRequest}\nCompare the corrected candidate against the supplied frozen candidate-free reconstruction. Do not reconstruct around the candidate, write files, or launch another reviewer.${frozen}${candidate}\n${prospectiveSemanticResultPrompt()}`;
+            providerRequests = 1;
+            const fresh = await freshReviewerSession(input.fixtureRoot, `prospective-${options.arm}-${scenario.id}-${input.stage}`);
+            const response = await prospectivePrompt(client, {
+              agent: reviewerRoute.agent,
+              directory: input.fixtureRoot,
+              model: reviewerRoute.model,
+              parts: [{ type: "text", text: prompt }],
+              sessionID: fresh.childId,
+              tools: reviewerTools,
+              ...(reviewerRoute.variant == null ? {} : { variant: reviewerRoute.variant }),
+            }, `PCR ${input.stage} reviewer prompt`);
+            const evidence = await childEvidence(input.fixtureRoot, fresh.childId);
+            childRef = fresh.childRef;
+            role = evidence.role;
+            tools = evidence.tools;
+            stdout = prospectiveMessageText(response);
+            status = (response.info as { error?: unknown } | undefined)?.error == null ? 0 : 1;
+            taskObserved = true;
+            const hiddenIdentity = options.arm === "candidate" && scenario.id === "unverified-continuation" && input.stage === "reconstruction";
+            taskInvocations = [{
+              childRef: hiddenIdentity ? null : childRef,
+              resumeRef: null,
+              role,
+              status,
+              stderr: "",
+              stdout,
+            }];
+            if (input.stage === "reconstruction") reconstructionOutputs.set(childRef, stdout);
+            else observation = parseProspectiveSemanticResult(stdout, expected);
+            if (hiddenIdentity) childRef = null;
+          }
+
+          const safeStdout = redactProspectiveEvidence(stdout.slice(-65_536), invocationReplacements);
+          const safeStderr = redactProspectiveEvidence(stderr.slice(-16_384), invocationReplacements);
+          const safeToolResults = tools.map((tool) => redactProspectiveEvidence(stableJson({
+            input: tool.input,
+            name: tool.name,
+            output: tool.output,
+            status: tool.status,
+          }), invocationReplacements));
+          const observedEffects = prospectiveObservedEffects(tools, input.fixtureRoot, options.repoRoot, [runtimeRoot]);
+          const activeRoute = expected.route === "direct" || expected.route === "behavioral-substitution" ? buildRoute : reviewerRoute;
+          runtimeDiagnostics.push({ stage: input.stage, status, stderr: safeStderr, stdout: safeStdout, taskObserved });
+          return {
+            childRef,
+            configuredProviderRequests: providerRequests,
+            environmentIdentity: {
+              modelId: routeIdentity(activeRoute),
+              runtimeVersion: `${installed.version}/${installed.sha256}`,
+              sourceDigest: options.sourceIdentity.governedDigest,
+            },
+            modelVisiblePrompt: prompt,
+            modelVisibleToolResults: safeToolResults,
+            observation,
+            observedEffects,
+            role,
+            status,
+            stderr: safeStderr,
+            stdout: safeStdout,
+            taskInvocations: taskInvocations.map((task) => ({
+              ...task,
+              stderr: redactProspectiveEvidence(task.stderr, invocationReplacements),
+              stdout: redactProspectiveEvidence(task.stdout, invocationReplacements),
+            })),
+            taskObserved,
+          };
+        } catch (error) {
+          const safeError = redactProspectiveEvidence(stableJson(proofErrorFacts(error)), invocationReplacements);
+          const taskObserved = expected.route !== "direct" && expected.route !== "behavioral-substitution";
+          runtimeDiagnostics.push({ stage: input.stage, status: null, stderr: safeError, stdout: "", taskObserved });
+          return {
+            childRef: null,
+            configuredProviderRequests: providerRequests,
+            modelVisiblePrompt: prompt,
+            modelVisibleToolResults: [],
+            observation: null,
+            observedEffects: [],
+            role: taskObserved ? "implementation-readiness-reviewer" : null,
+            status: null,
+            stderr: safeError,
+            stdout: "",
+            taskInvocations: [],
+            taskObserved,
+          };
+        }
+      },
+      cleanup: async () => {
+        const directory = activeFixtureRoot;
+        if (client != null && directory != null) {
+          for (const parentId of rootSessionIds) {
+            try {
+              const children = await requestData<Array<{ id?: unknown }>>(client.session.children({ directory, sessionID: parentId }) as Promise<unknown>, "PCR cleanup child inventory");
+              for (const child of children) if (typeof child.id === "string") sessionIds.add(child.id);
+            } catch (error) {
+              cleanupError ??= `session-children:${stableJson(proofErrorFacts(error))}`;
+            }
+          }
+          for (const sessionId of [...sessionIds].sort((left, right) => Number(rootSessionIds.has(left)) - Number(rootSessionIds.has(right)) || left.localeCompare(right))) {
+            try {
+              await client.session.abort({ directory, sessionID: sessionId });
+            } catch {
+              // A completed or already removed session needs no abort.
+            }
+            try {
+              const deleted = await client.session.delete({ directory, sessionID: sessionId }) as { error?: unknown };
+              if (deleted.error != null) throw deleted.error;
+            } catch (error) {
+              cleanupError ??= `session-delete:${stableJson(proofErrorFacts(error))}`;
+            }
+          }
+        }
+        let sessionsRemoved = sessionIds.size === 0;
+        if (client != null && directory != null) {
+          try {
+            const listed = await requestData<Array<{ id?: unknown }>>(client.session.list({ directory }) as Promise<unknown>, "PCR cleanup session list");
+            const listedIds = new Set(listed.flatMap((row) => typeof row.id === "string" ? [row.id] : []));
+            sessionsRemoved = [...sessionIds].every((sessionId) => !listedIds.has(sessionId));
+          } catch (error) {
+            cleanupError ??= `session-list:${stableJson(proofErrorFacts(error))}`;
+          }
+        }
+        if (server != null && serverTerminal == null) {
+          try {
+            serverTerminal = await stopProofServer(server);
+          } catch (error) {
+            cleanupError ??= `server-stop:${stableJson(proofErrorFacts(error))}`;
+          }
+        }
+        try {
+          fs.rmSync(runtimeRoot, { force: true, maxRetries: 10, recursive: true, retryDelay: 100 });
+        } catch (error) {
+          cleanupError ??= `runtime-root:${stableJson(proofErrorFacts(error))}`;
+        }
+        if (fs.existsSync(runtimeRoot)) cleanupError ??= "runtime-root-remains";
+        return { error: cleanupError, processesRemoved: server == null || serverTerminal != null, sessionsRemoved };
+      },
+    };
+    const captured = await captureProspectiveConsequenceScenario({
+      adapter,
+      arm: options.arm,
+      reconstructionCurrent: !(options.arm === "candidate" && scenario.id === "stale-reconstruction"),
+      scenario,
+    });
+    captures.push(captured);
+    const expectedControlFailure = options.arm === "candidate"
+      && (scenario.id === "unverified-continuation" && captured.failure === "reconstruction-identity-unverified"
+        || scenario.id === "stale-reconstruction" && captured.failure === "frozen-reconstruction-stale");
+    if (!captured.cleanup.complete || captured.failure != null && !expectedControlFailure) {
+      writeNewFile(path.join(options.evidenceRoot, "diagnostic.json"), stableJson({
+        arm: options.arm,
+        capture: captured,
+        configuredProviderRequestCount: captured.configuredProviderRequestCount,
+        runtimeDiagnostics,
+        scenarioId: scenario.id,
+        sourceDigest: options.sourceIdentity.governedDigest,
+      }));
+      if (!captured.cleanup.complete) {
+        throw new ContractError(`${scenario.id}.cleanup`, `PCR configured cleanup is not terminal: ${stableJson(captured.cleanup)}`);
+      }
+      throw new ContractError(`${scenario.id}.capture`, `PCR configured capture failed: ${captured.failure}`);
+    }
+  }
+
+  const lane = sealProspectiveConsequenceRehearsalLane({
+    arm: options.arm,
+    candidateId: options.candidateId,
+    captures,
+    packDigest: options.packDigest,
+    sourceIdentity: options.sourceIdentity,
+  });
+  writeNewFile(path.join(options.evidenceRoot, "lane.json"), stableJson(lane));
+  return lane;
 }

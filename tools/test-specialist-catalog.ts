@@ -390,8 +390,13 @@ async function main(): Promise<void> {
     assert.ok(toolIDs.includes(toolID), "Custom tool was not loaded");
     const wildcardRules = matchingRules(advisor, "*");
     const catalogRules = matchingRules(advisor, toolID);
-    assert.ok(wildcardRules.some((rule) => ruleEffect(rule) === "deny"), "Advisor wildcard deny was not retained");
-    assert.equal(ruleEffect(catalogRules.at(-1)), "allow", "Advisor exact custom-tool allow was not retained");
+    if (candidateMode) {
+      assert.ok(wildcardRules.some((rule) => ruleEffect(rule) === "allow"), "Advisor unrestricted runtime permission was not retained");
+      assert.equal(catalogRules.some((rule) => ruleEffect(rule) === "deny"), false, "Advisor catalog access was denied by a narrower rule");
+    } else {
+      assert.ok(wildcardRules.some((rule) => ruleEffect(rule) === "deny"), "Proof advisor wildcard deny was not retained");
+      assert.equal(ruleEffect(catalogRules.at(-1)), "allow", "Proof advisor exact custom-tool allow was not retained");
+    }
     assert.equal(matchingRules(otherAgent, toolID).some((rule) => ruleEffect(rule) === "allow"), false, "Non-advisor gained custom-tool allow");
 
     const advisorSession = await requestData<JsonRecord>(client.session.create({
@@ -537,8 +542,8 @@ async function main(): Promise<void> {
           toolLoaded: true,
         },
         customToolPermission: {
-          advisorExactAllow: true,
-          advisorWildcardDeny: true,
+          advisorCatalogAccess: candidateMode ? "wildcard-allow" : "exact-allow",
+          advisorWildcard: candidateMode ? "allow" : "deny",
           nonAdvisorExactAllow: false,
           status: "passed",
         },

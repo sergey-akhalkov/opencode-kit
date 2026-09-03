@@ -79,6 +79,95 @@ node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts status
 node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts rollback --dry-run
 ```
 
+## Optional Beads Portfolio Bridge
+
+The bridge is disabled by default and supports one explicitly registered Git project. It accepts only Beads `v1.2.2` Windows amd64. The pinned archive SHA-256 is `1f00c29cd9599e182a4a4e829f5210daca2da14155920aee2836d8bc613b2feb`; the extracted `bd.exe` must be `145740800` bytes with SHA-256 `b1f3609fea1d9f0f19b2ed49098b3628acfa6ca115aa28b01a1ee178c3a214de`. Online documentation and vendor-generated instructions do not expand that supported surface.
+
+Treat these as three independent states:
+
+| State | Owner | What success means |
+|---|---|---|
+| Protected binary | Workstation lifecycle | Exact manifest, executable, adapter, and ACL identities pass readback |
+| OpenCode discovery | One selected `core-beads`, `all`, or unprofiled full-source runtime | The on-demand skill and closed helper directory are discoverable once in a fresh process |
+| Project activation | One exact registration and project lifecycle | One canonical root and project-local embedded store are enabled under a clear bridge writer |
+
+No state implies another. `core` omits Beads. Installation does not select a profile or touch a project; profile selection does not install Beads or register a project; registration does not grant source-writer or remote authority.
+
+### Preview, spike, install, and check
+
+Run the effect-free source entrypoints first:
+
+```powershell
+node tools/windows/opencode-workstation.ts beads-preview
+node tools/windows/opencode-workstation.ts beads-check
+```
+
+Preview reports the exact release, protected paths, non-effects, and rollback boundary. Check reports `status: "absent"` when no protected Beads installation exists; that is an unavailable optional capability, not a successful activation. The disposable release/Dolt spike is qualification evidence rather than a generic operator command. Re-run that bounded proof only when the version, platform, hashes, required command surface, or directly observed environment invalidates the recorded evidence; do not replace it with ad hoc `bd` commands.
+
+After the spike is current, install only a local executable whose exact identity matches the preview:
+
+```powershell
+node tools/windows/opencode-workstation.ts beads-install --source <absolute-path-to-verified-bd.exe>
+node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts beads-check
+node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts beads-rollback --dry-run
+```
+
+Install self-elevates when necessary and performs no download, profile selection, project registration, project activation, process, service, task, hook, vendor setup, or remote operation. Stop on a hash, platform, manifest, ACL, path, capability, or drift mismatch. Do not use another release or pass arbitrary vendor arguments.
+
+### Select the runtime surface
+
+From the kit source, preview then select the complete concrete profile:
+
+```powershell
+npm.cmd run install:global -- --preview-profile --profile core-beads
+npm.cmd run install:global -- --profile core-beads
+npm.cmd run install:global -- --check --profile core-beads
+```
+
+`core-beads` is exactly current `core` plus the on-demand skill and closed helper closure. `all` and unprofiled full source expose that same capability once; `core` exposes none of it. Start a fresh OpenCode process after any profile change. Do not infer discovery in an already running process and do not add a Beads-only partial profile, always-loaded instruction, plugin, MCP, `bd prime`, or vendor-managed `AGENTS.md`.
+
+### Register and operate one project
+
+There is intentionally no raw-argument or thin-command passthrough. In the fresh process, explicitly ask the `beads-portfolio-bridge` skill to perform the semantic operation, for example:
+
+```text
+Check the Beads installation and report the exact optional project prerequisite.
+Register and preview Beads for this canonical Git project with owner class current-project and prefix <safe-prefix>.
+Enable the registered Beads project after the preview passes.
+Show bounded Beads portfolio status for the enabled project.
+Disable the registered Beads project and preserve its local store.
+Roll back only the registered project's attributable enablement state after disablement.
+```
+
+Registration must be created from current protected install/profile/adapter identities for exactly one canonical Git root, owner class `current-project` or `opencode-kit`, and an unused safe prefix. The workstation lifecycle must then provision the exact protected writer-storage identity before enablement. Never hand-edit the protected registration or lock. Enablement requires the reviewed Beads/Dolt ignore block already present in tracked `.gitignore`; it fails before success on tracked bytes, index, worktree, hooks, remotes, relevant Git config, managed instructions, or external-path drift. Status remains provider-free and read-only. An absent or disabled registration is reported as the exact prerequisite and does not trigger project initialization.
+
+For an enabled project, explicit portfolio requests route through the closed Kaizen-side operations:
+
+```text
+Promote the eligible triaged Kaizen signal <signal-ref> using decision <decision-ref>.
+Show at most <1-100> ready Beads portfolio items.
+Assign Beads feature <id> to <agent-ref> with task <task-ref> and session <session-ref>.
+Link Beads feature <id> idempotently to OpenSpec change <change-ref> and spec <spec-id>.
+Reconcile terminal state for <id> only from current archived OpenSpec evidence.
+```
+
+Promotion accepts only one evidence-triaged `project-change` matching the enabled current-project ref or one `kit-candidate` matching an enabled `opencode-kit` owner. Ready and assignment are advisory: they never authorize source mutation, clear a frontier gate, or grant a provider, protected action, deployment, cost, or remote capability. Relations are limited to `blocks`, `parent-child`, and explicitly identity-confirmed `supersedes`; no OpenSpec task or frontier mirroring occurs. Repeated signal occurrences and agent support are evidence, not votes, and never change admission, priority, readiness, assignment, or authority automatically.
+
+OpenSpec linking is exact and idempotent. A repeated identical request may recover a lost response; a different or partial existing link fails closed. Terminal reconciliation requires the exact linked project/change, complete accepted tasks, canonical archive, current runtime proof and validation, declared external effects, and terminal source-writer and cleanup evidence for one candidate. It closes Beads before resolving Kaizen and may repair only the closed-item/unresolved-signal projection; it never reruns implementation or archive work.
+
+### Repair, disable, and rollback
+
+Stop on duplicate correlation, competing assignment or link, stale or truncated terminal evidence, registration/install drift, an existing unsafe lock, or active/unknown child writer liveness. Do not select one duplicate, overwrite a conflicting link, take over a lock by age or absent PID, delete project data, or run destructive vendor repair. Preserve the original bounded cause and resolve only from exact current identity, terminality, or write-isolation evidence.
+
+Project disable/rollback and protected binary rollback are separate operations. Disable the registered project first through the skill. Project rollback restores only attributable enablement configuration after identity readback and always preserves `.beads`, Kaizen evidence, OpenSpec artifacts, source, and unrelated state. Then preview protected rollback and run it only when the writer is clear:
+
+```powershell
+node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts beads-rollback --dry-run
+node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts beads-rollback
+```
+
+A held or unknown writer returns `partial-unknown` and preserves the lock plus every registration-referenced managed item. Drift is preserved for exact disposition. The stop line excludes a second project, shared server, federation, remotes, JSONL synchronization, cross-machine/team use, production claim leases, automatic priority/voting, source commits, push, merge, release, and deployment. The pinned recovery release does not support the accidentally published work leases, events journal, federation, or HTTP server; online documentation for those features is not runtime evidence.
+
 ## Rollback And Reinstall
 
 Review the dry-run result first. Rollback proceeds only when the protected controller, task, shortcuts, and Alacritty configuration still match their recorded identities:

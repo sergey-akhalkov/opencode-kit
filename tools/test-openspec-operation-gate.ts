@@ -92,6 +92,11 @@ function validFalsificationReview(overrides: Partial<BoundedFalsificationReview>
     reviewerAgent: "implementation-readiness-reviewer",
     reviewerSessionRef: "session:review-r1",
     effectiveModel: "provider/model/variant",
+    protocolMode: "single-stage",
+    contextReconstructionRef: "none",
+    candidateStateAtReconstruction: "present",
+    initialComparisonContinuity: "not-applicable",
+    correctedReviewFreshness: "not-applicable",
     challengeCount: 1,
     attackClasses: [
       { id: "coherent-wrong-outcome", status: "attempted" },
@@ -518,12 +523,36 @@ const tests: TestCase[] = [
       assert(inspected.status === "ok" && inspected.semanticReadiness === "unknown", "Structurally valid review must round-trip without deterministic semantic inference.");
       if (inspected.status !== "ok") return;
       assertEqual(inspected.value, review, "Bounded-falsification review readback must preserve every explicit fact.");
+      assert(inspected.protocolFields === "declared", "Formatted current records must retain explicit protocol fields.");
+
+      const legacyText = text.replace(/^- \*\*(?:Protocol Mode|Context Reconstruction Ref|Candidate State At Reconstruction|Initial Comparison Continuity|Corrected Review Freshness)\*\*:.*\n/gmu, "");
+      const legacy = inspectBoundedFalsificationReview(legacyText);
+      assert(legacy.status === "ok" && legacy.protocolFields === "legacy-projected", "Records that predate every protocol field must remain readable as legacy projections.");
+      if (legacy.status === "ok") {
+        assertEqual(
+          {
+            protocolMode: legacy.value.protocolMode,
+            contextReconstructionRef: legacy.value.contextReconstructionRef,
+            candidateStateAtReconstruction: legacy.value.candidateStateAtReconstruction,
+            initialComparisonContinuity: legacy.value.initialComparisonContinuity,
+            correctedReviewFreshness: legacy.value.correctedReviewFreshness,
+          },
+          {
+            protocolMode: "single-stage",
+            contextReconstructionRef: "none",
+            candidateStateAtReconstruction: "unknown",
+            initialComparisonContinuity: "not-applicable",
+            correctedReviewFreshness: "not-applicable",
+          },
+          "Legacy readback must not upgrade old records to candidate-separated evidence.",
+        );
+      }
 
       writeChange(repo, "required-current");
       writeRequiredFalsificationReview(repo, "required-current", review);
       const current = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "required-current", generatedAt });
       const record = current.checks.find((item) => item.id === "artifact:bounded-falsification-record");
-      assert(current.exitCode === 0 && record?.status === "passed" && record.summary.includes("semantic readiness remains unknown"), `Current structural record must pass without a semantic verdict, got ${current.status}.`);
+      assert(current.exitCode === 0 && record?.status === "passed" && record.summary.includes("protocol is single-stage") && record.summary.includes("semantic readiness remains unknown"), `Current structural record must pass without a semantic verdict, got ${current.status}.`);
 
       writeChange(repo, "required-missing");
       writeText(path.join(repo, "openspec", "changes", "required-missing", "proposal.md"), proposalWithCapsule().replace("exempt - exact Ordinary Small fixture.", "required - fixture-decision-surface"));
@@ -545,6 +574,8 @@ const tests: TestCase[] = [
         ["private-request", formatBoundedFalsificationReview(validFalsificationReview()).replace("event:request-r1", "Please transfer the private production data"), "privacy-safe reference"],
         ["missing-terminal", formatBoundedFalsificationReview(validFalsificationReview()).replace(/^- \*\*Terminal State\*\*:.*\n/mu, ""), "missing required field(s): Terminal State"],
         ["semantic-inference", `${formatBoundedFalsificationReview(validFalsificationReview())}- **Semantic Materiality**: material\n`, "semantic materiality and task fit remain unknown"],
+        ["partial-protocol", formatBoundedFalsificationReview(validFalsificationReview()).replace(/^- \*\*Corrected Review Freshness\*\*:.*\n/mu, ""), "Protocol fields must be all present or all omitted"],
+        ["bad-protocol", formatBoundedFalsificationReview(validFalsificationReview()).replace("Protocol Mode**: single-stage", "Protocol Mode**: maybe-separated"), "Protocol Mode must be single-stage or pre-authoring-separated"],
       ] as const;
       for (const [changeId, text, cause] of cases) {
         writeChange(repo, changeId);
@@ -588,6 +619,7 @@ const tests: TestCase[] = [
         ...confirmedCorrection,
         challengeCount: 2,
         invalidatedSurfaces: ["outcome"],
+        correctedReviewFreshness: "verified",
         terminalReason: "corrected-rereview-closed",
       }).status === "ok", "One corrected-candidate re-review must close with challenge count two.");
 
@@ -608,6 +640,59 @@ const tests: TestCase[] = [
         inspectBoundedFalsificationReview(unchanged),
         "An unchanged candidate record must be reusable without changing its terminal state.",
       );
+    },
+  },
+  {
+    name: "bounded falsification protocol preserves temporal separation and honest unknown states",
+    run: () => {
+      const inspect = (overrides: Partial<BoundedFalsificationReview>) =>
+        inspectBoundedFalsificationReview(formatBoundedFalsificationReview(validFalsificationReview(overrides)));
+      const preAuthoring = {
+        protocolMode: "pre-authoring-separated" as const,
+        contextReconstructionRef: "evidence:reconstruction-r1",
+        candidateStateAtReconstruction: "absent" as const,
+        initialComparisonContinuity: "verified" as const,
+      };
+
+      const initial = inspect(preAuthoring);
+      assert(initial.status === "ok" && initial.protocolFields === "declared", "One reconstruct-then-continue initial challenge must be structurally valid with challenge count one.");
+
+      const unknownChronology = inspect({
+        ...preAuthoring,
+        candidateStateAtReconstruction: "unknown",
+        initialComparisonContinuity: "unknown",
+        terminalReason: "chronology-or-continuity-unverified",
+        terminalState: "unknown",
+        unresolvedEvidence: ["candidate-chronology", "initial-continuity"],
+      });
+      assert(unknownChronology.status === "ok", "Unknown chronology or continuity must remain a readable unknown record.");
+
+      const corrected = {
+        ...preAuthoring,
+        challengeCount: 2,
+        materialFindings: ["F1"],
+        mainDispositions: [{ findingId: "F1", status: "confirmed" as const }],
+        correctionRef: "correction:fixture-r2",
+        invalidatedSurfaces: ["outcome"],
+      };
+      assert(inspect({ ...corrected, correctedReviewFreshness: "verified", terminalReason: "corrected-review-fresh" }).status === "ok", "A fresh corrected-candidate comparison against the current reconstruction must close.");
+      assert(inspect({
+        ...corrected,
+        correctedReviewFreshness: "unknown",
+        terminalReason: "reconstruction-stale",
+        terminalState: "unknown",
+        unresolvedEvidence: ["reconstruction-stale"],
+      }).status === "ok", "A stale corrected-review reconstruction must remain unknown.");
+
+      const invalidClosed = [
+        [inspect({ ...preAuthoring, contextReconstructionRef: "none" }), "non-none Context Reconstruction Ref"],
+        [inspect({ ...preAuthoring, candidateStateAtReconstruction: "present" }), "Candidate State At Reconstruction absent"],
+        [inspect({ ...preAuthoring, initialComparisonContinuity: "unknown" }), "Initial Comparison Continuity verified"],
+        [inspect({ ...corrected, correctedReviewFreshness: "unknown" }), "Corrected Review Freshness verified"],
+      ] as const;
+      for (const [result, cause] of invalidClosed) {
+        assert(result.status === "invalid" && result.reason.includes(cause), `Falsely closed protocol state must fail for '${cause}'.`);
+      }
     },
   },
   {

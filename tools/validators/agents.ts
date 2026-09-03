@@ -66,7 +66,7 @@ const EXACT_REPORT_MARKDOWN_OPEN = "```markdown";
 const EXACT_REPORT_MARKDOWN_CLOSE = "```";
 const SESSION_COMPLETION_ARBITER_FILE = "session-completion-arbiter.md";
 const SPECIALIST_TEAM_ADVISOR_FILE = "specialist-team-advisor.md";
-const SPECIALIST_TEAM_ADVISOR_DESCRIPTION = "Use before deciding to select or omit maintained routes in a new non-trivial parentless root mission; returns the smallest sufficient team. Stay quiet only for one already-selected existing-owner action with known proof.";
+const SPECIALIST_TEAM_ADVISOR_DESCRIPTION = "Use only for a concrete team-selection uncertainty after foraging; returns the smallest sufficient team. Stay quiet when every current direct-route fact is established.";
 
 /**
  * Markers that may be certified only from the intentional ## Output report
@@ -381,7 +381,7 @@ function validateSpecialistTeamAdvisor(
     ctx.addError(`specialist-team-advisor must use the exact discovery description: ${file}`);
   }
   if (frontmatter.get("permission") !== "allow") {
-    ctx.addError(`specialist-team-advisor must set permission: allow: ${file}`);
+    ctx.addError(`specialist-team-advisor must preserve the explicit unrestricted runtime permission identity: ${file}`);
   }
   if (frontmatter.has("hidden")) {
     ctx.addError(`specialist-team-advisor must remain discoverable: ${file}`);
@@ -392,6 +392,14 @@ function validateSpecialistTeamAdvisor(
     "You never dispatch",
     "Do not embed a static roster",
     "does not satisfy or suppress a matched Practice Owner trigger",
+    "Broad runtime tool availability does not widen your role authority",
+    "Use only `read`, `glob`, `grep`, and `specialist_catalog`",
+    "never invoke mutation, question, task, skill, shell, network, remote, or protected-effect tools",
+    "competing maintained routes",
+    "exact required capability",
+    "unique independent-evidence package",
+    "unresolved isolation/delegation package",
+    "Do not infer whether main satisfies its direct-route predicate",
   ]) {
     requireTextContains(
       ctx,

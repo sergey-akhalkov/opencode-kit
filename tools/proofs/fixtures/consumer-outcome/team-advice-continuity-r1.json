@@ -36,7 +36,8 @@
       "currentFacts": {
         "candidateRef": "candidate-a",
         "catalogRef": "catalog-a",
-        "catalogChanged": false
+        "catalogChanged": false,
+        "continuityEvents": ["compaction", "propose-to-apply", "package-completion", "ordinary-progress"]
       },
       "expected": {
         "reconsult": false,
@@ -63,7 +64,8 @@
       "currentFacts": {
         "candidateRef": "candidate-a",
         "catalogRef": "catalog-b",
-        "catalogChanged": true
+        "catalogChanged": true,
+        "continuityEvents": ["changed-catalog"]
       },
       "expected": {
         "reconsult": true,

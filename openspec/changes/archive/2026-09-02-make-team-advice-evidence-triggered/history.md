@@ -39,3 +39,33 @@
 - **Reason:** This preserves every accepted predecessor outcome and avoids a mixed loaded candidate.
 - **Do-Not-Repeat Condition:** Do not edit overlapping production, proof, validator, or excluded predecessor artifacts before current conflict-free transfer.
 - **Evidence-Based Retry Condition:** Re-evaluate order only after predecessor archive, terminal writer closure, and fresh ownership/source/runtime readback.
+
+## 2026-09-02 - Strengthen exact Team Advice compaction continuity
+
+- **Objective:** Preserve every current Team Advice state field through configured compaction while retaining changed-catalog reconsultation semantics.
+- **Approach:** First run the unchanged and changed-catalog controls under the existing exact-field instruction, then use one bounded equivalent retry to distinguish transient model output from a reproducible instruction gap.
+- **Evidence:** The first run omitted `Active Work Packages` and `Terminal Work Packages` only for changed catalog. The retry omitted four to five package, activation, integration, and reconsultation fields across both controls; source identity and cleanup remained valid.
+- **Outcome:** Rejected another equivalent retry and selected a causally distinct correction at the owning compaction instruction.
+- **Reason:** The existing instruction named the fields but did not explicitly prohibit representing the same facts elsewhere while omitting their exact labels and values.
+- **Do-Not-Repeat Condition:** Do not rerun the unchanged exact-field wording or treat another omission as model noise.
+- **Evidence-Based Retry Condition:** Run one successor only after provider-free tests enforce verbatim labels and values plus no merge, rename, summary, or omission.
+
+## 2026-09-02 - Bind Team Advice continuity to the compaction prompt
+
+- **Objective:** Close the reproduced exact-field omission at the boundary that generates compaction summaries.
+- **Approach:** Strengthen the loaded root instruction first, then run one successor before considering a direct managed-prompt bind.
+- **Evidence:** The successor still omitted three to four package, activation, and reconsultation labels per control despite the strengthened root instruction; source identity and cleanup remained valid.
+- **Outcome:** Rejected indirect root-instruction delivery as insufficient, bound the rule to the existing managed compaction prompt, and passed both configured continuity controls with six bounded calls and complete cleanup.
+- **Reason:** The hidden compaction route needs the exact field-preservation rule in its configured prompt, not only in general root authority.
+- **Do-Not-Repeat Condition:** Do not retry either prior wording or add another parallel continuity mechanism.
+- **Evidence-Based Retry Condition:** Run one successor only after generated-config preflight proves all eleven field names and the verbatim/no-merge rule are present in the configured compaction prompt.
+
+## 2026-09-02 - Preserve the canonical requirement identity during archive
+
+- **Objective:** Merge the completed Team Advice semantic update through the official OpenSpec archive path.
+- **Approach:** The first archive attempted to express the updated role boundary by renaming a `MODIFIED` requirement header.
+- **Evidence:** Official archive rejected `Team-advice artifacts are cohesive, discoverable, and role-bounded` because the canonical requirement is identified as `Team-advice artifacts are cohesive, discoverable, and least privilege`; it reported that no files changed. Strict validation then required the replacement block to retain the existing `Advisor uses a generic reviewer permission shape` scenario id.
+- **Outcome:** Retained the complete accepted requirement body, restored the exact canonical header identity, and carried the existing scenario id forward with the accepted unrestricted-runtime oracle.
+- **Reason:** OpenSpec `MODIFIED` deltas match requirements by exact heading; changing the heading is not a compatible modification mechanism.
+- **Do-Not-Repeat Condition:** Do not rename an existing requirement through a `MODIFIED` header.
+- **Evidence-Based Retry Condition:** Retry archive only after strict validation and official status confirm the exact canonical requirement identity.

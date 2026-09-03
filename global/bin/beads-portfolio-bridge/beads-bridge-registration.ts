@@ -11,6 +11,7 @@ type LeaseOperation =
   | "project-enable"
   | "project-disable"
   | "create-feature"
+  | "add-dependency"
   | "update-feature"
   | "assign-feature"
   | "close-feature"
@@ -92,6 +93,7 @@ const LEASE_OPERATIONS = new Set<LeaseOperation>([
   "project-enable",
   "project-disable",
   "create-feature",
+  "add-dependency",
   "update-feature",
   "assign-feature",
   "close-feature",
@@ -365,12 +367,13 @@ function parseClosure(value: unknown): BeadsBridgeWriterClosure {
   };
 }
 
-function statePaths(file: string, registration: BeadsBridgeRegistration, create: boolean): { lock: string; state: string } {
+function statePaths(file: string, registration: BeadsBridgeRegistration, requireInstalledStorage: boolean): { lock: string; state: string } {
   const { protectedRoot } = registrationFile(file);
-  const bridge = create ? ensureOwnedDirectory(protectedRoot, "beads-bridge") : path.join(protectedRoot, "beads-bridge");
-  const state = create ? ensureOwnedDirectory(bridge, registration.projectRef.slice("project_".length)) : path.join(bridge, registration.projectRef.slice("project_".length));
+  const bridge = path.join(protectedRoot, "beads-bridge");
+  const state = path.join(bridge, registration.projectRef.slice("project_".length));
   for (const directory of [bridge, state]) {
     const stat = fs.lstatSync(directory, { throwIfNoEntry: false });
+    if (stat == null && requireInstalledStorage) throw new Error("bridge writer storage is not installed.");
     if (stat != null && (!stat.isDirectory() || stat.isSymbolicLink())) throw new Error("bridge state directory is unsafe.");
   }
   if (containedBy(registration.projectRoot, state) || samePath(registration.projectRoot, state)) {
@@ -446,7 +449,7 @@ export function inspectBeadsBridgeCoordination(file: string): BeadsBridgeCoordin
   const digest = registrationDigest(registration);
   let paths: ReturnType<typeof statePaths>;
   try {
-    paths = statePaths(file, registration, false);
+    paths = statePaths(file, registration, registration.enabled);
   } catch {
     return {
       schemaVersion: 1,
@@ -510,7 +513,7 @@ export function setBeadsBridgeRegistrationEnabled(
   requireLeaseCorrelation(parsedLease, current);
   const requiredOperation = enabled ? "project-enable" : "project-disable";
   if (parsedLease.operation !== requiredOperation) throw new BeadsBridgeRegistrationError("Writer lease does not admit this enabled-state transition.", "lease-operation-mismatch");
-  const paths = statePaths(file, current, false);
+  const paths = statePaths(file, current, true);
   const stored = readLease(paths.lock);
   requireLeaseCorrelation(stored, current);
   if (stableJson(stored) !== stableJson(parsedLease)) throw new BeadsBridgeRegistrationError("Bridge writer lease changed before enabled-state transition.", "lease-drift");
@@ -587,7 +590,7 @@ export function releaseBeadsBridgeWriterLease(
   if (closure.processRef !== parsedLease.processRef) throw new BeadsBridgeRegistrationError("Writer closure process does not match the lease.", "closure-mismatch");
   let paths: ReturnType<typeof statePaths>;
   try {
-    paths = statePaths(file, current, false);
+    paths = statePaths(file, current, true);
   } catch (cause) {
     throw new BeadsBridgeRegistrationError("Bridge writer state is unsafe and remains an unknown repair gate.", "writer-liveness-unknown", { cause });
   }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "changeId": "add-prospective-consequence-rehearsal",
-  "mutationEnabled": false,
+  "mutationEnabled": true,
   "capabilities": [
     {
       "capability": "library-bounded-falsification-review",
@@ -74,5 +74,25 @@
       "transferCondition": "MTAET is archived, every mutation-capable writer is terminal, the exact overlapping owners are reread, and the ownership inventory reports no unresolved pairwise conflict"
     }
   ],
-  "transfers": []
+  "transfers": [
+    {
+      "fromChangeId": "make-team-advice-evidence-triggered",
+      "toChangeId": "add-prospective-consequence-rehearsal",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/skills/change-ready-sdlc" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome/capture.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome/contracts.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome/evaluate.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/fixtures/consumer-outcome" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-contracts-change-ready.ts" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" },
+        { "type": "write-root", "path": "tools/validators/agents.ts" },
+        { "type": "write-root", "path": "tools/validators/devkit-contract.ts" }
+      ],
+      "condition": "archived"
+    }
+  ]
 }

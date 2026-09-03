@@ -48,7 +48,7 @@ const taskName = OPENCODE_WORKSTATION_SERVER_TASK_NAME
 const trayTaskName = OPENCODE_WORKSTATION_TRAY_TASK_NAME
 const OPEN_CODE_PORT = 4096
 const endpoint = `http://127.0.0.1:${OPEN_CODE_PORT}`
-const publicModes = new Set(["install", "preflight", "status", "start", "stop", "restart", "launch", "rollback"])
+const publicModes = new Set(["install", "preflight", "status", "start", "stop", "restart", "launch", "rollback", "beads-preview", "beads-install", "beads-check", "beads-rollback"])
 const controllerSourcePath = fileURLToPath(import.meta.url)
 const installedControllerPath = path.join(protectedRoot, "opencode-workstation.ts")
 const sharedToolsSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-shared-tools.ts")
@@ -58,6 +58,7 @@ const installedConfigurationModulePath = path.join(protectedRoot, "opencode-work
 const layoutModuleSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-workstation-layout.ts")
 const installedLayoutModulePath = path.join(protectedRoot, "opencode-workstation-layout.ts")
 const manifestPath = path.join(protectedRoot, "manifest.json")
+const beadsInstallRecordPath = path.join(protectedRoot, "beads-workstation-lifecycle.json")
 const credentialPath = OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH
 const graphifyCredentialPath = path.join(protectedRoot, "graphify-api-key")
 const statePath = path.join(protectedRoot, "server-state.json")
@@ -97,6 +98,11 @@ Usage:
   opencode-workstation.ts launch --repository <id>
   opencode-workstation.ts rollback
   opencode-workstation.ts rollback --dry-run
+  opencode-workstation.ts beads-preview
+  opencode-workstation.ts beads-install --source <bd.exe>
+  opencode-workstation.ts beads-check
+  opencode-workstation.ts beads-rollback
+  opencode-workstation.ts beads-rollback --dry-run
 
 Repository ids:
   opencode-kit
@@ -105,6 +111,7 @@ Repository ids:
   windows-ui-automation
 
 The help, preflight, and status modes are read-only. All output except help is JSON.
+Beads preview and check are read-only; Beads install never selects a profile or activates a project.
 
 Machine-local mappings live in gitignored opencode-workstation.config.json.
 Copy opencode-workstation.config.example.json to that name and replace placeholders.
@@ -2566,11 +2573,95 @@ async function probeManagedRuntimeHealthForTray() {
   return openCode.healthy && openCodeChallenge && graphifyChallenge
 }
 
-function rollbackDryRun() {
+async function loadBeadsWorkstationLifecycle() {
+  return import("./beads-workstation-lifecycle.ts")
+}
+
+function beadsRollbackProcessIdentity() {
+  return {
+    pid: process.pid,
+    processRef: `process:workstation-beads-rollback-${process.pid}`,
+    executableSha256: createHash("sha256").update(process.execPath.toLowerCase()).digest("hex"),
+    startedAt: new Date().toISOString(),
+  }
+}
+
+function beadsWorkstationPrerequisite() {
+  if (!existsSync(manifestPath)) {
+    return { ready: false, reason: "workstation-not-installed", requiredSchemaVersion: 2 }
+  }
+  try {
+    const workstationManifest = loadManifest()
+    const layoutCurrent = workstationManifest.schemaVersion === 2
+      && workstationManifest.layoutModule
+      && verifyInstalledLayoutModule(workstationManifest) === workstationManifest.layoutModule.sha256
+    return {
+      ready: Boolean(layoutCurrent),
+      reason: layoutCurrent ? "clear" : "workstation-layout-drift",
+      requiredSchemaVersion: 2,
+    }
+  } catch (error) {
+    return {
+      ready: false,
+      reason: "workstation-layout-drift",
+      requiredSchemaVersion: 2,
+      cause: error instanceof Error ? error.message : String(error),
+    }
+  }
+}
+
+async function runBeadsWorkstationMode(invocation) {
+  const mutating = invocation.mode === "beads-install" || (invocation.mode === "beads-rollback" && !invocation.dryRun)
+  const workstationPrerequisite = beadsWorkstationPrerequisite()
+  if (invocation.mode === "beads-install" && !workstationPrerequisite.ready) {
+    throw new Error(`The protected workstation schema-2 layout must be current before Beads installation: ${workstationPrerequisite.reason}.`)
+  }
+  if (mutating) {
+    const snapshot = windowsSnapshot()
+    if (!snapshot.elevated) {
+      const args = invocation.mode === "beads-install"
+        ? ["beads-install", "--source", invocation.sourcePath]
+        : ["beads-rollback"]
+      elevateInvocation(args)
+      return { schemaVersion: 1, operation: invocation.mode, status: "delegated-to-elevated-controller" }
+    }
+  }
+  const lifecycle = await loadBeadsWorkstationLifecycle()
+  const operation = invocation.mode.slice("beads-".length)
+  const result = lifecycle.runBeadsWorkstationLifecycle({
+    operation,
+    targetRoot: protectedRoot,
+    dryRun: invocation.dryRun,
+    executableSourcePath: invocation.sourcePath,
+    processIdentity: operation === "rollback" && !invocation.dryRun ? beadsRollbackProcessIdentity() : undefined,
+  })
+  if (operation !== "preview") return result
+  return {
+    ...result,
+    eligible: result.eligible && workstationPrerequisite.ready,
+    reason: workstationPrerequisite.ready ? result.reason : "workstation-prerequisite",
+    plan: {
+      ...result.plan,
+      workstationPrerequisite,
+      restartBoundary: "none for binary install; profile discovery requires a fresh process after task 4.2",
+    },
+  }
+}
+
+async function beadsRollbackDryRun() {
+  if (!existsSync(beadsInstallRecordPath)) {
+    return { schemaVersion: 1, operation: "rollback", status: "absent", installed: false, eligible: true, complete: true }
+  }
+  const lifecycle = await loadBeadsWorkstationLifecycle()
+  return lifecycle.runBeadsWorkstationLifecycle({ operation: "rollback", targetRoot: protectedRoot, dryRun: true })
+}
+
+async function rollbackDryRun() {
   const snapshot = windowsSnapshot()
   const managed = installedObservation(snapshot)
+  const beadsRollback = await beadsRollbackDryRun()
   if (!managed.installed) {
-    return { schemaVersion: 1, operation: "rollback", dryRun: true, eligible: true, actions: [] }
+    return { schemaVersion: 1, operation: "rollback", dryRun: true, eligible: beadsRollback.eligible, beadsRollback, actions: [] }
   }
   const manifest = loadManifest()
   const expectedTaskArguments = expectedServerTaskArguments()
@@ -2607,6 +2698,7 @@ function rollbackDryRun() {
     graphifyConfigBackup: existsSync(manifest.graphify.configEdit.backupPath) && sameHash(sha256File(manifest.graphify.configEdit.backupPath), manifest.graphify.configEdit.original.sha256),
     invokerPresent: !manifest.invoker || existsSync(invokePath),
     invokerHash: !manifest.invoker || (existsSync(invokePath) && sha256File(invokePath) === manifest.invoker.sha256),
+    beadsRollback: beadsRollback.eligible,
   }
   return {
     schemaVersion: 1,
@@ -2614,8 +2706,20 @@ function rollbackDryRun() {
     dryRun: true,
     eligible: Object.values(checks).every(Boolean),
     checks,
+    beadsRollback,
     shortcutChecks,
-    actions: ["stop-managed-server", "remove-managed-task", "restore-opencode-config", "restore-alacritty-config", "remove-managed-shortcuts", "remove-protected-root"],
+    actions: !beadsRollback.complete ? [
+      "preserve-all-workstation-and-beads-material",
+      "close-or-write-isolate-the-bridge-writer-before-rollback",
+    ] : [
+      "stop-managed-server",
+      "remove-managed-task",
+      "restore-opencode-config",
+      "restore-alacritty-config",
+      "remove-managed-shortcuts",
+      beadsRollback.installed ? "rollback-beads-managed-material" : "beads-not-installed",
+      "remove-protected-root",
+    ],
   }
 }
 
@@ -2625,11 +2729,37 @@ async function rollback() {
     elevateInvocation(["rollback"])
     return { schemaVersion: 1, operation: "rollback", status: "delegated-to-elevated-controller" }
   }
-  const plan = rollbackDryRun()
+  const plan = await rollbackDryRun()
   if (!plan.eligible) {
     throw new Error(`Rollback identity checks failed; preserving drift: ${JSON.stringify(plan.checks)}.`)
   }
   const manifest = loadManifest()
+  let beadsRollback = plan.beadsRollback
+  if (beadsRollback.installed) {
+    const lifecycle = await loadBeadsWorkstationLifecycle()
+    beadsRollback = lifecycle.runBeadsWorkstationLifecycle({
+      operation: "rollback",
+      targetRoot: protectedRoot,
+      processIdentity: beadsRollbackProcessIdentity(),
+    })
+    if (!beadsRollback.eligible) {
+      throw new Error(`Beads rollback identity checks changed before mutation; preserving drift: ${JSON.stringify(beadsRollback.drift)}.`)
+    }
+  }
+  if (!beadsRollback.complete) {
+    return {
+      schemaVersion: 1,
+      operation: "rollback",
+      status: "partial-unknown",
+      beadsRollback,
+      stop: { status: "not-run", reason: "bridge-writer-liveness-unknown" },
+      removedTask: false,
+      removedShortcuts: [],
+      restoredAlacrittyPreviousState: false,
+      restoredOpenCodeConfig: false,
+      removedProtectedRoot: false,
+    }
+  }
   const stop = await stopManagedServer()
   const restoredOpenCodeConfig = restoreGraphifyConfig(manifest.graphify.configEdit)
   const removedShortcuts = []
@@ -2655,17 +2785,18 @@ async function rollback() {
       if (existsSync(ordinaryParent) && readdirSync(ordinaryParent).length === 0) rmdirSync(ordinaryParent)
     }
   }
-  rmSync(protectedRoot, { recursive: true, force: true })
+  if (beadsRollback.complete) rmSync(protectedRoot, { recursive: true, force: true })
   return {
     schemaVersion: 1,
     operation: "rollback",
-    status: "rolled-back",
+    status: beadsRollback.complete ? "rolled-back" : "partial-unknown",
+    beadsRollback,
     stop,
     removedTask: true,
     removedShortcuts,
     restoredAlacrittyPreviousState: manifest.alacritty?.previousExists ?? true,
     restoredOpenCodeConfig,
-    removedProtectedRoot: !existsSync(protectedRoot),
+    removedProtectedRoot: beadsRollback.complete && !existsSync(protectedRoot),
   }
 }
 
@@ -2744,15 +2875,15 @@ function parseInvocation(args) {
   const mode = args[0].toLowerCase()
   if (mode === "--help" || mode === "-h") {
     if (args.length !== 1) throw new Error("Help accepts no additional arguments.")
-    return { mode: "help", repository: undefined, configurationPath: undefined }
+    return { mode: "help", repository: undefined, configurationPath: undefined, sourcePath: undefined }
   }
   if (mode === "serve") {
     if (args.length !== 1) throw new Error("Serve accepts no additional arguments.")
-    return { mode, repository: undefined, configurationPath: undefined, dryRun: false }
+    return { mode, repository: undefined, configurationPath: undefined, sourcePath: undefined, dryRun: false }
   }
   if (mode === "tray-health-probe") {
     if (args.length !== 1) throw new Error("Tray health probe accepts no additional arguments.")
-    return { mode, repository: undefined, configurationPath: undefined, dryRun: false }
+    return { mode, repository: undefined, configurationPath: undefined, sourcePath: undefined, dryRun: false }
   }
   if (!publicModes.has(mode)) throw new Error(`Unknown mode '${mode}'. Run --help for usage.`)
   if (mode === "launch") {
@@ -2761,20 +2892,29 @@ function parseInvocation(args) {
     }
     const repository = args[2]
     if (!repositoryIds.includes(repository)) throw new Error(`Unknown repository id '${repository}'.`)
-    return { mode, repository, configurationPath: undefined, dryRun: false }
+    return { mode, repository, configurationPath: undefined, sourcePath: undefined, dryRun: false }
   }
   if (mode === "preflight" || mode === "install") {
-    if (args.length === 1) return { mode, repository: undefined, configurationPath: undefined, dryRun: false }
+    if (args.length === 1) return { mode, repository: undefined, configurationPath: undefined, sourcePath: undefined, dryRun: false }
     if (args.length === 3 && args[1] === "--config" && args[2].trim().length > 0) {
-      return { mode, repository: undefined, configurationPath: path.resolve(args[2]), dryRun: false }
+      return { mode, repository: undefined, configurationPath: path.resolve(args[2]), sourcePath: undefined, dryRun: false }
     }
     throw new Error(`Mode '${mode}' accepts only an optional --config <path>.`)
   }
+  if (mode === "beads-install") {
+    if (args.length !== 3 || args[1] !== "--source" || args[2].trim().length === 0) {
+      throw new Error("Beads install requires exactly: beads-install --source <bd.exe>.")
+    }
+    return { mode, repository: undefined, configurationPath: undefined, sourcePath: path.resolve(args[2]), dryRun: false }
+  }
+  if (mode === "beads-rollback" && args.length === 2 && args[1] === "--dry-run") {
+    return { mode, repository: undefined, configurationPath: undefined, sourcePath: undefined, dryRun: true }
+  }
   if (mode === "rollback" && args.length === 2 && args[1] === "--dry-run") {
-    return { mode, repository: undefined, configurationPath: undefined, dryRun: true }
+    return { mode, repository: undefined, configurationPath: undefined, sourcePath: undefined, dryRun: true }
   }
   if (args.length !== 1) throw new Error(`Mode '${mode}' accepts no additional arguments.`)
-  return { mode, repository: undefined, configurationPath: undefined, dryRun: false }
+  return { mode, repository: undefined, configurationPath: undefined, sourcePath: undefined, dryRun: false }
 }
 
 function writeJson(value) {
@@ -2806,8 +2946,10 @@ async function main() {
       await serve()
     } else if (operation === "tray-health-probe") {
       process.exitCode = (await probeManagedRuntimeHealthForTray()) ? 0 : 1
+    } else if (operation === "beads-preview" || operation === "beads-install" || operation === "beads-check" || operation === "beads-rollback") {
+      writeJson(await runBeadsWorkstationMode(invocation))
     } else if (operation === "rollback" && invocation.dryRun) {
-      writeJson(rollbackDryRun())
+      writeJson(await rollbackDryRun())
     } else if (operation === "rollback") {
       writeJson(await rollback())
     } else {

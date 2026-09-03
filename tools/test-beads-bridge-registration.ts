@@ -17,14 +17,14 @@ import {
   loadBeadsBridgeRegistration,
   releaseBeadsBridgeWriterLease,
   setBeadsBridgeRegistrationEnabled,
-} from "./windows/beads-bridge-registration.ts";
+} from "../global/bin/beads-portfolio-bridge/beads-bridge-registration.ts";
 import type {
   BeadsBridgeRegistration,
   BeadsBridgeRegistrationInput,
   BeadsBridgeWriterClosure,
   BeadsBridgeWriterLease,
-} from "./windows/beads-bridge-registration.ts";
-import { loadBeadsReleaseManifest } from "./windows/beads-release.ts";
+} from "../global/bin/beads-portfolio-bridge/beads-bridge-registration.ts";
+import { loadBeadsReleaseManifest } from "../global/bin/beads-portfolio-bridge/beads-release.ts";
 
 const thisFile = fileURLToPath(import.meta.url);
 const workerMode = process.argv[2]?.startsWith("--bridge-registration-worker-") === true;
@@ -109,6 +109,10 @@ if (workerMode) {
         profileSha256: crypto.createHash("sha256").update("core-beads fixture").digest("hex"),
       },
     };
+  }
+
+  function installWriterState(item: Fixture, registration: BeadsBridgeRegistration): void {
+    fs.mkdirSync(path.join(item.protectedRoot, "beads-bridge", registration.projectRef.slice("project_".length)), { recursive: true });
   }
 
   function cleanup(item: Fixture): void {
@@ -203,6 +207,7 @@ if (workerMode) {
     const item = fixture();
     try {
       const registration = createBeadsBridgeRegistration(item.registrationFile, item.input);
+      installWriterState(item, registration);
       const projectBefore = fs.readdirSync(item.project);
       const lease = acquireBeadsBridgeWriterLease(item.registrationFile, registration, "create-feature", processIdentity());
       const lock = path.join(item.protectedRoot, "beads-bridge", registration.projectRef.slice("project_".length), "writer.lock");
@@ -231,6 +236,7 @@ if (workerMode) {
     const item = fixture();
     try {
       const registration = createBeadsBridgeRegistration(item.registrationFile, item.input);
+      installWriterState(item, registration);
       const lease = acquireBeadsBridgeWriterLease(item.registrationFile, registration, "create-feature", processIdentity());
       const lock = path.join(item.protectedRoot, "beads-bridge", registration.projectRef.slice("project_".length), "writer.lock");
       fs.writeFileSync(lock, `${JSON.stringify({ ...lease, adapterSha256: "0".repeat(64) }, null, 2)}\n`, "utf8");
@@ -257,6 +263,7 @@ if (workerMode) {
     const item = fixture();
     try {
       const registration = createBeadsBridgeRegistration(item.registrationFile, item.input);
+      installWriterState(item, registration);
       const lease = acquireBeadsBridgeWriterLease(item.registrationFile, registration, "create-feature", processIdentity());
       const blockedMarker = path.join(item.root, "blocked.json");
       const blocked = spawnSync(process.execPath, [thisFile, "--bridge-registration-worker-once", item.registrationFile, blockedMarker], { encoding: "utf8" });
@@ -279,6 +286,7 @@ if (workerMode) {
     let child: ReturnType<typeof spawn> | null = null;
     try {
       const registration = createBeadsBridgeRegistration(item.registrationFile, item.input);
+      installWriterState(item, registration);
       const marker = path.join(item.root, "held-lease.json");
       child = spawn(process.execPath, [thisFile, "--bridge-registration-worker-hold", item.registrationFile, marker], { stdio: "ignore" });
       await waitForFile(marker);
@@ -327,6 +335,7 @@ if (workerMode) {
       });
       assert.equal(fs.existsSync(bridgeState), false, "read-only coordination inspection must create no state");
       assert.equal(errorCode(() => acquireBeadsBridgeWriterLease(item.registrationFile, registration, "create-feature", processIdentity())), "registration-state");
+      installWriterState(item, registration);
       const enableLease = acquireBeadsBridgeWriterLease(item.registrationFile, registration, "project-enable", processIdentity("process:enable"));
       const enabled = setBeadsBridgeRegistrationEnabled(item.registrationFile, registration, enableLease, true);
       assert.equal(enabled.enabled, true);
@@ -336,6 +345,28 @@ if (workerMode) {
       const disabled = setBeadsBridgeRegistrationEnabled(item.registrationFile, enabled, disableLease, false);
       releaseBeadsBridgeWriterLease(item.registrationFile, disabled, disableLease, closure(disableLease, "terminal"));
       assert.equal(inspectBeadsBridgeCoordination(item.registrationFile).reason, "registration-disabled");
+    } finally {
+      cleanup(item);
+    }
+  });
+
+  test("fails closed instead of creating missing workstation writer storage", () => {
+    const item = fixture();
+    try {
+      const registration = createBeadsBridgeRegistration(item.registrationFile, item.input);
+      const bridgeState = path.join(item.protectedRoot, "beads-bridge");
+      assert.equal(errorCode(() => acquireBeadsBridgeWriterLease(item.registrationFile, registration, "create-feature", processIdentity())), "writer-liveness-unknown");
+      assert.deepEqual(inspectBeadsBridgeCoordination(item.registrationFile), {
+        schemaVersion: 1,
+        projectRef: registration.projectRef,
+        registrationSha256: inspectBeadsBridgeCoordination(item.registrationFile).registrationSha256,
+        writes: "blocked",
+        writer: "unknown",
+        preserveManagedMaterial: true,
+        reason: "writer-lease-unsafe",
+        lease: null,
+      });
+      assert.equal(fs.existsSync(bridgeState), false, "lease acquisition must not instantiate workstation-owned storage");
     } finally {
       cleanup(item);
     }

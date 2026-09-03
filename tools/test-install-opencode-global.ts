@@ -173,32 +173,47 @@ function writeFixtureRuntimeProfiles(repoDir: string): void {
     skills: [],
   };
   fs.writeFileSync(path.join(profilesDir, "core.json"), `${JSON.stringify(core, null, 2)}\n`);
+  fs.writeFileSync(path.join(profilesDir, "core-beads.json"), `${JSON.stringify({
+    ...core,
+    description: "Fixture full core-beads profile.",
+    directories: ["global/bin/beads-portfolio-bridge"],
+    name: "core-beads",
+    skills: ["beads-portfolio-bridge"],
+  }, null, 2)}\n`);
   fs.writeFileSync(path.join(profilesDir, "all.json"), `${JSON.stringify({
     ...core,
     configMode: "all-compatibility",
     description: "Fixture all profile.",
     directories: ["global/bin", "global/extensions", "global/plugin", "global/plugins"],
     name: "all",
+    skills: ["beads-portfolio-bridge"],
   }, null, 2)}\n`);
 }
 
 function writeFixtureGlobalSkeleton(
   fixtureGlobal: string,
-  templateText = `${JSON.stringify({ plugin: CORE_PLUGIN_FILES.map((relative) => `__OPENCODE_CONFIG_DIR__/${relative}`) })}\n`,
+  templateText = `${JSON.stringify({
+    instructions: [PRINCIPLES_PLACEHOLDER, LOCAL_INSTRUCTIONS_PLACEHOLDER],
+    plugin: CORE_PLUGIN_FILES.map((relative) => `__OPENCODE_CONFIG_DIR__/${relative}`),
+  })}\n`,
 ): void {
   fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "extensions"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "plugin"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "plugins"), { recursive: true });
+  fs.mkdirSync(path.join(fixtureGlobal, "skills", "beads-portfolio-bridge"), { recursive: true });
   fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "principles-of-work.md"), "# Fixture Principles\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateText, "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.local.instructions.example.md"), LOCAL_INSTRUCTIONS_EXAMPLE, "utf8");
+  fs.writeFileSync(path.join(fixtureGlobal, "skills", "beads-portfolio-bridge", "SKILL.md"), "# Fixture Beads skill\n", "utf8");
   for (const relative of CORE_PLUGIN_FILES) {
     fs.writeFileSync(path.join(fixtureGlobal, ...relative.split("/")), `// fixture ${relative}\n`, "utf8");
   }
   writeFixturePortableTools(fixtureGlobal);
+  fs.mkdirSync(path.join(fixtureGlobal, "bin", "beads-portfolio-bridge"), { recursive: true });
+  fs.writeFileSync(path.join(fixtureGlobal, "bin", "beads-portfolio-bridge", "helper.ts"), "// fixture closed Beads helper\n", "utf8");
   writeFixtureRuntimeProfiles(path.dirname(fixtureGlobal));
 }
 
@@ -288,6 +303,41 @@ const tests: { name: string; run: () => void }[] = [
         const missing = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
         assertFailure(missing, "Installer check must reject a generated all profile with a missing launcher.");
         assertOutputContains(missing, "Missing generated all/extensions/roadmap-mission-launcher.ts", "Generated-profile check must identify the missing launcher.");
+      } finally {
+        rmTempDir(path.dirname(dir));
+      }
+    },
+  },
+  {
+    name: "installer accepts the concrete full core-beads profile without activating Beads",
+    run: () => {
+      const { copiedInstaller, dir } = prepareCopiedInstaller("materialize-core-beads-profile");
+      try {
+        const install = invokeCopiedInstaller(copiedInstaller, dir, ["--profile", "core-beads"]);
+        assertSuccess(install, "Copied installer must materialize core-beads.");
+        const generated = path.join(dir, "global", ".runtime-profiles", "core-beads");
+        const manifest = JSON.parse(fs.readFileSync(path.join(generated, ".runtime-surface.json"), "utf8")) as { profile?: unknown };
+        assert(manifest.profile === "core-beads", "Generated manifest must retain the concrete core-beads identity.");
+        assert(fs.existsSync(path.join(generated, "skills", "beads-portfolio-bridge", "SKILL.md")), "Generated core-beads must contain the on-demand skill.");
+        assert(fs.existsSync(path.join(generated, "bin", "beads-portfolio-bridge", "helper.ts")), "Generated core-beads must contain the helper closure.");
+        assert(!fs.existsSync(path.join(generated, "commands", "beads.md")), "Generated core-beads must not contain a thin command.");
+        const config = JSON.parse(fs.readFileSync(path.join(generated, "opencode.json"), "utf8")) as { instructions?: unknown; mcp?: unknown; plugin?: unknown };
+        const normalizedConfig = JSON.stringify(config).replaceAll(generated.replaceAll("\\", "/"), "<generated>").replaceAll(generated, "<generated>");
+        assert(!JSON.stringify(config.instructions ?? null).includes(".staging-"), `Generated instructions must use the final root: ${JSON.stringify(config.instructions)}`);
+        assert(!JSON.stringify(config.plugin ?? null).includes(".staging-"), `Generated plugins must use the final root: ${JSON.stringify(config.plugin)}`);
+        assert(config.mcp == null, "Generated config must not activate a Beads MCP.");
+        assert(!normalizedConfig.includes("bin/beads-portfolio-bridge"), "Generated config must not activate the Beads helper as a plugin or instruction.");
+        assert(!normalizedConfig.includes("skills/beads-portfolio-bridge"), "Generated config must not make the on-demand skill always loaded.");
+        const checked = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
+        assertSuccess(checked, "Installer check must recognize generated core-beads.");
+        assertOutputContains(checked, "current profile: core-beads", "Installer check must report the concrete profile identity.");
+        assertSuccess(
+          invokeCopiedInstaller(copiedInstaller, dir, [], { [ENV_VAR]: generated }),
+          "Default installer mode must preserve a valid existing core-beads profile.",
+        );
+        const partial = invokeCopiedInstaller(copiedInstaller, dir, ["--profile", "beads"]);
+        assertFailure(partial, "Installer must reject a Beads-only partial profile name.");
+        assertOutputContains(partial, "--profile must be core, core-beads, or all", "Rejected partial identity must name the accepted full profiles.");
       } finally {
         rmTempDir(path.dirname(dir));
       }
@@ -1045,25 +1095,28 @@ const tests: { name: string; run: () => void }[] = [
     },
   },
   {
-    name: "explicit profile dry-run plans core and all without changing the existing install",
+    name: "explicit profile dry-run plans core core-beads and all without changing the existing install",
     run: () => {
       const machineConfig = path.join(root, "global", "opencode.json");
       const before = fs.existsSync(machineConfig) ? fs.readFileSync(machineConfig) : null;
       const generatedHome = path.join(root, "global", ".runtime-profiles");
       const generatedBefore = fs.existsSync(generatedHome) ? fs.readdirSync(generatedHome).sort() : [];
       const core = invokeInstaller(["--dry-run", "--profile", "core"]);
+      const coreBeads = invokeInstaller(["--dry-run", "--profile", "core-beads"]);
       const all = invokeInstaller(["--dry-run", "--profile", "all"]);
       const allPreview = invokeInstaller(["--preview-profile", "--profile", "all"], { [ENV_VAR]: globalPath });
       const preview = invokeInstaller(["--plan-migration", "--profile", "core"], { [ENV_VAR]: globalPath });
       const existing = invokeInstaller(["--dry-run"], { [ENV_VAR]: globalPath });
       const fresh = invokeInstaller(["--dry-run"], { [ENV_VAR]: undefined });
       assertSuccess(core, "Explicit core dry-run must succeed.");
+      assertSuccess(coreBeads, "Explicit core-beads dry-run must succeed.");
       assertSuccess(all, "Explicit all dry-run must succeed.");
       assertSuccess(allPreview, "Explicit all profile preview must succeed.");
       assertSuccess(preview, "Migration preview must succeed.");
       assertSuccess(existing, "Existing-install dry-run must succeed.");
       assertSuccess(fresh, "Fresh-install dry-run must succeed.");
       assertOutputContains(core, "would materialize profile core", "Core dry-run must plan generated core.");
+      assertOutputContains(coreBeads, "would materialize profile core-beads", "Core-Beads dry-run must plan the generated full profile.");
       assertOutputContains(all, "would materialize profile all", "All dry-run must plan generated all.");
       assertOutputContains(allPreview, "proposed profile: all", "All preview must select the requested profile.");
       assertOutputContains(preview, "No file or environment value was changed.", "Migration preview must remain effect-free.");
@@ -1086,6 +1139,7 @@ const tests: { name: string; run: () => void }[] = [
         path.join(root, "global", "opencode.json"),
         path.join(root, "global", "opencode.json.template"),
         path.join(root, "profiles", "all.json"),
+        path.join(root, "profiles", "core-beads.json"),
         path.join(root, "profiles", "core.json"),
       ];
       const snapshot = Object.fromEntries(watched.map((file) => [

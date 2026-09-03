@@ -62,7 +62,7 @@ const FIELDS = [
 
 type ContinuityCase = {
   catalogNoise: string[];
-  currentFacts: { candidateRef: string; catalogChanged: boolean; catalogRef: string };
+  currentFacts: { candidateRef: string; catalogChanged: boolean; catalogRef: string; continuityEvents: string[] };
   expected: { reconsult: boolean; stalePackages: string[]; terminalPackages: string[] };
   id: "changed-catalog" | "unchanged-engagement";
   initialState: Record<(typeof FIELDS)[number], string>;
@@ -160,10 +160,11 @@ export function loadTeamAdviceContinuityFixture(repoRoot: string): { digest: str
     const current = object(row.currentFacts, `${row.id}.currentFacts`);
     const expected = object(row.expected, `${row.id}.expected`);
     assert(typeof current.candidateRef === "string" && typeof current.catalogRef === "string" && typeof current.catalogChanged === "boolean");
+    const continuityEvents = strings(current.continuityEvents, `${row.id}.currentFacts.continuityEvents`);
     assert(typeof expected.reconsult === "boolean");
     return {
       catalogNoise: strings(row.catalogNoise, `${row.id}.catalogNoise`),
-      currentFacts: { candidateRef: current.candidateRef, catalogChanged: current.catalogChanged, catalogRef: current.catalogRef },
+      currentFacts: { candidateRef: current.candidateRef, catalogChanged: current.catalogChanged, catalogRef: current.catalogRef, continuityEvents },
       expected: {
         reconsult: expected.reconsult,
         stalePackages: strings(expected.stalePackages, `${row.id}.expected.stalePackages`),
@@ -204,6 +205,8 @@ function reconstructionPrompt(input: ContinuityCase): string {
     `Current candidate verification: ${input.currentFacts.candidateRef}.`,
     `Current catalog verification: ${input.currentFacts.catalogRef}.`,
     `Catalog identity changed since the retained summary: ${input.currentFacts.catalogChanged}.`,
+    `Observed continuation events: ${input.currentFacts.continuityEvents.join(", ")}.`,
+    "Compaction, propose-to-apply transition, package completion, and ordinary progress are not reconsultation triggers by themselves.",
     "Only a pending catalog-dependent recommendation may become stale. Terminal evidence remains attributed to its original candidate/catalog.",
     "Return one JSON object only with exactly these keys: caseId, candidateRef, catalogRef, reconsult, stalePackages, terminalPackages.",
     `caseId must be ${input.id}. Use only facts retained in the summary and the current verification above.`,
@@ -254,6 +257,8 @@ export function teamAdviceContinuityPreflight(repoRoot: string, executable?: str
     const prompt = typeof compaction.prompt === "string" ? compaction.prompt : "";
     const loaded = loadTeamAdviceContinuityFixture(repoRoot);
     assert(["Original User Goal", "Goal Status", "Session Reflection", "Next-Session Action"].every((field) => prompt.includes(field)), "generated compaction prompt is missing current summary fields");
+    assert(FIELDS.every((field) => prompt.includes(field)), "generated compaction prompt is missing a Team Advice state field");
+    assert(prompt.includes("copy exactly these supplied labels and values verbatim") && prompt.includes("Never merge, rename, summarize, or omit any of them"), "generated compaction prompt is missing exact Team Advice preservation");
     const mainAuthority = fs.readFileSync(path.join(repoRoot, "global", "AGENTS.md"), "utf8");
     assert(FIELDS.every((field) => mainAuthority.includes(field)), "loaded main authority is missing a Team Advice State field");
     let cleanupObserverReady: boolean | null = null;

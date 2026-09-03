@@ -391,7 +391,10 @@ function falsificationChecks(root: string, operation: string, changeId: string |
     checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "failed", true, reviewSource, "Decision Surface does not match the proposal declaration."));
     return checks;
   }
-  checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "passed", false, reviewSource, `Record is structurally valid for ${review.value.candidateRef}; deterministic semantic readiness remains ${review.semanticReadiness}.`));
+  const protocolSummary = review.protocolFields === "legacy-projected"
+    ? `${review.value.protocolMode} (legacy-projected)`
+    : review.value.protocolMode;
+  checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "passed", false, reviewSource, `Record is structurally valid for ${review.value.candidateRef}; protocol is ${protocolSummary}; deterministic semantic readiness remains ${review.semanticReadiness}.`));
   return checks;
 }
 

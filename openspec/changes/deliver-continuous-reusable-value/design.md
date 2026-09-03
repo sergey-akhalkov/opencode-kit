@@ -6,6 +6,8 @@ The current TypeScript tooling is executed directly by Node 24 without a reposit
 
 The selected analyzer is Knip in production mode. Its package metadata and source support Node 24, explicit entry/project patterns, unused file/export findings, test exclusion in production mode, and machine-readable output. Runtime fit, the complete production-root set, pre-existing findings, and local unexported declaration coverage remain implementation preflight observations rather than assumed facts.
 
+The current ownership manifest is mutation-disabled and declares `make-team-advice-evidence-triggered -> add-prospective-consequence-rehearsal -> deliver-continuous-reusable-value` for shared loaded instruction, principle, Change-Ready, consumer-outcome, contract, and validator owners. This change must consume the archived Team Advice and candidate-separated rehearsal contracts before it captures its own unchanged-source baseline or mutates those owners.
+
 ## Goals / Non-Goals
 
 **Goals:**

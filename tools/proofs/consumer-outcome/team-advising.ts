@@ -15,13 +15,14 @@ const ADVISOR = "specialist-team-advisor";
 const CATALOG_TOOL = "specialist_catalog";
 const MEMBER_ORDER = [
   "trivial-owner-local-direct",
-  "non-trivial-single-domain-main-alone",
-  "multi-domain-bounded-team",
-  "procedural-skill-no-fresh-agent",
-  "conditional-later-specialist",
-  "isolated-production-delegation",
-  "mid-task-topology-change",
-  "active-profile-capability-unavailable",
+  "non-trivial-complete-direct",
+  "competing-maintained-routes",
+  "unique-independent-evidence",
+  "unresolved-isolation-delegation",
+  "exact-practice-owner-direct",
+  "direct-contracts-non-bypass",
+  "unavailable-required-capability",
+  "catalog-outage-scoped",
   "overstaffing-negative-control",
 ] as const;
 
@@ -29,8 +30,30 @@ type TeamArm = "baseline" | "candidate";
 type AdviceState = "main-alone" | "team-recommended" | "unknown";
 type MainDisposition = "direct" | AdviceState;
 type ForbiddenEffectName = "credential-read" | "destructive-action" | "external-directory" | "install" | "remote" | "target-worktree-write";
+type AdvisorUncertainty = "catalog-unavailable" | "competing-maintained-routes" | "none" | "unique-independent-evidence" | "unavailable-required-capability" | "unresolved-isolation-delegation";
+type TeamCatalogFault = "api-unavailable" | "none";
+type TeamCatalogObservation = {
+  agentCount: number;
+  catalogRefPresent: boolean;
+  cause: string | null;
+  skillCount: number;
+  status: "denied" | "ok" | "unknown";
+};
+
+type DirectRouteFacts = {
+  current: boolean;
+  delegationIsolationResolved: boolean;
+  executionRouteSelected: boolean;
+  independentEvidenceSelectionResolved: boolean;
+  maintainedRouteChoiceResolved: boolean;
+  proofBoundaryKnown: boolean;
+  requiredCapabilityAvailable: boolean;
+  semanticOwnerKnown: boolean;
+};
 
 type TeamExpectation = {
+  acceptedPackageCount?: number;
+  acceptedPackages?: string[];
   advisorCalls: number;
   adviceStates?: AdviceState[];
   catalogCalls: number;
@@ -41,7 +64,10 @@ type TeamExpectation = {
 };
 
 type TeamScenario = {
+  advisorUncertainty: AdvisorUncertainty;
+  catalogFault: TeamCatalogFault;
   caseFacts: string[];
+  directRouteFacts: DirectRouteFacts;
   expected: {
     baseline: TeamExpectation;
     candidate: TeamExpectation;
@@ -52,6 +78,7 @@ type TeamScenario = {
   id: string;
   objective: string;
   permissions: { skills: string[]; taskAgents: string[] };
+  requiredRoutes: string[];
   turns: string[];
 };
 
@@ -117,6 +144,8 @@ export type TeamSampleEvidence = {
   adviceStates: AdviceState[];
   arm: TeamArm;
   catalogCalls: number;
+  catalogFault: TeamCatalogFault;
+  catalogObservations: TeamCatalogObservation[];
   childExports: Array<{ childRef: string; status: number | null; toolNames: string[] }>;
   cleanup: {
     complete: boolean;
@@ -165,7 +194,7 @@ export type TeamBundle = {
 };
 
 export type TeamEvaluation = {
-  bundleDigests: { baseline: string; candidate: string | null };
+  bundleDigests: { baseline: string | null; candidate: string | null };
   evaluationDigest: string;
   maximumClaim: string;
   modelCalls: number;
@@ -176,6 +205,26 @@ export type TeamEvaluation = {
     scenarioId: string;
   }>;
   status: "blocked" | "failed" | "passed";
+};
+
+export type TeamSampleSummary = {
+  adviceStates: AdviceState[];
+  advisorCalls: number;
+  catalogCalls: number;
+  catalogFault: TeamCatalogFault;
+  catalogObservations: TeamCatalogObservation[];
+  cleanup: TeamSampleEvidence["cleanup"];
+  commands: Array<Omit<TeamCommandEvidence, "stdout"> & { stdoutTail: string }>;
+  configuredProviderRequestCount: number;
+  directRouteFacts: DirectRouteFacts;
+  files: TeamSampleEvidence["files"];
+  forbiddenEffects: TeamSampleEvidence["forbiddenEffects"];
+  proof: TeamSampleEvidence["proof"];
+  requiredRoutes: string[];
+  result: TeamResult | null;
+  scenarioId: string;
+  sourceUnchanged: boolean;
+  toolEvents: Array<Pick<ToolEvent, "agent" | "index" | "name" | "status" | "subject" | "turn">>;
 };
 
 type CaptureOptions = {
@@ -215,12 +264,41 @@ function parseExpectation(value: unknown, label: string): TeamExpectation {
     advisorCalls: integer(source.advisorCalls, `${label}.advisorCalls`),
     catalogCalls: integer(source.catalogCalls, `${label}.catalogCalls`),
   };
+  if (source.acceptedPackageCount != null) parsed.acceptedPackageCount = integer(source.acceptedPackageCount, `${label}.acceptedPackageCount`);
+  if (source.acceptedPackages != null) parsed.acceptedPackages = strings(source.acceptedPackages, `${label}.acceptedPackages`);
+  if (parsed.acceptedPackageCount != null && parsed.acceptedPackages != null) throw new Error(`${label} cannot define acceptedPackageCount and acceptedPackages together`);
   if (source.adviceStates != null) parsed.adviceStates = strings(source.adviceStates, `${label}.adviceStates`) as AdviceState[];
   if (source.mainDisposition != null) parsed.mainDisposition = string(source.mainDisposition, `${label}.mainDisposition`) as MainDisposition;
   if (source.specialistAgents != null) parsed.specialistAgents = strings(source.specialistAgents, `${label}.specialistAgents`);
   if (source.skillIds != null) parsed.skillIds = strings(source.skillIds, `${label}.skillIds`);
   if (source.unavailableCapabilities != null) parsed.unavailableCapabilities = strings(source.unavailableCapabilities, `${label}.unavailableCapabilities`);
   return parsed;
+}
+
+function parseDirectRouteFacts(value: unknown, label: string): DirectRouteFacts {
+  const source = record(value, label);
+  const keys = [
+    "current",
+    "delegationIsolationResolved",
+    "executionRouteSelected",
+    "independentEvidenceSelectionResolved",
+    "maintainedRouteChoiceResolved",
+    "proofBoundaryKnown",
+    "requiredCapabilityAvailable",
+    "semanticOwnerKnown",
+  ];
+  assert.deepEqual(Object.keys(source).sort(), keys);
+  for (const key of keys) assert.equal(typeof source[key], "boolean", `${label}.${key} must be boolean`);
+  return {
+    current: source.current as boolean,
+    delegationIsolationResolved: source.delegationIsolationResolved as boolean,
+    executionRouteSelected: source.executionRouteSelected as boolean,
+    independentEvidenceSelectionResolved: source.independentEvidenceSelectionResolved as boolean,
+    maintainedRouteChoiceResolved: source.maintainedRouteChoiceResolved as boolean,
+    proofBoundaryKnown: source.proofBoundaryKnown as boolean,
+    requiredCapabilityAvailable: source.requiredCapabilityAvailable as boolean,
+    semanticOwnerKnown: source.semanticOwnerKnown as boolean,
+  };
 }
 
 function parsePack(value: unknown): TeamAdvisingPack {
@@ -232,13 +310,16 @@ function parsePack(value: unknown): TeamAdvisingPack {
   const memberOrder = strings(source.memberOrder, "teamAdvisingPack.memberOrder");
   assert.deepEqual(memberOrder, [...MEMBER_ORDER]);
   const rawScenarios = source.scenarios;
-  if (!Array.isArray(rawScenarios) || rawScenarios.length !== MEMBER_ORDER.length) throw new Error("teamAdvisingPack.scenarios must contain nine records");
+  if (!Array.isArray(rawScenarios) || rawScenarios.length !== MEMBER_ORDER.length) throw new Error("teamAdvisingPack.scenarios must contain ten records");
   const scenarios = rawScenarios.map((value, index): TeamScenario => {
     const row = record(value, `scenarios[${index}]`);
     const permissions = record(row.permissions, `scenarios[${index}].permissions`);
     const expected = record(row.expected, `scenarios[${index}].expected`);
     const scenario: TeamScenario = {
+      advisorUncertainty: string(row.advisorUncertainty, `scenarios[${index}].advisorUncertainty`) as AdvisorUncertainty,
+      catalogFault: string(row.catalogFault, `scenarios[${index}].catalogFault`) as TeamCatalogFault,
       caseFacts: strings(row.caseFacts, `scenarios[${index}].caseFacts`),
+      directRouteFacts: parseDirectRouteFacts(row.directRouteFacts, `scenarios[${index}].directRouteFacts`),
       expected: {
         baseline: parseExpectation(expected.baseline, `scenarios[${index}].expected.baseline`),
         candidate: parseExpectation(expected.candidate, `scenarios[${index}].expected.candidate`),
@@ -252,10 +333,13 @@ function parsePack(value: unknown): TeamAdvisingPack {
         skills: strings(permissions.skills, `scenarios[${index}].permissions.skills`),
         taskAgents: strings(permissions.taskAgents, `scenarios[${index}].permissions.taskAgents`),
       },
+      requiredRoutes: strings(row.requiredRoutes, `scenarios[${index}].requiredRoutes`),
       turns: strings(row.turns, `scenarios[${index}].turns`),
     };
     assert.equal(scenario.id, MEMBER_ORDER[index]);
-    assert.equal(scenario.turns.length, scenario.id === "mid-task-topology-change" ? 2 : 1);
+    assert.equal(scenario.turns.length, 1);
+    assert.ok(["catalog-unavailable", "competing-maintained-routes", "none", "unique-independent-evidence", "unavailable-required-capability", "unresolved-isolation-delegation"].includes(scenario.advisorUncertainty));
+    assert.ok(["api-unavailable", "none"].includes(scenario.catalogFault));
     assert.equal(new Set(scenario.permissions.taskAgents).size, scenario.permissions.taskAgents.length);
     assert.equal(new Set(scenario.permissions.skills).size, scenario.permissions.skills.length);
     return scenario;
@@ -378,6 +462,15 @@ function runtimeEnvironment(
   environment.OPENCODE_PURE = "0";
   delete environment.OPENCODE_DISABLE_DEFAULT_PLUGINS;
   return { environment, model: route.model, variant: route.variant };
+}
+
+export function injectTeamCatalogFault(configDir: string, fault: TeamCatalogFault): void {
+  if (fault === "none") return;
+  const pluginPath = path.join(configDir, "extensions", "specialist-catalog.ts");
+  const source = fs.readFileSync(pluginPath, "utf8");
+  const marker = "  const api = catalogApi(client);";
+  assert.equal(source.split(marker).length - 1, 1, "Generated specialist catalog API marker must be unique");
+  fs.writeFileSync(pluginPath, source.replace(marker, "  const api = null;"), "utf8");
 }
 
 function safeRef(value: string): string {
@@ -556,29 +649,53 @@ function parseRootTools(
   };
 }
 
-function parseExportTools(stdout: string, fixtureRoot: string, repoRoot: string): { forbiddenEffects: ForbiddenEffectName[]; names: string[] } {
+export function parseTeamCatalogOutput(output: unknown): TeamCatalogObservation | null {
+  if (typeof output !== "string") return null;
+  try {
+    const value = record(JSON.parse(output), "catalog output");
+    if (!Array.isArray(value.agents) || !Array.isArray(value.skills) || !["denied", "ok", "unknown"].includes(String(value.status))) return null;
+    const warnings = Array.isArray(value.warnings) ? value.warnings : [];
+    const firstWarning = warnings[0];
+    return {
+      agentCount: value.agents.length,
+      catalogRefPresent: typeof value.catalogRef === "string" && value.catalogRef !== "",
+      cause: firstWarning != null && typeof firstWarning === "object" && !Array.isArray(firstWarning) && typeof (firstWarning as Record<string, unknown>).cause === "string"
+        ? (firstWarning as Record<string, unknown>).cause as string
+        : null,
+      skillCount: value.skills.length,
+      status: value.status as TeamCatalogObservation["status"],
+    };
+  } catch {
+    return null;
+  }
+}
+
+function parseExportTools(stdout: string, fixtureRoot: string, repoRoot: string): { catalogObservations: TeamCatalogObservation[]; forbiddenEffects: ForbiddenEffectName[]; names: string[] } {
   let parsed: unknown;
   try {
     parsed = JSON.parse(stdout);
   } catch {
-    return { forbiddenEffects: [], names: [] };
+    return { catalogObservations: [], forbiddenEffects: [], names: [] };
   }
+  const catalogObservations: TeamCatalogObservation[] = [];
   const names: string[] = [];
   const forbiddenEffects = new Set<ForbiddenEffectName>();
   visitToolParts(parsed, (part) => {
-    const state = part.state;
-    const status = state != null && typeof state === "object" && !Array.isArray(state)
-      ? (state as Record<string, unknown>).status
+    const state = part.state != null && typeof part.state === "object" && !Array.isArray(part.state)
+      ? part.state as Record<string, unknown>
       : null;
+    const status = state?.status ?? null;
     if (status === "completed") names.push(String(part.tool));
-    const input = state != null && typeof state === "object" && !Array.isArray(state)
-      ? (state as Record<string, unknown>).input
-      : null;
+    if (status === "completed" && part.tool === CATALOG_TOOL) {
+      const observation = parseTeamCatalogOutput(state?.output);
+      if (observation != null) catalogObservations.push(observation);
+    }
+    const input = state?.input ?? null;
     if (input != null && typeof input === "object" && !Array.isArray(input)) {
       for (const effect of toolInputEffects(String(part.tool), input as Record<string, unknown>, fixtureRoot, repoRoot)) forbiddenEffects.add(effect);
     }
   });
-  return { forbiddenEffects: [...forbiddenEffects], names };
+  return { catalogObservations, forbiddenEffects: [...forbiddenEffects], names };
 }
 
 function adviceStates(tasks: ToolEvent[]): AdviceState[] {
@@ -639,21 +756,28 @@ async function captureScenario(
   const fixtureRoot = path.join(runtimeRoot, "fixture");
   fs.cpSync(path.join(options.repoRoot, FIXTURE_PATH), fixtureRoot, { recursive: true });
   fs.writeFileSync(path.join(fixtureRoot, "case.json"), `${JSON.stringify({
+    advisorUncertainty: scenario.advisorUncertainty,
     caseFacts: scenario.caseFacts,
     caseId: scenario.id,
+    directRouteFacts: scenario.directRouteFacts,
     objective: scenario.objective,
+    requiredRoutes: scenario.requiredRoutes,
+    requiredSkillIds: scenario.expected.candidate.skillIds ?? [],
     resultContract: {
-      acceptedPackages: "string[]",
+      acceptedPackages: scenario.expected.candidate.acceptedPackageCount == null
+        ? `exactly ${JSON.stringify(scenario.expected.candidate.acceptedPackages ?? [])}; these are the only accepted route records, and neither the specialist-team-advisor control-plane helper nor gap-recording work is an accepted package`
+        : `exactly ${scenario.expected.candidate.acceptedPackageCount} stable local work-package ids from the advisor map; never include artifact ids or the specialist-team-advisor control-plane helper`,
       caseId: scenario.id,
       mainDisposition: "direct | main-alone | team-recommended | unknown",
       missionOutcome: "complete",
       reconsultationCondition: "string",
       schemaVersion: 1,
-      unavailableCapabilities: "string[]",
+      unavailableCapabilities: `exactly ${JSON.stringify(scenario.expected.candidate.unavailableCapabilities ?? [])}; use exact catalog artifact or tool ids rather than status labels`,
     },
   }, null, 2)}\n`, "utf8");
   const initial = fileMap(fixtureRoot);
   materializeRuntimeSurfaceProfile({ profileName: pack.runtimeProfile, root: options.repoRoot, targetRoot: configDir });
+  injectTeamCatalogFault(configDir, scenario.catalogFault);
   const configured = runtimeEnvironment(options.repoRoot, configDir, runtimeRoot, scenario);
   const commandEvidence: TeamCommandEvidence[] = [];
   const rawOutputs: string[] = [];
@@ -668,6 +792,7 @@ async function captureScenario(
   const observedForbiddenEffects = new Set<ForbiddenEffectName>();
   const worktreeBefore = worktreeStatusDigest(options.repoRoot);
   let childExports: TeamSampleEvidence["childExports"] = [];
+  let catalogObservations: TeamCatalogObservation[] = [];
   let parsedTools: ToolEvent[] = [];
   let proof = { argv: ["node", "check-result.ts"], status: null as number | null, stderr: "", stdout: "" };
   let result: TeamResult | null = null;
@@ -708,6 +833,7 @@ async function captureScenario(
         const exported = runPortableCommand(options.repoRoot, [options.executable, "export", childID, "--pure"], { capture: true, env: configured.environment, timeoutMs: 60_000 });
         const childTools = parseExportTools(exported.stdout, fixtureRoot, options.repoRoot);
         for (const effect of childTools.forbiddenEffects) observedForbiddenEffects.add(effect);
+        catalogObservations.push(...childTools.catalogObservations);
         childExports.push({ childRef: safeRef(childID), status: exported.status, toolNames: childTools.names });
       }
     }
@@ -752,6 +878,8 @@ async function captureScenario(
     adviceStates: adviceStates(tasks),
     arm: options.arm,
     catalogCalls: childExports.reduce((sum, child) => sum + child.toolNames.filter((name) => name === CATALOG_TOOL).length, 0),
+    catalogFault: scenario.catalogFault,
+    catalogObservations,
     childExports,
     cleanup: {
       complete: cleanupComplete,
@@ -788,6 +916,33 @@ export function sealTeamBundle(value: Omit<TeamBundle, "bundleDigest" | "byteLen
   bundle.bundleDigest = digestOf(bundle);
   bundle.byteLength = Buffer.byteLength(stableJson(bundle), "utf8");
   return bundle;
+}
+
+export function summarizeTeamBundle(pack: TeamAdvisingPack, bundle: TeamBundle): TeamSampleSummary[] {
+  const scenarios = new Map(pack.scenarios.map((scenario) => [scenario.id, scenario]));
+  return bundle.samples.map((sample) => {
+    const scenario = scenarios.get(sample.scenarioId);
+    if (scenario == null) throw new Error(`Missing team-advising scenario for sample ${sample.scenarioId}`);
+    return {
+      adviceStates: sample.adviceStates,
+      advisorCalls: sample.taskEvents.filter((event) => event.agent === ADVISOR).length,
+      catalogCalls: sample.catalogCalls,
+      catalogFault: sample.catalogFault,
+      catalogObservations: sample.catalogObservations,
+      cleanup: sample.cleanup,
+      commands: sample.commands.map(({ stdout, ...command }) => ({ ...command, stdoutTail: stdout.slice(-8_000) })),
+      configuredProviderRequestCount: sample.configuredProviderRequestCount,
+      directRouteFacts: scenario.directRouteFacts,
+      files: sample.files,
+      forbiddenEffects: sample.forbiddenEffects,
+      proof: sample.proof,
+      requiredRoutes: scenario.requiredRoutes,
+      result: sample.result,
+      scenarioId: sample.scenarioId,
+      sourceUnchanged: sample.sourceUnchanged,
+      toolEvents: sample.toolEvents.map(({ agent, index, name, status, subject, turn }) => ({ agent, index, name, status, subject, turn })),
+    };
+  });
 }
 
 function redactPrivateHomes<T>(value: T): { count: number; value: T } {
@@ -911,6 +1066,11 @@ function commonFailures(sample: TeamSampleEvidence, scenario: TeamScenario): str
   if (!sample.sourceUnchanged) failures.push("governed-source-mutated");
   if (sample.commands.length !== scenario.turns.length) failures.push("turn-count-mismatch");
   if (sample.commands.some((command) => command.status !== 0)) failures.push("root-command-failed");
+  if (sample.catalogFault !== scenario.catalogFault) failures.push("catalog-fault-mismatch");
+  if (sample.arm === "candidate" && scenario.catalogFault === "api-unavailable") {
+    const expected = stableJson([{ agentCount: 0, catalogRefPresent: false, cause: "catalog-api-unavailable", skillCount: 0, status: "unknown" }]);
+    if (stableJson(sample.catalogObservations) !== expected) failures.push("catalog-outage-observation-mismatch");
+  }
   if (sample.configuredProviderRequestCount !== scenario.turns.length) failures.push("provider-request-count-mismatch");
   if (sample.proof.status !== 0) failures.push("representative-proof-failed");
   if (sample.result?.caseId !== scenario.id || sample.result.missionOutcome !== "complete" || sample.result.schemaVersion !== 1) failures.push("result-contract-failed");
@@ -934,6 +1094,13 @@ function armFailures(sample: TeamSampleEvidence, scenario: TeamScenario, arm: Te
     if (stableJson(sorted(specialists)) !== stableJson(sorted(expectation.specialistAgents ?? []))) failures.push("specialist-agent-mismatch");
     if (stableJson(sorted(skillIds)) !== stableJson(sorted(expectation.skillIds ?? []))) failures.push("skill-id-mismatch");
     if (sample.result?.mainDisposition !== expectation.mainDisposition) failures.push("main-disposition-mismatch");
+    const acceptedPackages = sample.result?.acceptedPackages ?? [];
+    if (expectation.acceptedPackageCount != null) {
+      if (acceptedPackages.length !== expectation.acceptedPackageCount) failures.push("accepted-package-count-mismatch");
+      if (new Set(acceptedPackages).size !== acceptedPackages.length || acceptedPackages.includes(ADVISOR)) failures.push("accepted-package-identity-invalid");
+    } else if (stableJson(sorted(acceptedPackages)) !== stableJson(sorted(expectation.acceptedPackages ?? []))) {
+      failures.push("accepted-package-mismatch");
+    }
     if (stableJson(sorted(sample.result?.unavailableCapabilities ?? [])) !== stableJson(sorted(expectation.unavailableCapabilities ?? []))) failures.push("unavailable-capability-mismatch");
     if (scenario.expected.workerCompletedBeforeProof !== sample.workerCompletedBeforeProof) failures.push("writer-closure-order-mismatch");
     const allowedAgents = new Set(scenario.permissions.taskAgents);
@@ -964,32 +1131,37 @@ export function readTeamBundle(bundlePath: string, packDigest: string): TeamBund
 export function evaluateTeamAdvisingPack(
   pack: TeamAdvisingPack,
   packDigest: string,
-  baseline: TeamBundle,
+  baseline: TeamBundle | null,
   candidate?: TeamBundle,
 ): TeamEvaluation {
+  if (baseline == null && candidate == null) throw new Error("Team-advising evaluation requires a baseline or candidate bundle");
   const selectedScenarioIds = new Set(pack.memberOrder);
   const modelCalls = (bundle: TeamBundle): number => bundle.samples
     .filter((sample) => selectedScenarioIds.has(sample.scenarioId))
     .reduce((sum, sample) => sum + sample.configuredProviderRequestCount, 0);
-  verifyBundle(baseline, packDigest);
+  if (baseline != null) verifyBundle(baseline, packDigest);
   if (candidate != null) verifyBundle(candidate, packDigest);
-  assert.equal(baseline.arm, "baseline");
+  if (baseline != null) assert.equal(baseline.arm, "baseline");
   if (candidate != null) {
     assert.equal(candidate.arm, "candidate");
-    for (const field of ["model", "node", "platform", "profile", "runtimeProfile", "variant"] as const) {
-      assert.equal(candidate.environment[field], baseline.environment[field], `Team environment mismatch: ${field}`);
+    if (baseline != null) {
+      for (const field of ["model", "node", "platform", "profile", "runtimeProfile", "variant"] as const) {
+        assert.equal(candidate.environment[field], baseline.environment[field], `Team environment mismatch: ${field}`);
+      }
+      assert.equal(candidate.environment.installedOpenCode.sha256, baseline.environment.installedOpenCode.sha256, "Installed OpenCode mismatch");
     }
-    assert.equal(candidate.environment.installedOpenCode.sha256, baseline.environment.installedOpenCode.sha256, "Installed OpenCode mismatch");
   }
   const rows: TeamEvaluation["rows"] = [];
   for (const scenario of pack.scenarios) {
-    const baselineSample = baseline.samples.find((sample) => sample.scenarioId === scenario.id);
-    rows.push({
-      arm: "baseline",
-      failures: baselineSample == null ? ["missing-sample"] : armFailures(baselineSample, scenario, "baseline"),
-      passed: baselineSample != null && armFailures(baselineSample, scenario, "baseline").length === 0,
-      scenarioId: scenario.id,
-    });
+    if (baseline != null) {
+      const baselineSample = baseline.samples.find((sample) => sample.scenarioId === scenario.id);
+      rows.push({
+        arm: "baseline",
+        failures: baselineSample == null ? ["missing-sample"] : armFailures(baselineSample, scenario, "baseline"),
+        passed: baselineSample != null && armFailures(baselineSample, scenario, "baseline").length === 0,
+        scenarioId: scenario.id,
+      });
+    }
     if (candidate != null) {
       const candidateSample = candidate.samples.find((sample) => sample.scenarioId === scenario.id);
       rows.push({
@@ -1003,10 +1175,10 @@ export function evaluateTeamAdvisingPack(
   const blocked = rows.some((row) => row.failures.includes("cleanup-incomplete"));
   const status: TeamEvaluation["status"] = blocked ? "blocked" : rows.every((row) => row.passed) ? "passed" : "failed";
   const result: TeamEvaluation = {
-    bundleDigests: { baseline: baseline.bundleDigest, candidate: candidate?.bundleDigest ?? null },
+    bundleDigests: { baseline: baseline?.bundleDigest ?? null, candidate: candidate?.bundleDigest ?? null },
     evaluationDigest: "",
-    maximumClaim: pack.maximumClaim,
-    modelCalls: modelCalls(baseline) + (candidate == null ? 0 : modelCalls(candidate)),
+    maximumClaim: baseline == null ? `${pack.maximumClaim}; candidate-only current-run evidence, no baseline-comparison claim` : pack.maximumClaim,
+    modelCalls: (baseline == null ? 0 : modelCalls(baseline)) + (candidate == null ? 0 : modelCalls(candidate)),
     rows,
     status,
   };

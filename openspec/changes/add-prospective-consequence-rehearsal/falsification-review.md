@@ -20,6 +20,6 @@
 - **Main Dispositions**: PCR-ISO-01=confirmed, PCR-INLINE-01=confirmed
 - **Correction Ref**: correction:pcr-s5-s6
 - **Invalidated Surfaces**: prompt-path-isolation, material-inline-ordering, pcr-001-population
-- **Terminal Reason**: corrected-r3-needs-focused-record-correlation
-- **Terminal State**: unknown
-- **Unresolved Evidence**: current-candidate-r3-focused-record-correlation, production-implementation-not-run, configured-runtime-proof-not-run, ownership-transfer-pending
+- **Terminal Reason**: corrected-r3-focused-correlation-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: none

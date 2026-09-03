@@ -8,10 +8,10 @@ import { spawnSync } from "node:child_process";
 import test from "node:test";
 
 import { runPortableCommand } from "../global/bin/portable-process.ts";
-import { BEADS_BRIDGE_REGISTRATION_FILE, createBeadsBridgeRegistration, inspectBeadsBridgeCoordination, loadBeadsBridgeRegistration } from "./windows/beads-bridge-registration.ts";
-import { BeadsProjectLifecycleError, runBeadsProjectLifecycle } from "./windows/beads-project-lifecycle.ts";
-import type { BeadsProjectLifecycleDependencies } from "./windows/beads-project-lifecycle.ts";
-import { loadBeadsReleaseManifest } from "./windows/beads-release.ts";
+import { BEADS_BRIDGE_REGISTRATION_FILE, createBeadsBridgeRegistration, inspectBeadsBridgeCoordination, loadBeadsBridgeRegistration } from "../global/bin/beads-portfolio-bridge/beads-bridge-registration.ts";
+import { BeadsProjectLifecycleError, runBeadsProjectLifecycle } from "../global/bin/beads-portfolio-bridge/beads-project-lifecycle.ts";
+import type { BeadsProjectLifecycleDependencies } from "../global/bin/beads-portfolio-bridge/beads-project-lifecycle.ts";
+import { loadBeadsReleaseManifest } from "../global/bin/beads-portfolio-bridge/beads-release.ts";
 
 type Mode = "success" | "tracked" | "hook" | "remote" | "external" | "config-multi";
 type Fixture = {
@@ -45,6 +45,9 @@ function directoryIdentity(directory: string): string {
 }
 
 function fixture(): Fixture {
+  const manifest = loadBeadsReleaseManifest();
+  const requiredIgnore = manifest.initialization.requiredTrackedFiles[0]?.content;
+  if (requiredIgnore == null) throw new Error("Current Beads manifest must declare the tracked ignore prerequisite.");
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "beads-project-lifecycle-test-"));
   const project = path.join(root, "project");
   const protectedRoot = path.join(root, "protected");
@@ -57,7 +60,7 @@ function fixture(): Fixture {
   run(project, "git", ["config", "user.name", "Fixture"]);
   run(project, "git", ["config", "user.email", "fixture@example.invalid"]);
   const ignoreFile = path.join(project, ".gitignore");
-  const baselineIgnore = Buffer.from("fixture-only\n", "utf8");
+  const baselineIgnore = Buffer.from(`fixture-only\n${requiredIgnore}`, "utf8");
   fs.writeFileSync(ignoreFile, baselineIgnore);
   run(project, "git", ["add", ".gitignore"]);
   run(project, "git", ["commit", "--quiet", "-m", "fixture"]);
@@ -100,7 +103,6 @@ if (argv.includes("init")) {
 }
 `, "utf8");
 
-  const manifest = loadBeadsReleaseManifest();
   const registrationFile = path.join(protectedRoot, BEADS_BRIDGE_REGISTRATION_FILE);
   createBeadsBridgeRegistration(registrationFile, {
     enabled: false,
@@ -117,15 +119,11 @@ if (argv.includes("init")) {
   const dependencies: BeadsProjectLifecycleDependencies = {
     fileIdentity: (file) => {
       if (path.resolve(file) === path.resolve(binary)) return { bytes: manifest.release.executable.bytes, sha256: manifest.release.executable.sha256 };
-      if (path.resolve(file) === path.resolve(ignoreFile) && fs.readFileSync(file).equals(baselineIgnore)) {
-        return { bytes: baselineIgnore.length, sha256: manifest.initialization.requiredTrackedFiles[0].sha256 };
-      }
       return fileIdentity(file);
     },
     captureExternalBoundary: () => directoryIdentity(external),
     adapter: {
       inspectExecutable: () => ({ bytes: manifest.release.executable.bytes, sha256: manifest.release.executable.sha256 }),
-      inspectTrackedFile: (file) => ({ sha256: dependencies.fileIdentity!(file).sha256 }),
       runCommand: (cwd, argv, options) => runPortableCommand(cwd, [process.execPath, fake, ...argv.slice(1)], {
         ...options,
         env: { ...options.env, FAKE_ARGV_LOG: argvLog, FAKE_MODE: mode, FAKE_EXTERNAL: external },
@@ -137,6 +135,11 @@ if (argv.includes("init")) {
 
 function cleanup(item: Fixture): void {
   fs.rmSync(item.root, { recursive: true, force: true });
+}
+
+function installWriterState(item: Fixture): void {
+  const registration = loadBeadsBridgeRegistration(item.registrationFile);
+  fs.mkdirSync(path.join(item.protectedRoot, "beads-bridge", registration.projectRef.slice("project_".length)), { recursive: true });
 }
 
 function identity(ref: string) {
@@ -193,6 +196,7 @@ test("rejects unsupported operations and extra request fields before effects", (
 test("enables, checks, disables, and rolls back only matching effects while preserving the store", () => {
   const item = fixture();
   try {
+    installWriterState(item);
     const enabled = runBeadsProjectLifecycle({ operation: "enable", registrationFile: item.registrationFile, processIdentity: identity("process:enable") }, item.dependencies);
     assert.equal(enabled.status, "enabled");
     assert.equal(enabled.registrationEnabled, true);
@@ -231,6 +235,7 @@ for (const mode of ["tracked", "hook", "remote", "external", "config-multi"] as 
   test(`rejects ${mode} mutation before claiming enablement`, () => {
     const item = fixture();
     try {
+      installWriterState(item);
       item.setMode(mode);
       assert.equal(
         errorCode(() => runBeadsProjectLifecycle({ operation: "enable", registrationFile: item.registrationFile, processIdentity: identity(`process:red-${mode}`) }, item.dependencies)),
@@ -248,6 +253,7 @@ for (const mode of ["tracked", "hook", "remote", "external", "config-multi"] as 
 test("returns partial unknown and preserves drift instead of rolling back over it", () => {
   const item = fixture();
   try {
+    installWriterState(item);
     runBeadsProjectLifecycle({ operation: "enable", registrationFile: item.registrationFile, processIdentity: identity("process:enable-drift") }, item.dependencies);
     runBeadsProjectLifecycle({ operation: "disable", registrationFile: item.registrationFile, processIdentity: identity("process:disable-drift") }, item.dependencies);
     fs.appendFileSync(path.join(item.project, ".git", "info", "exclude"), "user-drift/\n");
@@ -265,6 +271,7 @@ test("returns partial unknown and preserves drift instead of rolling back over i
 test("rejects a drifted lifecycle record before rollback mutation", () => {
   const item = fixture();
   try {
+    installWriterState(item);
     const enabled = runBeadsProjectLifecycle({ operation: "enable", registrationFile: item.registrationFile, processIdentity: identity("process:enable-record-drift") }, item.dependencies);
     runBeadsProjectLifecycle({ operation: "disable", registrationFile: item.registrationFile, processIdentity: identity("process:disable-record-drift") }, item.dependencies);
     const lifecycleFile = path.join(item.protectedRoot, "beads-bridge", enabled.projectRef.slice("project_".length), "project-lifecycle.json");
@@ -284,6 +291,7 @@ test("rejects a drifted lifecycle record before rollback mutation", () => {
 test("does not execute a drifted registered binary during read-only check", () => {
   const item = fixture();
   try {
+    installWriterState(item);
     const enabled = runBeadsProjectLifecycle({ operation: "enable", registrationFile: item.registrationFile, processIdentity: identity("process:enable-binary-drift") }, item.dependencies);
     const beforeInvocations = fs.readFileSync(item.argvLog, "utf8");
     const baseIdentity = item.dependencies.fileIdentity!;
@@ -306,6 +314,7 @@ test("does not execute a drifted registered binary during read-only check", () =
 test("keeps the writer lock when adapter cleanup liveness is unknown", () => {
   const item = fixture();
   try {
+    installWriterState(item);
     const unknownDependencies: BeadsProjectLifecycleDependencies = {
       ...item.dependencies,
       adapter: {

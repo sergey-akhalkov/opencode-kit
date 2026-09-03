@@ -126,6 +126,18 @@ export const IMPLEMENTATION_READINESS_REVIEWER_REQUIRED_TEXT: readonly string[] 
   "Practice Observation",
   "Falsification Matrix",
   "Do not decide the product result",
+  "When no current candidate is supplied",
+  "When this child is resumed with a candidate",
+  "When a frozen reconstruction is supplied with a corrected candidate",
+  "fresh invocation with a current candidate is single-stage",
+  "Do not reconstruct around an already-existing candidate",
+  "Do not request the current candidate during reconstruction",
+  "Context Reconstruction Ref",
+  "pre-authoring reconstruction",
+  "Emit no-material-finding only after candidate comparison",
+  "causal-use chain",
+  "discarded distinction",
+  "earliest sufficient falsifier",
 ];
 
 export const EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT: readonly string[] = [

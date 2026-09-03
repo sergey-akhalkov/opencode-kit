@@ -39,7 +39,7 @@ Using `latest` was rejected because `v1.2.0` and `v1.2.1` caused schema skew and
 
 ### 3. Use project-local embedded Dolt for the one-project pilot
 
-The selected registration resolves one canonical Git root and unique prefix. Activation invokes non-interactive embedded initialization with `--skip-agents`, `--skip-hooks`, and reviewed local exclusion behavior. Before/after capture inventories tracked bytes, index/worktree state, hooks, remotes, relevant Git config, `.git/info/exclude`, `.beads`, processes, and paths. Auto-export, auto-stage, server, federation, and remotes remain disabled.
+The selected registration resolves one canonical Git root and unique prefix. Activation first requires the exact observed Beads/Dolt ignore block to be present within the project's existing tracked `.gitignore`; the manifest digest identifies that block rather than replacing or pinning the project's whole file. It then invokes non-interactive embedded initialization with `--skip-agents`, `--skip-hooks`, and reviewed local exclusion behavior. Before/after capture inventories the whole tracked file identities, index/worktree state, hooks, remotes, relevant Git config, `.git/info/exclude`, `.beads`, processes, and paths, and requires every tracked byte to remain unchanged. Auto-export, auto-stage, server, federation, and remotes remain disabled.
 
 A shared server was rejected because it adds a service/process/credential/backup owner before embedded operational fit is known. JSONL was rejected as synchronization or backup because upstream defines it as optional interchange. `--stealth` was not selected blindly because it can change global Git behavior; apply must choose only the smallest directly observed project-local exclusion mechanism.
 

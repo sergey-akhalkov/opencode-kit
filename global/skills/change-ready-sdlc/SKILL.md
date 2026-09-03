@@ -45,6 +45,8 @@ For explicitly grind-enabled roots, consume the canonical task-scoped frontier c
 
 ## Outcome-First Stop Line
 
+For Material work without a formal plan, main applies the prospective readiness protocol from global `AGENTS.md` before creating an inline decision frame or mutating candidate source. Current distinction pressure means a proposed decision can collapse evidenced differences in representation, identity, occurrence, actor, state, lifecycle, ownership, recovery, or proof outcome. Under that pressure, launch the existing `implementation-readiness-reviewer` candidate-free, preserve its exact returned task identity and reconstruction session-locally, create the smallest inline frame only after reconstruction, then resume that exact child for comparison. Missing or stale identity is `unknown`, not permission for a candidate-visible substitute. Without current distinction pressure, preserve the existing single-stage Material challenge. Ordinary Small stays direct, and exact substitution claims continue to load `behavioral-substitution-qualification`; this protocol creates no second reviewer, skill, record, or session owner.
+
 Before MVP, correct only the accepted happy path and applicable non-deferrable invariants. Runtime Proof means launching or invoking the candidate at the nearest safe representative boundary, supplying representative input, and observing meaningful output or side effects. Inspection, compilation, static checks, unit tests, or mocked helper output alone are not Runtime Proof.
 
 After MVP:

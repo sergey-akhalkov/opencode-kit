@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "id": "beads-portfolio-bridge-r1",
+  "claimId": "BPB-001",
+  "maximumClaim": "provider-free deterministic materialization for the exact reviewed BPB-001 source population and its first Kaizen, workstation, profile, and installed-pilot consumers under the current governed working-tree identity only; it proves seed/schema/readback, current release and profile correlation, deliberate red detection, stable output, and zero provider, network, remote, project, or protected-host effects, not an installed executable, enabled project, production claim, remote portfolio, or protected rollback",
+  "governedSourcePaths": [
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/beads-portfolio-bridge.ts",
+    "tools/proofs/fixtures/consumer-outcome/beads-portfolio-bridge-r1.json",
+    "global/bin/beads-portfolio-bridge/beads-release.manifest.json",
+    "global/bin/beads-portfolio-bridge/beads-release.ts",
+    "global/bin/beads-portfolio-bridge/beads-vendor-adapter.ts",
+    "global/bin/beads-portfolio-bridge/beads-bridge-registration.ts",
+    "global/bin/beads-portfolio-bridge/beads-project-lifecycle.ts",
+    "global/bin/beads-portfolio-bridge/beads-kaizen-orchestrator.ts",
+    "tools/windows/beads-workstation-lifecycle.ts",
+    "tools/runtime-surface-profile.ts",
+    "profiles/core.json",
+    "profiles/core-beads.json",
+    "profiles/all.json",
+    "tools/test-beads-kaizen-orchestrator.ts",
+    "tools/test-beads-workstation-lifecycle.ts"
+  ],
+  "release": {
+    "version": "1.2.2",
+    "buildCommit": "6c124203e771",
+    "platform": "windows",
+    "architecture": "amd64",
+    "archiveSha256": "1f00c29cd9599e182a4a4e829f5210daca2da14155920aee2836d8bc613b2feb",
+    "executableSha256": "b1f3609fea1d9f0f19b2ed49098b3628acfa6ca115aa28b01a1ee178c3a214de",
+    "executableBytes": 145740800
+  },
+  "repository": {
+    "prefix": "BPB",
+    "requiredTrackedPaths": [".gitignore"],
+    "allowedCreatedPaths": [".beads"],
+    "allowedModifiedPaths": [".git/config", ".git/info/exclude"],
+    "forbiddenEffects": ["agent-instruction", "auto-export", "auto-stage", "external-path-write", "git-hook", "git-remote", "metrics-enabled", "tracked-file-change"]
+  },
+  "kaizen": {
+    "signalKind": "process-gap",
+    "decision": "project-change",
+    "ownerClass": "current-project",
+    "bridgeSchemaVersion": 1,
+    "metadataKeys": ["bridgeSchemaVersion", "kaizenSignalRef", "decisionRef", "projectRef", "ownerClass"],
+    "promotionStatus": "promoted",
+    "replayStatus": "already-promoted"
+  },
+  "dependency": {
+    "relationType": "blocks",
+    "beforeReady": false,
+    "afterReady": true,
+    "replayChanged": false,
+    "sourceExecution": "independent-writer-authority-required",
+    "productionClaimAvailable": false
+  },
+  "assignment": {
+    "assignee": "agent:bpb-001",
+    "taskRef": "task:bpb-001",
+    "sessionRef": "session:bpb-001",
+    "changed": true,
+    "replayChanged": false,
+    "productionClaimAvailable": false
+  },
+  "link": {
+    "changeRef": "bpb-001-change",
+    "specId": "spec:bpb-001-change",
+    "interruption": "after-update-response-loss",
+    "readbackPersisted": true,
+    "resumedChanged": false,
+    "conflictingLinkRejected": true
+  },
+  "terminal": {
+    "archiveStatus": "archived",
+    "runtimeProofStatus": "passed",
+    "validationStatus": "passed",
+    "externalEffectsStatus": "declared-only",
+    "sourceWriterStatus": "terminal",
+    "cleanupStatus": "terminal",
+    "closeBeforeResolve": true,
+    "resumedSignalResolved": true,
+    "replayChanged": false
+  },
+  "profiles": {
+    "defaultProfile": "core",
+    "coreBeadsSkillCount": 0,
+    "coreBeadsHelperCount": 0,
+    "coreBeadsProfileSkillCount": 1,
+    "coreBeadsProfileHelperCount": 1,
+    "allBeadsSkillCount": 1,
+    "allBeadsHelperCount": 1,
+    "configMode": "ask",
+    "prohibitedSurfaces": ["thin-command", "vendor-agent-instruction", "bd-prime", "plugin", "mcp", "automatic-project-activation"]
+  },
+  "gitEffects": {
+    "trackedStatusBefore": "",
+    "trackedStatusAfter": "",
+    "remoteCount": 0,
+    "agentInstructionCreated": false,
+    "providerCalls": 0,
+    "networkCalls": 0,
+    "sourceCommitCount": 0
+  },
+  "workstation": {
+    "previewStatus": "preview",
+    "installStatus": "installed",
+    "checkStatus": "current",
+    "activeWriterRollbackStatus": "partial-unknown",
+    "activeWriterRollbackReason": "writer-liveness-unknown",
+    "terminalRollbackStatus": "rolled-back",
+    "retainedKinds": ["executable", "adapter", "registration", "install-record", "writer-lock"],
+    "removedKinds": ["executable", "adapter", "registration", "install-record", "bridge-root"],
+    "nonEffects": ["download", "profile-selection", "project-registration", "project-activation", "process", "service", "task", "hook", "remote"]
+  },
+  "redControls": [
+    { "id": "release-version-drift", "section": "release", "expectedFailureId": "release-drift" },
+    { "id": "repository-prefix-drift", "section": "repository", "expectedFailureId": "repository-drift" },
+    { "id": "kaizen-schema-drift", "section": "kaizen", "expectedFailureId": "kaizen-drift" },
+    { "id": "dependency-type-drift", "section": "dependency", "expectedFailureId": "dependency-drift" },
+    { "id": "assignment-owner-drift", "section": "assignment", "expectedFailureId": "assignment-drift" },
+    { "id": "link-change-drift", "section": "link", "expectedFailureId": "link-drift" },
+    { "id": "terminal-state-drift", "section": "terminal", "expectedFailureId": "terminal-drift" },
+    { "id": "profile-union-drift", "section": "profiles", "expectedFailureId": "profiles-drift" },
+    { "id": "git-remote-effect", "section": "gitEffects", "expectedFailureId": "gitEffects-drift" },
+    { "id": "workstation-install-drift", "section": "workstation", "expectedFailureId": "workstation-drift" }
+  ]
+}

@@ -54,7 +54,7 @@ Options:
                          without changing files or env.
   --preview-profile      Preview the proposed runtime-surface profile (default core). No mutation.
   --plan-migration       Show current vs proposed profile additions/removals. No mutation.
-  --profile <name>       Proposed profile for preview/plan/check (core or all). Default: core.
+  --profile <name>       Proposed profile for preview/plan/check (core, core-beads, or all). Default: core.
   --print                Preview the target path and platform command only (no mutation; not a recovery path).
   --unset                Remove the persisted OPENCODE_CONFIG_DIR value.
   --persist-script <file>  Ensure <file> contains exactly one desired "export OPENCODE_CONFIG_DIR=..." line.
@@ -152,8 +152,8 @@ function parseArgs(args: string[]): Options {
   ) {
     throw new Error(`${options.mode} requires a <file> argument.`);
   }
-  if (options.profileName !== "core" && options.profileName !== "all") {
-    throw new Error("--profile must be core or all.");
+  if (options.profileName !== "core" && options.profileName !== "core-beads" && options.profileName !== "all") {
+    throw new Error("--profile must be core, core-beads, or all.");
   }
   return options;
 }
@@ -538,7 +538,7 @@ function runPersistScript(file: string, profileName: string, explicitProfile: bo
       materializeRuntimeSurfaceProfile({ profileName, root: repoRoot, targetRoot: targetDir });
       ensureLocalInstructions(targetDir);
     }
-    const generatedErrors = validateGeneratedProfile(targetDir, profileName as "all" | "core");
+    const generatedErrors = validateGeneratedProfile(targetDir, profileName as "all" | "core" | "core-beads");
     if (generatedErrors.length > 0) throw new Error(generatedErrors.join("\n"));
   } else {
     const config = assertSupportedLocalConfig(path.join(targetDir, "opencode.json"));
@@ -588,7 +588,7 @@ function validateGlobalDir(target: string): string[] {
   return errors;
 }
 
-function validateGeneratedProfile(target: string, profileName: "all" | "core"): string[] {
+function validateGeneratedProfile(target: string, profileName: "all" | "core" | "core-beads"): string[] {
   const errors: string[] = [];
   if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) {
     return [`Missing generated ${profileName} profile: ${target}`];
@@ -864,11 +864,14 @@ function runCheck(profileName: string): void {
   if (
     sameConfigPath(current, globalDir) ||
     sameConfigPath(current, generatedProfileRoot("core")) ||
+    sameConfigPath(current, generatedProfileRoot("core-beads")) ||
     sameConfigPath(current, generatedProfileRoot("all"))
   ) {
     const generatedProfile = sameConfigPath(current, generatedProfileRoot("all"))
       ? "all"
-      : sameConfigPath(current, generatedProfileRoot("core")) ? "core" : null;
+      : sameConfigPath(current, generatedProfileRoot("core-beads"))
+        ? "core-beads"
+        : sameConfigPath(current, generatedProfileRoot("core")) ? "core" : null;
     if (generatedProfile != null) {
       const errors = validateGeneratedProfile(path.resolve(current), generatedProfile);
       if (errors.length > 0) {
@@ -926,7 +929,9 @@ function isExistingKitInstall(value: string | undefined): boolean {
   if (sameConfigPath(value, globalDir)) {
     return true;
   }
-  return sameConfigPath(value, generatedProfileRoot("core")) || sameConfigPath(value, generatedProfileRoot("all"));
+  return sameConfigPath(value, generatedProfileRoot("core"))
+    || sameConfigPath(value, generatedProfileRoot("core-beads"))
+    || sameConfigPath(value, generatedProfileRoot("all"));
 }
 
 function resolveSetTarget(profileName: string, explicitProfile: boolean): {
@@ -977,7 +982,9 @@ function runSet(dryRun: boolean, profileName: string, explicitProfile: boolean):
       throw new Error("Existing kit install is incomplete; no file or environment value was changed.");
     }
     if (resolved.keepExisting && !sameConfigPath(targetDir, globalDir)) {
-      const existingProfile = sameConfigPath(targetDir, generatedProfileRoot("all")) ? "all" : "core";
+      const existingProfile = sameConfigPath(targetDir, generatedProfileRoot("all"))
+        ? "all"
+        : sameConfigPath(targetDir, generatedProfileRoot("core-beads")) ? "core-beads" : "core";
       const generatedErrors = validateGeneratedProfile(targetDir, existingProfile);
       if (generatedErrors.length > 0) throw new Error(generatedErrors.join("\n"));
     }

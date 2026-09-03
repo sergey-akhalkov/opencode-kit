@@ -39,18 +39,22 @@ When ready to implement, run /opsx-apply
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 
-2. **Create the change directory**
+2. **Reconstruct candidate-free context when current distinctions are at risk**
+
+   Before `openspec new change`, work only from the original accepted request, observable success boundary, current envelope/non-goals, and current raw source/system evidence. If a current decision can collapse evidenced differences in representation, identity, occurrence, actor, state, lifecycle, ownership, recovery, or proof outcome, launch one fresh `implementation-readiness-reviewer` with no `task_id` and no current candidate. The candidate must not yet exist in a prompt, change artifact, inline frame, or searchable workspace. Preserve the exact returned task identity and candidate-free reconstruction session-locally; do not persist private prompt text or a transcript. If identity or reconstruction is unusable, keep the prospective protocol `unknown`, do not launch a candidate-visible substitute, and continue only structural authoring that does not claim semantic readiness. If no current distinction pressure exists, do not add this phase. Ordinary Small exact and exact substitution routes retain their existing owners.
+
+3. **Create the change directory**
    Run `openspec new change "<name>"`.
    This creates a scaffolded change in the planning home resolved by the CLI with `.openspec.yaml`.
 
-3. **Get the artifact build order**
+4. **Get the artifact build order**
    Run `openspec status --change "<name>" --json`.
    Parse the JSON to get:
    - `applyRequires`: array of artifact IDs needed before implementation (e.g., `["tasks"]`)
    - `artifacts`: list of all artifacts with their status and dependencies
    - `planningHome`, `changeRoot`, `artifactPaths`, and `actionContext`: path and scope context. Use these instead of assuming repo-local paths.
 
-4. **Create artifacts in sequence until apply requirements are complete**
+5. **Create artifacts in sequence until apply requirements are complete**
 
    Use the **TodoWrite tool** to track progress through the artifacts.
 
@@ -89,20 +93,21 @@ When ready to implement, run /opsx-apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-5. **Preserve strategy history when observed**
+6. **Preserve strategy history when observed**
 
    Create or append `<changeRoot>/history.md` only after a materially distinct strategy was considered, attempted, rejected, superseded, or preserved for retry continuity. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy event occurred, omit the file; full profile selection alone does not manufacture an empty history.
 
-6. **Run the bounded falsification episode**
+7. **Run the bounded falsification episode**
 
    Read current metadata and the proposal declaration. For compact plus current `ordinary-small-exact` with no decision-material surface, omit both the declaration and `falsification-review.md`; report the episode as not applicable. For a full reviewed exemption, create no `falsification-review.md`; the reason remains semantic main-owned input. If full declares `required`:
-   - Reuse a current terminal record only when the original request, candidate, decision surface, and decision-changing evidence are unchanged. Never launch an equivalent challenge for confidence.
-   - Otherwise launch one fresh `implementation-readiness-reviewer`. Supply the original accepted request and success boundary separately from the candidate, plus the apply-required artifacts, envelope, non-goals, invariants, proof boundary, and relevant evidence. Require the six attack classes, explicit permission for `no-material-finding`, and the role's read-only/no-question/no-nested-agent/non-authorizing boundary.
+   - Reuse a current terminal record only when the original request, candidate, decision surface, and decision-changing evidence are unchanged. Never launch an equivalent challenge for confidence. An existing candidate without a candidate-free reconstruction remains `single-stage`.
+   - When step 2 returned a usable reconstruction and exact task identity, resume that exact returned child with the authored candidate. Supply the apply-required artifacts, envelope, non-goals, invariants, proof boundary, and relevant evidence, but do not rebuild context around the now-existing candidate. Candidate-free reconstruction plus this exact initial continuation is one challenge. Verify the returned identity matches; otherwise keep the protocol and semantic readiness `unknown` without a substitute review.
+   - Otherwise launch one fresh single-stage `implementation-readiness-reviewer`. Supply the original accepted request and success boundary separately from the candidate, plus the apply-required artifacts, envelope, non-goals, invariants, proof boundary, and relevant evidence. Require the six attack classes, explicit permission for `no-material-finding`, and the role's read-only/no-question/no-nested-agent/non-authorizing boundary.
    - Main independently reproduces and dispositions only rows containing a current accepted outcome or non-deferrable invariant, reachable current-envelope scenario, concrete consequence, exact evidence, current-scope justification, and smallest correction. Optional, future, style, polish, and unproven rows create no work.
-   - Apply the smallest confirmed correction. Launch at most one fresh corrected-candidate re-review only when that correction changes the challenged outcome, envelope, invariant, proof boundary, user-owned decision, or material-risk surface. A second challenge exhausts the generic episode; no unchanged, optional, or confidence-seeking third challenge is permitted.
+   - Apply the smallest confirmed correction. Launch at most one fresh corrected-candidate re-review only when that correction changes the challenged outcome, envelope, invariant, proof boundary, user-owned decision, or material-risk surface. For a pre-authoring-separated episode, supply the same still-current frozen reconstruction to that fresh child; never resume the initial candidate comparison or reconstruct around the corrected candidate. If new raw evidence invalidates the frozen reconstruction, corrected review and semantic readiness stay `unknown`. A second challenge exhausts the generic episode; no unchanged, optional, or confidence-seeking third challenge is permitted.
    - Write `<changeRoot>/falsification-review.md` using only the operation-gate contract's privacy-safe references and explicit facts: original/reviewed request, accepted outcome, candidate/reviewed candidate, decision surface, reviewer/session/model, challenge count, six attack rows, material findings and main dispositions, correction/invalidation, terminal reason/state, and unresolved evidence. If the reviewer is unavailable or unusable, preserve only observed `unknown` facts and do not claim semantic readiness.
 
-7. **Validate operation readiness**
+8. **Validate operation readiness**
 
    If the proposal makes a broad claim, state its maximum supported scope directly and name the real observable proof that would support it. Do not create an evidence index, lane record, or retained proof report.
    Resolve the current project root and active kit global source explicitly. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-operation-gate.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`. Run the portable gate from the verified source; do not require a target-project package script.
@@ -110,7 +115,7 @@ When ready to implement, run /opsx-apply
 
    Stop on any non-zero exit and preserve the command, status, output, and artifact. The apply probe is effect-free. Deterministic gate success proves structural artifact readiness only; it never supplies semantic task-fit evidence.
 
-8. **Show final status**
+9. **Show final status**
    Run `openspec status --change "<name>"`.
 
 **Output**

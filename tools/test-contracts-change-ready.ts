@@ -756,7 +756,9 @@ export const changeReadyContractTests: TestCase[] = [
       ], "Implementation-readiness finding-admission contract drifted");
       assertTokens(agents, [
         "Material inline decision frame",
-        "Material work without a formal plan creates the smallest inline frame before production mutation",
+        "Neither candidate bytes nor an inline candidate frame may exist in its prompt or searchable workspace",
+        "resumes the exact returned task identity",
+        "An already-existing candidate remains single-stage",
         "Ordinary Small exact cases stay direct",
         "independently matched exact Practice Owners keep their boundaries",
       ], "Non-OpenSpec bounded-falsification fallback drifted");

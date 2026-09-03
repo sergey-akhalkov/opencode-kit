@@ -19,9 +19,15 @@ On Windows, if PowerShell blocks `.ps1` shims, use `npm.cmd run ...` or `node to
 
 `npm run setup:global` combines the MCP and global-config installation steps. The MCP helper installs only missing Serena and Codebase Memory executables; use `npm run install:mcps -- --check` to verify them without mutation.
 
-The global-config installer defaults to the minimal `core` profile. Use `npm run install:global -- --profile all` for the complete compatibility surface, including the autonomous roadmap mission launcher, PTY bridge, completion guard, and portable mission binaries. Generated profiles live under `global/.runtime-profiles/`; replaced roots are retained as rollback backups.
+The global-config installer defaults to the minimal `core` profile. Use `npm run install:global -- --profile core-beads` for the complete core surface plus the on-demand one-project Beads portfolio bridge, or `npm run install:global -- --profile all` for the complete compatibility surface, including the autonomous roadmap mission launcher, PTY bridge, completion guard, and portable mission binaries. `core` omits Beads; `core-beads`, `all`, and unprofiled full source discover the same optional skill once. Profile selection does not install the Beads binary or register or activate a project. Generated profiles live under `global/.runtime-profiles/`; replaced roots are retained as rollback backups.
 
-Restart OpenCode after installation because skills, agents, plugins, and config-time files are loaded at startup. After an `all` install, `/mission-status` is read-only, `/mission-stop` records graceful stop intent, and cockpit Kill is an emergency hard stop that can leave paused-unknown state. Roll back to the installer-printed prior profile or prior `OPENCODE_CONFIG_DIR`, restart OpenCode, and run `npm run doctor -- --require unattended`.
+Preview the exact `core-beads` surface without mutation:
+
+```sh
+npm run install:global -- --preview-profile --profile core-beads
+```
+
+Restart OpenCode after installation because skills, agents, plugins, and config-time files are loaded at startup. A running process cannot claim a newly selected `core-beads` skill. Follow the pinned Windows binary and one-project lifecycle in `tools/windows/README.md#optional-beads-portfolio-bridge`; it does not use raw `bd`, vendor setup, or remote operations. After an `all` install, `/mission-status` is read-only, `/mission-stop` records graceful stop intent, and cockpit Kill is an emergency hard stop that can leave paused-unknown state. Roll back to the installer-printed prior profile or prior `OPENCODE_CONFIG_DIR`, restart OpenCode, and run `npm run doctor -- --require unattended`.
 
 ## Bootstrap A Project
 

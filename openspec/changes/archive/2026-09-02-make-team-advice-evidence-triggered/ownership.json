@@ -12,7 +12,7 @@
     {
       "capability": "library-instruction-artifacts",
       "requirements": [
-        "Team-advice artifacts are cohesive discoverable and least privilege",
+        "Team-advice artifacts are cohesive discoverable and role-bounded",
         "Active catalog projection and semantic routing evidence remain separate"
       ]
     },

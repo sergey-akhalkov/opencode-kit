@@ -2,9 +2,9 @@
 
 ### Requirement: Team-advice artifacts are cohesive, discoverable, and least privilege
 
-The retained team-advice implementation SHALL expose one dedicated `specialist-team-advisor` only for a concrete team-selection uncertainty remaining after foraging: competing maintained routes, an exact required capability whose availability or owner is unresolved, a unique independent-evidence package whose selection can change the next accepted action, or an unresolved isolation/delegation package. Main SHALL omit the advisor only when every objective direct-route fact is current. The advisor SHALL have one cohesive primary responsibility and a bounded output contract. Its permission map SHALL deny wildcard and every ordinary tool first, then allow only read, glob, grep, and `specialist_catalog`. It SHALL deny source/config/test/instruction mutation, user questions, nested agents, skills, remote effects, and protected actions.
+The retained team-advice implementation SHALL expose one dedicated `specialist-team-advisor` only for a concrete team-selection uncertainty remaining after foraging: competing maintained routes, an exact required capability whose availability or owner is unresolved, a unique independent-evidence package whose selection can change the next accepted action, or an unresolved isolation/delegation package. Main SHALL omit the advisor only when every objective direct-route fact is current. The advisor SHALL have one cohesive primary responsibility and a bounded output contract. Under the kit's current unrestricted local runtime policy, broad technical tool availability SHALL NOT widen the advisor's role authority: it SHALL remain read-only and SHALL deny itself source/config/test/instruction mutation, user questions, nested agents, skills, remote effects, and protected actions. The `specialist_catalog` tool SHALL independently enforce attributable advisor-child and parentless-root identity before returning catalog data.
 
-`specialist-team-advisor` SHALL remain a non-Practice-Owner control-plane helper. `implementation-readiness-reviewer` SHALL retain the distinct `outcome-readiness` practice, exact Practice Owners SHALL remain directly triggerable, and `qwen-local-worker` SHALL retain generic bounded first-pass work. The candidate SHALL NOT add a parallel routing skill, an existing-agent team-routing mode, another semantic router, or a complete agent/skill catalog copied into prompt bodies. Deterministic validators SHALL check stable ids, discovery fields, permission shape, and catalog references; they SHALL NOT decide whether a mission satisfies the direct predicate.
+`specialist-team-advisor` SHALL remain a non-Practice-Owner control-plane helper. `implementation-readiness-reviewer` SHALL retain the distinct `outcome-readiness` practice, exact Practice Owners SHALL remain directly triggerable, and `qwen-local-worker` SHALL retain generic bounded first-pass work. The candidate SHALL NOT add a parallel routing skill, an existing-agent team-routing mode, another semantic router, or a complete agent/skill catalog copied into prompt bodies. Deterministic validators SHALL check stable ids, discovery fields, the explicit unrestricted runtime identity, required role prohibitions, and catalog references; they SHALL NOT decide whether a mission satisfies the direct predicate.
 
 #### Scenario: Complete direct work dispatches no advisor
 
@@ -42,11 +42,17 @@ The retained team-advice implementation SHALL expose one dedicated `specialist-t
 - **THEN** the root does not dispatch `specialist-team-advisor`
 - **AND** description brevity does not weaken outcome, safety, proof, or worktree obligations.
 
+#### Scenario: Advisor role boundary is weakened
+
+- **WHEN** the advisor body authorizes mutation, questions, nested dispatch, skill loading, remote effects, protected actions, or omits the exact catalog caller/root boundary
+- **THEN** its dedicated non-reviewer validator branch fails with the exact missing role or catalog marker
+- **AND** the advisor is not accepted through a generic reviewer contract.
+
 #### Scenario: Advisor uses a generic reviewer permission shape
 
-- **WHEN** the advisor grants feedback-ledger edit, `complain`, an unmatched plugin tool, or omits wildcard-deny before exact read/catalog allows
-- **THEN** its dedicated non-reviewer validator branch fails with the exact permission mismatch
-- **AND** the advisor is not accepted through a generic reviewer contract.
+- **WHEN** the advisor is configured with a generic reviewer permission map instead of the explicit unrestricted runtime identity
+- **THEN** its dedicated non-reviewer validator branch fails with the exact permission-identity mismatch
+- **AND** role-text prohibitions and catalog caller/root attribution remain independently required.
 
 #### Scenario: Exact Practice Owner trigger stays direct from routing
 
@@ -64,7 +70,7 @@ The retained team-advice implementation SHALL expose one dedicated `specialist-t
 
 The advisor SHALL consume a stable privacy-safe projection of dispatchable artifacts available to the current root runtime. The projection SHALL contain only safe artifact id, artifact class, availability, a sanitized and length-capped frontmatter discovery description, redacted profile/source class and digest, and hashed root/session references. It SHALL omit prompt/body text, secrets, credentials, raw session ids, absolute paths, hidden agents, guard-only agents, non-dispatchable control-plane agents, and the advisor itself. Deterministic tooling SHALL validate schema, stable order, exact source/profile readback, safe values, and that every recommendation names an available dispatchable artifact. It SHALL NOT score task similarity, rank experts, infer direct eligibility, select a team, or judge routing quality.
 
-The `specialist_catalog` tool SHALL fail closed unless the caller is an attributable `specialist-team-advisor` child and its parentless root can be resolved. The advisor permission map SHALL use the existing wildcard-deny-then-exact-allow pattern. If current OpenCode custom-tool permissions or execution context cannot enforce both facts, provider-free preflight SHALL block only behavior requiring catalog-backed advice rather than exposing a broadly callable catalog.
+The `specialist_catalog` tool SHALL fail closed unless the caller is an attributable `specialist-team-advisor` child and its parentless root can be resolved. The current unrestricted local permission policy SHALL remain explicit in loaded validation rather than being represented as technical least privilege. If current OpenCode custom-tool execution context cannot enforce both catalog attribution facts, provider-free preflight SHALL block only behavior requiring catalog-backed advice rather than exposing catalog data broadly.
 
 Semantic checks SHALL use matched same-model baseline/candidate current runs over the maintained STA-001 population. STA-001 SHALL expect direct execution with zero advisor and catalog calls only when every supplied direct-route fact is current. Competing-route, unavailable-capability, independent-evidence, and isolation members SHALL retain reviewed advisor expectations. Exact Practice Owner and direct-semantics bypass controls SHALL verify that advisor omission neither suppresses nor satisfies another maintained route. The evaluator SHALL inspect the original goal, explicit scenario facts, active catalog when advice is used, source/model/profile/environment identities, advisor and child events, engagement map, main disposition and dispatch, outputs, effects, changed-file manifests, forbidden-effect sentinels, latency/context facts, terminal liveness, and cleanup before temporary output is removed. It SHALL use current-run diagnostics and SHALL NOT require a retained bundle or provider-free replay. Every maintained oracle SHALL pass independently rather than compensating a missed or extra route with lower latency or context.
 

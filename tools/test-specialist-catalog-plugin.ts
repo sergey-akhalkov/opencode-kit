@@ -85,6 +85,8 @@ async function main(): Promise<void> {
   const missingTool = await loadTool({ app: {} });
   const missing = output(await missingTool({}, context("specialist-team-advisor", "missing-api-session")));
   assert.equal(missing.status, "unknown");
+  assert.deepEqual(missing.agents, []);
+  assert.deepEqual(missing.skills, []);
   assert.equal((missing.warnings as JsonRecord[])[0]?.cause, "catalog-api-unavailable");
 
   const sessions: Record<string, JsonRecord> = {

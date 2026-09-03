@@ -7,7 +7,7 @@ import { inventoryOpenSpecChanges } from "../../global/bin/openspec-change/inven
 import { parseOwnershipManifest } from "../../global/bin/openspec-change/ownership.ts";
 import { inspectManagedPromptDrift } from "../opencode-runtime-sources.ts";
 import { installedOpenCodeIdentity } from "./lib/opencode-proof-client.ts";
-import { captureConfiguredDiagnostic, captureFoundationConfiguredLane, captureLane, createFoundationBundleFromDiagnostic, type CaptureFailureKind, type SessionMode } from "./consumer-outcome/capture.ts";
+import { captureConfiguredDiagnostic, captureFoundationConfiguredLane, captureLane, captureProspectiveConsequenceConfiguredLane, createFoundationBundleFromDiagnostic, type CaptureFailureKind, type SessionMode } from "./consumer-outcome/capture.ts";
 import {
   type CaptureBundle,
   type ComplexityConfiguredSessionPack,
@@ -30,6 +30,11 @@ import {
   writeNewFile,
 } from "./consumer-outcome/contracts.ts";
 import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, evaluateDisposableInputs, gateCurrent, loadGateInputs, readBundle } from "./consumer-outcome/evaluate.ts";
+import {
+  beadsPortfolioBridgePreflight,
+  materializeBeadsPortfolioBridgeBundle,
+  replayBeadsPortfolioBridgeBundle,
+} from "./consumer-outcome/beads-portfolio-bridge.ts";
 import {
   captureDeliveryTrajectoryConfigured,
   deliveryTrajectoryConfiguredPreflight,
@@ -74,7 +79,8 @@ import {
 } from "./consumer-outcome/delivery-checkpoint-continuity.ts";
 import { captureStatusScopeLane, statusScopeConfiguredRoutes } from "./consumer-outcome/status-scope.ts";
 import { captureTeamAdviceContinuity, evaluateTeamAdviceContinuity, loadTeamAdviceContinuityFixture, readTeamAdviceContinuityBundle, teamAdviceContinuityPreflight } from "./consumer-outcome/team-advice-continuity.ts";
-import { captureTeamAdvisingPack, evaluateTeamAdvisingPack, loadTeamAdvisingPack, readTeamBundle, redactTeamBundlePrivacy, selectTeamAdvisingPack, teamAdvisingPreflight } from "./consumer-outcome/team-advising.ts";
+import { captureTeamAdvisingPack, evaluateTeamAdvisingPack, loadTeamAdvisingPack, readTeamBundle, redactTeamBundlePrivacy, selectTeamAdvisingPack, summarizeTeamBundle, teamAdvisingPreflight } from "./consumer-outcome/team-advising.ts";
+import { evaluateProspectiveConsequenceRehearsal, loadProspectiveConsequenceRehearsalPack, prospectiveConsequenceRehearsalPreflight, readProspectiveConsequenceRehearsalBundle, readProspectiveConsequenceRehearsalLane, sealProspectiveConsequenceRehearsalBundle } from "./consumer-outcome/prospective-consequence-rehearsal.ts";
 
 type Options = {
   baselineConfigDir?: string;
@@ -93,7 +99,7 @@ type Options = {
   help: boolean;
   mode: "help" | "preflight" | "materialize" | "baseline" | "capture" | "convert" | "diagnose" | "evaluate" | "gate";
   opencodePath?: string;
-  pack: DecisionPackName | "complexity-configured" | "delivery-checkpoint" | "delivery-trajectory" | "general" | "leaf-first-task-decomposition" | "ordinary-small-closure" | "team-advising";
+  pack: DecisionPackName | "beads-portfolio-bridge" | "complexity-configured" | "delivery-checkpoint" | "delivery-trajectory" | "general" | "leaf-first-task-decomposition" | "ordinary-small-closure" | "prospective-consequence-rehearsal" | "team-advising";
   repoRoot: string;
   scenarioIds?: string[];
   sessionMode: SessionMode;
@@ -104,7 +110,7 @@ function usage(): string {
     "Usage:",
     "  node tools/proofs/consumer-outcome-regression.ts --help",
     "  node tools/proofs/consumer-outcome-regression.ts -h",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|delivery-checkpoint|delivery-trajectory|foundation-integrity|leaf-first-task-decomposition|ordinary-small-closure|shift-left|status-scope|team-advising] [--root <path>] [--source-ref HEAD|working-tree] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight [--pack general|beads-portfolio-bridge|bounded-falsification|claim-evidence|complexity|complexity-configured|delivery-checkpoint|delivery-trajectory|foundation-integrity|leaf-first-task-decomposition|ordinary-small-closure|prospective-consequence-rehearsal|shift-left|status-scope|team-advising] [--root <path>] [--source-ref HEAD|working-tree] [--opencode <absolute-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode baseline --candidate-id <id> --evidence-root <absolute-new-temp-path> [--pack general|bounded-falsification|complexity|complexity-configured|delivery-trajectory|foundation-integrity|shift-left|status-scope|team-advising] [--baseline-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--opencode <absolute-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode capture --candidate-id <id> --evidence-root <absolute-new-temp-path> [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|delivery-trajectory|foundation-integrity|shift-left|status-scope|team-advising] [--baseline <disposable-input>] [--candidate-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--opencode <absolute-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode diagnose --pack complexity|foundation-integrity [--scenarios <one-foundation-id>] --candidate-id <id> --evidence-root <absolute-new-temp-path> --source-ref working-tree --session-mode configured --opencode <absolute-path>",
@@ -122,12 +128,15 @@ function usage(): string {
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --pack leaf-first-task-decomposition --baseline <disposable-input>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|materialize --pack ordinary-small-closure --source-ref working-tree [--candidate-id <id> --evidence-root <absolute-new-temp-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --pack ordinary-small-closure --baseline <disposable-bundle.json>",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|materialize --pack beads-portfolio-bridge --source-ref working-tree [--candidate-id <id> --evidence-root <absolute-new-temp-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --pack beads-portfolio-bridge --baseline <disposable-bundle.json>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|capture --pack ordinary-small-closure --source-ref working-tree --session-mode configured --scenarios configured-compact-ordinary-small --opencode <absolute-path> --candidate-config-dir <generated-core> [--candidate-id <id> --evidence-root <absolute-new-temp-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --pack ordinary-small-closure --session-mode configured --scenarios configured-compact-ordinary-small --candidate <disposable-diagnostic.json>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|capture --pack leaf-first-task-decomposition --source-ref working-tree --session-mode configured --scenarios configured-ordinary-leaf-first|configured-openspec-leaf-first --opencode <absolute-path> --candidate-config-dir <generated-core> [--candidate-id <id> --evidence-root <absolute-new-temp-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --pack leaf-first-task-decomposition --session-mode configured --scenarios configured-ordinary-leaf-first|configured-openspec-leaf-first --candidate <disposable-diagnostic.json>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|capture --pack delivery-trajectory --source-ref working-tree --session-mode configured --scenarios <one-id> --opencode <absolute-path> --candidate-config-dir <generated-core> [--candidate-id <id> --evidence-root <absolute-new-temp-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --pack delivery-trajectory --scenarios <one-id> --candidate <disposable-diagnostic.json>",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|baseline|capture|evaluate --pack prospective-consequence-rehearsal --source-ref working-tree [--candidate <disposable-bundle.json>] [--expectation no-regression|improvement]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode gate [--source-ref HEAD|working-tree] [--candidate <path>] [--candidate-request <path>]",
     "",
     "Inputs: reviewed config/consumer-outcome-regression.json, fixture seeds, optional candidate-request JSON, and explicit disposable evaluator inputs.",
@@ -137,6 +146,8 @@ function usage(): string {
     "               delivery-checkpoint freezes twelve reviewed OPDC-001 members plus deliberate red controls; materialize and evaluate are provider-free and validate explicit fields, event order, identity preservation, and cost arithmetic without semantic scoring. Each separately authorized configured ordinary/OpenSpec population lane permits one request and supports only its exact reviewed rows.",
     "               leaf-first-task-decomposition freezes eleven reviewed LFTD-001 members, four explicit OpenSpec task controls, four linked schema-v1 grind-frontier controls, and deliberate red controls; materialize and evaluate are provider-free, and reviewed fixture data owns semantic judgments without scoring. Its separately authorized configured ordinary/OpenSpec lanes permit one request each and support only their exact current-run rows.",
     "               ordinary-small-closure freezes twelve reviewed SOSC-001 seed members plus deliberate red controls; provider-free materialize/evaluate validates bounded explicit facts without risk inference, while its separately authorized configured compact lane permits one request and supports only its exact current-run rows.",
+    "               prospective-consequence-rehearsal freezes eleven reviewed PCR-001 members with controller-separated candidates, exact temporal/continuation/freshness oracles, explicit configured-provider and task-call bounds, and provider-free evaluation without semantic scoring; configured capture remains separately gated until its loaded reviewer candidate exists.",
+    "               beads-portfolio-bridge freezes the ten reviewed BPB-001 source sections plus one deliberate red control each; provider-free materialize/evaluate validates current release/profile correlation, stable readback, and zero provider/network/remote/project/protected-host effects without installing or enabling Beads.",
     "               bounded-falsification uses twelve reviewed partitions, one primary request per scenario/arm, and at most twenty-four primary requests total.",
     "               complexity prepares one useful-current-consumer-facade member and permits only one separately cleared configured diagnostic request.",
     "               complexity-configured captures twelve matched baseline/candidate partitions with at most twenty-four configured-provider requests total.",
@@ -144,7 +155,7 @@ function usage(): string {
     "               foundation-integrity supports reviewed scenario subsets and provider-free composition; the complete baseline/candidate population remains bounded to fourteen primary requests total.",
     "               shift-left uses separate baseline/candidate captures, two scenarios, and at most four requests total.",
     "               status-scope uses one main response, one actual compaction, and one reconstruction call per arm, with six calls total.",
-    "               team-advising uses nine reviewed scenarios, ten root turns per arm, exact child/catalog/skill identities, and twenty configured requests total.",
+    "               team-advising uses ten reviewed scenarios, ten root turns per arm, explicit direct-route facts, exact child/catalog/skill identities, and twenty configured requests total.",
     "               team-advising --continuity uses two candidate-only actual-compaction controls and at most six configured requests; disposable evaluation is provider-free.",
     "               All focused packs have exact decision oracles, bounded claims, provider-free disposable evaluation, and cannot promote the maintained baseline pointer.",
     "Diagnostics: bounded current-run evaluation is emitted on stdout; temporary capture output is removed automatically and is never a repository or handoff artifact.",
@@ -210,7 +221,7 @@ function parseOptions(args: string[]): Options {
       index += 1;
     } else if (arg === "--pack") {
       const value = required(args, index, arg);
-      if (value !== "general" && value !== "bounded-falsification" && value !== "claim-evidence" && value !== "complexity" && value !== "complexity-configured" && value !== "delivery-checkpoint" && value !== "delivery-trajectory" && value !== "foundation-integrity" && value !== "leaf-first-task-decomposition" && value !== "ordinary-small-closure" && value !== "shift-left" && value !== "status-scope" && value !== "team-advising") throw new Error("Invalid pack");
+      if (value !== "general" && value !== "beads-portfolio-bridge" && value !== "bounded-falsification" && value !== "claim-evidence" && value !== "complexity" && value !== "complexity-configured" && value !== "delivery-checkpoint" && value !== "delivery-trajectory" && value !== "foundation-integrity" && value !== "leaf-first-task-decomposition" && value !== "ordinary-small-closure" && value !== "prospective-consequence-rehearsal" && value !== "shift-left" && value !== "status-scope" && value !== "team-advising") throw new Error("Invalid pack");
       options.pack = value;
       index += 1;
     } else if (arg === "--opencode") {
@@ -624,6 +635,142 @@ function complexityConfiguredPreflight(pack: ComplexityConfiguredSessionPack): R
 async function run(options: Options): Promise<void> {
   if (options.help || options.mode === "help") {
     console.log(usage());
+    return;
+  }
+  if (options.pack === "prospective-consequence-rehearsal") {
+    if (options.mode !== "preflight" && options.mode !== "baseline" && options.mode !== "capture" && options.mode !== "evaluate") {
+      throw new Error(`The prospective-consequence-rehearsal pack does not support ${options.mode} mode.`);
+    }
+    if (options.gitRef !== "working-tree") throw new Error("The prospective-consequence-rehearsal pack requires --source-ref working-tree.");
+    if (options.expectation !== "no-regression") throw new Error("The prospective-consequence-rehearsal pack uses exact protocol and containment oracles and requires --expectation no-regression.");
+    if (options.continuity || options.failure !== "none" || options.candidateRequestPath != null || options.diagnosticPath != null) {
+      throw new Error("The prospective-consequence-rehearsal pack rejects continuity, failure injection, candidate-request, and diagnostic-conversion inputs.");
+    }
+    const loaded = loadProspectiveConsequenceRehearsalPack(options.repoRoot);
+    const sourceIdentity = governedSourceIdentity(options.repoRoot, options.gitRef, loaded.pack.governedSourcePaths);
+    if (options.mode === "preflight") {
+      if (options.sessionMode !== "harness" || options.opencodePath != null || options.baselineConfigDir != null || options.candidateConfigDir != null
+        || options.baselinePath != null || options.candidatePaths.length > 0 || options.evidenceRoot != null || options.candidateId !== "" || options.scenarioIds != null) {
+        throw new Error("Prospective-consequence rehearsal preflight accepts only --root and --source-ref working-tree.");
+      }
+      emit({
+        ...prospectiveConsequenceRehearsalPreflight(loaded.pack, loaded.digest),
+        configuredCalls: 0,
+        networkCalls: 0,
+        processCalls: 0,
+        remoteEffects: 0,
+        sourceDigest: sourceIdentity.governedDigest,
+      });
+      return;
+    }
+    if (options.mode === "evaluate") {
+      if (options.sessionMode !== "harness" || options.candidatePaths.length < 1 || options.opencodePath != null
+        || options.baselineConfigDir != null || options.candidateConfigDir != null || options.evidenceRoot != null || options.candidateId !== "" || options.scenarioIds != null) {
+        throw new Error("Prospective-consequence rehearsal evaluate requires one --candidate bundle or --baseline plus candidate lane inputs, and no live capture inputs.");
+      }
+      const bundle = options.baselinePath == null
+        ? options.candidatePaths.length === 1
+          ? readProspectiveConsequenceRehearsalBundle(options.candidatePath!)
+          : (() => { throw new Error("Prospective-consequence rehearsal bundle evaluation accepts exactly one --candidate input."); })()
+        : (() => {
+            const baseline = readProspectiveConsequenceRehearsalLane(options.baselinePath!);
+            const candidates = options.candidatePaths.map(readProspectiveConsequenceRehearsalLane);
+            const mismatched = [baseline, ...candidates].some((lane) => lane.candidateId !== baseline.candidateId
+              || lane.packDigest !== loaded.digest
+              || lane.sourceIdentity.governedDigest !== sourceIdentity.governedDigest
+              || lane.sourceIdentity.sourceRef !== options.gitRef);
+            if (baseline.arm !== "baseline" || candidates.some((lane) => lane.arm !== "candidate") || mismatched) {
+              throw new Error("Prospective-consequence rehearsal lane inputs do not match the baseline candidate, pack, or source identity.");
+            }
+            return sealProspectiveConsequenceRehearsalBundle({
+              candidateId: baseline.candidateId,
+              captures: [...baseline.captures, ...candidates.flatMap((lane) => lane.captures)],
+              gitRef: options.gitRef,
+              packDigest: loaded.digest,
+              sourceIdentity: baseline.sourceIdentity,
+            });
+          })();
+      const evaluation = evaluateProspectiveConsequenceRehearsal(loaded.pack, bundle);
+      const sourceMatches = bundle.sourceIdentity.governedDigest === sourceIdentity.governedDigest && bundle.sourceIdentity.sourceRef === options.gitRef;
+      emit({ evaluation, expectation: options.expectation, liveCalls: 0, sourceMatches });
+      if (evaluation.status !== "passed" || !sourceMatches) process.exitCode = 1;
+      return;
+    }
+    if (options.sessionMode !== "configured" || options.opencodePath == null || options.evidenceRoot == null || options.candidateId.trim() === "") {
+      throw new Error("Prospective-consequence rehearsal baseline/capture requires --session-mode configured, --opencode, --candidate-id, and --evidence-root.");
+    }
+    if (options.mode === "baseline" && (options.baselineConfigDir == null || options.candidateConfigDir != null || options.baselinePath != null || options.candidatePaths.length > 0)) {
+      throw new Error("Prospective-consequence rehearsal baseline requires --baseline-config-dir and no candidate or evaluator input.");
+    }
+    if (options.mode === "capture" && (options.candidateConfigDir == null || options.baselinePath == null || options.baselineConfigDir != null || options.candidatePaths.length > 0)) {
+      throw new Error("Prospective-consequence rehearsal capture requires --candidate-config-dir and --baseline without candidate-result inputs.");
+    }
+    const configDir = options.mode === "baseline" ? options.baselineConfigDir! : options.candidateConfigDir!;
+    const lane = await captureProspectiveConsequenceConfiguredLane({
+      arm: options.mode === "baseline" ? "baseline" : "candidate",
+      candidateId: options.candidateId,
+      configDir,
+      evidenceRoot: options.evidenceRoot,
+      executable: options.opencodePath,
+      gitRef: options.gitRef,
+      pack: loaded.pack,
+      packDigest: loaded.digest,
+      repoRoot: options.repoRoot,
+      scenarioIds: options.scenarioIds,
+      sourceIdentity: { governedDigest: sourceIdentity.governedDigest, sourceRef: options.gitRef },
+    });
+    const liveCalls = lane.captures.reduce((sum, capture) => sum + capture.configuredProviderRequestCount, 0);
+    if (options.mode === "baseline") {
+      emit({ laneDigest: lane.laneDigest, liveCalls, mode: "baseline", pointerMutated: false, sourceDigest: sourceIdentity.governedDigest, status: "captured" });
+      return;
+    }
+    const baseline = readProspectiveConsequenceRehearsalLane(options.baselinePath!);
+    if (baseline.arm !== "baseline" || baseline.candidateId !== options.candidateId || baseline.packDigest !== loaded.digest
+      || baseline.sourceIdentity.governedDigest !== sourceIdentity.governedDigest || baseline.sourceIdentity.sourceRef !== options.gitRef) {
+      throw new Error("Prospective-consequence rehearsal baseline lane does not match the candidate capture identity.");
+    }
+    if (options.scenarioIds != null) {
+      emit({ laneDigest: lane.laneDigest, liveCalls, mode: "capture", pointerMutated: false, sourceDigest: sourceIdentity.governedDigest, status: "captured" });
+      return;
+    }
+    const bundle = sealProspectiveConsequenceRehearsalBundle({
+      candidateId: options.candidateId,
+      captures: [...baseline.captures, ...lane.captures],
+      gitRef: options.gitRef,
+      packDigest: loaded.digest,
+      sourceIdentity: { governedDigest: sourceIdentity.governedDigest, sourceRef: options.gitRef },
+    });
+    const evaluation = evaluateProspectiveConsequenceRehearsal(loaded.pack, bundle);
+    writeNewFile(path.join(options.evidenceRoot, "bundle.json"), stableJson(bundle));
+    writeNewFile(path.join(options.evidenceRoot, "evaluation.json"), stableJson(evaluation));
+    const totalLiveCalls = liveCalls + baseline.captures.reduce((sum, capture) => sum + capture.configuredProviderRequestCount, 0);
+    emit({ evaluation, expectation: options.expectation, liveCalls: totalLiveCalls, mode: "capture", pointerMutated: false, sourceDigest: sourceIdentity.governedDigest });
+    if (evaluation.status !== "passed" || totalLiveCalls > loaded.pack.configuredProviderRequestBound) process.exitCode = 1;
+    return;
+  }
+  if (options.pack === "beads-portfolio-bridge") {
+    if (options.mode !== "preflight" && options.mode !== "materialize" && options.mode !== "evaluate") throw new Error(`The beads-portfolio-bridge pack does not support ${options.mode} mode.`);
+    if (options.gitRef !== "working-tree" || options.sessionMode !== "harness" || options.expectation !== "no-regression") throw new Error("The beads-portfolio-bridge pack requires provider-free harness mode, --source-ref working-tree, and exact reviewed oracles.");
+    if (options.continuity || options.failure !== "none" || options.candidateRequestPath != null || options.diagnosticPath != null || options.baselineConfigDir != null
+      || options.opencodePath != null || options.candidateConfigDir != null || options.scenarioIds != null || options.candidatePaths.length > 0) {
+      throw new Error("The beads-portfolio-bridge pack rejects configured sessions, live tools, scenario selection, failure injection, and candidate inputs.");
+    }
+    if (options.mode === "preflight") {
+      if (options.baselinePath != null || options.evidenceRoot != null || options.candidateId !== "") throw new Error("Beads portfolio bridge preflight accepts only --root and --source-ref working-tree.");
+      emit(beadsPortfolioBridgePreflight(options.repoRoot, options.gitRef));
+      return;
+    }
+    if (options.mode === "evaluate") {
+      if (options.baselinePath == null || options.evidenceRoot != null || options.candidateId !== "") throw new Error("Beads portfolio bridge evaluate requires only --baseline.");
+      const replayed = replayBeadsPortfolioBridgeBundle(options.repoRoot, options.baselinePath);
+      emit({ evaluation: replayed.evaluation, liveCalls: 0, mode: options.mode });
+      if (replayed.evaluation.status !== "passed") process.exitCode = 1;
+      return;
+    }
+    if (options.evidenceRoot == null || options.candidateId.trim() === "" || options.baselinePath != null) throw new Error("Beads portfolio bridge materialize requires --candidate-id and --evidence-root without evaluation inputs.");
+    const materialized = materializeBeadsPortfolioBridgeBundle({ candidateId: options.candidateId, evidenceRoot: options.evidenceRoot, gitRef: options.gitRef, repoRoot: options.repoRoot });
+    emit({ evaluation: materialized.evaluation, liveCalls: 0, mode: "materialize", pointerMutated: false, sourceDigest: materialized.bundle.sourceIdentity.governedDigest });
+    if (materialized.evaluation.status !== "passed") process.exitCode = 1;
     return;
   }
   if (options.pack === "ordinary-small-closure") {
@@ -1209,7 +1356,6 @@ async function run(options: Options): Promise<void> {
     if (options.evidenceRoot == null || options.candidateId.trim() === "" || options.opencodePath == null || options.sessionMode !== "configured") {
       throw new Error("Team-advising baseline/capture requires --candidate-id, --evidence-root, --opencode, and --session-mode configured.");
     }
-    if (options.mode === "capture" && options.baselinePath == null) throw new Error("Team-advising candidate capture requires --baseline.");
     const bundle = await captureTeamAdvisingPack(teamPack, loadedTeam.digest, {
       arm: options.mode === "baseline" ? "baseline" : "candidate",
       candidateId: options.candidateId,
@@ -1218,13 +1364,18 @@ async function run(options: Options): Promise<void> {
       gitRef: options.gitRef,
       repoRoot: options.repoRoot,
     });
-    const baseline = options.mode === "baseline" ? bundle : readTeamBundle(options.baselinePath!, loadedTeam.digest);
+    const baseline = options.mode === "baseline"
+      ? bundle
+      : options.baselinePath == null
+        ? null
+        : readTeamBundle(options.baselinePath, loadedTeam.digest);
     const evaluation = evaluateTeamAdvisingPack(teamPack, loadedTeam.digest, baseline, options.mode === "capture" ? bundle : undefined);
     emit({
       evaluation,
       liveCalls: bundle.samples.reduce((sum, sample) => sum + sample.configuredProviderRequestCount, 0),
       mode: options.mode,
       pointerMutated: false,
+      samples: summarizeTeamBundle(teamPack, bundle),
       sourceDigest: bundle.sourceIdentity.governedDigest,
     });
     if (evaluation.status !== "passed") process.exitCode = 1;
@@ -1580,7 +1731,11 @@ function disposableOutputRoot(options: Options): string | null {
 async function main(): Promise<void> {
   const options = parseOptions(process.argv.slice(2));
   const outputRoot = disposableOutputRoot(options);
-  const ownsOutputRoot = options.pack !== "ordinary-small-closure" && outputRoot != null && !fs.existsSync(outputRoot);
+  const ownsOutputRoot = options.pack !== "ordinary-small-closure"
+    && options.pack !== "beads-portfolio-bridge"
+    && options.pack !== "prospective-consequence-rehearsal"
+    && outputRoot != null
+    && !fs.existsSync(outputRoot);
   try {
     await run(options);
   } finally {

@@ -6,12 +6,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { runPortableCommand } from "../global/bin/portable-process.ts";
+import { loadBeadsReleaseManifest } from "../global/bin/beads-portfolio-bridge/beads-release.ts";
 import {
   BeadsAdapterError,
   buildBeadsAdapterInvocation,
   runBeadsAdapter,
-} from "./windows/beads-vendor-adapter.ts";
-import type { BeadsAdapterDependencies, BeadsAdapterRequest } from "./windows/beads-vendor-adapter.ts";
+} from "../global/bin/beads-portfolio-bridge/beads-vendor-adapter.ts";
+import type { BeadsAdapterDependencies, BeadsAdapterRequest } from "../global/bin/beads-portfolio-bridge/beads-vendor-adapter.ts";
 
 const executableSha256 = "b1f3609fea1d9f0f19b2ed49098b3628acfa6ca115aa28b01a1ee178c3a214de";
 const bridgeMetadata = {
@@ -44,7 +45,7 @@ function fixture(): Fixture {
 import fs from "node:fs";
 const argv = process.argv.slice(2);
 fs.appendFileSync(process.env.FAKE_BD_LOG, JSON.stringify(argv) + "\\n");
-const commands = new Set(["where", "status", "list", "ready", "show", "create", "update", "close"]);
+const commands = new Set(["init", "where", "status", "list", "ready", "show", "create", "dep", "update", "close"]);
 const command = argv.find((value) => commands.has(value));
 const metadata = {
   bridgeSchemaVersion: 1,
@@ -61,6 +62,7 @@ const issue = {
   title: "must-not-pass-through",
   description: "raw-secret-payload",
   status: command === "close" ? "closed" : "open",
+  close_reason: command === "close" ? argv[argv.indexOf("--reason") + 1] : "",
   priority: 2,
   issue_type: "feature",
   assignee: command === "update" ? "agent:OA-001" : "",
@@ -69,7 +71,9 @@ const issue = {
   metadata,
   dependency_count: 1,
   dependent_count: 2,
-  dependencies: [{ id: "BPB-dep", status: "closed", issue_type: "feature", dependency_type: "blocks", title: "not-returned" }]
+  dependencies: command === "ready"
+    ? [{ issue_id: "BPB-abc", depends_on_id: "BPB-dep", type: "blocks" }]
+    : [{ id: "BPB-dep", status: "closed", issue_type: "feature", dependency_type: "blocks", title: "not-returned" }]
 };
 if (process.env.FAKE_BD_MODE === "failure") {
   process.stderr.write("project=" + process.cwd() + " token=private-value\\n");
@@ -85,13 +89,18 @@ if (process.env.FAKE_BD_MODE === "oversized") {
 }
 if (process.env.FAKE_BD_MODE === "timeout") {
   setTimeout(() => {}, 60_000);
+} else if (command === "init") {
+  fs.mkdirSync(process.env.BEADS_DIR);
+  process.stdout.write("  Repository ID: fixture\\n\\n✓ bd initialized successfully!\\n\\n  Backend: dolt\\n  Mode: embedded\\n  Database: BPB\\n  Issue prefix: BPB\\n");
+  process.stderr.write("No Dolt remote configured\\n");
 } else if (command === "where") {
   process.stdout.write(JSON.stringify({ path: process.env.BEADS_DIR, prefix: "BPB" }));
 } else if (command === "status") {
   process.stdout.write(JSON.stringify({ summary: { total_issues: 4, open_issues: 1, in_progress_issues: 0, blocked_issues: 1, deferred_issues: 0, closed_issues: 2, ready_issues: 1 } }));
 } else {
-  if (command === "create" || command === "update" || command === "close") fs.writeFileSync(process.env.FAKE_BD_MARKER, command);
-  if (command === "create") process.stdout.write(JSON.stringify(issue));
+  if (command === "create" || command === "dep" || command === "update" || command === "close") fs.writeFileSync(process.env.FAKE_BD_MARKER, command);
+  if (command === "dep") process.stdout.write(JSON.stringify({ issue_id: "BPB-abc", depends_on_id: "BPB-dep", type: "blocks", status: "added", schema_version: 1 }));
+  else if (command === "create") process.stdout.write(JSON.stringify(issue));
   else process.stdout.write(JSON.stringify([issue]));
   if (command === "list") process.stderr.write("Showing 1 of 2 issues.\\n");
 }
@@ -154,9 +163,13 @@ test("builds only the reviewed closed command surface", () => {
   assert.deepEqual(update.argv, [
     "--json", "--sandbox", "--quiet", "update", "BPB-abc", "--spec-id", "spec:OC-001", "--set-metadata", "changeRef=change:OC-001",
   ]);
+  const dependency = buildBeadsAdapterInvocation({ ...base, operation: "add-dependency", id: "BPB-abc", dependsOnId: "BPB-dep", relationType: "blocks" });
+  assert.equal(dependency.capability, "dependencyAdd");
+  assert.deepEqual(dependency.argv, ["--json", "--sandbox", "--quiet", "dep", "add", "BPB-abc", "BPB-dep", "--type", "blocks"]);
   assert.equal(errorFrom(() => buildBeadsAdapterInvocation({ ...base, operation: "prime" })).code, "unsupported-operation");
   assert.throws(() => buildBeadsAdapterInvocation({ ...base, operation: "ready", limit: 1, correlation: {}, argv: ["setup"] }), /fields are invalid/u);
   assert.throws(() => buildBeadsAdapterInvocation({ ...base, operation: "show", id: "--help" }), /bounded Beads identifier/u);
+  assert.throws(() => buildBeadsAdapterInvocation({ ...base, operation: "add-dependency", id: "BPB-abc", dependsOnId: "BPB-dep", relationType: "related" }), /closed Beads relation set/u);
   assert.throws(
     () => buildBeadsAdapterInvocation({ ...base, operation: "create-feature", title: "feature", externalRef: "https://unsafe.invalid", metadata: bridgeMetadata }),
     /privacy-safe reference/u,
@@ -198,11 +211,33 @@ test("invokes the production adapter through the non-shell process owner and ret
   }
 });
 
+test("accepts the pinned init text only with the reviewed tracked block and a direct store", () => {
+  const item = fixture();
+  try {
+    fs.rmSync(path.join(item.root, ".beads"), { recursive: true });
+    fs.writeFileSync(path.join(item.root, ".gitignore"), "existing-rule\n", "utf8");
+    const rejected = errorFrom(() => runBeadsAdapter({ ...common(item), operation: "project-enable", prefix: "BPB" }, item.dependencies));
+    assert.equal(rejected.code, "identity-mismatch");
+    const required = loadBeadsReleaseManifest().initialization.requiredTrackedFiles[0]!.content;
+    assert.notEqual(required, null);
+    fs.appendFileSync(path.join(item.root, ".gitignore"), required!, "utf8");
+    const enabled = runBeadsAdapter({ ...common(item), operation: "project-enable", prefix: "BPB" }, item.dependencies);
+    assert.deepEqual(enabled.result, { kind: "project", initialized: true, prefix: "BPB" });
+    assert.equal(enabled.process.exitCode, 0);
+    assert.equal(enabled.streams.stdout.truncated, false);
+    assert.match(enabled.diagnostics.messages.join("\n"), /No Dolt remote configured/u);
+    assert.equal(fs.lstatSync(path.join(item.root, ".beads")).isDirectory(), true);
+  } finally {
+    fs.rmSync(item.root, { recursive: true, force: true });
+  }
+});
+
 test("executes only fixed project-local feature mutations", () => {
   const item = fixture();
   try {
     const requests: BeadsAdapterRequest[] = [
       { ...common(item), operation: "create-feature", title: "Bounded feature", externalRef: "signal:KS-001", metadata: bridgeMetadata },
+      { ...common(item), operation: "add-dependency", id: "BPB-abc", dependsOnId: "BPB-dep", relationType: "blocks" },
       { ...common(item), operation: "update-feature", id: "BPB-abc", specId: "spec:OC-001", changeRef: "change:OC-001" },
       { ...common(item), operation: "assign-feature", id: "BPB-abc", assignee: "agent:OA-001", taskRef: "task:OT-001", sessionRef: "session:OS-001" },
       { ...common(item), operation: "close-feature", id: "BPB-abc", reason: "terminal evidence verified" },
@@ -210,8 +245,15 @@ test("executes only fixed project-local feature mutations", () => {
     for (const request of requests) {
       const response = runBeadsAdapter(request, item.dependencies);
       assert.equal(response.sideEffects.kind, "beads-write");
-      assert.equal(response.result.kind, "issues");
-      assert.equal(response.result.kind === "issues" ? response.result.items[0].id : null, "BPB-abc");
+      if (request.operation === "add-dependency") {
+        assert.deepEqual(response.result, { kind: "dependency", issueId: "BPB-abc", dependsOnId: "BPB-dep", relationType: "blocks", status: "added" });
+      } else {
+        assert.equal(response.result.kind, "issues");
+        assert.equal(response.result.kind === "issues" ? response.result.items[0].id : null, "BPB-abc");
+        if (request.operation === "close-feature") {
+          assert.equal(response.result.kind === "issues" ? response.result.items[0].closeReason : null, "terminal evidence verified");
+        }
+      }
     }
     const lines = fs.readFileSync(item.log, "utf8").trim().split(/\r?\n/u).map((line) => JSON.parse(line) as string[]);
     assert.deepEqual(lines, requests.map((request) => buildBeadsAdapterInvocation(request).argv));

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-autonomous-kaizen-grind",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "autonomous-kaizen-grind",
+      "requirements": [
+        "Kaizen uses one dedicated D-drive lifecycle root",
+        "Legacy Kaizen state migrates without loss or split authority",
+        "Enable is one idempotent operational entry point",
+        "Each cycle drains its complete captured watermark",
+        "Project routing is explicit and privacy-separated",
+        "Admitted improvements complete in the owner project",
+        "Development sessions are visible and safely transferable",
+        "Disable stops future work and closes current ownership",
+        "Scheduling and recovery are finite and observable",
+        "Autonomous authority remains explicit and local"
+      ]
+    },
+    {
+      "capability": "cross-project-kaizen-loop",
+      "requirements": [
+        "Signals use a closed redacted schema",
+        "The inbox is append-only, bounded, and cross-project",
+        "Status and triage are bounded and non-authoritative",
+        "Kit proposal promotion is explicit and root-contained",
+        "Proposal promotion is owner-project contained"
+      ]
+    },
+    {
+      "capability": "autonomous-work-campaign",
+      "requirements": [
+        "Campaign definitions are explicit, versioned, and bounded",
+        "Kaizen remediation consumes one frozen owner-project campaign input",
+        "Kaizen campaigns have one resume host",
+        "Kaizen campaign result is correlated back to the controller"
+      ]
+    },
+    {
+      "capability": "unattended-roadmap-orchestration",
+      "requirements": [
+        "All project missions share one project-scoped mutation lease",
+        "Kaizen missions use one visible owner-project root session",
+        "User takeover transfers one writer safely"
+      ]
+    },
+    {
+      "capability": "local-opencode-workstation",
+      "requirements": [
+        "Kaizen Grind task installation is explicit and protected",
+        "The task is daily, finite, non-overlapping, and missed-run capable",
+        "Disable and rollback preserve data and project evidence"
+      ]
+    },
+    {
+      "capability": "library-runtime-surface-profiles",
+      "requirements": [
+        "Core and all expose one Kaizen lifecycle surface"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "docs/kaizen.md",
+    "global/plugin/kaizen",
+    "global/plugin/session-env.ts",
+    "global/commands/kaizen-triage.md",
+    "global/commands/kaizen-status.md",
+    "global/commands/enable-kaizen-grind.md",
+    "global/commands/disable-kaizen-grind.md",
+    "global/commands/kaizen-grind-status.md",
+    "global/bin/kaizen-grind.ts",
+    "global/bin/kaizen-grind",
+    "global/bin/work-campaign.ts",
+    "global/bin/work-campaign-supervisor.ts",
+    "global/bin/work-campaign-semantic-executor.ts",
+    "global/bin/roadmap-mission.ts",
+    "global/bin/roadmap-mission-session-executor.ts",
+    "global/bin/roadmap-mission",
+    "global/opencode.json.template",
+    "profiles/core.json",
+    "profiles/all.json",
+    "package.json",
+    "tools/contracts",
+    "tools/runtime-surface-profile.ts",
+    "tools/proofs/runtime-surface-loader.ts",
+    "tools/proofs/cross-project-kaizen.ts",
+    "tools/proofs/work-campaign.ts",
+    "tools/proofs/work-campaign-playbook.ts",
+    "tools/proofs/work-campaign-semantic.ts",
+    "tools/proofs/work-campaign-windows-installed.ts",
+    "tools/proofs/roadmap-mission.ts",
+    "tools/proofs/roadmap-mission-controller.ts",
+    "tools/proofs/roadmap-mission-integrated.ts",
+    "tools/proofs/roadmap-mission-launcher.ts",
+    "tools/proofs/roadmap-mission-launcher-stop.ts",
+    "tools/proofs/roadmap-mission-provider.ts",
+    "tools/proofs/roadmap-mission-runtime.ts",
+    "tools/proofs/roadmap-mission-state.ts",
+    "tools/proofs/kaizen-grind.ts",
+    "tools/windows/opencode-workstation.ts",
+    "tools/windows/opencode-workstation-config.ts",
+    "tools/windows/opencode-workstation-layout.ts",
+    "tools/windows/README.md",
+    "tools/validate-library.ts",
+    "tools/validators",
+    "tools/test-cross-project-kaizen.ts",
+    "tools/test-work-campaign.ts",
+    "tools/test-work-campaign-controller.ts",
+    "tools/test-work-campaign-semantic-executor.ts",
+    "tools/test-work-campaign-semantic-playbook.ts",
+    "tools/test-work-campaign-supervisor.ts",
+    "tools/test-work-campaign-windows.ts",
+    "tools/test-library/runtime-surface-profiles.ts",
+    "tools/test-portable-process.ts",
+    "tools/test-windows-ci-envelope.ts",
+    "tools/test-workstation-config.ts",
+    "tools/test-workstation-restart-critical.ts",
+    "tools/test-kaizen-grind.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "make-team-advice-evidence-triggered",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "tools/proofs/runtime-surface-loader.ts" },
+        { "type": "write-root", "path": "tools/validators" }
+      ],
+      "transferCondition": "MTAET is archived with terminal writers and the current loaded-source, runtime-surface, and validator owners are reread before exact transfer"
+    },
+    {
+      "changeId": "add-prospective-consequence-rehearsal",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "tools/contracts" },
+        { "type": "write-root", "path": "tools/validators" },
+        { "type": "requirement", "capability": "library-change-ready-sdlc", "requirement": "Decision-material work receives one early falsification episode" }
+      ],
+      "transferCondition": "PCR is archived after MTAET with terminal writers, current validators and canonical opsx-propose behavior are reread, and the Grind project-lifecycle proof uses the resulting authoring route"
+    },
+    {
+      "changeId": "deliver-continuous-reusable-value",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "tools/validate-library.ts" },
+        { "type": "write-root", "path": "tools/validators" },
+        { "type": "requirement", "capability": "library-tools-architecture", "requirement": "Production reachability has one deterministic validation owner" }
+      ],
+      "transferCondition": "CRVD is archived after PCR with terminal writers and the current package, validation, documentation, and production-reachability owners are reread before Grind mutation"
+    }
+  ],
+  "transfers": []
+}

@@ -15,11 +15,18 @@ import {
   writeText,
 } from "../test-helpers/library.ts";
 import { evaluateLoaderSkills } from "../proofs/runtime-surface-loader.ts";
-import { descriptionSelectsOpenSpecSkill } from "../validators/skills.ts";
+import { descriptionSelectsBeadsSkill, descriptionSelectsOpenSpecSkill } from "../validators/skills.ts";
 import {
   ALL_COMPATIBILITY_FILES,
   ALL_COMPATIBILITY_PLUGIN_FILES,
+  BEADS_PORTFOLIO_HELPER_DIRECTORY,
+  BEADS_PORTFOLIO_SKILL,
   CORE_AGENTS,
+  CORE_BEADS_AGENTS,
+  CORE_BEADS_COMMANDS,
+  CORE_BEADS_DIRECTORIES,
+  CORE_BEADS_FILES,
+  CORE_BEADS_SKILLS,
   CORE_COMMANDS,
   CORE_DIRECTORIES,
   CORE_FILES,
@@ -42,14 +49,16 @@ import {
   type RuntimeSurfaceProfile,
 } from "../runtime-surface-profile.ts";
 
-function committedProfile(name: "all" | "core"): RuntimeSurfaceProfile {
+type CommittedProfileName = "all" | "core" | "core-beads";
+
+function committedProfile(name: CommittedProfileName): RuntimeSurfaceProfile {
   const loaded = loadRuntimeSurfaceProfile(libraryRoot, name);
   assert(loaded.profile != null, `Committed profiles/${name}.json must parse.`);
   assert(loaded.errors.length === 0, `Committed profiles/${name}.json errors: ${loaded.errors.join("; ")}`);
   return loaded.profile;
 }
 
-function mutateCommitted(name: "all" | "core", mutate: (profile: RuntimeSurfaceProfile) => RuntimeSurfaceProfile): {
+function mutateCommitted(name: CommittedProfileName, mutate: (profile: RuntimeSurfaceProfile) => RuntimeSurfaceProfile): {
   file: string;
   profile: RuntimeSurfaceProfile;
   root: string;
@@ -63,21 +72,21 @@ function mutateCommitted(name: "all" | "core", mutate: (profile: RuntimeSurfaceP
 }
 
 function copyMinimalKit(root: string): void {
-  const names = ["all.json", "core.json"];
+  const names = ["all.json", "core-beads.json", "core.json"];
   for (const name of names) {
     const source = path.join(libraryRoot, "profiles", name);
     writeText(path.join(root, "profiles", name), fs.readFileSync(source, "utf8"));
   }
-  for (const relative of [
-    ...CORE_FILES,
-    ...CORE_SKILLS.map((name) => `global/skills/${name}/SKILL.md`),
-    ...CORE_AGENTS.map((name) => `global/agents/${name}.md`),
-    ...CORE_COMMANDS.map((name) => `global/commands/${name}.md`),
-  ]) {
+  for (const relative of new Set([
+    ...CORE_BEADS_FILES,
+    ...CORE_BEADS_SKILLS.map((name) => `global/skills/${name}/SKILL.md`),
+    ...CORE_BEADS_AGENTS.map((name) => `global/agents/${name}.md`),
+    ...CORE_BEADS_COMMANDS.map((name) => `global/commands/${name}.md`),
+  ])) {
     const source = path.join(libraryRoot, ...relative.split("/"));
     writeText(path.join(root, ...relative.split("/")), fs.readFileSync(source, "utf8"));
   }
-  for (const relative of CORE_DIRECTORIES) {
+  for (const relative of new Set(CORE_BEADS_DIRECTORIES)) {
     fs.cpSync(path.join(libraryRoot, ...relative.split("/")), path.join(root, ...relative.split("/")), { recursive: true });
   }
 }
@@ -182,6 +191,118 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
       assert(core.files.includes(`global/${SPECIALIST_CATALOG_PLUGIN_FILE}`), "Core must own the exact specialist catalog source file.");
       assert(!all.files.includes(`global/${SPECIALIST_CATALOG_PLUGIN_FILE}`), "All must retain its existing extension-directory source ownership without a duplicate file entry.");
       assert(all.directories.includes("global/extensions"), "All must retain the extensions directory.");
+    },
+  },
+  {
+    name: "core-beads is the exact core union and keeps Beads on demand",
+    run: () => {
+      const core = committedProfile("core");
+      const coreBeads = committedProfile("core-beads");
+      const all = committedProfile("all");
+      assert(JSON.stringify(coreBeads.skills) === JSON.stringify(CORE_BEADS_SKILLS), "Core-Beads skills must equal core plus Beads.");
+      assert(JSON.stringify(coreBeads.agents) === JSON.stringify(CORE_BEADS_AGENTS), "Core-Beads agents must equal core.");
+      assert(JSON.stringify(coreBeads.commands) === JSON.stringify(CORE_BEADS_COMMANDS), "Core-Beads commands must equal core.");
+      assert(JSON.stringify(coreBeads.files) === JSON.stringify(CORE_BEADS_FILES), "Core-Beads files must equal core.");
+      assert(JSON.stringify(coreBeads.directories) === JSON.stringify(CORE_BEADS_DIRECTORIES), "Core-Beads directories must equal core plus the helper closure.");
+      assert(!core.skills.includes(BEADS_PORTFOLIO_SKILL), "Core must omit the Beads skill.");
+      assert(!core.directories.includes(BEADS_PORTFOLIO_HELPER_DIRECTORY), "Core must omit the Beads helper closure.");
+      assert(all.skills.filter((name) => name === BEADS_PORTFOLIO_SKILL).length === 1, "All must expose the Beads skill once.");
+      assert(all.directories.includes("global/bin"), "All must expose the helper closure through its full global/bin catalog.");
+
+      const generated = new Map<CommittedProfileName, string>();
+      for (const profileName of ["core", "core-beads", "all"] as const) {
+        const target = path.join(newTempDir(`beads-${profileName}-profile`), profileName);
+        materializeRuntimeSurfaceProfile({ profileName, root: libraryRoot, targetRoot: target });
+        generated.set(profileName, target);
+      }
+      const coreRoot = generated.get("core")!;
+      const coreBeadsRoot = generated.get("core-beads")!;
+      const allRoot = generated.get("all")!;
+      const readManifestEntries = (target: string) => (JSON.parse(fs.readFileSync(path.join(target, ".runtime-surface.json"), "utf8")) as {
+        entries: Array<{ destination: string; digest: string; kind: string; owner: string; source: string }>;
+      }).entries;
+      const coreEntries = new Map(readManifestEntries(coreRoot).map((entry) => [entry.owner, entry]));
+      const coreBeadsEntries = new Map(readManifestEntries(coreBeadsRoot).map((entry) => [entry.owner, entry]));
+      for (const [owner, entry] of coreEntries) {
+        assert(JSON.stringify(coreBeadsEntries.get(owner)) === JSON.stringify(entry), `Core-Beads must retain exact core manifest entry ${owner}.`);
+      }
+      const beadsDelta = [...coreBeadsEntries.keys()].filter((owner) => !coreEntries.has(owner)).sort();
+      assert(
+        JSON.stringify(beadsDelta) === JSON.stringify(["path:bin/beads-portfolio-bridge", `skill:${BEADS_PORTFOLIO_SKILL}`].sort()),
+        `Core-Beads manifest delta must contain only the skill/helper closure: ${beadsDelta.join(", ")}`,
+      );
+      assert(!fs.existsSync(path.join(coreRoot, "skills", BEADS_PORTFOLIO_SKILL)), "Generated core must omit the Beads skill.");
+      assert(!fs.existsSync(path.join(coreRoot, "bin", "beads-portfolio-bridge")), "Generated core must omit the Beads helper closure.");
+      for (const target of [coreBeadsRoot, allRoot]) {
+        assert(fs.existsSync(path.join(target, "skills", BEADS_PORTFOLIO_SKILL, "SKILL.md")), "Full Beads surfaces must materialize the skill once.");
+        assert(fs.existsSync(path.join(target, "bin", "beads-portfolio-bridge", "beads-vendor-adapter.ts")), "Full Beads surfaces must materialize the closed adapter.");
+        assert(fs.existsSync(path.join(target, "bin", "beads-portfolio-bridge", "beads-kaizen-orchestrator.ts")), "Full Beads surfaces must materialize the closed orchestrator.");
+        const config = JSON.parse(fs.readFileSync(path.join(target, "opencode.json"), "utf8")) as { mcp?: unknown; plugin?: unknown };
+        assert(config.mcp == null, "Profile config must not activate a Beads MCP.");
+        assert(!JSON.stringify(config.plugin ?? []).includes("bin/beads-portfolio-bridge"), "Profile config must not activate a Beads plugin or managed instruction.");
+      }
+      const loaderEvaluation = evaluateLoaderSkills(
+        coreBeads.skills.map((name) => ({ location: path.join(coreBeadsRoot, "skills", name, "SKILL.md"), name })),
+        coreBeadsRoot,
+        path.join(libraryRoot, "global"),
+        "core-beads",
+      );
+      assert(loaderEvaluation.status === "passed", `Core-Beads loader inventory must pass: ${JSON.stringify(loaderEvaluation)}`);
+      assert(loaderEvaluation.beadsSkillCount === 1, "Core-Beads loader inventory must contain the skill once.");
+
+      const skillFile = path.join(libraryRoot, "global", "skills", BEADS_PORTFOLIO_SKILL, "SKILL.md");
+      const skillText = fs.readFileSync(skillFile, "utf8");
+      const description = skillText.match(/^description:\s*(.+)$/m)?.[1] ?? "";
+      for (const ordinary of [
+        "apply the OpenSpec change",
+        "triage this Kaizen signal",
+        "continue grind execution",
+        "implement the task",
+        "review ready work",
+      ]) {
+        assert(!descriptionSelectsBeadsSkill(description, ordinary), `Ordinary request must stay quiet: ${ordinary}`);
+      }
+      assert(descriptionSelectsBeadsSkill(description, "check the Beads installation"), "An explicit Beads request must select the skill.");
+      assert(descriptionSelectsBeadsSkill(description, "run `bd` diagnostics"), "An explicit bd request must select the skill.");
+      assert(!descriptionSelectsBeadsSkill(description, "show portfolio status"), "Portfolio status without enabled registration must stay quiet.");
+      assert(descriptionSelectsBeadsSkill(description, "show portfolio status", true), "Enabled-project portfolio status must select the skill.");
+      assert(skillText.includes("Never execute arbitrary `bd` arguments"), "Skill must prohibit direct arbitrary vendor execution.");
+      assert(!fs.existsSync(path.join(libraryRoot, "global", "commands", "beads.md")), "Beads must not add a thin command.");
+      assert(!fs.existsSync(path.join(libraryRoot, "global", "plugins", "beads.ts")), "Beads must not add a plugin.");
+    },
+  },
+  {
+    name: "profile validation rejects Beads artifacts outside the exact full identity",
+    run: () => {
+      const root = newTempDir("runtime-surface-beads-only");
+      copyMinimalKit(root);
+      const partial: RuntimeSurfaceProfile = {
+        schemaVersion: 1,
+        name: "beads-only",
+        description: "Invalid partial Beads surface fixture.",
+        configMode: "ask",
+        agents: [],
+        commands: [],
+        directories: [BEADS_PORTFOLIO_HELPER_DIRECTORY],
+        files: [],
+        skills: [BEADS_PORTFOLIO_SKILL],
+      };
+      writeText(path.join(root, "profiles", "beads-only.json"), serializeRuntimeSurfaceProfile(partial));
+      const inspection = inspectRuntimeSurfaceProfiles(root, [...CORE_BEADS_SKILLS], [...CORE_BEADS_AGENTS], [...CORE_BEADS_COMMANDS]);
+      assert(
+        inspection.errors.some((error) => error.includes("Beads runtime artifacts require the concrete full profiles/core-beads.json identity")),
+        `Partial Beads profile must fail its concrete identity: ${inspection.errors.join("; ")}`,
+      );
+
+      const { root: staleRoot } = mutateCommitted("core-beads", (current) => ({
+        ...current,
+        files: current.files.filter((entry) => entry !== "global/AGENTS.md"),
+      }));
+      const staleInspection = inspectRuntimeSurfaceProfiles(staleRoot, [...CORE_BEADS_SKILLS], [...CORE_BEADS_AGENTS], [...CORE_BEADS_COMMANDS]);
+      assert(
+        staleInspection.errors.some((error) => error.includes("profiles/core-beads.json files must match core")),
+        `Stale core union must fail: ${staleInspection.errors.join("; ")}`,
+      );
     },
   },
   {
